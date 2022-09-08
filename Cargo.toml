@@ -1,6 +1,5 @@
-# You must change these to your own details.
 [package]
-name = "rust-webpack-template"
+name = "battle-game"
 description = "My super awesome Rust, WebAssembly, and Webpack project!"
 version = "0.1.0"
 authors = ["You <you@example.com>"]
@@ -23,16 +22,19 @@ lto = true
 [dependencies]
 wasm-bindgen = "0.2.45"
 wee_alloc = { version = "0.4.2", optional = true }
-serde = { version = "1.0.144", features = ["derive"] }
 web-sys = { version = "0.3.45", features = ["console"] }
 serde-wasm-bindgen = "0.4.3"
-
-# The `console_error_panic_hook` crate provides better debugging of panics by
-# logging them with `console.error`. This is great for development, but requires
-# all the `std::fmt` and `std::panicking` infrastructure, so it's only enabled
-# in debug mode.
-[target."cfg(debug_assertions)".dependencies]
+serde = { version = "1.0.144", features = ["derive"] }
+rhai = { version = "1.9.1", features = ["wasm-bindgen"] }
+getrandom = { version = "0.2.7", features = ["js"] }
 console_error_panic_hook = "0.1.5"
+
+# # The `console_error_panic_hook` crate provides better debugging of panics by
+# # logging them with `console.error`. This is great for development, but requires
+# # all the `std::fmt` and `std::panicking` infrastructure, so it's only enabled
+# # in debug mode.
+# [target."cfg(debug_assertions)".dependencies]
+# console_error_panic_hook = "0.1.5"
 
 # These crates are used for running unit tests.
 [dev-dependencies]

@@ -1,10 +1,57 @@
 use crate::state::{Actor, Player, Pos, State};
+use rhai::{Engine, Func};
+
+// A macro to provide `println!(..)`-style syntax for `console.log` logging.
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
 
 enum Direction {
     Up,
     Down,
     Left,
     Right,
+}
+
+pub struct PlayerScriptActor {
+    script: String,
+}
+
+impl PlayerScriptActor {
+    pub fn from_script(script: String) -> PlayerScriptActor {
+        PlayerScriptActor { script }
+    }
+}
+
+impl Actor for PlayerScriptActor {
+    fn apply(&mut self, state: State) -> State {
+        let engine = Engine::new();
+        let func = Func::<(), String>::create_from_script(
+            engine,               // the 'Engine' is consumed into the closure
+            self.script.as_str(), // the script, notice number of parameters must match
+            "main",               // the entry-point function name
+        )
+        .unwrap();
+
+        let action = func().unwrap();
+
+        let mut new_x = state.player.pos.x;
+        let mut new_y = state.player.pos.y;
+        match action.as_str() {
+            "MOVE_UP" => new_y -= 1,
+            "MOVE_DOWN" => new_y += 1,
+            "MOVE_LEFT" => new_x -= 1,
+            "MOVE_RIGHT" => new_x += 1,
+            _ => panic!("Unknown action: {}", action),
+        }
+        State {
+            player: Player {
+                pos: Pos::new(new_x, new_y),
+            },
+        }
+    }
 }
 
 pub struct PlayerMoveCircle {

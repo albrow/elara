@@ -31,12 +31,8 @@ app.stage.addChild(sprite);
 // Create the game and start it
 const game = Game.new(WIDTH, HEIGHT);
 
-app.ticker.add(() => {
-  // game.step_forward();
-  // const state = game.get_state();
-  // sprite.x = state.player.x * (TILE_SIZE + 1) + 1;
-  // sprite.y = state.player.y * (TILE_SIZE + 1) + 1;
-});
+// Temporary debugging. Pass a function and call it from Rust.
+game.set_player_behavior(`fn main() {"MOVE_RIGHT"}`);
 
 // Event listeners.
 document.addEventListener("keydown", (event) => {
@@ -71,7 +67,6 @@ function drawGrid(graphics: PIXI.Graphics) {
 
 function drawSprites(game: Game) {
   const state = game.get_state();
-  console.log(state);
   sprite.x = state.player.pos.x * (TILE_SIZE + 1) + 1;
   sprite.y = state.player.pos.y * (TILE_SIZE + 1) + 1;
 }

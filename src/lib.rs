@@ -1,7 +1,8 @@
 use wasm_bindgen::prelude::*;
+extern crate console_error_panic_hook;
 
 mod state;
-use state::StateEngine;
+use state::{State, StateEngine};
 
 mod actors;
 use actors::PlayerMoveCircle;
@@ -14,15 +15,11 @@ use actors::PlayerMoveCircle;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-// This is like the `main` function, except for JavaScript.
-#[wasm_bindgen(start)]
-pub fn main_js() -> Result<(), JsValue> {
-    // This provides better error messages in debug mode.
-    // It's disabled in release mode so it doesn't bloat up the file size.
-    #[cfg(debug_assertions)]
-    console_error_panic_hook::set_once();
-
-    Ok(())
+// A macro to provide `println!(..)`-style syntax for `console.log` logging.
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
 }
 
 // #[wasm_bindgen(module = "node_modules/pixi.js/dist/pixi.js")]
@@ -58,11 +55,13 @@ pub struct Game {
 #[wasm_bindgen]
 impl Game {
     pub fn new(width: u32, height: u32) -> Game {
+        console_error_panic_hook::set_once();
+
         let config = state::Config { width, height };
         let mut engine = StateEngine::new(config);
 
         // For now, add a simple actor to move the player in a circle.
-        engine.add_actor(Box::new(PlayerMoveCircle::new(width - 1, height - 1)));
+        // engine.add_actor(Box::new(PlayerMoveCircle::new(width - 1, height - 1)));
 
         Game {
             state_engine: engine,
@@ -79,5 +78,10 @@ impl Game {
 
     pub fn step_back(&mut self) {
         self.state_engine.step_back();
+    }
+
+    pub fn set_player_behavior(&mut self, script: String) {
+        let actor = actors::PlayerScriptActor::from_script(script);
+        self.state_engine.add_actor(Box::new(actor));
     }
 }
