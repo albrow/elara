@@ -1,5 +1,6 @@
 use crate::state::{Actor, Player, Pos, State};
-use rhai::{Engine, Func};
+// use rhai::{Engine, Func};
+use std::sync::mpsc;
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
 macro_rules! log {
@@ -8,43 +9,33 @@ macro_rules! log {
     }
 }
 
-enum Direction {
+pub enum Direction {
     Up,
     Down,
     Left,
     Right,
 }
 
-pub struct PlayerScriptActor {
-    script: String,
+pub struct PlayerChannelActor {
+    rx: &'static mpsc::Receiver<Direction>,
 }
 
-impl PlayerScriptActor {
-    pub fn from_script(script: String) -> PlayerScriptActor {
-        PlayerScriptActor { script }
+impl PlayerChannelActor {
+    pub fn new(rx: &'static mpsc::Receiver<Direction>) -> PlayerChannelActor {
+        PlayerChannelActor { rx }
     }
 }
 
-impl Actor for PlayerScriptActor {
+impl Actor for PlayerChannelActor {
     fn apply(&mut self, state: State) -> State {
-        let engine = Engine::new();
-        let func = Func::<(), String>::create_from_script(
-            engine,               // the 'Engine' is consumed into the closure
-            self.script.as_str(), // the script, notice number of parameters must match
-            "main",               // the entry-point function name
-        )
-        .unwrap();
-
-        let action = func().unwrap();
-
+        let direction = self.rx.recv().unwrap();
         let mut new_x = state.player.pos.x;
         let mut new_y = state.player.pos.y;
-        match action.as_str() {
-            "MOVE_UP" => new_y -= 1,
-            "MOVE_DOWN" => new_y += 1,
-            "MOVE_LEFT" => new_x -= 1,
-            "MOVE_RIGHT" => new_x += 1,
-            _ => panic!("Unknown action: {}", action),
+        match direction {
+            Direction::Up => new_y -= 1,
+            Direction::Down => new_y += 1,
+            Direction::Left => new_x -= 1,
+            Direction::Right => new_x += 1,
         }
         State {
             player: Player {
@@ -53,6 +44,67 @@ impl Actor for PlayerScriptActor {
         }
     }
 }
+
+// pub struct PlayerScriptActor {
+//     script: String,
+//     engine: Engine,
+//     tx: mpsc::Sender<Direction>,
+//     rx: mpsc::Receiver<Direction>,
+// }
+
+// impl PlayerScriptActor {
+//     pub fn from_script(script: String) -> PlayerScriptActor {
+//         let engine = Engine::new();
+//         let (tx, rx) = mpsc::channel();
+//         let mut actor = PlayerScriptActor {
+//             script,
+//             engine,
+//             rx,
+//             tx,
+//         };
+//         actor.register_funcs();
+//         actor
+//     }
+
+//     fn register_funcs(&mut self) {
+//         self.engine.register_fn("move_right", |spaces: i64| {
+//             log!("move_right({})", spaces);
+//             // for _ in 0..spaces {
+//             //     self.tx.send(Direction::Right).unwrap();
+//             // }
+//         });
+//     }
+
+//     fn move_right(&self, spaces: i64) {
+//         for _ in 0..spaces {
+//             self.tx.send(Direction::Right).unwrap();
+//         }
+//     }
+
+//     pub fn run(&self) {
+//         self.engine.run(self.script.as_str()).unwrap();
+//     }
+// }
+
+// impl Actor for PlayerScriptActor {
+//     fn apply(&mut self, state: State) -> State {
+//         // let direction = self.rx.recv().unwrap();
+//         // let mut new_x = state.player.pos.x;
+//         // let mut new_y = state.player.pos.y;
+//         // match direction {
+//         //     Direction::Right => new_y -= 1,
+//         //     Direction::Down => new_y += 1,
+//         //     Direction::Left => new_x -= 1,
+//         //     Direction::Up => new_x += 1,
+//         // }
+//         // State {
+//         //     player: Player {
+//         //         pos: Pos::new(new_x, new_y),
+//         //     },
+//         // }
+//         state
+//     }
+// }
 
 pub struct PlayerMoveCircle {
     max_x: u32,

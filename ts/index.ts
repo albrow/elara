@@ -15,7 +15,7 @@ const app = new PIXI.Application({
   height: CANVAS_HEIGHT,
   backgroundColor: BACKGROUND_COLOR,
 });
-document.body.appendChild(app.view);
+document.querySelector("#board").appendChild(app.view);
 
 // Draw grid lines.
 const grid_graphics = new PIXI.Graphics();
@@ -32,20 +32,37 @@ app.stage.addChild(sprite);
 const game = Game.new(WIDTH, HEIGHT);
 
 // Temporary debugging. Pass a function and call it from Rust.
-game.set_player_behavior(`fn main() {"MOVE_RIGHT"}`);
+// game.set_player_behavior(`fn main() {"MOVE_RIGHT"}`);
 
 // Event listeners.
-document.addEventListener("keydown", (event) => {
-  switch (event.key) {
-    case "ArrowRight":
-      game.step_forward();
-      drawSprites(game);
-      break;
-    case "ArrowLeft":
-      game.step_back();
-      drawSprites(game);
-      break;
-  }
+// document.addEventListener("keydown", (event) => {
+//   switch (event.key) {
+//     case "ArrowRight":
+//       game.step_forward();
+//       drawSprites(game);
+//       break;
+//     case "ArrowLeft":
+//       game.step_back();
+//       drawSprites(game);
+//       break;
+//   }
+// });
+document.querySelector("#save-button").addEventListener("click", () => {
+  const script = (
+    document.querySelector("#player-script") as HTMLTextAreaElement
+  ).value;
+  (document.querySelector("#save-button") as HTMLButtonElement).disabled = true;
+  game.run_player_script(script);
+});
+
+document.querySelector("#forward-button").addEventListener("click", () => {
+  game.step_forward();
+  drawSprites(game);
+});
+
+document.querySelector("#back-button").addEventListener("click", () => {
+  game.step_back();
+  drawSprites(game);
 });
 
 // Helper function to draw the grid lines.

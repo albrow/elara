@@ -19,6 +19,7 @@ module.exports = {
         warnings: false,
       },
     },
+    watchFiles: ["./static/index.html"],
   },
   performance: {
     maxEntrypointSize: 512000,
@@ -37,7 +38,6 @@ module.exports = {
         },
       ],
     }),
-
     new WasmPackPlugin({
       crateDirectory: __dirname,
     }),

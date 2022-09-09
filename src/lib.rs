@@ -5,7 +5,15 @@ mod state;
 use state::{State, StateEngine};
 
 mod actors;
-use actors::PlayerMoveCircle;
+use actors::Direction;
+
+use std::sync::mpsc;
+use std::sync::mpsc::{Receiver, Sender};
+
+use rhai::Engine;
+
+static mut TX: Option<Sender<Direction>> = None;
+static mut RX: Option<Receiver<Direction>> = None;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
@@ -57,14 +65,20 @@ impl Game {
     pub fn new(width: u32, height: u32) -> Game {
         console_error_panic_hook::set_once();
 
+        let (tx, rx) = mpsc::channel();
+        unsafe {
+            TX = Some(tx);
+            RX = Some(rx);
+        }
+
         let config = state::Config { width, height };
-        let mut engine = StateEngine::new(config);
+        let mut state_engine = StateEngine::new(config);
 
         // For now, add a simple actor to move the player in a circle.
         // engine.add_actor(Box::new(PlayerMoveCircle::new(width - 1, height - 1)));
 
         Game {
-            state_engine: engine,
+            state_engine: state_engine,
         }
     }
 
@@ -80,8 +94,38 @@ impl Game {
         self.state_engine.step_back();
     }
 
-    pub fn set_player_behavior(&mut self, script: String) {
-        let actor = actors::PlayerScriptActor::from_script(script);
+    // pub fn set_player_behavior(&mut self, script: String) {}
+
+    pub fn run_player_script(&mut self, script: String) {
+        let actor = actors::PlayerChannelActor::new(unsafe { RX.as_ref().unwrap() });
         self.state_engine.add_actor(Box::new(actor));
+        let mut engine = Engine::new();
+        engine.register_fn("move_right", move |spaces: i64| {
+            for _ in 0..spaces {
+                unsafe { TX.as_ref().unwrap() }
+                    .send(Direction::Right)
+                    .unwrap();
+            }
+        });
+        engine.register_fn("move_left", move |spaces: i64| {
+            for _ in 0..spaces {
+                unsafe { TX.as_ref().unwrap() }
+                    .send(Direction::Left)
+                    .unwrap();
+            }
+        });
+        engine.register_fn("move_up", move |spaces: i64| {
+            for _ in 0..spaces {
+                unsafe { TX.as_ref().unwrap() }.send(Direction::Up).unwrap();
+            }
+        });
+        engine.register_fn("move_down", move |spaces: i64| {
+            for _ in 0..spaces {
+                unsafe { TX.as_ref().unwrap() }
+                    .send(Direction::Down)
+                    .unwrap();
+            }
+        });
+        engine.run(script.as_str()).unwrap();
     }
 }

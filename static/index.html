@@ -3,8 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <title>Battle Game (actual title TBD)</title>
+    <style>
+      body {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+      #player-script {
+        font-family: "Courier New", Courier, monospace;
+      }
+      body button {
+        cursor: pointer;
+      }
+      body button:disabled {
+        cursor: not-allowed;
+      }
+    </style>
   </head>
   <body>
+    <div id="control-panel">
+      <textarea id="player-script" name="player-script" rows="20" cols="45">
+// Write your code here.</textarea
+      >
+      <button id="save-button">Save</button>
+      <button id="back-button">Back</button>
+      <button id="forward-button">Forward</button>
+    </div>
+    <div id="board"></div>
     <script src="main.js"></script>
   </body>
 </html>
