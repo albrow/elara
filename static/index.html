@@ -13,6 +13,9 @@
         display: flex;
         flex-direction: row;
       }
+      #control-panel {
+        flex-direction: row;
+      }
       #player-script {
         font-family: "Courier New", Courier, monospace;
       }
@@ -29,9 +32,11 @@
       <textarea id="player-script" name="player-script" rows="20" cols="45">
 // Write your code here.</textarea
       >
-      <button id="save-button">Save</button>
-      <button id="back-button">Back</button>
-      <button id="forward-button">Forward</button>
+      <div id="buttons">
+        <button id="save-button">Save</button>
+        <button id="back-button">Back</button>
+        <button id="forward-button">Forward</button>
+      </div>
     </div>
     <div id="board"></div>
     <script src="main.js"></script>
