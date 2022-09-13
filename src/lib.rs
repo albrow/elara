@@ -2,7 +2,7 @@ extern crate console_error_panic_hook;
 
 use wasm_bindgen::prelude::*;
 mod state;
-use state::{State, StateEngine};
+use state::{Player, Pos, State, StateEngine};
 mod actors;
 use actors::{Action, Bounds, Direction};
 use js_sys::Array;
@@ -63,7 +63,7 @@ impl Game {
     }
 
     pub fn get_state(&self) -> State {
-        self.state_engine.curr_state().clone()
+        self.state_engine.curr_state().borrow().clone()
     }
 
     pub fn step_forward(&mut self) {
@@ -84,7 +84,9 @@ impl Game {
 
         let mut engine = Engine::new();
         set_engine_safegaurds(&mut engine);
+        set_print_fn(&mut engine);
 
+        let mut state = self.state_engine.curr_state().clone();
         engine.register_debugger(
             |_| Dynamic::from(()),
             move |_context, _event, node, _source, pos| {
@@ -100,6 +102,10 @@ impl Game {
                                 //
                                 // See https://docs.rs/rhai/latest/rhai/struct.Engine.html#method.eval_expression_with_scope
                                 log!("move_right detected at line {}", pos.line().unwrap());
+                                // Temporary: Should really be calling state_engine.step_forward()
+                                // If we can do this, calling get_state from the script will work
+                                // correctly :)
+                                state.borrow_mut().player.pos.x += 1;
                                 Ok(DebuggerCommand::StepInto)
                             }
                             "move_left" => {
@@ -121,6 +127,9 @@ impl Game {
                 }
             },
         );
+
+        // Register types.
+        register_custom_types(&mut engine);
 
         // Register functions for each action that can exist in a user script.
         // Each function will simply send the corresponding action(s) through
@@ -154,7 +163,8 @@ impl Game {
         // TODO(albrow): Figure out a way to read current state. Maybe make
         // a global static state variable and update it every time the state
         // changes?
-        // engine.register_fn("get_state", || self.state_engine.curr_state().clone());
+        let curr_state_ref = self.state_engine.curr_state().clone();
+        engine.register_fn("get_state", move || curr_state_ref.borrow().clone());
 
         // Make engine non-mutable now that we are done registering functions.
         let engine = engine;
@@ -165,14 +175,16 @@ impl Game {
         // TODO(albrow): Handle errors better here.
         engine.run(script.as_str()).unwrap();
 
-        let states: Array = self
-            .state_engine
-            .all_states()
-            .to_vec()
-            .into_iter()
-            .map(JsValue::from)
-            .collect();
-        Ok(states)
+        // TODO(albrow): Return a list of states that resulted from script
+        // execution.
+        // let states: Array = self
+        //     .state_engine
+        //     .all_states()
+        //     .to_vec()
+        //     .into_iter()
+        //     .map(JsValue::from)
+        //     .collect();
+        Ok(Array::new())
     }
 }
 
@@ -184,4 +196,23 @@ fn set_engine_safegaurds(engine: &mut Engine) {
     engine.set_max_operations(10_000);
     engine.set_max_call_levels(32);
     engine.set_max_expr_depths(32, 16);
+}
+
+fn set_print_fn(engine: &mut Engine) {
+    engine.on_print(move |s: &str| {
+        log!("{}", s);
+    });
+}
+
+fn register_custom_types(engine: &mut Engine) {
+    engine
+        .register_type_with_name::<State>("State")
+        .register_get("player", State::get_player);
+    engine
+        .register_type_with_name::<Player>("Player")
+        .register_get("position", Player::get_pos);
+    engine
+        .register_type_with_name::<Pos>("Position")
+        .register_get("x", Pos::get_x)
+        .register_get("y", Pos::get_y);
 }
