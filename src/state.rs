@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use wasm_bindgen::prelude::wasm_bindgen;
 
 pub trait Actor {
     fn apply(&mut self, state: State) -> State;
@@ -22,6 +22,10 @@ impl StateEngine {
 
     pub fn curr_state(&self) -> &State {
         &self.states[self.state_idx]
+    }
+
+    pub fn all_states(&self) -> &[State] {
+        &self.states
     }
 
     pub fn add_actor(&mut self, actor: Box<dyn Actor>) {
@@ -54,17 +58,20 @@ impl StateEngine {
     }
 }
 
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub struct State {
     pub player: Player,
 }
 
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Player {
     pub pos: Pos,
 }
 
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Pos {
     pub x: u32,
     pub y: u32,

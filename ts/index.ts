@@ -1,4 +1,4 @@
-import { Game } from "battle-game-lib";
+import { Game, State } from "battle-game-lib";
 import * as PIXI from "pixi.js";
 
 const WIDTH = 12;
@@ -28,7 +28,7 @@ sprite.height = TILE_SIZE;
 sprite.width = TILE_SIZE;
 app.stage.addChild(sprite);
 
-// Create the game and start it
+// Create the game.
 const game = Game.new(WIDTH, HEIGHT);
 
 // Temporary debugging. Pass a function and call it from Rust.

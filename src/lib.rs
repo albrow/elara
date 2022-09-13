@@ -1,16 +1,14 @@
-use wasm_bindgen::prelude::*;
 extern crate console_error_panic_hook;
 
+use wasm_bindgen::prelude::*;
 mod state;
-use state::StateEngine;
-
+use state::{State, StateEngine};
 mod actors;
 use actors::{Action, Bounds, Direction};
-
-use std::sync::mpsc;
-
+use js_sys::Array;
 use rhai::debugger::DebuggerCommand;
 use rhai::{ASTNode, Dynamic, Engine, Stmt};
+use std::sync::mpsc;
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
 macro_rules! log {
@@ -64,9 +62,8 @@ impl Game {
         }
     }
 
-    // TODO(albrow): Use wasm_bindgen here instead of returning a JsValue.
-    pub fn get_state(&self) -> JsValue {
-        serde_wasm_bindgen::to_value(self.state_engine.curr_state()).unwrap()
+    pub fn get_state(&self) -> State {
+        self.state_engine.curr_state().clone()
     }
 
     pub fn step_forward(&mut self) {
@@ -77,7 +74,7 @@ impl Game {
         self.state_engine.step_back();
     }
 
-    pub async fn run_player_script(&mut self, script: String) {
+    pub async fn run_player_script(&mut self, script: String) -> Result<Array, JsValue> {
         let bounds = Bounds {
             max_x: self.width,
             max_y: self.height,
@@ -102,19 +99,19 @@ impl Game {
                                 // the line in the editor).
                                 //
                                 // See https://docs.rs/rhai/latest/rhai/struct.Engine.html#method.eval_expression_with_scope
-                                log!("Paused at line {} move_right", pos.line().unwrap());
+                                log!("move_right detected at line {}", pos.line().unwrap());
                                 Ok(DebuggerCommand::StepInto)
                             }
                             "move_left" => {
-                                log!("Paused at line {} move_left", pos.line().unwrap());
+                                log!("move_left detected at line {}", pos.line().unwrap());
                                 Ok(DebuggerCommand::StepInto)
                             }
                             "move_up" => {
-                                log!("Paused at line {} move_up", pos.line().unwrap());
+                                log!("move_up detected at line {}", pos.line().unwrap());
                                 Ok(DebuggerCommand::StepInto)
                             }
                             "move_down" => {
-                                log!("Paused at line {} move_down", pos.line().unwrap());
+                                log!("move_down detected at line {}", pos.line().unwrap());
                                 Ok(DebuggerCommand::StepInto)
                             }
                             _ => Ok(DebuggerCommand::StepInto),
@@ -154,6 +151,10 @@ impl Game {
                 tx.send(Action::Move(Direction::Down)).unwrap();
             }
         });
+        // TODO(albrow): Figure out a way to read current state. Maybe make
+        // a global static state variable and update it every time the state
+        // changes?
+        // engine.register_fn("get_state", || self.state_engine.curr_state().clone());
 
         // Make engine non-mutable now that we are done registering functions.
         let engine = engine;
@@ -163,6 +164,15 @@ impl Game {
         //
         // TODO(albrow): Handle errors better here.
         engine.run(script.as_str()).unwrap();
+
+        let states: Array = self
+            .state_engine
+            .all_states()
+            .to_vec()
+            .into_iter()
+            .map(JsValue::from)
+            .collect();
+        Ok(states)
     }
 }
 
