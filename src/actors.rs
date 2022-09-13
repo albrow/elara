@@ -1,4 +1,5 @@
 use crate::state::{Actor, Player, Pos, State};
+use std::cmp;
 use std::sync::mpsc;
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
@@ -6,6 +7,16 @@ macro_rules! log {
     ( $( $t:tt )* ) => {
         web_sys::console::log_1(&format!( $( $t )* ).into());
     }
+}
+
+pub enum Action {
+    Wait,
+    Move(Direction),
+}
+
+pub struct Bounds {
+    pub max_x: u32,
+    pub max_y: u32,
 }
 
 pub enum Direction {
@@ -16,12 +27,13 @@ pub enum Direction {
 }
 
 pub struct PlayerChannelActor {
-    rx: &'static mpsc::Receiver<Direction>,
+    rx: &'static mpsc::Receiver<Action>,
+    bounds: Bounds,
 }
 
 impl PlayerChannelActor {
-    pub fn new(rx: &'static mpsc::Receiver<Direction>) -> PlayerChannelActor {
-        PlayerChannelActor { rx }
+    pub fn new(rx: &'static mpsc::Receiver<Action>, bounds: Bounds) -> PlayerChannelActor {
+        PlayerChannelActor { rx, bounds }
     }
 }
 
@@ -30,11 +42,20 @@ impl Actor for PlayerChannelActor {
         let mut new_x = state.player.pos.x;
         let mut new_y = state.player.pos.y;
         match self.rx.try_recv() {
-            Ok(direction) => match direction {
-                Direction::Up => new_y -= 1,
-                Direction::Down => new_y += 1,
-                Direction::Left => new_x -= 1,
-                Direction::Right => new_x += 1,
+            Ok(Action::Wait) => {}
+            Ok(Action::Move(direction)) => match direction {
+                Direction::Up => {
+                    if new_y >= 1 {
+                        new_y -= 1;
+                    }
+                }
+                Direction::Down => new_y = cmp::min(new_y + 1, self.bounds.max_y),
+                Direction::Left => {
+                    if new_x >= 1 {
+                        new_x -= 1;
+                    }
+                }
+                Direction::Right => new_x = cmp::min(new_x + 1, self.bounds.max_x),
             },
             Err(_) => (),
         }

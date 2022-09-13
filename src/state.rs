@@ -1,27 +1,19 @@
 use serde::{Deserialize, Serialize};
 
-pub struct Config {
-    pub width: u32,
-    pub height: u32,
-    // TODO(albrow): Implement max state history.
-}
-
 pub trait Actor {
     fn apply(&mut self, state: State) -> State;
 }
 
 pub struct StateEngine {
-    config: Config,
     state_idx: usize,
     states: Vec<State>,
     actors: Vec<Box<dyn Actor>>,
 }
 
 impl StateEngine {
-    pub fn new(config: Config) -> StateEngine {
+    pub fn new() -> StateEngine {
         let state = State::new();
         StateEngine {
-            config,
             state_idx: 0,
             states: vec![state],
             actors: vec![],
@@ -118,10 +110,7 @@ mod test {
             }
         }
 
-        let mut engine = StateEngine::new(Config {
-            width: 10,
-            height: 10,
-        });
+        let mut engine = StateEngine::new();
         engine.add_actor(Box::new(MoveRight));
         engine.step_forward();
 
@@ -146,10 +135,7 @@ mod test {
             }
         }
 
-        let mut engine = StateEngine::new(Config {
-            width: 10,
-            height: 10,
-        });
+        let mut engine = StateEngine::new();
         engine.add_actor(Box::new(MoveRight));
 
         engine.step_forward();

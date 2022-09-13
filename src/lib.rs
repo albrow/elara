@@ -5,7 +5,7 @@ mod state;
 use state::StateEngine;
 
 mod actors;
-use actors::Direction;
+use actors::{Action, Bounds, Direction};
 
 use std::sync::mpsc;
 
@@ -23,17 +23,19 @@ macro_rules! log {
 // Rhai script and the Rust code, particularly the StateEngine. They are
 // ultimately used in a function which is registered with the Rhai Engine via
 // register_function, which requires a static lifetime.
-static mut PLAYER_ACTION_TX: Option<mpsc::Sender<Direction>> = None;
-static mut PLAYER_ACTION_RX: Option<mpsc::Receiver<Direction>> = None;
+static mut PLAYER_ACTION_TX: Option<mpsc::Sender<Action>> = None;
+static mut PLAYER_ACTION_RX: Option<mpsc::Receiver<Action>> = None;
 
 #[wasm_bindgen]
 /// Game is the main entry point for the game. It is responsible for
 /// managing state, running user scripts, and gluing all the pieces
 /// together.
 pub struct Game {
+    width: u32,
+    height: u32,
     state_engine: StateEngine,
-    player_action_tx: &'static mpsc::Sender<Direction>,
-    player_action_rx: &'static mpsc::Receiver<Direction>,
+    player_action_tx: &'static mpsc::Sender<Action>,
+    player_action_rx: &'static mpsc::Receiver<Action>,
 }
 
 #[wasm_bindgen]
@@ -51,10 +53,11 @@ impl Game {
             PLAYER_ACTION_RX = Some(player_rx);
         }
 
-        let config = state::Config { width, height };
-        let state_engine = StateEngine::new(config);
+        let state_engine = StateEngine::new();
 
         Game {
+            width,
+            height,
             state_engine: state_engine,
             player_action_tx: unsafe { PLAYER_ACTION_TX.as_ref().unwrap() },
             player_action_rx: unsafe { PLAYER_ACTION_RX.as_ref().unwrap() },
@@ -75,7 +78,11 @@ impl Game {
     }
 
     pub async fn run_player_script(&mut self, script: String) {
-        let actor = actors::PlayerChannelActor::new(self.player_action_rx);
+        let bounds = Bounds {
+            max_x: self.width,
+            max_y: self.height,
+        };
+        let actor = actors::PlayerChannelActor::new(self.player_action_rx, bounds);
         self.state_engine.add_actor(Box::new(actor));
 
         let mut engine = Engine::new();
@@ -122,24 +129,29 @@ impl Game {
         // Each function will simply send the corresponding action(s) through
         // the channel.
         let tx = self.player_action_tx;
+        engine.register_fn("wait", move |duration: i64| {
+            for _ in 0..duration {
+                tx.send(Action::Wait).unwrap();
+            }
+        });
         engine.register_fn("move_right", move |spaces: i64| {
             for _ in 0..spaces {
-                tx.send(Direction::Right).unwrap();
+                tx.send(Action::Move(Direction::Right)).unwrap();
             }
         });
         engine.register_fn("move_left", move |spaces: i64| {
             for _ in 0..spaces {
-                tx.send(Direction::Left).unwrap();
+                tx.send(Action::Move(Direction::Left)).unwrap();
             }
         });
         engine.register_fn("move_up", move |spaces: i64| {
             for _ in 0..spaces {
-                tx.send(Direction::Up).unwrap();
+                tx.send(Action::Move(Direction::Up)).unwrap();
             }
         });
         engine.register_fn("move_down", move |spaces: i64| {
             for _ in 0..spaces {
-                tx.send(Direction::Down).unwrap();
+                tx.send(Action::Move(Direction::Down)).unwrap();
             }
         });
 
