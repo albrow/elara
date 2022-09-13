@@ -25,9 +25,12 @@ wee_alloc = { version = "0.4.2", optional = true }
 web-sys = { version = "0.3.45", features = ["console"] }
 serde-wasm-bindgen = "0.4.3"
 serde = { version = "1.0.144", features = ["derive"] }
-rhai = { version = "1.9.1", features = ["wasm-bindgen"] }
+rhai = { version = "1.9.1", features = ["wasm-bindgen", "debugging"] }
 getrandom = { version = "0.2.7", features = ["js"] }
 console_error_panic_hook = "0.1.5"
+spmc = "0.3.0"
+wasm-bindgen-futures = "0.4.33"
+
 
 # # The `console_error_panic_hook` crate provides better debugging of panics by
 # # logging them with `console.error`. This is great for development, but requires
@@ -41,4 +44,3 @@ console_error_panic_hook = "0.1.5"
 wasm-bindgen-test = "0.2.45"
 futures = "0.1.27"
 js-sys = "0.3.22"
-wasm-bindgen-futures = "0.3.22"

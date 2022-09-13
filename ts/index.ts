@@ -47,12 +47,12 @@ const game = Game.new(WIDTH, HEIGHT);
 //       break;
 //   }
 // });
-document.querySelector("#save-button").addEventListener("click", () => {
+document.querySelector("#save-button").addEventListener("click", async () => {
   const script = (
     document.querySelector("#player-script") as HTMLTextAreaElement
   ).value;
   (document.querySelector("#save-button") as HTMLButtonElement).disabled = true;
-  game.run_player_script(script);
+  await game.run_player_script(script);
 });
 
 document.querySelector("#forward-button").addEventListener("click", () => {

@@ -53,6 +53,6 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".js", ".ts", ".json", ".tsx", ".wasm", ".mjs"],
+    extensions: [".js", ".ts", ".json", ".mjs"],
   },
 };
