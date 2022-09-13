@@ -77,7 +77,10 @@ impl Game {
     pub async fn run_player_script(&mut self, script: String) {
         let actor = actors::PlayerChannelActor::new(self.player_action_rx);
         self.state_engine.add_actor(Box::new(actor));
+
         let mut engine = Engine::new();
+        set_engine_safegaurds(&mut engine);
+
         engine.register_debugger(
             |_| Dynamic::from(()),
             move |_context, _event, node, _source, pos| {
@@ -86,6 +89,12 @@ impl Game {
                     ASTNode::Stmt(Stmt::FnCall(fn_call_expr, ..)) => {
                         match fn_call_expr.name.as_str() {
                             "move_right" => {
+                                // TODO(albrow): Evaluate argument to determine how many
+                                // spaces to use. We can use this for tracking which line
+                                // of code is "running" for each step (e.g. by highlighting
+                                // the line in the editor).
+                                //
+                                // See https://docs.rs/rhai/latest/rhai/struct.Engine.html#method.eval_expression_with_scope
                                 log!("Paused at line {} move_right", pos.line().unwrap());
                                 Ok(DebuggerCommand::StepInto)
                             }
@@ -136,8 +145,21 @@ impl Game {
 
         // Make engine non-mutable now that we are done registering functions.
         let engine = engine;
+        // TODO(albrow): Consider using progress tracker to count the number of
+        // operations. Could be visualized as "feul" for your drone/robot that
+        // will eventually run out if your script runs too long.
+        //
+        // TODO(albrow): Handle errors better here.
         engine.run(script.as_str()).unwrap();
     }
 }
 
-// fn
+fn set_engine_safegaurds(engine: &mut Engine) {
+    // See https://rhai.rs/book/safety/
+    engine.set_max_string_size(200);
+    engine.set_max_array_size(100);
+    engine.set_max_map_size(100);
+    engine.set_max_operations(10_000);
+    engine.set_max_call_levels(32);
+    engine.set_max_expr_depths(32, 16);
+}
