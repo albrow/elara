@@ -1,8 +1,8 @@
 extern crate console_error_panic_hook;
 
 use wasm_bindgen::prelude::*;
-mod state;
-use state::{Player, Pos, Simulation, State};
+mod simulation;
+use simulation::{Player, Pos, Simulation, State};
 mod actors;
 use actors::{Action, Bounds, Direction};
 use js_sys::Array;

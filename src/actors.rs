@@ -1,4 +1,4 @@
-use crate::state::{Actor, Player, Pos, State};
+use crate::simulation::{Actor, Player, Pos, State};
 use std::cmp;
 use std::sync::mpsc;
 
