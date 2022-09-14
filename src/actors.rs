@@ -49,15 +49,19 @@ impl Actor for PlayerChannelActor {
                         new_y -= 1;
                     }
                 }
-                Direction::Down => new_y = cmp::min(new_y + 1, self.bounds.max_y),
+                Direction::Down => {
+                    new_y = cmp::min(new_y + 1, self.bounds.max_y);
+                }
                 Direction::Left => {
                     if new_x >= 1 {
                         new_x -= 1;
                     }
                 }
-                Direction::Right => new_x = cmp::min(new_x + 1, self.bounds.max_x),
+                Direction::Right => {
+                    new_x = cmp::min(new_x + 1, self.bounds.max_x);
+                }
             },
-            Err(_) => (),
+            Err(_) => {}
         }
         State {
             player: Player {

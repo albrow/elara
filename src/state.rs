@@ -2,33 +2,39 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::wasm_bindgen;
 
+// A macro to provide `println!(..)`-style syntax for `console.log` logging.
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
+
 pub trait Actor {
     fn apply(&mut self, state: State) -> State;
 }
 
-pub type SharedState = Rc<RefCell<State>>;
+// pub type SharedState = Rc<RefCell<State>>;
 
 pub struct StateEngine {
     state_idx: usize,
-    states: Vec<SharedState>,
+    states: Vec<State>,
     actors: Vec<Box<dyn Actor>>,
 }
 
 impl StateEngine {
     pub fn new() -> StateEngine {
-        let state = Rc::new(RefCell::new(State::new()));
         StateEngine {
             state_idx: 0,
-            states: vec![state],
+            states: vec![State::new()],
             actors: vec![],
         }
     }
 
-    pub fn curr_state(&self) -> SharedState {
+    pub fn curr_state(&self) -> State {
         self.states[self.state_idx].clone()
     }
 
-    pub fn all_states(&self) -> &[SharedState] {
+    pub fn all_states(&self) -> &[State] {
         &self.states
     }
 
@@ -46,12 +52,17 @@ impl StateEngine {
         }
 
         // Otherwise, compute the next state and store it.
-        let mut next_state = *self.curr_state().clone().borrow_mut();
+        let mut next_state = self.curr_state().clone();
         for actor in &mut self.actors {
             next_state = actor.apply(next_state);
         }
-        self.states.push(Rc::new(RefCell::new(next_state)));
+        self.states.push(next_state);
         self.state_idx += 1;
+        log!(
+            "finished computing step {}: {:?}",
+            self.state_idx,
+            next_state
+        );
     }
 
     pub fn step_back(&mut self) {
@@ -60,6 +71,10 @@ impl StateEngine {
         }
         // If we're already at the intiial state, do nothing.
     }
+}
+
+fn type_of<T>(_: T) -> &'static str {
+    std::any::type_name::<T>()
 }
 
 #[wasm_bindgen]

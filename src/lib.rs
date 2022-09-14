@@ -8,6 +8,8 @@ use actors::{Action, Bounds, Direction};
 use js_sys::Array;
 use rhai::debugger::DebuggerCommand;
 use rhai::{ASTNode, Dynamic, Engine, Stmt};
+use std::cell::RefCell;
+use std::rc::Rc;
 use std::sync::mpsc;
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
@@ -31,7 +33,7 @@ static mut PLAYER_ACTION_RX: Option<mpsc::Receiver<Action>> = None;
 pub struct Game {
     width: u32,
     height: u32,
-    state_engine: StateEngine,
+    state_engine: Rc<RefCell<StateEngine>>,
     player_action_tx: &'static mpsc::Sender<Action>,
     player_action_rx: &'static mpsc::Receiver<Action>,
 }
@@ -51,7 +53,7 @@ impl Game {
             PLAYER_ACTION_RX = Some(player_rx);
         }
 
-        let state_engine = StateEngine::new();
+        let state_engine = Rc::new(RefCell::new(StateEngine::new()));
 
         Game {
             width,
@@ -63,15 +65,19 @@ impl Game {
     }
 
     pub fn get_state(&self) -> State {
-        self.state_engine.curr_state().borrow().clone()
+        self.state_engine.borrow().curr_state()
     }
 
     pub fn step_forward(&mut self) {
-        self.state_engine.step_forward();
+        // TODO(albrow): Update to step forward on a *replay* instead of
+        // the active StateEngine.
+        // self.state_engine.borrow_mut().step_forward();
+        panic!("not implemented");
     }
 
     pub fn step_back(&mut self) {
-        self.state_engine.step_back();
+        // self.state_engine.borrow_mut().step_back();
+        panic!("not implemented");
     }
 
     pub async fn run_player_script(&mut self, script: String) -> Result<Array, JsValue> {
@@ -80,13 +86,12 @@ impl Game {
             max_y: self.height,
         };
         let actor = actors::PlayerChannelActor::new(self.player_action_rx, bounds);
-        self.state_engine.add_actor(Box::new(actor));
+        self.state_engine.borrow_mut().add_actor(Box::new(actor));
 
         let mut engine = Engine::new();
         set_engine_safegaurds(&mut engine);
         set_print_fn(&mut engine);
 
-        let mut state = self.state_engine.curr_state().clone();
         engine.register_debugger(
             |_| Dynamic::from(()),
             move |_context, _event, node, _source, pos| {
@@ -102,10 +107,6 @@ impl Game {
                                 //
                                 // See https://docs.rs/rhai/latest/rhai/struct.Engine.html#method.eval_expression_with_scope
                                 log!("move_right detected at line {}", pos.line().unwrap());
-                                // Temporary: Should really be calling state_engine.step_forward()
-                                // If we can do this, calling get_state from the script will work
-                                // correctly :)
-                                state.borrow_mut().player.pos.x += 1;
                                 Ok(DebuggerCommand::StepInto)
                             }
                             "move_left" => {
@@ -140,31 +141,40 @@ impl Game {
                 tx.send(Action::Wait).unwrap();
             }
         });
+
+        let state_engine = self.state_engine.clone();
         engine.register_fn("move_right", move |spaces: i64| {
             for _ in 0..spaces {
                 tx.send(Action::Move(Direction::Right)).unwrap();
+                state_engine.borrow_mut().step_forward();
             }
         });
+        let state_engine = self.state_engine.clone();
         engine.register_fn("move_left", move |spaces: i64| {
             for _ in 0..spaces {
                 tx.send(Action::Move(Direction::Left)).unwrap();
+                state_engine.borrow_mut().step_forward();
             }
         });
+        let state_engine = self.state_engine.clone();
         engine.register_fn("move_up", move |spaces: i64| {
             for _ in 0..spaces {
                 tx.send(Action::Move(Direction::Up)).unwrap();
+                state_engine.borrow_mut().step_forward();
             }
         });
+        let state_engine = self.state_engine.clone();
         engine.register_fn("move_down", move |spaces: i64| {
             for _ in 0..spaces {
                 tx.send(Action::Move(Direction::Down)).unwrap();
+                state_engine.borrow_mut().step_forward();
             }
         });
         // TODO(albrow): Figure out a way to read current state. Maybe make
         // a global static state variable and update it every time the state
         // changes?
-        let curr_state_ref = self.state_engine.curr_state().clone();
-        engine.register_fn("get_state", move || curr_state_ref.borrow().clone());
+        let state_engine = self.state_engine.clone();
+        engine.register_fn("get_state", move || state_engine.borrow().curr_state());
 
         // Make engine non-mutable now that we are done registering functions.
         let engine = engine;
