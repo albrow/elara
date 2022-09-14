@@ -2,7 +2,7 @@ extern crate console_error_panic_hook;
 
 use wasm_bindgen::prelude::*;
 mod state;
-use state::{Player, Pos, State, StateEngine};
+use state::{Player, Pos, Simulation, State};
 mod actors;
 use actors::{Action, Bounds, Direction};
 use js_sys::Array;
@@ -20,7 +20,7 @@ macro_rules! log {
 }
 
 // Note(albrow): These channels will be used to communicate between the
-// Rhai script and the Rust code, particularly the StateEngine. They are
+// Rhai script and the Rust code, particularly the Simulation. They are
 // ultimately used in a function which is registered with the Rhai Engine via
 // register_function, which requires a static lifetime.
 static mut PLAYER_ACTION_TX: Option<mpsc::Sender<Action>> = None;
@@ -33,7 +33,7 @@ static mut PLAYER_ACTION_RX: Option<mpsc::Receiver<Action>> = None;
 pub struct Game {
     width: u32,
     height: u32,
-    state_engine: Rc<RefCell<StateEngine>>,
+    simulation: Rc<RefCell<Simulation>>,
     player_action_tx: &'static mpsc::Sender<Action>,
     player_action_rx: &'static mpsc::Receiver<Action>,
 }
@@ -53,45 +53,79 @@ impl Game {
             PLAYER_ACTION_RX = Some(player_rx);
         }
 
-        let state_engine = Rc::new(RefCell::new(StateEngine::new()));
+        let simulation = Rc::new(RefCell::new(Simulation::new()));
 
         Game {
             width,
             height,
-            state_engine: state_engine,
+            simulation: simulation,
             player_action_tx: unsafe { PLAYER_ACTION_TX.as_ref().unwrap() },
             player_action_rx: unsafe { PLAYER_ACTION_RX.as_ref().unwrap() },
         }
     }
 
     pub fn get_state(&self) -> State {
-        self.state_engine.borrow().curr_state()
+        self.simulation.borrow().curr_state()
+    }
+
+    pub fn reset(&mut self) {
+        self.simulation.borrow_mut().reset();
     }
 
     pub fn step_forward(&mut self) {
         // TODO(albrow): Update to step forward on a *replay* instead of
-        // the active StateEngine.
-        // self.state_engine.borrow_mut().step_forward();
+        // the active Simulation.
+        // self.simulation.borrow_mut().step_forward();
         panic!("not implemented");
     }
 
     pub fn step_back(&mut self) {
-        // self.state_engine.borrow_mut().step_back();
+        // self.simulation.borrow_mut().step_back();
         panic!("not implemented");
     }
 
     pub async fn run_player_script(&mut self, script: String) -> Result<Array, JsValue> {
+        // Set up the player actor and add it to the Simulation.
         let bounds = Bounds {
             max_x: self.width,
             max_y: self.height,
         };
         let actor = actors::PlayerChannelActor::new(self.player_action_rx, bounds);
-        self.state_engine.borrow_mut().add_actor(Box::new(actor));
+        self.simulation.borrow_mut().add_actor(Box::new(actor));
 
+        // Create and configure the Rhai engine.
         let mut engine = Engine::new();
         set_engine_safegaurds(&mut engine);
         set_print_fn(&mut engine);
+        self.register_debugger(&mut engine);
+        register_custom_types(&mut engine);
+        self.register_player_funcs(&mut engine);
 
+        // Make engine non-mutable now that we are done configuring it.
+        // This is a saftey measure to prevent scripts from mutating the
+        // engine.
+        let engine = engine;
+
+        // TODO(albrow): Consider using progress tracker to count the number of
+        // operations. Could be visualized as "feul" for your drone/robot that
+        // will eventually run out if your script runs too long.
+        // TODO(albrow): Handle errors better here.
+        engine.run(script.as_str()).unwrap();
+
+        // TODO(albrow): Return a list of states that resulted from script
+        // execution.
+        let states: Array = self
+            .simulation
+            .borrow()
+            .get_history()
+            .to_vec()
+            .into_iter()
+            .map(JsValue::from)
+            .collect();
+        Ok(states)
+    }
+
+    fn register_debugger(&self, engine: &mut Engine) {
         engine.register_debugger(
             |_| Dynamic::from(()),
             move |_context, _event, node, _source, pos| {
@@ -128,73 +162,55 @@ impl Game {
                 }
             },
         );
+    }
 
-        // Register types.
-        register_custom_types(&mut engine);
-
-        // Register functions for each action that can exist in a user script.
-        // Each function will simply send the corresponding action(s) through
-        // the channel.
+    /// Register functions for each action that can exist in a user script.
+    /// Each function will simply send the corresponding action(s) through
+    /// the channel.
+    fn register_player_funcs(&self, engine: &mut Engine) {
+        // For each function, we clone andn borrow the simulation. This is
+        // a workaround due to the fact that the Rhai engine does not allow
+        // for mutable non-static references in handlers. See
+        // https://rhai.rs/book/patterns/control.html for more context.
         let tx = self.player_action_tx;
+        let simulation = self.simulation.clone();
         engine.register_fn("wait", move |duration: i64| {
             for _ in 0..duration {
                 tx.send(Action::Wait).unwrap();
+                simulation.borrow_mut().step_forward();
             }
         });
 
-        let state_engine = self.state_engine.clone();
+        let simulation = self.simulation.clone();
         engine.register_fn("move_right", move |spaces: i64| {
             for _ in 0..spaces {
                 tx.send(Action::Move(Direction::Right)).unwrap();
-                state_engine.borrow_mut().step_forward();
+                simulation.borrow_mut().step_forward();
             }
         });
-        let state_engine = self.state_engine.clone();
+        let simulation = self.simulation.clone();
         engine.register_fn("move_left", move |spaces: i64| {
             for _ in 0..spaces {
                 tx.send(Action::Move(Direction::Left)).unwrap();
-                state_engine.borrow_mut().step_forward();
+                simulation.borrow_mut().step_forward();
             }
         });
-        let state_engine = self.state_engine.clone();
+        let simulation = self.simulation.clone();
         engine.register_fn("move_up", move |spaces: i64| {
             for _ in 0..spaces {
                 tx.send(Action::Move(Direction::Up)).unwrap();
-                state_engine.borrow_mut().step_forward();
+                simulation.borrow_mut().step_forward();
             }
         });
-        let state_engine = self.state_engine.clone();
+        let simulation = self.simulation.clone();
         engine.register_fn("move_down", move |spaces: i64| {
             for _ in 0..spaces {
                 tx.send(Action::Move(Direction::Down)).unwrap();
-                state_engine.borrow_mut().step_forward();
+                simulation.borrow_mut().step_forward();
             }
         });
-        // TODO(albrow): Figure out a way to read current state. Maybe make
-        // a global static state variable and update it every time the state
-        // changes?
-        let state_engine = self.state_engine.clone();
-        engine.register_fn("get_state", move || state_engine.borrow().curr_state());
-
-        // Make engine non-mutable now that we are done registering functions.
-        let engine = engine;
-        // TODO(albrow): Consider using progress tracker to count the number of
-        // operations. Could be visualized as "feul" for your drone/robot that
-        // will eventually run out if your script runs too long.
-        //
-        // TODO(albrow): Handle errors better here.
-        engine.run(script.as_str()).unwrap();
-
-        // TODO(albrow): Return a list of states that resulted from script
-        // execution.
-        // let states: Array = self
-        //     .state_engine
-        //     .all_states()
-        //     .to_vec()
-        //     .into_iter()
-        //     .map(JsValue::from)
-        //     .collect();
-        Ok(Array::new())
+        let simulation = self.simulation.clone();
+        engine.register_fn("get_state", move || simulation.borrow().curr_state());
     }
 }
 

@@ -1,5 +1,3 @@
-use std::cell::RefCell;
-use std::rc::Rc;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
@@ -13,28 +11,31 @@ pub trait Actor {
     fn apply(&mut self, state: State) -> State;
 }
 
-// pub type SharedState = Rc<RefCell<State>>;
-
-pub struct StateEngine {
+pub struct Simulation {
     state_idx: usize,
     states: Vec<State>,
     actors: Vec<Box<dyn Actor>>,
 }
 
-impl StateEngine {
-    pub fn new() -> StateEngine {
-        StateEngine {
+impl Simulation {
+    pub fn new() -> Simulation {
+        Simulation {
             state_idx: 0,
             states: vec![State::new()],
             actors: vec![],
         }
     }
 
+    pub fn reset(&mut self) {
+        self.state_idx = 0;
+        self.states = vec![State::new()];
+    }
+
     pub fn curr_state(&self) -> State {
         self.states[self.state_idx].clone()
     }
 
-    pub fn all_states(&self) -> &[State] {
+    pub fn get_history(&self) -> &[State] {
         &self.states
     }
 

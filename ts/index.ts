@@ -8,6 +8,8 @@ const CANVAS_WIDTH = (TILE_SIZE + 1) * WIDTH + 1;
 const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
 const GRID_COLOR = 0x000000;
 const BACKGROUND_COLOR = 0xcccccc;
+const GAME_SPEED = 1; // steps per second
+const MS_PER_STEP = 1000 / GAME_SPEED;
 
 // Create the application helper and add its render target to the page
 const app = new PIXI.Application({
@@ -47,23 +49,42 @@ const game = Game.new(WIDTH, HEIGHT);
 //       break;
 //   }
 // });
-document.querySelector("#save-button").addEventListener("click", async () => {
+let animationTicker: PIXI.Ticker = null;
+document.querySelector("#run-button").addEventListener("click", async () => {
+  // Reset game state and ticker.
+  game.reset();
+  if (animationTicker) {
+    animationTicker.stop();
+  }
+  drawSprites(game.get_state());
+
+  // Run the simulation.
   const script = (
     document.querySelector("#player-script") as HTMLTextAreaElement
   ).value;
-  (document.querySelector("#save-button") as HTMLButtonElement).disabled = true;
-  await game.run_player_script(script);
+  let replay = (await game.run_player_script(script)) as unknown as State[];
+
+  // Step through the simulation at GAME_SPEED.
+  let elapsed = 0;
+  animationTicker = app.ticker.add(() => {
+    elapsed += app.ticker.elapsedMS;
+    const target_step = Math.floor(elapsed / MS_PER_STEP);
+    if (target_step < replay.length) {
+      drawSprites(replay[target_step]);
+    }
+  });
+  animationTicker.start();
 });
 
-document.querySelector("#forward-button").addEventListener("click", () => {
-  game.step_forward();
-  drawSprites(game);
-});
+// document.querySelector("#forward-button").addEventListener("click", () => {
+//   game.step_forward();
+//   drawSprites(game);
+// });
 
-document.querySelector("#back-button").addEventListener("click", () => {
-  game.step_back();
-  drawSprites(game);
-});
+// document.querySelector("#back-button").addEventListener("click", () => {
+//   game.step_back();
+//   drawSprites(game);
+// });
 
 // Helper function to draw the grid lines.
 function drawGrid(graphics: PIXI.Graphics) {
@@ -82,8 +103,7 @@ function drawGrid(graphics: PIXI.Graphics) {
   graphics.endFill();
 }
 
-function drawSprites(game: Game) {
-  const state = game.get_state();
+function drawSprites(state: State) {
   sprite.x = state.player.pos.x * (TILE_SIZE + 1) + 1;
   sprite.y = state.player.pos.y * (TILE_SIZE + 1) + 1;
 }
