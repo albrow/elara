@@ -8,7 +8,7 @@ const CANVAS_WIDTH = (TILE_SIZE + 1) * WIDTH + 1;
 const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
 const GRID_COLOR = 0x000000;
 const BACKGROUND_COLOR = 0xcccccc;
-const GAME_SPEED = 1; // steps per second
+const GAME_SPEED = 2; // steps per second
 const MS_PER_STEP = 1000 / GAME_SPEED;
 
 // Create the application helper and add its render target to the page

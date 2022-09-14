@@ -55,6 +55,15 @@ impl Game {
 
         let simulation = Rc::new(RefCell::new(Simulation::new()));
 
+        // Set up the player actor and add it to the Simulation.
+        let bounds = Bounds {
+            max_x: width,
+            max_y: height,
+        };
+        let actor =
+            actors::PlayerChannelActor::new(unsafe { PLAYER_ACTION_RX.as_ref().unwrap() }, bounds);
+        simulation.borrow_mut().add_actor(Box::new(actor));
+
         Game {
             width,
             height,
@@ -85,14 +94,6 @@ impl Game {
     }
 
     pub async fn run_player_script(&mut self, script: String) -> Result<Array, JsValue> {
-        // Set up the player actor and add it to the Simulation.
-        let bounds = Bounds {
-            max_x: self.width,
-            max_y: self.height,
-        };
-        let actor = actors::PlayerChannelActor::new(self.player_action_rx, bounds);
-        self.simulation.borrow_mut().add_actor(Box::new(actor));
-
         // Create and configure the Rhai engine.
         let mut engine = Engine::new();
         set_engine_safegaurds(&mut engine);
@@ -221,7 +222,7 @@ fn set_engine_safegaurds(engine: &mut Engine) {
     engine.set_max_map_size(100);
     engine.set_max_operations(10_000);
     engine.set_max_call_levels(32);
-    engine.set_max_expr_depths(32, 16);
+    engine.set_max_expr_depths(64, 32);
 }
 
 fn set_print_fn(engine: &mut Engine) {
@@ -237,6 +238,10 @@ fn register_custom_types(engine: &mut Engine) {
     engine
         .register_type_with_name::<Player>("Player")
         .register_get("position", Player::get_pos);
+
+    // TODO(albrow): Convert types to i64 to make
+    // them more compatible with Rhai. Currently,
+    // you sometimes have to do a to_int call on the scripting side.
     engine
         .register_type_with_name::<Pos>("Position")
         .register_get("x", Pos::get_x)
