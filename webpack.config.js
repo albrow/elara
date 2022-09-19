@@ -40,6 +40,7 @@ module.exports = {
     }),
     new WasmPackPlugin({
       crateDirectory: __dirname,
+      extraArgs: "--features=wasm",
     }),
   ],
   module: {
