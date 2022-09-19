@@ -29,8 +29,6 @@ wee_alloc = { version = "0.4.2", optional = true }
 web-sys = { version = "0.3.45", features = ["console"] }
 serde-wasm-bindgen = "0.4.3"
 serde = { version = "1.0.144", features = ["derive"] }
-# rhai = { version = "1.9.1", features = ["wasm-bindgen", "debugging"] }
-# getrandom = { version = "0.2.7", features = ["js"] }
 rhai = { version = "1.9.1", features = ["debugging"] }
 getrandom = { version = "0.2.7" }
 console_error_panic_hook = "0.1.5"

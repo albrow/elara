@@ -6,7 +6,7 @@ const dist = path.resolve(__dirname, "dist");
 
 module.exports = {
   mode: "development",
-  entry: "./ts/bootstrap.ts",
+  entry: "./ts/index.ts",
   output: {
     path: dist,
     filename: "[name].js",
@@ -46,10 +46,26 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: "ts-loader",
-        include: [path.resolve(__dirname, "ts")],
-        exclude: /node_modules/,
+        test: /\.m?js$/,
+        exclude: /(node_modules)/,
+        use: {
+          // Use `.swcrc` to configure swc
+          loader: "swc-loader",
+        },
+      },
+      {
+        test: /\.ts$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: "swc-loader",
+          options: {
+            jsc: {
+              parser: {
+                syntax: "typescript",
+              },
+            },
+          },
+        },
       },
     ],
   },
