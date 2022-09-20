@@ -1,9 +1,10 @@
 [package]
 name = "battle-game"
-description = "My super awesome Rust, WebAssembly, and Webpack project!"
+description = "A work-in-progress game which teaches you programming in a fun an interactive way :)"
 version = "0.1.0"
-authors = ["You <you@example.com>"]
+authors = ["Alex Browne <stephenalexbrowne@gmail.com>"]
 categories = ["wasm"]
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 edition = "2018"
 
