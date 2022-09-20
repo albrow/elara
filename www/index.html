@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <title>Battle Game (actual title TBD)</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Nunito:400,600"
+    />
+
     <link href="/main.css" rel="stylesheet" />
   </head>
   <body>
@@ -14,7 +19,10 @@
           <div class="grid grid-flow-col bg-gray-800 rounded-t-md p-2">
             <!-- Left aligned buttons -->
             <div class="flex justify-start justify-self-start gap-2">
-              <button id="run-button" class="bg-green-500 rounded p-1 px-3">
+              <button
+                id="run-button"
+                class="bg-emerald-500 active:bg-emerald-600 rounded p-1 px-3 font-semibold"
+              >
                 ▶ Run
               </button>
             </div>
@@ -22,13 +30,13 @@
             <div class="flex justify-end justify-self-end gap-2">
               <button
                 id="save-button"
-                class="bg-gray-400 rounded p-1 px-3 cursor-not-allowed"
+                class="bg-gray-300 rounded p-1 px-3 font-semibold cursor-not-allowed"
               >
                 Save
               </button>
               <button
                 id="load-button"
-                class="bg-gray-400 rounded p-1 px-3 cursor-not-allowed"
+                class="bg-gray-300 rounded p-1 px-3 font-semibold cursor-not-allowed"
               >
                 Load
               </button>
