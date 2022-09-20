@@ -35,8 +35,8 @@ impl Simulation {
         self.states[self.state_idx].clone()
     }
 
-    pub fn get_history(&self) -> &[State] {
-        &self.states
+    pub fn get_history(&self) -> Vec<State> {
+        self.states.to_vec()
     }
 
     pub fn add_actor(&mut self, actor: Box<dyn Actor>) {
