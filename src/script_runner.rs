@@ -6,12 +6,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
 
-// A macro to provide `println!(..)`-style syntax for `console.log` logging.
-macro_rules! log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    }
-}
 pub struct ScriptRunner {
     simulation: Rc<RefCell<Simulation>>,
     player_action_tx: &'static mpsc::Sender<Action>,

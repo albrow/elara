@@ -1,14 +1,6 @@
 use crate::simulation::{Actor, Player, Pos, State};
 use std::cmp;
 use std::sync::mpsc;
-
-// A macro to provide `println!(..)`-style syntax for `console.log` logging.
-macro_rules! log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    }
-}
-
 pub enum Action {
     Wait,
     Move(Direction),

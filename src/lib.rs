@@ -1,5 +1,8 @@
 extern crate console_error_panic_hook;
 
+#[macro_use]
+mod log;
+
 use wasm_bindgen::prelude::*;
 mod simulation;
 use simulation::{Simulation, State};
@@ -11,13 +14,6 @@ use std::rc::Rc;
 use std::sync::mpsc;
 mod script_runner;
 use script_runner::ScriptRunner;
-
-// A macro to provide `println!(..)`-style syntax for `console.log` logging.
-macro_rules! log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    }
-}
 
 // Note(albrow): These channels will be used to communicate between the
 // Rhai script and the Rust code, particularly the Simulation. They are
