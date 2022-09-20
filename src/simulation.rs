@@ -37,15 +37,15 @@ impl Simulation {
     }
 
     pub fn step_forward(&mut self) {
-        // If we have previously stored the state one step forward,
-        // then just increment the index. I.e. we are re-using the
-        // previously computed state.
-        if self.state_idx < self.states.len() - 1 {
-            self.state_idx += 1;
-            return;
-        }
-
-        // Otherwise, compute the next state and store it.
+        // Compute the next state and store it.
+        //
+        // TODO(albrow): Update this function to have the following steps:
+        //
+        // 1. Move the player separately from the other actors.
+        // 2. Check for win or lose conditions.
+        // 3. Move the other actors.
+        // 4. Check for win or lose conditions again?
+        //
         let mut next_state = self.curr_state().clone();
         for actor in &mut self.actors {
             next_state = actor.apply(next_state);
@@ -58,17 +58,6 @@ impl Simulation {
             next_state
         );
     }
-
-    pub fn step_back(&mut self) {
-        if self.state_idx > 0 {
-            self.state_idx -= 1;
-        }
-        // If we're already at the intiial state, do nothing.
-    }
-}
-
-fn type_of<T>(_: T) -> &'static str {
-    std::any::type_name::<T>()
 }
 
 #[wasm_bindgen]
@@ -106,8 +95,6 @@ impl State {
 
 impl Player {
     pub fn get_pos(&mut self) -> Pos {
-        // Property getters are assumed to be PURE, meaning they are
-        // not supposed to mutate any data.
         self.pos.clone()
     }
 }

@@ -46,6 +46,9 @@ impl Game {
             PLAYER_ACTION_RX = Some(player_rx);
         }
 
+        // Simulation must be wrapped in Rc<RefCell> in order to be
+        // used in the script_runner. This is due to a constraint
+        // imposed by the Rhai Engine for registered functions.
         let simulation = Rc::new(RefCell::new(Simulation::new()));
 
         // Set up the player actor and add it to the Simulation.
@@ -57,6 +60,8 @@ impl Game {
             actors::PlayerChannelActor::new(unsafe { PLAYER_ACTION_RX.as_ref().unwrap() }, bounds);
         simulation.borrow_mut().add_actor(Box::new(actor));
 
+        // Set up the script runner, which holds references to the
+        // player_tx channel and the simulation and glues them together.
         let script_runner = ScriptRunner::new(simulation.clone(), unsafe {
             PLAYER_ACTION_TX.as_ref().unwrap()
         });
@@ -73,18 +78,6 @@ impl Game {
 
     pub fn reset(&mut self) {
         self.simulation.borrow_mut().reset();
-    }
-
-    pub fn step_forward(&mut self) {
-        // TODO(albrow): Update to step forward on a *replay* instead of
-        // the active Simulation.
-        // self.simulation.borrow_mut().step_forward();
-        panic!("not implemented");
-    }
-
-    pub fn step_back(&mut self) {
-        // self.simulation.borrow_mut().step_back();
-        panic!("not implemented");
     }
 
     pub async fn run_player_script(&mut self, script: String) -> Result<Array, JsValue> {

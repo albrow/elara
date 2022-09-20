@@ -6,6 +6,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
 
+/// Responsible for running user scripts and coordinating communication
+/// between the Rhai Engine and the Simulation.
 pub struct ScriptRunner {
     simulation: Rc<RefCell<Simulation>>,
     player_action_tx: &'static mpsc::Sender<Action>,
@@ -42,8 +44,6 @@ impl ScriptRunner {
         // TODO(albrow): Handle errors better here.
         engine.run(script.as_str()).unwrap();
 
-        // TODO(albrow): Return a list of states that resulted from script
-        // execution.
         let states = self.simulation.borrow().get_history();
         Ok(states)
     }
@@ -58,7 +58,7 @@ impl ScriptRunner {
                         match fn_call_expr.name.as_str() {
                             "move_right" => {
                                 // TODO(albrow): Evaluate argument to determine how many
-                                // spaces to use. We can use this for tracking which line
+                                // spaces to move. We can use this for tracking which line
                                 // of code is "running" for each step (e.g. by highlighting
                                 // the line in the editor).
                                 //
@@ -91,7 +91,7 @@ impl ScriptRunner {
     /// Each function will simply send the corresponding action(s) through
     /// the channel.
     fn register_player_funcs(&self, engine: &mut Engine) {
-        // For each function, we clone andn borrow the simulation. This is
+        // For each function, we clone and borrow the simulation. This is
         // a workaround due to the fact that the Rhai engine does not allow
         // for mutable non-static references in handlers. See
         // https://rhai.rs/book/patterns/control.html for more context.
@@ -168,4 +168,9 @@ fn register_custom_types(engine: &mut Engine) {
         .register_type_with_name::<Pos>("Position")
         .register_get("x", Pos::get_x)
         .register_get("y", Pos::get_y);
+}
+
+#[cfg(test)]
+mod test {
+    // TODO(albrow): Unit test ScriptRunner.
 }

@@ -65,5 +65,5 @@ impl Actor for PlayerChannelActor {
 
 #[cfg(test)]
 mod test {
-    // TODO(albrow): Test PlayerChannelActor and any other actors.
+    // TODO(albrow): Unit test PlayerChannelActor.
 }
