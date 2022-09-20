@@ -1,5 +1,11 @@
+// import esbuild from "esbuild";
+// import wasmpack from "esbuild-plugin-wasm-pack";
+
+const esbuild = require("esbuild");
+const wasmPack = require("esbuild-plugin-wasm-pack").wasmPack;
+
 // Copied from https://github.com/evanw/esbuild/issues/408#issuecomment-757555771
-let wasmPlugin = {
+let wasmLoad = {
   name: "wasm",
   setup(build) {
     let path = require("path");
@@ -29,13 +35,21 @@ let wasmPlugin = {
   },
 };
 
-require("esbuild")
+esbuild
   .build({
     entryPoints: ["ts/index.ts"],
     bundle: true,
     outfile: "www/main.js",
-    plugins: [wasmPlugin],
+    plugins: [
+      wasmLoad,
+      wasmPack({
+        target: "web",
+        profile: "dev",
+        extraOptions: ["--features=wasm", "--profile=dev"],
+      }),
+    ],
     logLevel: "info",
+    watch: process.argv.includes("--watch"),
     // minify: true, // uncomment to minify for production
   })
   .catch(() => process.exit(1));

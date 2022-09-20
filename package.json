@@ -4,15 +4,17 @@
   "version": "0.1.0",
   "license": "MIT or Apache-2.0",
   "scripts": {
-    "build": "rimraf dist pkg && wasm-pack build --dev --target=web -- --features=wasm && node build.js",
+    "build": "rimraf dist pkg && node build.js",
+    "watch": "rimraf dist pkg && node build.js --watch",
     "test": "cargo test && wasm-pack test --chrome --headless -- --features=wasm"
   },
   "devDependencies": {
     "battle-game-lib": "file:./pkg",
+    "esbuild": "^0.15.8",
     "esbuild-plugin-wasm": "^1.0.0",
+    "esbuild-plugin-wasm-pack": "^1.1.0",
     "rimraf": "^3.0.0",
-    "typescript": "^4.8.2",
-    "esbuild": "^0.15.8"
+    "typescript": "^4.8.2"
   },
   "dependencies": {
     "pixi.js": "^5.3.12"
