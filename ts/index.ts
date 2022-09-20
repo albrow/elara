@@ -1,10 +1,12 @@
 // @ts-ignore
 import { default as wasmbin } from "../pkg/battle_game_bg.wasm";
-import init, { Game, State } from "battle-game-lib";
+import init, { Game, State } from "../pkg/battle_game";
 import * as PIXI from "pixi.js";
+import * as editorVew from "./editor";
 
 (async function () {
   await init(wasmbin);
+  const editor = editorVew.init();
 
   const WIDTH = 12;
   const HEIGHT = 8;
@@ -49,9 +51,7 @@ import * as PIXI from "pixi.js";
     drawSprites(game.get_state());
 
     // Run the simulation.
-    const script = (
-      document.querySelector("#player-script") as HTMLTextAreaElement
-    ).value;
+    const script = editor.state.doc.toString();
     let replay = (await game.run_player_script(script)) as unknown as State[];
 
     // Step through the simulation at GAME_SPEED.

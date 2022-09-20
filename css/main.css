@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.cm-editor {
+  height: 345px;
+  border: none;
+}
+.cm-scroller {
+  overflow: auto;
+}
