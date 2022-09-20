@@ -35,5 +35,7 @@ require("esbuild")
     bundle: true,
     outfile: "www/main.js",
     plugins: [wasmPlugin],
+    logLevel: "info",
+    // minify: true, // uncomment to minify for production
   })
   .catch(() => process.exit(1));

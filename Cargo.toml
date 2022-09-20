@@ -14,6 +14,7 @@ crate-type = ["cdylib"]
 # This makes the compiled code faster and smaller, but it makes compiling slower,
 # so it's only enabled in release mode.
 lto = true
+opt-level = 'z'
 
 [features]
 # Use features to handle cross-platform compilation. This is a workaround

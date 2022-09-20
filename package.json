@@ -3,7 +3,7 @@
   "name": "battle-game",
   "version": "0.1.0",
   "scripts": {
-    "build": "rimraf dist pkg && wasm-pack build --dev --target=web -- --features=wasm && node build.js",
+    "build": "rimraf dist pkg && wasm-pack build --target=web -- --features=wasm && node build.js",
     "test": "cargo test && wasm-pack test --chrome --headless -- --features=wasm"
   },
   "devDependencies": {
