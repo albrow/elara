@@ -82,9 +82,39 @@ impl Game {
 
     pub async fn run_player_script(&mut self, script: String) -> Result<Array, JsValue> {
         // Run the script and return an array of states.
-        // TODO(albrow): Handle errors.
-        let results = self.script_runner.run(script).unwrap();
-        let states: Array = results.into_iter().map(JsValue::from).collect();
-        Ok(states)
+        match self.script_runner.run(script) {
+            Ok(states) => Ok(states.into_iter().map(JsValue::from).collect()),
+            Err(err) => {
+                let message = err.to_string();
+                let col = err.position().position().unwrap_or(0);
+                let line = err.position().line().unwrap_or(0);
+                Err(JsValue::from(RhaiError { message, line, col }))
+            }
+        }
+    }
+}
+
+#[wasm_bindgen]
+pub struct RhaiError {
+    message: String,
+    line: usize,
+    col: usize,
+}
+
+#[wasm_bindgen]
+impl RhaiError {
+    #[wasm_bindgen(getter)]
+    pub fn message(&self) -> String {
+        self.message.clone()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn line(&self) -> usize {
+        self.line
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn col(&self) -> usize {
+        self.col
     }
 }

@@ -1,8 +1,9 @@
 // @ts-ignore
 import { default as wasmbin } from "../pkg/battle_game_bg.wasm";
-import init, { Game, State } from "../pkg/battle_game";
+import init, { Game, RhaiError, State } from "../pkg/battle_game";
 import * as PIXI from "pixi.js";
 import * as editorVew from "./editor";
+import { setDiagnostics } from "./editor";
 
 (async function () {
   await init(wasmbin);
@@ -50,9 +51,53 @@ import * as editorVew from "./editor";
     }
     drawSprites(game.get_state());
 
+    // Remove any error messages from the editor.
+    editor.dispatch(setDiagnostics(editor.state, []));
+
     // Run the simulation.
     const script = editor.state.doc.toString();
-    let replay = (await game.run_player_script(script)) as unknown as State[];
+    let replay: State[];
+    try {
+      replay = (await game.run_player_script(script)) as unknown as State[];
+    } catch (e) {
+      // If there is an error, display it in the editor.
+      if (e instanceof RhaiError) {
+        console.log(`${e.message}`);
+
+        // In Rhai, positions are composed of (line, column), but
+        // CodeMirror wants the absolute position. We need to do
+        // some math to convert between the two.
+        const line = editor.viewportLineBlocks[e.line - 1];
+        // start is the absolute position where the error
+        // first occurred, but we still need to get a range.
+        let start = line.from + e.col;
+        // Use wordAt to get a range encapsulating the "word" that
+        // caused the error.
+        let range = editor.state.wordAt(start);
+        while (range === null) {
+          // If wordAt returns null, it means that the error occurred
+          // on a non-word character. In this case, we can just
+          // decrement the position and try again to find the closest
+          // word.
+          start -= 1;
+          range = editor.state.wordAt(start);
+        }
+
+        editor.dispatch(
+          setDiagnostics(editor.state, [
+            {
+              from: range.from,
+              to: range.to,
+              message: e.message,
+              severity: "error",
+            },
+          ])
+        );
+        return;
+      } else {
+        throw e;
+      }
+    }
 
     // Step through the simulation at GAME_SPEED.
     let elapsed = 0;
@@ -65,16 +110,6 @@ import * as editorVew from "./editor";
     });
     animationTicker.start();
   });
-
-  // document.querySelector("#forward-button").addEventListener("click", () => {
-  //   game.step_forward();
-  //   drawSprites(game);
-  // });
-
-  // document.querySelector("#back-button").addEventListener("click", () => {
-  //   game.step_back();
-  //   drawSprites(game);
-  // });
 
   // Helper function to draw the grid lines.
   function drawGrid(graphics: PIXI.Graphics) {

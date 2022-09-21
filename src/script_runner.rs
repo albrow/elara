@@ -24,7 +24,7 @@ impl ScriptRunner {
         }
     }
 
-    pub fn run(&mut self, script: String) -> Result<Vec<State>, EvalAltResult> {
+    pub fn run(&mut self, script: String) -> Result<Vec<State>, Box<EvalAltResult>> {
         // Create and configure the Rhai engine.
         let mut engine = Engine::new();
         set_engine_safegaurds(&mut engine);
@@ -41,8 +41,9 @@ impl ScriptRunner {
         // TODO(albrow): Consider using progress tracker to count the number of
         // operations. Could be visualized as "feul" for your drone/robot that
         // will eventually run out if your script runs too long.
-        // TODO(albrow): Handle errors better here.
-        engine.run(script.as_str()).unwrap();
+        // TODO(albrow): Manually overwrite certain common error messages to make
+        // them more user-friendly.
+        engine.run(script.as_str())?;
 
         let states = self.simulation.borrow().get_history();
         Ok(states)
