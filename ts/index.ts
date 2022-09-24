@@ -9,6 +9,7 @@ import { highlightLine } from "./highlight_line";
 declare global {
   // For temporary debugging purposes, add a global function
   // that can be used to test out line highlighting functionality.
+  // TODO(albrow): Remove this.
   function highlightLine(lineNumber: number): void;
 }
 
@@ -112,7 +113,7 @@ declare global {
       // TODO(albrow): Scroll the editor window to make sure the currently running
       // line is visible.
       // See: https://stackoverflow.com/questions/10575343/
-
+      // TODO(albrow): Highlight the currently running line.
       elapsed += app.ticker.elapsedMS;
       const target_step = Math.floor(elapsed / MS_PER_STEP);
       if (target_step < replay.length) {
@@ -144,6 +145,9 @@ declare global {
     sprite.y = state.player.pos.y * (TILE_SIZE + 1) + 1;
   }
 
+  // For temporary debugging purposes, add a global function
+  // that can be used to test out line highlighting functionality.
+  // TODO(albrow): Remove this.
   window.highlightLine = (line: number) => {
     highlightLine(editor, line);
   };
