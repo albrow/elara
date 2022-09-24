@@ -4,6 +4,13 @@ import init, { Game, RhaiError, State } from "../pkg/battle_game";
 import * as PIXI from "pixi.js";
 import * as editorVew from "./editor";
 import { setDiagnostics } from "./editor";
+import { highlightLine } from "./highlight_line";
+
+declare global {
+  // For temporary debugging purposes, add a global function
+  // that can be used to test out line highlighting functionality.
+  function highlightLine(lineNumber: number): void;
+}
 
 (async function () {
   await init(wasmbin);
@@ -16,7 +23,7 @@ import { setDiagnostics } from "./editor";
   const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
   const GRID_COLOR = 0x000000;
   const BACKGROUND_COLOR = 0xcccccc;
-  const GAME_SPEED = 2; // steps per second
+  const GAME_SPEED = 0.25; // steps per second
   const MS_PER_STEP = 1000 / GAME_SPEED;
 
   // Create the application helper and add its render target to the page
@@ -102,6 +109,10 @@ import { setDiagnostics } from "./editor";
     // Step through the simulation at GAME_SPEED.
     let elapsed = 0;
     animationTicker = app.ticker.add(() => {
+      // TODO(albrow): Scroll the editor window to make sure the currently running
+      // line is visible.
+      // See: https://stackoverflow.com/questions/10575343/
+
       elapsed += app.ticker.elapsedMS;
       const target_step = Math.floor(elapsed / MS_PER_STEP);
       if (target_step < replay.length) {
@@ -132,4 +143,8 @@ import { setDiagnostics } from "./editor";
     sprite.x = state.player.pos.x * (TILE_SIZE + 1) + 1;
     sprite.y = state.player.pos.y * (TILE_SIZE + 1) + 1;
   }
+
+  window.highlightLine = (line: number) => {
+    highlightLine(editor, line);
+  };
 })();
