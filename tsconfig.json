@@ -8,6 +8,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "moduleResolution": "node",
-    "incremental": true
+    "incremental": true,
+    "types": ["@types/wicg-file-system-access"]
   }
 }

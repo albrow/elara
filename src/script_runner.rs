@@ -1,5 +1,5 @@
 use crate::actors::{Action, Direction};
-use crate::simulation::{Player, Pos, Simulation, State};
+use crate::simulation::{Pos, Simulation, State};
 use rhai::debugger::DebuggerCommand;
 use rhai::{ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt};
 use std::cell::RefCell;

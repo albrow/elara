@@ -5,6 +5,7 @@ import * as PIXI from "pixi.js";
 import * as editorVew from "./editor";
 import { setDiagnostics } from "./editor";
 import { highlightLine, unhighlightAll } from "./highlight_line";
+import { loadScript, saveScript } from "./storage";
 
 (async function () {
   await init(wasmbin);
@@ -44,7 +45,21 @@ import { highlightLine, unhighlightAll } from "./highlight_line";
 
   // Event listeners.
   let animationTicker: PIXI.Ticker = null;
-  document.querySelector("#run-button").addEventListener("click", async () => {
+  document.querySelector("#run-button").addEventListener("click", run_script);
+  document.querySelector("#load-button").addEventListener("click", async () => {
+    const script = await loadScript();
+    editor.dispatch(
+      editor.state.update({
+        changes: { from: 0, to: editor.state.doc.length, insert: script },
+      })
+    );
+  });
+  document.querySelector("#save-button").addEventListener("click", async () => {
+    const script = editor.state.doc.toString();
+    await saveScript(script);
+  });
+
+  async function run_script() {
     // Reset game state and ticker.
     game.reset();
     if (animationTicker) {
@@ -102,7 +117,7 @@ import { highlightLine, unhighlightAll } from "./highlight_line";
       }
     }
 
-    // Step through the simulation at GAME_SPEED.
+    // Step through the replay at GAME_SPEED.
     let elapsed = 0;
     animationTicker = app.ticker.add(() => {
       // TODO(albrow): Scroll the editor window to make sure the currently running
@@ -125,7 +140,7 @@ import { highlightLine, unhighlightAll } from "./highlight_line";
       }
     });
     animationTicker.start();
-  });
+  }
 
   // Helper function to draw the grid lines.
   function drawGrid(graphics: PIXI.Graphics) {

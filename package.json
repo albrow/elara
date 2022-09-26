@@ -18,6 +18,7 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
+    "browser-fs-access": "^0.31.0",
     "codemirror": "^6.0.1",
     "pixi.js": "^5.3.12"
   }
