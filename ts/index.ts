@@ -45,21 +45,45 @@ import { loadScript, saveScript } from "./storage";
 
   // Event listeners.
   let animationTicker: PIXI.Ticker = null;
-  document.querySelector("#run-button").addEventListener("click", run_script);
-  document.querySelector("#load-button").addEventListener("click", async () => {
+  document
+    .querySelector("#run-button")
+    .addEventListener("click", runScriptHandler);
+  document
+    .querySelector("#load-button")
+    .addEventListener("click", loadScriptHandler);
+  document
+    .querySelector("#save-button")
+    .addEventListener("click", saveScriptHandler);
+  document.addEventListener("keydown", async (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+      // Save on Ctrl + S or Cmd + S
+      await saveScriptHandler();
+      event.preventDefault();
+      return false;
+    }
+    // Run the script on Shift + Enter
+    if (event.shiftKey && event.key === "Enter") {
+      await runScriptHandler();
+      event.preventDefault();
+      return false;
+    }
+  });
+
+  async function saveScriptHandler() {
+    const script = editor.state.doc.toString();
+    await saveScript(script);
+  }
+
+  async function loadScriptHandler() {
     const script = await loadScript();
     editor.dispatch(
       editor.state.update({
         changes: { from: 0, to: editor.state.doc.length, insert: script },
       })
     );
-  });
-  document.querySelector("#save-button").addEventListener("click", async () => {
-    const script = editor.state.doc.toString();
-    await saveScript(script);
-  });
+  }
 
-  async function run_script() {
+  async function runScriptHandler() {
     // Reset game state and ticker.
     game.reset();
     if (animationTicker) {
