@@ -1,5 +1,3 @@
-use wasm_bindgen::prelude::wasm_bindgen;
-
 pub trait Actor {
     fn apply(&mut self, state: State) -> State;
 }
@@ -60,19 +58,16 @@ impl Simulation {
     }
 }
 
-#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct State {
     pub player: Player,
 }
 
-#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Player {
     pub pos: Pos,
 }
 
-#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Pos {
     pub x: u32,

@@ -67,3 +67,20 @@ export function highlightLine(view: EditorView, lineNumber: number) {
   view.dispatch({ effects });
   return true;
 }
+
+/**
+ * Unhighlights all lines in the editor.
+ *
+ * @param view The CodeMirror EditorView.
+ */
+export function unhighlightAll(view: EditorView) {
+  let effects: StateEffect<unknown>[] = [];
+
+  if (!view.state.field(highlightField, false))
+    effects.push(StateEffect.appendConfig.of([highlightField]));
+
+  effects.push(removeHighlight.of({ from: 0, to: Infinity }));
+
+  view.dispatch({ effects });
+  return true;
+}

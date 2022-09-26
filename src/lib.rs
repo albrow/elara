@@ -5,7 +5,7 @@ mod log;
 
 use wasm_bindgen::prelude::*;
 mod simulation;
-use simulation::{Simulation, State};
+use simulation::Simulation;
 mod actors;
 use actors::{Action, Bounds};
 use js_sys::Array;
@@ -72,8 +72,10 @@ impl Game {
         }
     }
 
-    pub fn get_state(&self) -> State {
-        self.simulation.borrow().curr_state()
+    // TODO(albrow): Replace this with Level::initial_state for the
+    // current level.
+    pub fn initial_state(&self) -> State {
+        to_js_state(&simulation::State::new())
     }
 
     pub fn reset(&mut self) {
@@ -83,7 +85,10 @@ impl Game {
     pub async fn run_player_script(&mut self, script: String) -> Result<Array, JsValue> {
         // Run the script and return an array of states.
         match self.script_runner.run(script) {
-            Ok(states) => Ok(states.into_iter().map(JsValue::from).collect()),
+            Ok((states, positions)) => {
+                let states_with_pos = to_js_states_with_pos(states, positions);
+                Ok(states_with_pos)
+            }
             Err(err) => {
                 let message = err.to_string();
                 let col = err.position().position().unwrap_or(0);
@@ -116,5 +121,60 @@ impl RhaiError {
     #[wasm_bindgen(getter)]
     pub fn col(&self) -> usize {
         self.col
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct State {
+    pub player: Player,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct StateWithPos {
+    pub state: State,
+    pub line: i32,
+    pub col: i32,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Player {
+    pub pos: Pos,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Pos {
+    pub x: i32,
+    pub y: i32,
+}
+
+/// Converts simulation::State and rhai::Position to a format that
+/// can be used by the JavaScript code.
+fn to_js_states_with_pos(states: Vec<simulation::State>, positions: Vec<rhai::Position>) -> Array {
+    let arr = Array::new_with_length(states.len() as u32);
+    for (i, (state, pos)) in states.iter().zip(positions.iter()).enumerate() {
+        arr.set(
+            i as u32,
+            JsValue::from(StateWithPos {
+                state: to_js_state(state),
+                line: pos.line().unwrap_or(0) as i32,
+                col: pos.position().unwrap_or(0) as i32,
+            }),
+        );
+    }
+    arr
+}
+
+fn to_js_state(state: &simulation::State) -> State {
+    State {
+        player: Player {
+            pos: Pos {
+                x: state.player.pos.x as i32,
+                y: state.player.pos.y as i32,
+            },
+        },
     }
 }

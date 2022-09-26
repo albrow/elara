@@ -1,17 +1,10 @@
 // @ts-ignore
 import { default as wasmbin } from "../pkg/battle_game_bg.wasm";
-import init, { Game, RhaiError, State } from "../pkg/battle_game";
+import init, { Game, RhaiError, State, StateWithPos } from "../pkg/battle_game";
 import * as PIXI from "pixi.js";
 import * as editorVew from "./editor";
 import { setDiagnostics } from "./editor";
-import { highlightLine } from "./highlight_line";
-
-declare global {
-  // For temporary debugging purposes, add a global function
-  // that can be used to test out line highlighting functionality.
-  // TODO(albrow): Remove this.
-  function highlightLine(lineNumber: number): void;
-}
+import { highlightLine, unhighlightAll } from "./highlight_line";
 
 (async function () {
   await init(wasmbin);
@@ -24,7 +17,7 @@ declare global {
   const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
   const GRID_COLOR = 0x000000;
   const BACKGROUND_COLOR = 0xcccccc;
-  const GAME_SPEED = 0.25; // steps per second
+  const GAME_SPEED = 1; // steps per second
   const MS_PER_STEP = 1000 / GAME_SPEED;
 
   // Create the application helper and add its render target to the page
@@ -57,16 +50,18 @@ declare global {
     if (animationTicker) {
       animationTicker.stop();
     }
-    drawSprites(game.get_state());
+    drawSprites(game.initial_state());
 
     // Remove any error messages from the editor.
     editor.dispatch(setDiagnostics(editor.state, []));
 
     // Run the simulation.
     const script = editor.state.doc.toString();
-    let replay: State[];
+    let replay: StateWithPos[];
     try {
-      replay = (await game.run_player_script(script)) as unknown as State[];
+      replay = (await game.run_player_script(
+        script
+      )) as unknown as StateWithPos[];
     } catch (e) {
       // If there is an error, display it in the editor.
       if (e instanceof RhaiError) {
@@ -113,11 +108,20 @@ declare global {
       // TODO(albrow): Scroll the editor window to make sure the currently running
       // line is visible.
       // See: https://stackoverflow.com/questions/10575343/
-      // TODO(albrow): Highlight the currently running line.
       elapsed += app.ticker.elapsedMS;
-      const target_step = Math.floor(elapsed / MS_PER_STEP);
-      if (target_step < replay.length) {
-        drawSprites(replay[target_step]);
+      const stepIndex = Math.floor(elapsed / MS_PER_STEP);
+      if (stepIndex < replay.length) {
+        let step = replay[stepIndex];
+        drawSprites(step.state);
+
+        // Highlight the line that was just executed. If it's 0,
+        // don't highlight anything (this usually means we are at
+        // the beginning of the script).
+        if (step.line == 0) {
+          unhighlightAll(editor);
+        } else {
+          highlightLine(editor, step.line);
+        }
       }
     });
     animationTicker.start();
@@ -144,11 +148,4 @@ declare global {
     sprite.x = state.player.pos.x * (TILE_SIZE + 1) + 1;
     sprite.y = state.player.pos.y * (TILE_SIZE + 1) + 1;
   }
-
-  // For temporary debugging purposes, add a global function
-  // that can be used to test out line highlighting functionality.
-  // TODO(albrow): Remove this.
-  window.highlightLine = (line: number) => {
-    highlightLine(editor, line);
-  };
 })();
