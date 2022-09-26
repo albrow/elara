@@ -170,7 +170,9 @@ impl ScriptRunner {
             }
         });
         let simulation = self.simulation.clone();
-        engine.register_fn("get_state", move || simulation.borrow().curr_state());
+        engine.register_fn("my_position", move || {
+            simulation.borrow().curr_state().player.pos
+        });
     }
 }
 
@@ -191,16 +193,6 @@ fn set_print_fn(engine: &mut Engine) {
 }
 
 fn register_custom_types(engine: &mut Engine) {
-    engine
-        .register_type_with_name::<State>("State")
-        .register_get("player", State::get_player);
-    engine
-        .register_type_with_name::<Player>("Player")
-        .register_get("position", Player::get_pos);
-
-    // TODO(albrow): Convert types to i64 to make
-    // them more compatible with Rhai. Currently,
-    // you sometimes have to do a to_int call on the scripting side.
     engine
         .register_type_with_name::<Pos>("Position")
         .register_get("x", Pos::get_x)

@@ -99,12 +99,14 @@ impl Pos {
         Pos { x, y }
     }
 
-    pub fn get_x(&mut self) -> u32 {
-        self.x
+    // Returns i64 for better Rhai compatibility.
+    pub fn get_x(&mut self) -> i64 {
+        self.x as i64
     }
 
-    pub fn get_y(&mut self) -> u32 {
-        self.y
+    // Returns i64 for better Rhai compatibility.
+    pub fn get_y(&mut self) -> i64 {
+        self.y as i64
     }
 }
 
