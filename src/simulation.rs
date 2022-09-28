@@ -1,3 +1,5 @@
+use crate::levels::{Level, Outcome};
+
 pub trait Actor {
     fn apply(&mut self, state: State) -> State;
 }
@@ -5,21 +7,47 @@ pub trait Actor {
 pub struct Simulation {
     state_idx: usize,
     states: Vec<State>,
-    actors: Vec<Box<dyn Actor>>,
+    player_actor: Box<dyn Actor>,
+    // actors: Vec<Box<dyn Actor>>,
+    level: Level,
+    last_outcome: Outcome,
 }
 
 impl Simulation {
-    pub fn new() -> Simulation {
-        Simulation {
+    pub fn new(level: Level, player_actor: Box<dyn Actor>) -> Simulation {
+        let sim = Simulation {
             state_idx: 0,
-            states: vec![State::new()],
-            actors: vec![],
-        }
+            states: vec![level.initial_state.clone()],
+            player_actor: player_actor,
+            // actors: vec![],
+            level,
+            last_outcome: Outcome::Continue,
+        };
+        // for actor in sim.level.actors {
+        //     sim.add_actor(actor);
+        // }
+        sim
+    }
+
+    pub fn load_level(&mut self, level: Level) {
+        self.level = level;
+        self.state_idx = 0;
+        self.states.clear();
+        self.states.push(self.level.initial_state.clone());
+        self.last_outcome = Outcome::Continue;
+        // self.actors.clear();
+        // for actor in self.level.actors {
+        //     // TODO(albrow): Use a thunk or initializer here?
+        //     self.add_actor(actor);
+        // }
     }
 
     pub fn reset(&mut self) {
         self.state_idx = 0;
-        self.states = vec![State::new()];
+        self.states.clear();
+        self.states.push(self.level.initial_state.clone());
+        self.last_outcome = Outcome::Continue;
+        // TODO(albrow): May need to reset other actors here.
     }
 
     pub fn curr_state(&self) -> State {
@@ -30,45 +58,79 @@ impl Simulation {
         self.states.to_vec()
     }
 
-    pub fn add_actor(&mut self, actor: Box<dyn Actor>) {
-        self.actors.push(actor);
+    pub fn last_outcome(&self) -> Outcome {
+        self.last_outcome
     }
 
-    pub fn step_forward(&mut self) {
-        // Compute the next state and store it.
-        //
-        // TODO(albrow): Update this function to have the following steps:
-        //
-        // 1. Move the player separately from the other actors.
+    // pub fn add_actor(&mut self, actor: Box<dyn Actor>) {
+    //     self.actors.push(actor);
+    // }
+
+    pub fn step_forward(&mut self) -> Outcome {
+        // If the current outcome is not Continue, then we can't take any more
+        // steps forward. This happens if the player has already won or lost.
+        if self.last_outcome != Outcome::Continue {
+            return self.last_outcome;
+        }
+
+        // Otherwise, compute the next state and store it.
+        let mut next_state = self.curr_state().clone();
+        // 1. Apply the player actor first, separately from the other actors.
+        next_state = self.player_actor.apply(next_state);
         // 2. Check for win or lose conditions.
-        // 3. Move the other actors.
+        let outcome = (self.level.win_checker)(&next_state);
+        match outcome {
+            Outcome::Success => {
+                log!("You win!");
+                self.states.push(next_state);
+                self.state_idx += 1;
+                self.last_outcome = Outcome::Success;
+                return self.last_outcome;
+            }
+            Outcome::Failure => {
+                log!("You lose!");
+                self.states.push(next_state);
+                self.state_idx += 1;
+                self.last_outcome = Outcome::Failure;
+                return self.last_outcome;
+            }
+            Outcome::Continue => {}
+        }
+        // 3. Apply the other actors.
+        // for actor in &mut self.actors {
+        //     next_state = actor.apply(next_state);
+        // }
+        //
         // 4. Check for win or lose conditions again?
         //
-        let mut next_state = self.curr_state().clone();
-        for actor in &mut self.actors {
-            next_state = actor.apply(next_state);
-        }
-        self.states.push(next_state);
-        self.state_idx += 1;
         log!(
             "finished computing step {}: {:?}",
             self.state_idx,
             next_state
         );
+        self.states.push(next_state);
+        self.state_idx += 1;
+        self.last_outcome
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct State {
     pub player: Player,
+    pub fuel: Vec<Fuel>,
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Player {
     pub pos: Pos,
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct Fuel {
+    pub pos: Pos,
+}
+
+#[derive(Clone, PartialEq, Debug)]
 pub struct Pos {
     pub x: u32,
     pub y: u32,
@@ -80,17 +142,8 @@ impl State {
             player: Player {
                 pos: Pos::new(0, 0),
             },
+            fuel: vec![],
         }
-    }
-
-    pub fn get_player(&mut self) -> Player {
-        self.player.clone()
-    }
-}
-
-impl Player {
-    pub fn get_pos(&mut self) -> Pos {
-        self.pos.clone()
     }
 }
 

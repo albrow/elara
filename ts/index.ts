@@ -1,6 +1,6 @@
 // @ts-ignore
 import { default as wasmbin } from "../pkg/battle_game_bg.wasm";
-import init, { Game, RhaiError, State, StateWithPos } from "../pkg/battle_game";
+import init, { Game, RhaiError, State, RunResult } from "../pkg/battle_game";
 import * as PIXI from "pixi.js";
 import * as editorVew from "./editor";
 import { setDiagnostics } from "./editor";
@@ -20,6 +20,8 @@ import { loadScript, saveScript } from "./storage";
   const BACKGROUND_COLOR = 0xcccccc;
   const GAME_SPEED = 1; // steps per second
   const MS_PER_STEP = 1000 / GAME_SPEED;
+  const PLAYER_SPRITE_Z_INDEX = 200;
+  const FUEL_SPRITE_Z_INDEX = 100;
 
   // Create the application helper and add its render target to the page
   const app = new PIXI.Application({
@@ -29,22 +31,40 @@ import { loadScript, saveScript } from "./storage";
   });
   document.querySelector("#board").appendChild(app.view);
 
+  // Setting sortableChildren allows us to use zIndex to control
+  // which sprites on drawn on top.
+  app.stage.sortableChildren = true;
+
   // Draw grid lines.
   const grid_graphics = new PIXI.Graphics();
   drawGrid(grid_graphics);
   app.stage.addChild(grid_graphics);
 
   // Create the player sprite and add it to the stage.
-  const sprite = PIXI.Sprite.from("/images/cat.png");
-  sprite.height = TILE_SIZE;
-  sprite.width = TILE_SIZE;
-  app.stage.addChild(sprite);
+  const playerSprite = PIXI.Sprite.from("/images/robot.png");
+  playerSprite.height = TILE_SIZE;
+  playerSprite.width = TILE_SIZE;
+  playerSprite.zIndex = PLAYER_SPRITE_Z_INDEX;
+  app.stage.addChild(playerSprite);
+
+  // Create a placeholder array for fuel sprites. This will
+  // grow or shrink as needed.
+  let fuelSprites: PIXI.Sprite[] = [];
 
   // Create the game.
   const game = Game.new(WIDTH, HEIGHT);
+  drawSprites(game.initial_state());
+  editor.dispatch(
+    editor.state.update({
+      changes: {
+        from: 0,
+        to: editor.state.doc.length,
+        insert: game.initial_code(),
+      },
+    })
+  );
 
   // Event listeners.
-  let animationTicker: PIXI.Ticker = null;
   document
     .querySelector("#run-button")
     .addEventListener("click", runScriptHandler);
@@ -83,6 +103,7 @@ import { loadScript, saveScript } from "./storage";
     );
   }
 
+  let animationTicker: PIXI.Ticker = null;
   async function runScriptHandler() {
     // Reset game state and ticker.
     game.reset();
@@ -96,11 +117,11 @@ import { loadScript, saveScript } from "./storage";
 
     // Run the simulation.
     const script = editor.state.doc.toString();
-    let replay: StateWithPos[];
+    let runResult: RunResult;
     try {
-      replay = (await game.run_player_script(
+      runResult = (await game.run_player_script(
         script
-      )) as unknown as StateWithPos[];
+      )) as unknown as RunResult;
     } catch (e) {
       // If there is an error, display it in the editor.
       if (e instanceof RhaiError) {
@@ -143,14 +164,15 @@ import { loadScript, saveScript } from "./storage";
 
     // Step through the replay at GAME_SPEED.
     let elapsed = 0;
-    animationTicker = app.ticker.add(() => {
+    let states = runResult.states;
+    let tickerHandler = () => {
       // TODO(albrow): Scroll the editor window to make sure the currently running
       // line is visible.
       // See: https://stackoverflow.com/questions/10575343/
       elapsed += app.ticker.elapsedMS;
       const stepIndex = Math.floor(elapsed / MS_PER_STEP);
-      if (stepIndex < replay.length) {
-        let step = replay[stepIndex];
+      if (stepIndex < states.length) {
+        let step = states[stepIndex];
         drawSprites(step.state);
 
         // Highlight the line that was just executed. If it's 0,
@@ -161,8 +183,25 @@ import { loadScript, saveScript } from "./storage";
         } else {
           highlightLine(editor, step.line);
         }
+      } else {
+        switch (runResult.outcome) {
+          case "success":
+            alert("You win!");
+            break;
+          case "failure":
+            alert("You lose!");
+            break;
+          case "continue":
+            alert(
+              "Your code ran without any errors but you didn't finish the objective. Try again!"
+            );
+            break;
+        }
+        animationTicker.stop();
+        animationTicker.remove(tickerHandler);
       }
-    });
+    };
+    animationTicker = app.ticker.add(tickerHandler);
     animationTicker.start();
   }
 
@@ -184,7 +223,28 @@ import { loadScript, saveScript } from "./storage";
   }
 
   function drawSprites(state: State) {
-    sprite.x = state.player.pos.x * (TILE_SIZE + 1) + 1;
-    sprite.y = state.player.pos.y * (TILE_SIZE + 1) + 1;
+    playerSprite.x = state.player.pos.x * (TILE_SIZE + 1) + 1;
+    playerSprite.y = state.player.pos.y * (TILE_SIZE + 1) + 1;
+
+    // For performance, we keep an array of fuel sprites for
+    // re-use. We add or remove sprites from this list depending
+    // on the current state.
+    if (fuelSprites.length > state.fuel.length) {
+      const sprite = fuelSprites.pop();
+      app.stage.removeChild(sprite);
+    } else if (fuelSprites.length < state.fuel.length) {
+      const sprite = PIXI.Sprite.from("/images/fuel.png");
+      sprite.height = TILE_SIZE;
+      sprite.width = TILE_SIZE;
+      sprite.zIndex = FUEL_SPRITE_Z_INDEX;
+      app.stage.addChild(sprite);
+      fuelSprites.push(sprite);
+    }
+    for (let i = 0; i < state.fuel.length; i++) {
+      const fuelState = state.fuel[i];
+      const sprite = fuelSprites[i];
+      sprite.x = fuelState.pos.x * (TILE_SIZE + 1) + 1;
+      sprite.y = fuelState.pos.y * (TILE_SIZE + 1) + 1;
+    }
   }
 })();

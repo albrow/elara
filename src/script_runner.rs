@@ -1,4 +1,5 @@
 use crate::actors::{Action, Direction};
+use crate::levels::Outcome;
 use crate::simulation::{Pos, Simulation, State};
 use rhai::debugger::DebuggerCommand;
 use rhai::{ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt};
@@ -18,6 +19,12 @@ pub struct ScriptRunner {
     step_positions: Rc<RefCell<Vec<Position>>>,
 }
 
+pub struct ScriptResult {
+    pub states: Vec<State>,
+    pub positions: Vec<Position>,
+    pub outcome: Outcome,
+}
+
 impl ScriptRunner {
     pub fn new(
         simulation: Rc<RefCell<Simulation>>,
@@ -32,10 +39,10 @@ impl ScriptRunner {
         }
     }
 
-    pub fn run(
-        &mut self,
-        script: String,
-    ) -> Result<(Vec<State>, Vec<Position>), Box<EvalAltResult>> {
+    // TODO(albrow): Stop running the script (i.e. stop stepping forward) if
+    // we get Outcome::Success or Outcome::Failure. Currently the rest of the
+    // script still runs even though the simulation won't actual step forward.
+    pub fn run(&mut self, script: String) -> Result<ScriptResult, Box<EvalAltResult>> {
         // Create and configure the Rhai engine.
         let mut engine = Engine::new();
         set_engine_safegaurds(&mut engine);
@@ -62,7 +69,12 @@ impl ScriptRunner {
 
         let states = self.simulation.borrow().get_history();
         let positions = self.step_positions.borrow().to_vec();
-        Ok((states, positions))
+        let outcome = self.simulation.borrow().last_outcome();
+        Ok(ScriptResult {
+            states,
+            positions,
+            outcome,
+        })
     }
 
     fn register_debugger(&self, engine: &mut Engine) {
@@ -199,11 +211,6 @@ fn register_custom_types(engine: &mut Engine) {
         .register_get("y", Pos::get_y);
 }
 
-#[cfg(test)]
-mod test {
-    // TODO(albrow): Unit test ScriptRunner.
-}
-
 fn eval_call_args_as_int(
     context: EvalContext,
     fn_call_expr: &Box<FnCallExpr>,
@@ -246,4 +253,9 @@ fn eval_call_args_as_int(
         }
     };
     Ok(arg_val)
+}
+
+#[cfg(test)]
+mod test {
+    // TODO(albrow): Unit test ScriptRunner.
 }

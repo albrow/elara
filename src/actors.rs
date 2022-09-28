@@ -59,6 +59,7 @@ impl Actor for PlayerChannelActor {
             player: Player {
                 pos: Pos::new(new_x, new_y),
             },
+            ..state
         }
     }
 }

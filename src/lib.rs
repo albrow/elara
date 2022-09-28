@@ -14,6 +14,8 @@ use std::rc::Rc;
 use std::sync::mpsc;
 mod script_runner;
 use script_runner::ScriptRunner;
+mod levels;
+use levels::{Level, Outcome};
 
 // Note(albrow): These channels will be used to communicate between the
 // Rhai script and the Rust code, particularly the Simulation. They are
@@ -29,6 +31,8 @@ static mut PLAYER_ACTION_RX: Option<mpsc::Receiver<Action>> = None;
 pub struct Game {
     simulation: Rc<RefCell<Simulation>>,
     script_runner: ScriptRunner,
+    levels: Vec<Level>,
+    level_index: usize,
 }
 
 #[wasm_bindgen]
@@ -46,19 +50,22 @@ impl Game {
             PLAYER_ACTION_RX = Some(player_rx);
         }
 
-        // Simulation must be wrapped in Rc<RefCell> in order to be
-        // used in the script_runner. This is due to a constraint
-        // imposed by the Rhai Engine for registered functions.
-        let simulation = Rc::new(RefCell::new(Simulation::new()));
-
         // Set up the player actor and add it to the Simulation.
         let bounds = Bounds {
             max_x: width,
             max_y: height,
         };
-        let actor =
+        let player_actor =
             actors::PlayerChannelActor::new(unsafe { PLAYER_ACTION_RX.as_ref().unwrap() }, bounds);
-        simulation.borrow_mut().add_actor(Box::new(actor));
+
+        // Simulation must be wrapped in Rc<RefCell> in order to be
+        // used in the script_runner. This is due to a constraint
+        // imposed by the Rhai Engine for registered functions.
+        let levels = levels::get_levels();
+        let simulation = Rc::new(RefCell::new(Simulation::new(
+            levels[0].clone(),
+            Box::new(player_actor),
+        )));
 
         // Set up the script runner, which holds references to the
         // player_tx channel and the simulation and glues them together.
@@ -69,25 +76,34 @@ impl Game {
         Game {
             simulation: simulation,
             script_runner,
+            levels: levels,
+            level_index: 0,
         }
     }
 
-    // TODO(albrow): Replace this with Level::initial_state for the
-    // current level.
     pub fn initial_state(&self) -> State {
-        to_js_state(&simulation::State::new())
+        to_js_state(&self.levels[self.level_index].initial_state)
+    }
+
+    pub fn initial_code(&self) -> String {
+        self.levels[self.level_index].initial_code.to_string()
     }
 
     pub fn reset(&mut self) {
         self.simulation.borrow_mut().reset();
     }
 
-    pub async fn run_player_script(&mut self, script: String) -> Result<Array, JsValue> {
+    pub async fn run_player_script(&mut self, script: String) -> Result<RunResult, JsValue> {
         // Run the script and return an array of states.
-        match self.script_runner.run(script) {
-            Ok((states, positions)) => {
-                let states_with_pos = to_js_states_with_pos(states, positions);
-                Ok(states_with_pos)
+        let result = self.script_runner.run(script);
+        match result {
+            Ok(result) => {
+                match result.outcome {
+                    Outcome::Success => {}
+                    Outcome::Failure => {}
+                    Outcome::Continue => {}
+                }
+                Ok(to_js_run_result(&result))
             }
             Err(err) => {
                 let message = err.to_string();
@@ -124,14 +140,22 @@ impl RhaiError {
     }
 }
 
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct State {
     pub player: Player,
+    pub fuel: Array, // Array<Fuel>
 }
 
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct RunResult {
+    pub states: Array,   // Array<StateWithPos>
+    pub outcome: String, // "success" | "failure" | "continue"
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct StateWithPos {
     pub state: State,
     pub line: i32,
@@ -146,16 +170,27 @@ pub struct Player {
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Fuel {
+    pub pos: Pos,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Pos {
     pub x: i32,
     pub y: i32,
 }
 
-/// Converts simulation::State and rhai::Position to a format that
-/// can be used by the JavaScript code.
-fn to_js_states_with_pos(states: Vec<simulation::State>, positions: Vec<rhai::Position>) -> Array {
-    let arr = Array::new_with_length(states.len() as u32);
-    for (i, (state, pos)) in states.iter().zip(positions.iter()).enumerate() {
+/// Converts script_runner::ScriptResult to a format that is wasm_bindgen
+/// compatible and can ultimately be used by the JavaScript code.
+fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
+    let arr = Array::new_with_length(result.states.len() as u32);
+    for (i, (state, pos)) in result
+        .states
+        .iter()
+        .zip(result.positions.iter())
+        .enumerate()
+    {
         arr.set(
             i as u32,
             JsValue::from(StateWithPos {
@@ -165,10 +200,30 @@ fn to_js_states_with_pos(states: Vec<simulation::State>, positions: Vec<rhai::Po
             }),
         );
     }
-    arr
+    RunResult {
+        states: arr,
+        outcome: match result.outcome {
+            Outcome::Success => "success",
+            Outcome::Failure => "failure",
+            Outcome::Continue => "continue",
+        }
+        .to_string(),
+    }
 }
 
 fn to_js_state(state: &simulation::State) -> State {
+    let fuel_arr = Array::new_with_length(state.fuel.len() as u32);
+    for (i, fuel) in state.fuel.iter().enumerate() {
+        fuel_arr.set(
+            i as u32,
+            JsValue::from(Fuel {
+                pos: Pos {
+                    x: fuel.pos.x as i32,
+                    y: fuel.pos.y as i32,
+                },
+            }),
+        );
+    }
     State {
         player: Player {
             pos: Pos {
@@ -176,5 +231,6 @@ fn to_js_state(state: &simulation::State) -> State {
                 y: state.player.pos.y as i32,
             },
         },
+        fuel: fuel_arr,
     }
 }
