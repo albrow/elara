@@ -29,7 +29,7 @@ pub struct Level {
 pub fn get_levels() -> Vec<Level> {
     vec![Level {
         name: "Fuel Up",
-        description: "Move the drone 🤖 to collect the fuel 🌟.",
+        description: "Move the drone (🤖) to collect the fuel (⛽️)",
         initial_code: "// This code moves the drone, but it's not going to the right place.\n// Try changing the code to see what happens?\n\nmove_right(1);\nmove_down(2);\n",
         initial_state: State {
             player: Player {

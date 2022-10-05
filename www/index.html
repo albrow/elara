@@ -5,7 +5,7 @@
     <title>Battle Game (actual title TBD)</title>
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Nunito:400,600"
+      href="https://fonts.googleapis.com/css?family=Nunito:400,600,800"
     />
 
     <link href="/main.css" rel="stylesheet" />
@@ -51,7 +51,28 @@
         </div>
         <!-- Game board -->
         <div class="px-4">
-          <div id="board"></div>
+          <div id="board-wrapper" class="relative">
+            <div id="board"></div>
+            <div id="objective-wrapper" class="absolute top-0 right-0">
+              <div
+                class="bg-yellow-500 border-black border-2 border-solid rounded m-1 p-1 px-3 opacity-80 selection:bg-none"
+              >
+                <span id="objective-prefix">
+                  <b><i>Objective</i>:</b>
+                </span>
+                <span id="objective"></span>
+                <span id="objective-hide" class="cursor-pointer font-semibold">
+                  &nbsp; 𝖷
+                </span>
+                <span
+                  id="objective-show"
+                  class="cursor-pointer font-extrabold hidden"
+                >
+                  ?
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

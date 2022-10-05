@@ -33,6 +33,8 @@ pub struct Game {
     script_runner: ScriptRunner,
     levels: Vec<Level>,
     level_index: usize,
+    player_action_rx: &'static mpsc::Receiver<Action>,
+    player_action_tx: &'static mpsc::Sender<Action>,
 }
 
 #[wasm_bindgen]
@@ -50,13 +52,15 @@ impl Game {
             PLAYER_ACTION_RX = Some(player_rx);
         }
 
+        let player_action_rx = unsafe { PLAYER_ACTION_RX.as_ref().unwrap() };
+        let player_action_tx = unsafe { PLAYER_ACTION_TX.as_ref().unwrap() };
+
         // Set up the player actor and add it to the Simulation.
         let bounds = Bounds {
             max_x: width,
             max_y: height,
         };
-        let player_actor =
-            actors::PlayerChannelActor::new(unsafe { PLAYER_ACTION_RX.as_ref().unwrap() }, bounds);
+        let player_actor = actors::PlayerChannelActor::new(player_action_rx, bounds);
 
         // Simulation must be wrapped in Rc<RefCell> in order to be
         // used in the script_runner. This is due to a constraint
@@ -69,15 +73,15 @@ impl Game {
 
         // Set up the script runner, which holds references to the
         // player_tx channel and the simulation and glues them together.
-        let script_runner = ScriptRunner::new(simulation.clone(), unsafe {
-            PLAYER_ACTION_TX.as_ref().unwrap()
-        });
+        let script_runner = ScriptRunner::new(simulation.clone(), player_action_tx);
 
         Game {
             simulation: simulation,
             script_runner,
             levels: levels,
             level_index: 0,
+            player_action_rx,
+            player_action_tx,
         }
     }
 
@@ -89,8 +93,14 @@ impl Game {
         self.levels[self.level_index].initial_code.to_string()
     }
 
+    pub fn curr_level_desc(&self) -> String {
+        self.levels[self.level_index].description.to_string()
+    }
+
     pub fn reset(&mut self) {
         self.simulation.borrow_mut().reset();
+        // Drain the channel.
+        while let Ok(_) = self.player_action_rx.try_recv() {}
     }
 
     pub async fn run_player_script(&mut self, script: String) -> Result<RunResult, JsValue> {

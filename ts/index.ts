@@ -51,7 +51,7 @@ import { loadScript, saveScript } from "./storage";
   // grow or shrink as needed.
   let fuelSprites: PIXI.Sprite[] = [];
 
-  // Create the game.
+  // Create the game and load the level.
   const game = Game.new(WIDTH, HEIGHT);
   drawSprites(game.initial_state());
   editor.dispatch(
@@ -63,6 +63,7 @@ import { loadScript, saveScript } from "./storage";
       },
     })
   );
+  document.querySelector("#objective").innerHTML = game.curr_level_desc();
 
   // Event listeners.
   document
@@ -88,6 +89,18 @@ import { loadScript, saveScript } from "./storage";
       return false;
     }
   });
+  document.querySelector("#objective-hide").addEventListener("click", () => {
+    document.querySelector("#objective").classList.add("hidden");
+    document.querySelector("#objective-prefix").classList.add("hidden");
+    document.querySelector("#objective-hide").classList.add("hidden");
+    document.querySelector("#objective-show").classList.remove("hidden");
+  });
+  document.querySelector("#objective-show").addEventListener("click", () => {
+    document.querySelector("#objective").classList.remove("hidden");
+    document.querySelector("#objective-prefix").classList.remove("hidden");
+    document.querySelector("#objective-hide").classList.remove("hidden");
+    document.querySelector("#objective-show").classList.add("hidden");
+  });
 
   async function saveScriptHandler() {
     const script = editor.state.doc.toString();
@@ -103,6 +116,8 @@ import { loadScript, saveScript } from "./storage";
     );
   }
 
+  // TODO(albrow): Disallow editing the script while it is running.
+  // TODO(albrow): Add stop and reset buttons.
   let animationTicker: PIXI.Ticker = null;
   async function runScriptHandler() {
     // Reset game state and ticker.

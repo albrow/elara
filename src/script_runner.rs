@@ -61,7 +61,7 @@ impl ScriptRunner {
         let engine = engine;
 
         // TODO(albrow): Consider using progress tracker to count the number of
-        // operations. Could be visualized as "feul" for your drone/robot that
+        // operations. Could be visualized as "fuel" for your drone/robot that
         // will eventually run out if your script runs too long.
         // TODO(albrow): Manually overwrite certain common error messages to make
         // them more user-friendly.
