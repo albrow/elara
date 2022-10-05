@@ -8,44 +8,34 @@ pub struct Simulation {
     state_idx: usize,
     states: Vec<State>,
     player_actor: Box<dyn Actor>,
-    // actors: Vec<Box<dyn Actor>>,
-    level: Level,
+    level: &'static dyn Level,
     last_outcome: Outcome,
 }
 
 impl Simulation {
-    pub fn new(level: Level, player_actor: Box<dyn Actor>) -> Simulation {
+    pub fn new(level: &'static dyn Level, player_actor: Box<dyn Actor>) -> Simulation {
         let sim = Simulation {
             state_idx: 0,
-            states: vec![level.initial_state.clone()],
+            states: vec![level.initial_state().clone()],
             player_actor: player_actor,
-            // actors: vec![],
             level,
             last_outcome: Outcome::Continue,
         };
-        // for actor in sim.level.actors {
-        //     sim.add_actor(actor);
-        // }
         sim
     }
 
-    pub fn load_level(&mut self, level: Level) {
+    pub fn load_level(&mut self, level: &'static dyn Level) {
         self.level = level;
         self.state_idx = 0;
         self.states.clear();
-        self.states.push(self.level.initial_state.clone());
+        self.states.push(self.level.initial_state().clone());
         self.last_outcome = Outcome::Continue;
-        // self.actors.clear();
-        // for actor in self.level.actors {
-        //     // TODO(albrow): Use a thunk or initializer here?
-        //     self.add_actor(actor);
-        // }
     }
 
     pub fn reset(&mut self) {
         self.state_idx = 0;
         self.states.clear();
-        self.states.push(self.level.initial_state.clone());
+        self.states.push(self.level.initial_state().clone());
         self.last_outcome = Outcome::Continue;
         // TODO(albrow): May need to reset other actors here.
     }
@@ -62,10 +52,6 @@ impl Simulation {
         self.last_outcome
     }
 
-    // pub fn add_actor(&mut self, actor: Box<dyn Actor>) {
-    //     self.actors.push(actor);
-    // }
-
     pub fn step_forward(&mut self) -> Outcome {
         // If the current outcome is not Continue, then we can't take any more
         // steps forward. This happens if the player has already won or lost.
@@ -78,7 +64,7 @@ impl Simulation {
         // 1. Apply the player actor first, separately from the other actors.
         next_state = self.player_actor.apply(next_state);
         // 2. Check for win or lose conditions.
-        let outcome = (self.level.win_checker)(&next_state);
+        let outcome = self.level.check_win(&next_state);
         match outcome {
             Outcome::Success => {
                 log!("You win!");
@@ -97,10 +83,10 @@ impl Simulation {
             Outcome::Continue => {}
         }
         // 3. Apply the other actors.
-        // for actor in &mut self.actors {
-        //     next_state = actor.apply(next_state);
-        // }
-        //
+        for actor in &mut self.level.actors() {
+            next_state = actor.apply(next_state);
+        }
+
         // 4. Check for win or lose conditions again?
         //
         log!(

@@ -63,7 +63,7 @@ import { loadScript, saveScript } from "./storage";
       },
     })
   );
-  document.querySelector("#objective").innerHTML = game.curr_level_desc();
+  document.querySelector("#objective").innerHTML = game.curr_level_objective();
 
   // Event listeners.
   document

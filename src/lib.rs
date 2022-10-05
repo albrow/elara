@@ -3,6 +3,9 @@ extern crate console_error_panic_hook;
 #[macro_use]
 mod log;
 
+#[macro_use]
+extern crate lazy_static;
+
 use wasm_bindgen::prelude::*;
 mod simulation;
 use simulation::Simulation;
@@ -15,7 +18,7 @@ use std::sync::mpsc;
 mod script_runner;
 use script_runner::ScriptRunner;
 mod levels;
-use levels::{Level, Outcome};
+use levels::{Outcome, LEVELS};
 
 // Note(albrow): These channels will be used to communicate between the
 // Rhai script and the Rust code, particularly the Simulation. They are
@@ -31,7 +34,6 @@ static mut PLAYER_ACTION_RX: Option<mpsc::Receiver<Action>> = None;
 pub struct Game {
     simulation: Rc<RefCell<Simulation>>,
     script_runner: ScriptRunner,
-    levels: Vec<Level>,
     level_index: usize,
     player_action_rx: &'static mpsc::Receiver<Action>,
     player_action_tx: &'static mpsc::Sender<Action>,
@@ -65,9 +67,9 @@ impl Game {
         // Simulation must be wrapped in Rc<RefCell> in order to be
         // used in the script_runner. This is due to a constraint
         // imposed by the Rhai Engine for registered functions.
-        let levels = levels::get_levels();
+        let level_index = 0;
         let simulation = Rc::new(RefCell::new(Simulation::new(
-            levels[0].clone(),
+            LEVELS[level_index].as_ref(),
             Box::new(player_actor),
         )));
 
@@ -78,23 +80,22 @@ impl Game {
         Game {
             simulation: simulation,
             script_runner,
-            levels: levels,
-            level_index: 0,
+            level_index,
             player_action_rx,
             player_action_tx,
         }
     }
 
     pub fn initial_state(&self) -> State {
-        to_js_state(&self.levels[self.level_index].initial_state)
+        to_js_state(&LEVELS[self.level_index].initial_state())
     }
 
     pub fn initial_code(&self) -> String {
-        self.levels[self.level_index].initial_code.to_string()
+        LEVELS[self.level_index].initial_code().to_string()
     }
 
-    pub fn curr_level_desc(&self) -> String {
-        self.levels[self.level_index].description.to_string()
+    pub fn curr_level_objective(&self) -> String {
+        LEVELS[self.level_index].objective().to_string()
     }
 
     pub fn reset(&mut self) {
