@@ -51,8 +51,12 @@ import { loadScript, saveScript } from "./storage";
   // grow or shrink as needed.
   let fuelSprites: PIXI.Sprite[] = [];
 
+  // Determine the initial level to load from the URL.
+  const levelNumber = getOrSetLevelFromUrl();
+
   // Create the game and load the level.
   const game = Game.new(WIDTH, HEIGHT);
+  game.load_level(levelNumber);
   drawSprites(game.initial_state());
   editor.dispatch(
     editor.state.update({
@@ -263,3 +267,19 @@ import { loadScript, saveScript } from "./storage";
     }
   }
 })();
+
+// Get the current level from the hash of the URL,
+// or default to 1.
+function getOrSetLevelFromUrl(): number {
+  const hash = window.location.hash;
+  if (hash.length > 0) {
+    const level = parseInt(hash.substring(1));
+    if (!isNaN(level)) {
+      // Level names are 1-indexed in the UI, but under the
+      // hood they are 0-indexed.
+      return level - 1;
+    }
+  }
+  window.location.hash = "1";
+  return 0;
+}

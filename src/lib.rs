@@ -104,6 +104,15 @@ impl Game {
         while let Ok(_) = self.player_action_rx.try_recv() {}
     }
 
+    pub fn load_level(&mut self, level_index: usize) {
+        self.level_index = level_index;
+        self.simulation
+            .borrow_mut()
+            .load_level(LEVELS[level_index].as_ref());
+        // Drain the channel.
+        while let Ok(_) = self.player_action_rx.try_recv() {}
+    }
+
     pub async fn run_player_script(&mut self, script: String) -> Result<RunResult, JsValue> {
         // Run the script and return an array of states.
         let result = self.script_runner.run(script);

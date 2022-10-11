@@ -1,6 +1,5 @@
 use crate::simulation::Actor;
 use crate::simulation::{Fuel, Player, Pos, State};
-use std::sync::Arc;
 
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub enum Outcome {
@@ -19,9 +18,9 @@ pub trait Level {
 }
 
 #[derive(Copy, Clone)]
-pub struct Level0 {}
+pub struct Level1 {}
 
-impl Level for Level0 {
+impl Level for Level1 {
     fn name(&self) -> &'static str {
         "Fuel Up"
     }
@@ -53,6 +52,41 @@ impl Level for Level0 {
     }
 }
 
+#[derive(Copy, Clone)]
+pub struct Level2 {}
+
+impl Level for Level2 {
+    fn name(&self) -> &'static str {
+        "Fuel Up (Part Two)"
+    }
+    fn objective(&self) -> &'static str {
+        "Move the drone (🤖) to collect the fuel (⛽️)"
+    }
+    fn initial_code(&self) -> &'static str {
+        "// This is level two.\n\n"
+    }
+    fn initial_state(&self) -> State {
+        State {
+            player: Player {
+                pos: Pos { x: 0, y: 7 },
+            },
+            fuel: vec![Fuel {
+                pos: Pos { x: 4, y: 2 },
+            }],
+        }
+    }
+    fn actors(&self) -> Vec<Box<dyn Actor>> {
+        vec![]
+    }
+    fn check_win(&self, state: &State) -> Outcome {
+        if state.player.pos == state.fuel[0].pos {
+            Outcome::Success
+        } else {
+            Outcome::Continue
+        }
+    }
+}
+
 lazy_static! {
-    pub static ref LEVELS: [Box<dyn Level + Sync>; 1] = [Box::new(Level0 {})];
+    pub static ref LEVELS: [Box<dyn Level + Sync>; 2] = [Box::new(Level1 {}), Box::new(Level2 {})];
 }
