@@ -1,0 +1,23 @@
+[INFO]: Checking for the Wasm target...
+[INFO]: Compiling to Wasm...
+   Compiling getrandom v0.2.7
+error: the wasm32-unknown-unknown target is not supported by default, you may need to enable the "js" feature. For more information see: https://docs.rs/getrandom/#webassembly-support
+   --> /Users/alex/.cargo/registry/src/github.com-1ecc6299db9ec823/getrandom-0.2.7/src/lib.rs:235:9
+    |
+235 | /         compile_error!("the wasm32-unknown-unknown target is not supported by \
+236 | |                         default, you may need to enable the \"js\" feature. \
+237 | |                         For more information see: \
+238 | |                         https://docs.rs/getrandom/#webassembly-support");
+    | |________________________________________________________________________^
+
+error[E0433]: failed to resolve: use of undeclared crate or module `imp`
+   --> /Users/alex/.cargo/registry/src/github.com-1ecc6299db9ec823/getrandom-0.2.7/src/lib.rs:262:5
+    |
+262 |     imp::getrandom_inner(dest)
+    |     ^^^ use of undeclared crate or module `imp`
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `getrandom` due to 2 previous errors
+Error: Compiling your crate to WebAssembly failed
+Caused by: failed to execute `cargo build`: exited with exit status: 101
+  full command: "cargo" "build" "--lib" "--target" "wasm32-unknown-unknown"

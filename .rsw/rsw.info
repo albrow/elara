@@ -1,0 +1,3 @@
+[RSW::ERR]
+[RSW::NAME] :~> rust
+[RSW::BUILD] :~> wasm-pack build rust --out-dir pkg --target web --dev
