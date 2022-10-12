@@ -1,7 +1,6 @@
-node_modules
-/dist
+/node_modules
 /battle-game-lib/target
 /battle-game-lib/pkg
 /wasm-pack.log
 /battle-game-lib/wasm-pack.log
-/www/main.js
+/web/dist
