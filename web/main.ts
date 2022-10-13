@@ -6,64 +6,68 @@ import init, {
 } from "../battle-game-lib/pkg";
 import * as Vue from "vue";
 import App from "./App.vue";
-// import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js";
 
 import { router } from "./lib/router";
-// import * as editorVew from "./editor";
-// import { setDiagnostics } from "./editor";
-// import { highlightLine, unhighlightAll } from "./highlight_line";
-// import { loadScript, saveScript } from "./storage";
+// import * as editorVew from "./lib/editor";
+import { setDiagnostics } from "./lib/editor";
+import { highlightLine, unhighlightAll } from "./lib/highlight_line";
+import { loadScript, saveScript } from "./lib/storage";
 
 (async function () {
   await init();
 
-  const app = Vue.createApp(App);
-  app.use(router);
-  app.mount("#app");
+  const vueApp = Vue.createApp(App);
+  vueApp.use(router);
+  vueApp.mount("#app");
 
-  // // Temporary code for testing Rust + Wasm integration.
-  // const game = Game.new(5, 4);
-  // console.log(game.curr_level_objective());
   // const editor = editorVew.init();
-  // const WIDTH = 12;
-  // const HEIGHT = 8;
-  // const TILE_SIZE = 50;
-  // const CANVAS_WIDTH = (TILE_SIZE + 1) * WIDTH + 1;
-  // const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
-  // const GRID_COLOR = 0x000000;
-  // const BACKGROUND_COLOR = 0xcccccc;
-  // const GAME_SPEED = 1; // steps per second
-  // const MS_PER_STEP = 1000 / GAME_SPEED;
-  // const PLAYER_SPRITE_Z_INDEX = 200;
-  // const FUEL_SPRITE_Z_INDEX = 100;
-  // // Create the application helper and add its render target to the page
+  const WIDTH = 12;
+  const HEIGHT = 8;
+  const TILE_SIZE = 50;
+  const CANVAS_WIDTH = (TILE_SIZE + 1) * WIDTH + 1;
+  const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
+  const GRID_COLOR = 0x000000;
+  const BACKGROUND_COLOR = 0xcccccc;
+  const GAME_SPEED = 1; // steps per second
+  const MS_PER_STEP = 1000 / GAME_SPEED;
+  const PLAYER_SPRITE_Z_INDEX = 200;
+  const FUEL_SPRITE_Z_INDEX = 100;
+
+  // Create the application helper and add its render target to the page
   // const app = new PIXI.Application({
   //   width: CANVAS_WIDTH,
   //   height: CANVAS_HEIGHT,
   //   backgroundColor: BACKGROUND_COLOR,
   // });
-  // document.querySelector("#board").appendChild(app.view);
+  // document.querySelector("#board")!.appendChild(app.view);
+
   // // Setting sortableChildren allows us to use zIndex to control
   // // which sprites on drawn on top.
   // app.stage.sortableChildren = true;
+
   // // Draw grid lines.
   // const grid_graphics = new PIXI.Graphics();
   // drawGrid(grid_graphics);
   // app.stage.addChild(grid_graphics);
+
   // // Create the player sprite and add it to the stage.
   // const playerSprite = PIXI.Sprite.from("/images/robot.png");
   // playerSprite.height = TILE_SIZE;
   // playerSprite.width = TILE_SIZE;
   // playerSprite.zIndex = PLAYER_SPRITE_Z_INDEX;
   // app.stage.addChild(playerSprite);
-  // // Create a placeholder array for fuel sprites. This will
-  // // grow or shrink as needed.
-  // let fuelSprites: PIXI.Sprite[] = [];
+
+  // Create a placeholder array for fuel sprites. This will
+  // grow or shrink as needed.
+  let fuelSprites: PIXI.Sprite[] = [];
+
   // // Determine the initial level to load from the URL.
   // const levelNumber = getOrSetLevelFromUrl();
-  // // Create the game and load the level.
-  // const game = Game.new(WIDTH, HEIGHT);
-  // game.load_level(levelNumber);
+
+  // Create the game and load the level.
+  const game = Game.new(WIDTH, HEIGHT);
+  game.load_level(0);
   // drawSprites(game.initial_state());
   // editor.dispatch(
   //   editor.state.update({
@@ -123,9 +127,9 @@ import { router } from "./lib/router";
   //     })
   //   );
   // }
-  // // TODO(albrow): Disallow editing the script while it is running.
-  // // TODO(albrow): Add stop and reset buttons.
-  // let animationTicker: PIXI.Ticker = null;
+  // TODO(albrow): Disallow editing the script while it is running.
+  // TODO(albrow): Add stop and reset buttons.
+  // let animationTicker: PIXI.Ticker | null = null;
   // async function runScriptHandler() {
   //   // Reset game state and ticker.
   //   game.reset();
@@ -134,9 +138,9 @@ import { router } from "./lib/router";
   //   }
   //   drawSprites(game.initial_state());
   //   // Remove any error messages from the editor.
-  //   editor.dispatch(setDiagnostics(editor.state, []));
+  //   // editor.dispatch(setDiagnostics(editor.state, []));
   //   // Run the simulation.
-  //   const script = editor.state.doc.toString();
+  //   // const script = editor.state.doc.toString();
   //   let runResult: RunResult;
   //   try {
   //     runResult = (await game.run_player_script(
@@ -220,41 +224,5 @@ import { router } from "./lib/router";
   //   animationTicker = app.ticker.add(tickerHandler);
   //   animationTicker.start();
   // }
-  // // Helper function to draw the grid lines.
-  // function drawGrid(graphics: PIXI.Graphics) {
-  //   graphics.beginFill(GRID_COLOR);
-  //   // Vertical lines.
-  //   for (let i = 0; i <= WIDTH; i++) {
-  //     graphics.drawRect(i * (TILE_SIZE + 1), 0, 1, CANVAS_HEIGHT);
-  //   }
-  //   // Horizontal lines.
-  //   for (let i = 0; i <= HEIGHT; i++) {
-  //     graphics.drawRect(0, i * (TILE_SIZE + 1), CANVAS_WIDTH, 1);
-  //   }
-  //   graphics.endFill();
-  // }
-  // function drawSprites(state: State) {
-  //   playerSprite.x = state.player.pos.x * (TILE_SIZE + 1) + 1;
-  //   playerSprite.y = state.player.pos.y * (TILE_SIZE + 1) + 1;
-  //   // For performance, we keep an array of fuel sprites for
-  //   // re-use. We add or remove sprites from this list depending
-  //   // on the current state.
-  //   if (fuelSprites.length > state.fuel.length) {
-  //     const sprite = fuelSprites.pop();
-  //     app.stage.removeChild(sprite);
-  //   } else if (fuelSprites.length < state.fuel.length) {
-  //     const sprite = PIXI.Sprite.from("/images/fuel.png");
-  //     sprite.height = TILE_SIZE;
-  //     sprite.width = TILE_SIZE;
-  //     sprite.zIndex = FUEL_SPRITE_Z_INDEX;
-  //     app.stage.addChild(sprite);
-  //     fuelSprites.push(sprite);
-  //   }
-  //   for (let i = 0; i < state.fuel.length; i++) {
-  //     const fuelState = state.fuel[i];
-  //     const sprite = fuelSprites[i];
-  //     sprite.x = fuelState.pos.x * (TILE_SIZE + 1) + 1;
-  //     sprite.y = fuelState.pos.y * (TILE_SIZE + 1) + 1;
-  //   }
-  // }
+  // Helper function to draw the grid lines.
 })();

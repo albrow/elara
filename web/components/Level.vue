@@ -15,8 +15,23 @@ export default {
 
 <template>
     <div>
-        <h1>Level {{ $route.params.levelNumber }}</h1>
-        <Editor />
-        <Board />
+        <div class="2xl:container 2xl:mx-auto my-4">
+            <div class="flex flex-row px-4">
+                <!-- Editor and control pannel -->
+                <div class="flex w-full flex-col">
+
+                    <!-- Editor -->
+                    <div id="player-script" name="player-script">
+                        <Editor />
+                    </div>
+                </div>
+                <!-- Game board -->
+                <div class="px-4">
+                    <div id="board-wrapper" class="relative">
+                        <Board />
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>

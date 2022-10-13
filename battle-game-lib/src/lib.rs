@@ -183,6 +183,22 @@ pub struct StateWithPos {
 }
 
 #[wasm_bindgen]
+impl StateWithPos {
+    pub fn new() -> StateWithPos {
+        StateWithPos {
+            state: State {
+                player: Player {
+                    pos: Pos { x: 0, y: 0 },
+                },
+                fuel: Array::new(),
+            },
+            line: 0,
+            col: 0,
+        }
+    }
+}
+
+#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Player {
     pub pos: Pos,

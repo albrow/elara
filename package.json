@@ -26,6 +26,7 @@
     "codemirror": "^6.0.1",
     "pixi.js": "^5.3.12",
     "vue": "^3.2.40",
+    "vue-codemirror": "^6.1.1",
     "vue-router": "^4.1.5"
   }
 }
