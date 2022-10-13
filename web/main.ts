@@ -4,25 +4,27 @@ import init, {
   State,
   RunResult,
 } from "../battle-game-lib/pkg";
+import * as Vue from "vue";
+import App from "./App.vue";
 // import * as PIXI from "pixi.js";
+
+import { router } from "./lib/router";
 // import * as editorVew from "./editor";
 // import { setDiagnostics } from "./editor";
 // import { highlightLine, unhighlightAll } from "./highlight_line";
 // import { loadScript, saveScript } from "./storage";
-import { createApp } from "vue";
-import App from "./App.vue";
 
 (async function () {
   await init();
-  const app = createApp(App);
+
+  const app = Vue.createApp(App);
+  app.use(router);
   app.mount("#app");
 
-  // Temporary code for testing Rust + Wasm integration.
-  const game = Game.new(5, 4);
-  console.log(game.curr_level_objective());
-
+  // // Temporary code for testing Rust + Wasm integration.
+  // const game = Game.new(5, 4);
+  // console.log(game.curr_level_objective());
   // const editor = editorVew.init();
-
   // const WIDTH = 12;
   // const HEIGHT = 8;
   // const TILE_SIZE = 50;
@@ -34,7 +36,6 @@ import App from "./App.vue";
   // const MS_PER_STEP = 1000 / GAME_SPEED;
   // const PLAYER_SPRITE_Z_INDEX = 200;
   // const FUEL_SPRITE_Z_INDEX = 100;
-
   // // Create the application helper and add its render target to the page
   // const app = new PIXI.Application({
   //   width: CANVAS_WIDTH,
@@ -42,30 +43,24 @@ import App from "./App.vue";
   //   backgroundColor: BACKGROUND_COLOR,
   // });
   // document.querySelector("#board").appendChild(app.view);
-
   // // Setting sortableChildren allows us to use zIndex to control
   // // which sprites on drawn on top.
   // app.stage.sortableChildren = true;
-
   // // Draw grid lines.
   // const grid_graphics = new PIXI.Graphics();
   // drawGrid(grid_graphics);
   // app.stage.addChild(grid_graphics);
-
   // // Create the player sprite and add it to the stage.
   // const playerSprite = PIXI.Sprite.from("/images/robot.png");
   // playerSprite.height = TILE_SIZE;
   // playerSprite.width = TILE_SIZE;
   // playerSprite.zIndex = PLAYER_SPRITE_Z_INDEX;
   // app.stage.addChild(playerSprite);
-
   // // Create a placeholder array for fuel sprites. This will
   // // grow or shrink as needed.
   // let fuelSprites: PIXI.Sprite[] = [];
-
   // // Determine the initial level to load from the URL.
   // const levelNumber = getOrSetLevelFromUrl();
-
   // // Create the game and load the level.
   // const game = Game.new(WIDTH, HEIGHT);
   // game.load_level(levelNumber);
@@ -80,7 +75,6 @@ import App from "./App.vue";
   //   })
   // );
   // document.querySelector("#objective").innerHTML = game.curr_level_objective();
-
   // // Event listeners.
   // document
   //   .querySelector("#run-button")
@@ -117,12 +111,10 @@ import App from "./App.vue";
   //   document.querySelector("#objective-hide").classList.remove("hidden");
   //   document.querySelector("#objective-show").classList.add("hidden");
   // });
-
   // async function saveScriptHandler() {
   //   const script = editor.state.doc.toString();
   //   await saveScript(script);
   // }
-
   // async function loadScriptHandler() {
   //   const script = await loadScript();
   //   editor.dispatch(
@@ -131,7 +123,6 @@ import App from "./App.vue";
   //     })
   //   );
   // }
-
   // // TODO(albrow): Disallow editing the script while it is running.
   // // TODO(albrow): Add stop and reset buttons.
   // let animationTicker: PIXI.Ticker = null;
@@ -142,10 +133,8 @@ import App from "./App.vue";
   //     animationTicker.stop();
   //   }
   //   drawSprites(game.initial_state());
-
   //   // Remove any error messages from the editor.
   //   editor.dispatch(setDiagnostics(editor.state, []));
-
   //   // Run the simulation.
   //   const script = editor.state.doc.toString();
   //   let runResult: RunResult;
@@ -157,7 +146,6 @@ import App from "./App.vue";
   //     // If there is an error, display it in the editor.
   //     if (e instanceof RhaiError) {
   //       console.log(`${e.message}`);
-
   //       // In Rhai, positions are composed of (line, column), but
   //       // CodeMirror wants the absolute position. We need to do
   //       // some math to convert between the two.
@@ -176,7 +164,6 @@ import App from "./App.vue";
   //         start -= 1;
   //         range = editor.state.wordAt(start);
   //       }
-
   //       editor.dispatch(
   //         setDiagnostics(editor.state, [
   //           {
@@ -192,7 +179,6 @@ import App from "./App.vue";
   //       throw e;
   //     }
   //   }
-
   //   // Step through the replay at GAME_SPEED.
   //   let elapsed = 0;
   //   let states = runResult.states;
@@ -205,7 +191,6 @@ import App from "./App.vue";
   //     if (stepIndex < states.length) {
   //       let step = states[stepIndex];
   //       drawSprites(step.state);
-
   //       // Highlight the line that was just executed. If it's 0,
   //       // don't highlight anything (this usually means we are at
   //       // the beginning of the script).
@@ -235,28 +220,22 @@ import App from "./App.vue";
   //   animationTicker = app.ticker.add(tickerHandler);
   //   animationTicker.start();
   // }
-
   // // Helper function to draw the grid lines.
   // function drawGrid(graphics: PIXI.Graphics) {
   //   graphics.beginFill(GRID_COLOR);
-
   //   // Vertical lines.
   //   for (let i = 0; i <= WIDTH; i++) {
   //     graphics.drawRect(i * (TILE_SIZE + 1), 0, 1, CANVAS_HEIGHT);
   //   }
-
   //   // Horizontal lines.
   //   for (let i = 0; i <= HEIGHT; i++) {
   //     graphics.drawRect(0, i * (TILE_SIZE + 1), CANVAS_WIDTH, 1);
   //   }
-
   //   graphics.endFill();
   // }
-
   // function drawSprites(state: State) {
   //   playerSprite.x = state.player.pos.x * (TILE_SIZE + 1) + 1;
   //   playerSprite.y = state.player.pos.y * (TILE_SIZE + 1) + 1;
-
   //   // For performance, we keep an array of fuel sprites for
   //   // re-use. We add or remove sprites from this list depending
   //   // on the current state.
@@ -279,19 +258,3 @@ import App from "./App.vue";
   //   }
   // }
 })();
-
-// Get the current level from the hash of the URL,
-// or default to 1.
-function getOrSetLevelFromUrl(): number {
-  const hash = window.location.hash;
-  if (hash.length > 0) {
-    const level = parseInt(hash.substring(1));
-    if (!isNaN(level)) {
-      // Level names are 1-indexed in the UI, but under the
-      // hood they are 0-indexed.
-      return level - 1;
-    }
-  }
-  window.location.hash = "1";
-  return 0;
-}

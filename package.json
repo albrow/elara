@@ -6,7 +6,7 @@
   "scripts": {
     "build:wasm": "wasm-pack build ./battle-game-lib --target web --release -- --features=wasm",
     "watch:wasm": "cd ./battle-game-lib && cargo watch -i .gitignore -i \"pkg/*\" -s \"wasm-pack build --target web --dev -- --features=wasm\"",
-    "dev": "npm run watch:wasm & vite",
+    "dev": "vite",
     "build": "npm run build:wasm && vue-tsc --noEmit && vite build",
     "test": "cd ./battle-game-lib && cargo test && wasm-pack test --chrome --headless -- --features=wasm"
   },
@@ -25,6 +25,7 @@
     "browser-fs-access": "^0.31.0",
     "codemirror": "^6.0.1",
     "pixi.js": "^5.3.12",
-    "vue": "^3.2.40"
+    "vue": "^3.2.40",
+    "vue-router": "^4.1.5"
   }
 }

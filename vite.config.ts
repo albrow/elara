@@ -6,6 +6,7 @@ import wasmPack from "vite-plugin-wasm-pack";
 export default defineConfig({
   root: "web",
   plugins: [vue(), wasmPack("./battle-game-lib")],
+  // resolve: { alias: { vue: "vue/dist/vue.esm-bundler.js" } },
   // server: {
   //   watch: {
   //     ignored: ["!**/node_modules/battle-game-lib/**"],
