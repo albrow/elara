@@ -1,105 +1,107 @@
 <script lang="ts">
-import * as PIXI from "pixi.js";
-import { StateWithPos } from "../../battle-game-lib/pkg";
+import { Pos, State } from "../lib/state";
+import { CANVAS_WIDTH, CANVAS_HEIGHT, TILE_SIZE } from "../lib/constants";
+import { PropType } from "vue";
 
-const WIDTH = 12;
-const HEIGHT = 8;
-const TILE_SIZE = 50;
-const CANVAS_WIDTH = (TILE_SIZE + 1) * WIDTH + 1;
-const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
-const GRID_COLOR = 0x000000;
-const BACKGROUND_COLOR = 0xcccccc;
-const PLAYER_SPRITE_Z_INDEX = 200;
-const FUEL_SPRITE_Z_INDEX = 100;
+const PLAYER_Z_INDEX = 200;
+const FUEL_Z_INDEX = 100;
+
+interface Offset {
+    top: string;
+    left: string;
+}
+
+function posToOffset(pos: Pos): Offset {
+    return {
+        left: `${pos.y * (TILE_SIZE + 1) + 1}px`,
+        top: `${pos.x * (TILE_SIZE + 1) + 1}px`,
+    }
+}
 
 export default {
+    props: {
+        width: Number,
+        height: Number,
+        gameState: {
+            type: Object as PropType<State>,
+            required: true,
+        },
+    },
     data() {
         return {
-            gameState: StateWithPos.new(),
-            fuelSprites: [] as PIXI.Sprite[],
-        };
-    },
-    setup() {
-        // Create the application helper and add its render target to the page
-        const app = new PIXI.Application({
-            width: CANVAS_WIDTH,
-            height: CANVAS_HEIGHT,
-            backgroundColor: BACKGROUND_COLOR,
-        });
-
-        // Setting sortableChildren allows us to use zIndex to control
-        // which sprites on drawn on top.
-        app.stage.sortableChildren = true;
-
-        // Draw grid lines.
-        const grid_graphics = new PIXI.Graphics();
-        drawGrid(grid_graphics);
-        app.stage.addChild(grid_graphics);
-
-        // Create the player sprite and add it to the stage.
-        const playerSprite = PIXI.Sprite.from("/images/robot.png");
-        playerSprite.height = TILE_SIZE;
-        playerSprite.width = TILE_SIZE;
-        playerSprite.zIndex = PLAYER_SPRITE_Z_INDEX;
-        app.stage.addChild(playerSprite);
-
-        return {
-            app,
-            playerSprite,
+            tileSize: TILE_SIZE,
+            canvasWidth: CANVAS_WIDTH,
+            canvasHeight: CANVAS_HEIGHT,
+            playerZIndex: PLAYER_Z_INDEX,
+            fuelZIndex: FUEL_Z_INDEX,
         }
     },
-    mounted() {
-        document.querySelector("#board")!.appendChild(this.app.view);
+    computed: {
+        // Converts board dimensions to pixel offsets.
+        playerOffset(): Offset {
+            return posToOffset(this.gameState.player.pos);
+        },
+        fuelOffsets(): Offset[] {
+            return this.gameState.fuel.map(fuel => posToOffset(fuel.pos));
+        },
     },
-    drawSprites() {
-        const gameState = this.gameState.state;
-        const playerSprite = this.playerSprite;
-        const fuelSprites = this.fuelSprites;
-
-        playerSprite.x = gameState.player.pos.x * (TILE_SIZE + 1) + 1;
-        playerSprite.y = gameState.player.pos.y * (TILE_SIZE + 1) + 1;
-
-        // For performance, we keep an array of fuel sprites for
-        // re-use. We add or remove sprites from this list depending
-        // on the current state.
-        if (fuelSprites.length > gameState.fuel.length) {
-            const sprite = fuelSprites.pop();
-            if (sprite) {
-                // TODO(albrow): See if we can remove this ts-ignore comment.
-                // @ts-ignore
-                this.app.stage.removeChild(sprite);
-            }
-        } else if (fuelSprites.length < gameState.fuel.length) {
-            const sprite = PIXI.Sprite.from("/images/fuel.png");
-            sprite.height = TILE_SIZE;
-            sprite.width = TILE_SIZE;
-            sprite.zIndex = FUEL_SPRITE_Z_INDEX;
-            this.app.stage.addChild(sprite);
-            fuelSprites.push(sprite);
-        }
-        for (let i = 0; i < gameState.fuel.length; i++) {
-            const fuelState = gameState.fuel[i];
-            const sprite = fuelSprites[i];
-            sprite.x = fuelState.pos.x * (TILE_SIZE + 1) + 1;
-            sprite.y = fuelState.pos.y * (TILE_SIZE + 1) + 1;
-        }
-    }
 };
-
-function drawGrid(graphics: PIXI.Graphics) {
-    graphics.beginFill(GRID_COLOR);
-    // Vertical lines.
-    for (let i = 0; i <= WIDTH; i++) {
-        graphics.drawRect(i * (TILE_SIZE + 1), 0, 1, CANVAS_HEIGHT);
-    }
-    // Horizontal lines.
-    for (let i = 0; i <= HEIGHT; i++) {
-        graphics.drawRect(0, i * (TILE_SIZE + 1), CANVAS_WIDTH, 1);
-    }
-    graphics.endFill();
-}
 </script>
 
 <template>
-    <div id="board"></div>
+    <div id="board">
+        <table class="table-fixed" :style="{'width': canvasWidth + 'px', 'height': canvasHeight + 'px'}">
+            <tbody>
+                <tr v-for="y in height" :key="y" class="row">
+                    <td v-for="x in width" :key="x" class="square">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <img class="player" src="/images/robot.png"
+        :style="{'width': tileSize + 'px', 'height': tileSize + 'px', 'z-index': playerZIndex, 'left': playerOffset.left, 'top': playerOffset.top}" />
+    <template v-for="fuel in fuelOffsets" :key="fuel">
+        <img class="fuel" src="/images/fuel.png"
+            :style="{'width': tileSize + 'px', 'height': tileSize + 'px', 'z-index': fuelZIndex, 'left': fuel.left, 'top': fuel.top}" />
+    </template>
 </template>
+
+<style>
+table {
+    background-color: #ccc;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+table td,
+table th {
+    border: 1px solid #000;
+}
+
+table tr:first-child th {
+    border-top: 0;
+}
+
+table tr:last-child td {
+    border-bottom: 0;
+}
+
+table tr td:first-child,
+table tr th:first-child {
+    border-left: 0;
+}
+
+table tr td:last-child,
+table tr th:last-child {
+    border-right: 0;
+}
+
+.player {
+    position: absolute;
+}
+
+.fuel {
+    position: absolute;
+}
+</style>

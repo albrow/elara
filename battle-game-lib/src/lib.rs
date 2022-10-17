@@ -87,7 +87,8 @@ impl Game {
     }
 
     pub fn initial_state(&self) -> State {
-        to_js_state(&LEVELS[self.level_index].initial_state())
+        let state = &LEVELS[self.level_index].initial_state();
+        to_js_state(state)
     }
 
     pub fn initial_code(&self) -> String {
@@ -167,11 +168,16 @@ pub struct State {
     pub fuel: Array, // Array<Fuel>
 }
 
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, PartialEq, Debug)]
-pub struct RunResult {
-    pub states: Array,   // Array<StateWithPos>
-    pub outcome: String, // "success" | "failure" | "continue"
+#[wasm_bindgen]
+impl State {
+    pub fn new() -> State {
+        State {
+            player: Player {
+                pos: Pos { x: 0, y: 0 },
+            },
+            fuel: Array::new(),
+        }
+    }
 }
 
 #[wasm_bindgen(getter_with_clone)]
@@ -186,12 +192,7 @@ pub struct StateWithPos {
 impl StateWithPos {
     pub fn new() -> StateWithPos {
         StateWithPos {
-            state: State {
-                player: Player {
-                    pos: Pos { x: 0, y: 0 },
-                },
-                fuel: Array::new(),
-            },
+            state: State::new(),
             line: 0,
             col: 0,
         }
@@ -215,6 +216,13 @@ pub struct Fuel {
 pub struct Pos {
     pub x: i32,
     pub y: i32,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct RunResult {
+    pub states: Array,   // Array<StateWithPos>
+    pub outcome: String, // "success" | "failure" | "continue"
 }
 
 /// Converts script_runner::ScriptResult to a format that is wasm_bindgen

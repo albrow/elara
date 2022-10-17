@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, shallowRef } from 'vue'
+import { defineComponent, ref, shallowRef, Ref } from 'vue'
 import { Codemirror } from 'vue-codemirror'
 import { basicSetup } from "codemirror";
 import { EditorState } from "@codemirror/state";
@@ -13,6 +13,22 @@ import { indentWithTab } from "@codemirror/commands";
 export default defineComponent({
     components: {
         Codemirror
+    },
+    props: {
+        initialCode: String,
+    },
+    data() {
+        return {
+            code: ref(this.initialCode),
+        }
+    },
+    watch: {
+        "initialCode": function (newVal: string, _) {
+            this.code = newVal;
+        },
+        "code": function (newVal: Ref<string>, _) {
+            this.$emit("codeChange", { code: newVal });
+        },
     },
     setup() {
         const extensions = [basicSetup, lintGutter(), keymap.of([indentWithTab])];
@@ -39,38 +55,19 @@ export default defineComponent({
             extensions,
             handleReady,
             // log: console.log
-            log: (...data: any[]) => undefined
+            log: (..._: any[]) => undefined
         }
     },
-    data() {
-        return {
-            code: "console.log('Hello World')"
+    emits: {
+        codeChange(payload: { code: Ref<string> }) {
+            return true;
         }
     }
 })
 </script>
 
 <template>
-    <!-- TODO(albrow): Move control panel to separate template? -->
-    <!-- Control panel -->
-    <div class="grid grid-flow-col bg-gray-800 rounded-t-md p-2">
-        <!-- Left aligned buttons -->
-        <div class="flex justify-start justify-self-start gap-2">
-            <button id="run-button" class="bg-emerald-500 active:bg-emerald-600 rounded p-1 px-3 font-semibold">
-                ▶ Run
-            </button>
-        </div>
-        <!-- Right aligned buttons -->
-        <div class="flex justify-end justify-self-end gap-2">
-            <button id="save-button" class="bg-gray-300 rounded p-1 px-3 font-semibold">
-                Save
-            </button>
-            <button id="load-button" class="bg-gray-300 rounded p-1 px-3 font-semibold">
-                Load
-            </button>
-        </div>
-    </div>
-    <codemirror v-model="code" placeholder="// Code goes here..." :autofocus="true" :extensions="extensions"
+    <codemirror v-model="code" placeholder="Write your code here" :autofocus="true" :extensions="extensions"
         @ready="handleReady" class="w-full h-full overflow-scroll p-0">
     </codemirror>
 </template>
