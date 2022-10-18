@@ -86,35 +86,28 @@ impl Game {
         }
     }
 
-    pub fn initial_state(&self) -> State {
-        let state = &LEVELS[self.level_index].initial_state();
-        to_js_state(state)
+    pub fn get_level_data(&self, level_index: usize) -> LevelData {
+        let level = LEVELS[level_index].as_ref();
+        LevelData {
+            name: level.name().to_string(),
+            objective: level.objective().to_string(),
+            initial_code: level.initial_code().to_string(),
+            initial_state: to_js_state(&level.initial_state()),
+        }
     }
 
-    pub fn initial_code(&self) -> String {
-        LEVELS[self.level_index].initial_code().to_string()
-    }
-
-    pub fn curr_level_objective(&self) -> String {
-        LEVELS[self.level_index].objective().to_string()
-    }
-
-    pub fn reset(&mut self) {
-        self.simulation.borrow_mut().reset();
-        // Drain the channel.
-        while let Ok(_) = self.player_action_rx.try_recv() {}
-    }
-
-    pub fn load_level(&mut self, level_index: usize) {
+    pub async fn run_player_script(
+        &mut self,
+        script: String,
+        level_index: usize,
+    ) -> Result<RunResult, JsValue> {
+        // Reset the simulation and load the level.
         self.level_index = level_index;
         self.simulation
             .borrow_mut()
             .load_level(LEVELS[level_index].as_ref());
         // Drain the channel.
         while let Ok(_) = self.player_action_rx.try_recv() {}
-    }
-
-    pub async fn run_player_script(&mut self, script: String) -> Result<RunResult, JsValue> {
         // Run the script and return an array of states.
         let result = self.script_runner.run(script);
         match result {
@@ -277,4 +270,13 @@ fn to_js_state(state: &simulation::State) -> State {
         },
         fuel: fuel_arr,
     }
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct LevelData {
+    pub name: String,
+    pub objective: String,
+    pub initial_state: State,
+    pub initial_code: String,
 }

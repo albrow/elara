@@ -24,24 +24,12 @@ function posToOffset(pos: Pos): Offset {
   };
 }
 
-// TODO(albrow): Pass in as props instead of hard-coding.
-const state: State = {
-  player: {
-    pos: { x: 0, y: 0 },
-  },
-  fuel: [
-    {
-      pos: { x: 2, y: 2 },
-    },
-  ],
-};
-
 interface BoardProps {
-  // state: State;
+  gameState: State;
 }
 
 export default function Board(props: BoardProps) {
-  const playerOffset = posToOffset(state.player.pos);
+  const playerOffset = posToOffset(props.gameState.player.pos);
 
   return (
     <>
@@ -72,7 +60,7 @@ export default function Board(props: BoardProps) {
           top: playerOffset.top,
         }}
       />
-      {state.fuel.map((fuel, i) => {
+      {props.gameState.fuel.map((fuel, i) => {
         const fuelOffset = posToOffset(fuel.pos);
         return (
           <img
