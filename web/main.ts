@@ -6,19 +6,18 @@ import init, {
 } from "../battle-game-lib/pkg";
 import * as Vue from "vue";
 import App from "./App.vue";
-import * as PIXI from "pixi.js";
 
 import { router } from "./lib/router";
-// import * as editorVew from "./lib/editor";
-import { setDiagnostics } from "./lib/editor";
-import { highlightLine, unhighlightAll } from "./lib/highlight_line";
-import { loadScript, saveScript } from "./lib/storage";
+import VueCodemirror from "vue-codemirror";
 
 (async function () {
   await init();
 
   const vueApp = Vue.createApp(App);
   vueApp.use(router);
+  vueApp.use(VueCodemirror, {
+    extensions: [],
+  });
   vueApp.mount("#app");
 
   // // Determine the initial level to load from the URL.

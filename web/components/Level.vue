@@ -5,6 +5,7 @@ import {
     Game,
     RhaiError,
     RunResult,
+    // Outcome,
 } from "../../battle-game-lib/pkg";
 
 import Board from "./Board.vue";
@@ -15,32 +16,27 @@ import { rustToJsState, rustToJsStateWithPos, State, StateWithPos } from "../lib
 const GAME_SPEED = 1; // steps per second
 const MS_PER_STEP = 1000 / GAME_SPEED;
 const BACKGROUND_COLOR = 0xcccccc;
-
+type Outcome = "continue" | "success" | "failure";
 
 export default {
     components: {
         Board,
         Editor,
     },
-    setup() {
+    data() {
         // Create the game and load the level.
         const game = Game.new(WIDTH, HEIGHT);
-        game.load_level(0);
-        const initialState = rustToJsState(game.initial_state());
-        const initialCode = game.initial_code();
+        const levelIndex = Number(this.$route.params.levelNumber) - 1;
+        game.load_level(levelIndex);
 
-        return {
-            game,
-            stateWithLine: emptyLineState(initialState),
-            initialCode,
-        };
-    },
-    data() {
         return {
             width: WIDTH,
             height: HEIGHT,
+            game: game as Game,
             levelNumber: Number(this.$route.params.levelNumber),
-            currentCode: ref((this.initialCode as unknown) as string),
+            currentCode: game.initial_code(),
+            currentState: emptyLineState(rustToJsState(game.initial_state())),
+            replayTicker: null as number | null,
         };
     },
     beforeMount() {
@@ -60,20 +56,20 @@ export default {
             const levelIndex = Number(route.params.levelNumber) - 1;
             this.game.load_level(levelIndex);
             const initialState = rustToJsState(this.game.initial_state());
-            this.stateWithLine = emptyLineState(initialState);
-            this.initialCode = this.game.initial_code();
+            this.currentState = emptyLineState(initialState);
+            this.currentCode = this.game.initial_code();
         },
         async runScript() {
             // Reset game state and ticker.
             this.game.reset();
-            // if (animationTicker) {
-            //     animationTicker.stop();
-            // }
-            this.stateWithLine = emptyLineState(this.game.initial_state());
+            if (this.replayTicker) {
+                clearInterval(this.replayTicker);
+            }
+            this.currentState = emptyLineState(this.game.initial_state());
+
             // Remove any error messages from the editor.
             // editor.dispatch(setDiagnostics(editor.state, []));
             // Run the simulation.
-            // const script = editor.state.doc.toString();
             let runResult: RunResult;
             try {
                 runResult = (await this.game.run_player_script(
@@ -119,58 +115,54 @@ export default {
                     throw e;
                 }
             }
+            const replayStates = runResult.states.map(rustToJsStateWithPos);
+            await this.runRelay(replayStates, runResult.outcome as Outcome);
+        },
+        async runRelay(states: StateWithPos[], outcome: Outcome) {
+            // Start stepIndex at 1 because we are already rendering the initial state.
+            let stepIndex = 1;
+            this.replayTicker = setInterval(() => {
+                // TODO(albrow): Scroll the editor window to make sure the currently running
+                // line is visible.
+                // See: https://stackoverflow.com/questions/10575343/
+                if (stepIndex < states.length) {
+                    let step = states[stepIndex];
+                    this.currentState = step;
+                    // TODO(albrow): forceUpdate should not be necessary here because
+                    // Vue should be updating the component automatically. Try to remove this
+                    // later if possible.
+                    // this.$forceUpdate();
 
-            // Step through the replay at GAME_SPEED.
-            // TODO(albrow): If we can figure out a different way to drive this ticker,
-            // we may be able to avoid initializing PIXI.Application here and do it in
-            // the Board component instead.
-            // let elapsed = 0;
-            // let states = runResult.states.map(rustToJsStateWithPos);
-            // console.log(states);
-            // let tickerHandler = () => {
-            //     // TODO(albrow): Scroll the editor window to make sure the currently running
-            //     // line is visible.
-            //     // See: https://stackoverflow.com/questions/10575343/
-            //     elapsed += this.app.ticker.elapsedMS;
-            //     const stepIndex = Math.floor(elapsed / MS_PER_STEP);
-            //     if (stepIndex < states.length) {
-            //         let step = states[stepIndex];
-            //         console.log(step);
-            //         this.stateWithLine = step;
-            //         // console.log(`stepIndex: ${stepIndex}`)
-            //         // console.log("step: ", step)
-
-            //         // TODO(albrow): Re-implement this.
-            //         //
-            //         // // Highlight the line that was just executed. If it's 0,
-            //         // // don't highlight anything (this usually means we are at
-            //         // // the beginning of the script).
-            //         // if (step.line == 0) {
-            //         //     unhighlightAll(editor);
-            //         // } else {
-            //         //     highlightLine(editor, step.line);
-            //         // }
-            //     } else {
-            //         switch (runResult.outcome) {
-            //             case "success":
-            //                 alert("You win!");
-            //                 break;
-            //             case "failure":
-            //                 alert("You lose!");
-            //                 break;
-            //             case "continue":
-            //                 alert(
-            //                     "Your code ran without any errors but you didn't finish the objective. Try again!"
-            //                 );
-            //                 break;
-            //         }
-            //         animationTicker!.stop();
-            //         animationTicker!.remove(tickerHandler);
-            //     }
-            // };
-            // animationTicker = this.app.ticker.add(tickerHandler);
-            // animationTicker!.start();
-        }
+                    // TODO(albrow): Re-implement this.
+                    //
+                    // // Highlight the line that was just executed. If it's 0,
+                    // // don't highlight anything (this usually means we are at
+                    // // the beginning of the script).
+                    // if (step.line == 0) {
+                    //     unhighlightAll(editor);
+                    // } else {
+                    //     highlightLine(editor, step.line);
+                    // }
+                } else {
+                    clearInterval(this.replayTicker!);
+                    this.replayTicker = null;
+                    switch (outcome) {
+                        case "success":
+                            alert("You win!");
+                            break;
+                        case "failure":
+                            alert("You lose!");
+                            break;
+                        case "continue":
+                            alert(
+                                "Your code ran without any errors but you didn't finish the objective. Try again!"
+                            );
+                            break;
+                    }
+                }
+                stepIndex += 1;
+            }, MS_PER_STEP);
+        },
     }
 };
 
@@ -211,13 +203,13 @@ function emptyLineState(state: State): StateWithPos {
                     </div>
                     <!-- Editor -->
                     <div id="player-script" name="player-script">
-                        <Editor :initialCode="initialCode" @code-change="handleCodeChange" />
+                        <Editor :initialCode="currentCode" @code-change="handleCodeChange" />
                     </div>
                 </div>
                 <!-- Game board -->
                 <div class="px-4">
                     <div id="board-wrapper" class="relative">
-                        <Board :width="width" :height="height" :game-state="stateWithLine.state" />
+                        <Board :width="width" :height="height" :game-state="currentState.state" />
                     </div>
                 </div>
             </div>

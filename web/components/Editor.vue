@@ -2,15 +2,15 @@
 import { defineComponent, ref, shallowRef, Ref } from 'vue'
 import { Codemirror } from 'vue-codemirror'
 import { basicSetup } from "codemirror";
-import { EditorState } from "@codemirror/state";
-import { lintGutter } from "@codemirror/lint";
+import { EditorState, Extension } from "@codemirror/state";
+import { lintGutter, setDiagnostics } from "@codemirror/lint";
 import { EditorView, keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 
 // TODO(albrow):
 // - Implement button handlers for save, load, and run.
 // - Implement highlighting active line.
-export default defineComponent({
+export default {
     components: {
         Codemirror
     },
@@ -18,9 +18,21 @@ export default defineComponent({
         initialCode: String,
     },
     data() {
+        // const extensions = [basicSetup, lintGutter(), keymap.of([indentWithTab])];
+        const extensions: Extension[] = [];
         return {
             code: ref(this.initialCode),
+            view: null as EditorView | null,
+            extensions: extensions as Extension[],
         }
+    },
+    methods: {
+        handleReady(payload: { view: EditorView }) {
+            this.view = payload.view;
+        },
+        noTypeCheck(x: any) {
+            return x;
+        },
     },
     watch: {
         "initialCode": function (newVal: string, _) {
@@ -30,45 +42,17 @@ export default defineComponent({
             this.$emit("codeChange", { code: newVal });
         },
     },
-    setup() {
-        const extensions = [basicSetup, lintGutter(), keymap.of([indentWithTab])];
-
-        // Codemirror EditorView instance ref
-        const view = shallowRef()
-        const handleReady = (payload: any) => {
-            view.value = payload.view
-        }
-
-        // Status is available at all times via Codemirror EditorView
-        const getCodemirrorStates = () => {
-            // const state = view.value.state
-            // const ranges = state.selection.ranges
-            // const selected = ranges.reduce((r, range) => r + range.to - range.from, 0)
-            // const cursor = ranges[0].anchor
-            // const length = state.doc.length
-            // const lines = state.doc.lines
-            // more state info ...
-            // return ...
-        }
-
-        return {
-            extensions,
-            handleReady,
-            // log: console.log
-            log: (..._: any[]) => undefined
-        }
-    },
     emits: {
         codeChange(payload: { code: Ref<string> }) {
             return true;
         }
-    }
-})
+    },
+}
 </script>
 
 <template>
-    <codemirror v-model="code" placeholder="Write your code here" :autofocus="true" :extensions="extensions"
-        @ready="handleReady" class="w-full h-full overflow-scroll p-0">
+    <codemirror v-model="code" placeholder="Write your code here" :autofocus="true" @ready="handleReady"
+        :extensions="extensions" class="w-full h-full overflow-scroll p-0">
     </codemirror>
 </template>
 
