@@ -1,17 +1,22 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 
-import { Game } from "../../battle-game-lib/pkg";
+import {
+  Game,
+  LevelData,
+  RhaiError,
+  RunResult,
+} from "../../battle-game-lib/pkg";
 import { WIDTH, HEIGHT } from "../lib/constants";
 import {
   rustToJsState,
   StateWithLine,
-  emptyLineState,
   rustToJsStateWithLine,
+  LinePos,
 } from "../lib/state";
 import Board from "../components/board/board";
-import Editor from "../components/editor/editor";
+import Editor, { CodeError } from "../components/editor/editor";
 
 const GAME_SPEED = 1; // steps per second
 const MS_PER_STEP = 1000 / GAME_SPEED;
@@ -33,23 +38,52 @@ export default function Level() {
   const [boardState, setBoardState] = useState(
     rustToJsState(level.initial_state)
   );
+  const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
+  const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
+
+  const onCodeChange = useCallback((newCode: string) => {
+    setCode(newCode);
+    setCodeError(undefined);
+  }, []);
+
+  const resetStateButKeepCode = (levelOverride?: LevelData) => {
+    const levelToLoad = levelOverride || level;
+    setIsRunning(false);
+    setReplaySteps([]);
+    setActiveLine(undefined);
+    setCodeError(undefined);
+    setBoardState(rustToJsState(levelToLoad.initial_state));
+  };
 
   // Reset the relevant state when the URL changes.
   const location = useLocation();
   useEffect(() => {
-    console.log("Detected location change");
-    console.log("Current level number is " + levelNumber);
-    setIsRunning(false);
     const levelIndex = parseInt(levelNumber, 10) - 1;
     const level = game.get_level_data(levelIndex);
+    resetStateButKeepCode(level);
     setCode(level.initial_code);
-    setReplaySteps([]);
-    setBoardState(rustToJsState(level.initial_state));
   }, [location]);
 
   // When the run button is clicked, run the code and start the replay.
   const runHandler = async () => {
-    const result = await game.run_player_script(code, levelIndex);
+    let result: RunResult;
+    try {
+      result = await game.run_player_script(code, levelIndex);
+    } catch (e) {
+      // If there is an error, display it in the editor.
+      if (e instanceof RhaiError) {
+        console.warn(`Rhai Error detected: ${e.message}`);
+        setCodeError({
+          line: e.line,
+          col: e.col,
+          message: e.message,
+        });
+        return;
+      } else {
+        throw e;
+      }
+    }
+    resetStateButKeepCode();
     setOutcome(result.outcome);
     setReplaySteps(result.states.map(rustToJsStateWithLine));
     setBoardState(result.states[0].state);
@@ -57,9 +91,7 @@ export default function Level() {
   };
 
   const stopHandler = () => {
-    setIsRunning(false);
-    setReplaySteps([]);
-    setBoardState(rustToJsState(level.initial_state));
+    resetStateButKeepCode();
   };
 
   // Timer used for replays.
@@ -77,17 +109,16 @@ export default function Level() {
     let stepIndex = 1;
     replayTimerId = setInterval(() => {
       if (stepIndex < replaySteps.length) {
-        setBoardState(replaySteps[stepIndex].state);
+        const step = replaySteps[stepIndex];
+        setBoardState(step.state);
         stepIndex += 1;
-        // TODO(albrow): Implement this.
-        // Highlight the line that was just executed. If it's 0,
-        // don't highlight anything (this usually means we are at
-        // the beginning of the script).
-        // if (step.line == 0) {
-        //   unhighlightAll(editor);
-        // } else {
-        //   highlightLine(editor, step.line);
-        // }
+
+        // Highlight the line that was just executed (if any).
+        if (step.linePos) {
+          setActiveLine(step.linePos);
+        } else {
+          setActiveLine(undefined);
+        }
       } else {
         // There are no more steps to iterate through, display the outcome.
         switch (lastOutcome) {
@@ -107,7 +138,7 @@ export default function Level() {
         if (replayTimerId) {
           clearInterval(replayTimerId);
         }
-        setIsRunning(false);
+        resetStateButKeepCode();
       }
     }, MS_PER_STEP);
     return () => {
@@ -160,7 +191,9 @@ export default function Level() {
           <Editor
             code={code}
             editable={!isRunning}
-            onChange={(code: string) => setCode(code)}
+            onChange={onCodeChange}
+            activeLine={activeLine}
+            codeError={codeError}
           />
         </div>
         <div className="px-4">

@@ -19,8 +19,8 @@ interface Offset {
 
 function posToOffset(pos: Pos): Offset {
   return {
-    left: `${pos.y * (TILE_SIZE + 1) + 1}px`,
-    top: `${pos.x * (TILE_SIZE + 1) + 1}px`,
+    left: `${pos.x * (TILE_SIZE + 1) + 1}px`,
+    top: `${pos.y * (TILE_SIZE + 1) + 1}px`,
   };
 }
 

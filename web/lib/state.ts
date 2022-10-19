@@ -6,6 +6,10 @@ import {
 
 export interface StateWithLine {
   state: State;
+  linePos?: LinePos;
+}
+
+export interface LinePos {
   line: number;
   col: number;
 }
@@ -31,8 +35,6 @@ export interface Fuel {
 export function emptyLineState(state: State): StateWithLine {
   return {
     state,
-    line: 0,
-    col: 0,
   };
 }
 
@@ -58,7 +60,9 @@ export function rustToJsStateWithLine(
 ): StateWithLine {
   return {
     state: rustToJsState(rustStateWithPos.state),
-    line: rustStateWithPos.line,
-    col: rustStateWithPos.col,
+    linePos: {
+      line: rustStateWithPos.line,
+      col: rustStateWithPos.col,
+    },
   };
 }

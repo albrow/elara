@@ -87,41 +87,40 @@ impl ScriptRunner {
                     ASTNode::Stmt(Stmt::FnCall(fn_call_expr, ..)) => {
                         match fn_call_expr.name.as_str() {
                             "wait" => {
-                                // log!("wait detected at line {}", pos.line().unwrap());
                                 let duration =
-                                    eval_call_args_as_int(context, fn_call_expr).unwrap();
+                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
                                 for _ in 0..duration {
                                     step_positions.borrow_mut().push(pos);
                                 }
                                 Ok(DebuggerCommand::StepInto)
                             }
                             "move_right" => {
-                                // log!("move_right detected at line {}", pos.line().unwrap());
-                                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap();
+                                let spaces =
+                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
                                 for _ in 0..spaces {
                                     step_positions.borrow_mut().push(pos);
                                 }
                                 Ok(DebuggerCommand::StepInto)
                             }
                             "move_left" => {
-                                // log!("move_left detected at line {}", pos.line().unwrap());
-                                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap();
+                                let spaces =
+                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
                                 for _ in 0..spaces {
                                     step_positions.borrow_mut().push(pos);
                                 }
                                 Ok(DebuggerCommand::StepInto)
                             }
                             "move_up" => {
-                                // log!("move_up detected at line {}", pos.line().unwrap());
-                                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap();
+                                let spaces =
+                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
                                 for _ in 0..spaces {
                                     step_positions.borrow_mut().push(pos);
                                 }
                                 Ok(DebuggerCommand::StepInto)
                             }
                             "move_down" => {
-                                // log!("move_down detected at line {}", pos.line().unwrap());
-                                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap();
+                                let spaces =
+                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
                                 for _ in 0..spaces {
                                     step_positions.borrow_mut().push(pos);
                                 }
@@ -224,7 +223,15 @@ fn eval_call_args_as_int(
     let arg = fn_call_expr.args[0].clone();
     let arg_val = match arg.get_literal_value() {
         // Arg is a literal. Much easier to parse.
-        Some(dyn_val) => dyn_val.as_int().unwrap(),
+        Some(dyn_val) => match dyn_val.as_int() {
+            Ok(int_val) => int_val,
+            Err(actual_type) => {
+                return Err(Error::new(
+                    ErrorKind::Other,
+                    format!("Expected argument to be an integer but got {}", actual_type),
+                ))
+            }
+        },
         _ => {
             // Arg is not a literal, evaluate it using the current context.
             // To do this, we need to first collect all the modules in the current
