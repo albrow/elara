@@ -11,6 +11,7 @@ const extensions = [basicSetup, lintGutter(), keymap.of([indentWithTab])];
 
 interface EditorProps {
   code: string;
+  editable: boolean;
   onChange: (code: string) => void;
 }
 
@@ -22,6 +23,7 @@ export default function Editor(props: EditorProps) {
         height="357px"
         extensions={extensions}
         onChange={props.onChange}
+        editable={props.editable}
       />
     </div>
   );

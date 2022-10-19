@@ -58,7 +58,6 @@ export default function Level() {
 
   const stopHandler = () => {
     setIsRunning(false);
-    setCode(level.initial_code);
     setReplaySteps([]);
     setBoardState(rustToJsState(level.initial_state));
   };
@@ -158,7 +157,11 @@ export default function Level() {
               </button>
             </div>
           </div>
-          <Editor code={code} onChange={(code: string) => setCode(code)} />
+          <Editor
+            code={code}
+            editable={!isRunning}
+            onChange={(code: string) => setCode(code)}
+          />
         </div>
         <div className="px-4">
           <div id="board-wrapper" className="relative">
