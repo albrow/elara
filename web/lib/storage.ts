@@ -24,12 +24,12 @@ const saveOpts = {
   excludeAcceptAllOption: true,
 };
 
-export async function loadScript(): Promise<string> {
+export async function loadCode(): Promise<string> {
   const handle = await fileOpen(loadOpts);
   return handle.text();
 }
 
-export async function saveScript(script: string): Promise<void> {
+export async function saveCode(script: string): Promise<void> {
   // If file picker API is not supported, use a basic prompt
   // to allow the user to specify a filename.
   if (!supported) {

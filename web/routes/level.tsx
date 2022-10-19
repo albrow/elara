@@ -17,6 +17,7 @@ import {
 } from "../lib/state";
 import Board from "../components/board/board";
 import Editor, { CodeError } from "../components/editor/editor";
+import { saveCode, loadCode } from "../lib/storage";
 
 const GAME_SPEED = 1; // steps per second
 const MS_PER_STEP = 1000 / GAME_SPEED;
@@ -149,6 +150,15 @@ export default function Level() {
     };
   }, [isRunning]);
 
+  const saveCodeHandler = async () => {
+    await saveCode(code);
+  };
+
+  const loadCodeHandler = async () => {
+    const loadedCode = await loadCode();
+    setCode(loadedCode);
+  };
+
   return (
     <div className="2xl:container 2xl:mx-auto my-4">
       <div className="flex flex-row px-4">
@@ -175,14 +185,16 @@ export default function Level() {
             </div>
             <div className="flex justify-end justify-self-end gap-2">
               <button
-                id="save-button"
-                className="bg-gray-300 rounded p-1 px-3 font-semibold"
+                onClick={saveCodeHandler}
+                disabled={isRunning}
+                className="bg-gray-300 rounded p-1 px-3 font-semibold disabled:cursor-not-allowed"
               >
                 Save
               </button>
               <button
-                id="load-button"
-                className="bg-gray-300 rounded p-1 px-3 font-semibold"
+                onClick={loadCodeHandler}
+                disabled={isRunning}
+                className="bg-gray-300 rounded p-1 px-3 font-semibold disabled:cursor-not-allowed"
               >
                 Load
               </button>
