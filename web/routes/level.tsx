@@ -159,6 +159,33 @@ export default function Level() {
     setCode(loadedCode);
   };
 
+  useEffect(() => {
+    const keyListener = async (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        // Save on Ctrl + S or Cmd + S
+        await saveCodeHandler();
+        event.preventDefault();
+        return false;
+      }
+      // Run the script on Shift + Enter
+      if (event.shiftKey && event.key === "Enter" && !isRunning) {
+        await runHandler();
+        event.preventDefault();
+        return false;
+      }
+      // Stop running the script on Escape.
+      if (event.key === "Escape" && isRunning) {
+        stopHandler();
+        event.preventDefault();
+        return false;
+      }
+    };
+    document.addEventListener("keydown", keyListener);
+    return () => {
+      document.removeEventListener("keydown", keyListener);
+    };
+  });
+
   return (
     <div className="2xl:container 2xl:mx-auto my-4">
       <div className="flex flex-row px-4">
