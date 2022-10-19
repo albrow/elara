@@ -4,7 +4,7 @@ import {
   Fuel as RustFuel,
 } from "../../battle-game-lib/pkg";
 
-export interface StateWithPos {
+export interface StateWithLine {
   state: State;
   line: number;
   col: number;
@@ -28,6 +28,14 @@ export interface Fuel {
   pos: Pos;
 }
 
+export function emptyLineState(state: State): StateWithLine {
+  return {
+    state,
+    line: 0,
+    col: 0,
+  };
+}
+
 export function rustToJsState(rustState: RustState): State {
   return {
     player: {
@@ -45,9 +53,9 @@ export function rustToJsState(rustState: RustState): State {
   };
 }
 
-export function rustToJsStateWithPos(
+export function rustToJsStateWithLine(
   rustStateWithPos: RustStateWithPos
-): StateWithPos {
+): StateWithLine {
   return {
     state: rustToJsState(rustStateWithPos.state),
     line: rustStateWithPos.line,
