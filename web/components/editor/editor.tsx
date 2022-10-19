@@ -3,8 +3,7 @@ import { lintGutter, setDiagnostics, Diagnostic } from "@codemirror/lint";
 import { keymap, EditorView } from "@codemirror/view";
 import { useCodeMirror } from "@uiw/react-codemirror";
 import { basicSetup } from "codemirror";
-import { EditorState } from "@codemirror/state";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
 import { LinePos } from "../../lib/state";
@@ -29,10 +28,11 @@ interface EditorProps {
 export default function Editor(props: EditorProps) {
   const editor = useRef<HTMLDivElement | null>(null);
 
-  const { setContainer, view, state } = useCodeMirror({
+  const { setContainer, view } = useCodeMirror({
     onChange: props.onChange,
     height: "357px",
     editable: props.editable,
+    readOnly: !props.editable,
     container: editor.current,
     extensions,
     value: props.code,
@@ -44,7 +44,7 @@ export default function Editor(props: EditorProps) {
     }
   }, [editor.current]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (view) {
       if (props.activeLine) {
         highlightLine(view, props.activeLine.line);
@@ -54,13 +54,13 @@ export default function Editor(props: EditorProps) {
     }
   }, [props.activeLine]);
 
-  useEffect(() => {
-    if (state && view) {
+  useLayoutEffect(() => {
+    if (view) {
       if (props.codeError) {
-        const diagnostic = codeErrorToDiagnostic(view, state, props.codeError);
-        view.dispatch(setDiagnostics(state, [diagnostic]));
+        const diagnostic = codeErrorToDiagnostic(view, props.codeError);
+        view.dispatch(setDiagnostics(view.state, [diagnostic]));
       } else {
-        view.dispatch(setDiagnostics(state, []));
+        view.dispatch(setDiagnostics(view.state, []));
       }
     }
   }, [props.codeError]);
@@ -72,11 +72,7 @@ export default function Editor(props: EditorProps) {
   );
 }
 
-function codeErrorToDiagnostic(
-  view: EditorView,
-  state: EditorState,
-  e: CodeError
-): Diagnostic {
+function codeErrorToDiagnostic(view: EditorView, e: CodeError): Diagnostic {
   // In Rhai, positions are composed of (line, column), but
   // CodeMirror wants the absolute position. We need to do
   // some math to convert between the two.
@@ -86,14 +82,15 @@ function codeErrorToDiagnostic(
   let start = line.from + e.col;
   // Use wordAt to get a range encapsulating the "word" that
   // caused the error.
-  let range = state.wordAt(start);
+  let range = view.state.wordAt(start);
+
   while (range === null) {
     // If wordAt returns null, it means that the error occurred
     // on a non-word character. In this case, we can just
     // decrement the position and try again to find the closest
     // word.
     start -= 1;
-    range = state.wordAt(start);
+    range = view.state.wordAt(start);
   }
   return {
     from: range.from,
