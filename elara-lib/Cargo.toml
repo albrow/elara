@@ -47,7 +47,6 @@ lazy_static = "1.4.0"
 # [target."cfg(debug_assertions)".dependencies]
 # console_error_panic_hook = "0.1.5"
 
-# These crates are used for running unit tests.
 [dev-dependencies]
 wasm-bindgen-test = "0.2.45"
 futures = "0.1.27"

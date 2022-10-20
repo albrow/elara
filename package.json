@@ -6,9 +6,10 @@
   "scripts": {
     "build:wasm": "wasm-pack build ./elara-lib --target web --release -- --features=wasm",
     "watch:wasm": "cd ./elara-lib && cargo watch -i .gitignore -i \"pkg/*\" -s \"wasm-pack build --target web --dev -- --features=wasm\"",
+    "test:rust": "cd ./elara-lib && cargo test",
     "dev": "vite",
     "build": "npm run build:wasm && tsc --noEmit && vite build",
-    "test": "cd ./elara-lib && cargo test && wasm-pack test --chrome --headless -- --features=wasm"
+    "test": "npm run test:rust && wasm-pack test --chrome --headless -- --features=wasm"
   },
   "devDependencies": {
     "@types/react": "^18.0.21",

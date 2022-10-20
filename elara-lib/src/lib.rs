@@ -6,6 +6,7 @@ mod log;
 #[macro_use]
 extern crate lazy_static;
 
+use rhai::EvalAltResult;
 use wasm_bindgen::prelude::*;
 mod simulation;
 use simulation::Simulation;
@@ -16,9 +17,13 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
 mod script_runner;
-use script_runner::ScriptRunner;
+use script_runner::{ScriptResult, ScriptRunner};
 mod levels;
 use levels::{Outcome, LEVELS};
+
+// Width and height of the grid.
+static WIDTH: u32 = 12;
+static HEIGHT: u32 = 8;
 
 #[wasm_bindgen]
 /// Game is the main entry point for the game. It is responsible for
@@ -29,12 +34,12 @@ pub struct Game {
     script_runner: ScriptRunner,
     level_index: usize,
     player_action_rx: Rc<RefCell<mpsc::Receiver<Action>>>,
-    player_action_tx: Rc<RefCell<mpsc::Sender<Action>>>,
+    // player_action_tx: Rc<RefCell<mpsc::Sender<Action>>>,
 }
 
 #[wasm_bindgen]
 impl Game {
-    pub fn new(width: u32, height: u32) -> Game {
+    pub fn new() -> Game {
         console_error_panic_hook::set_once();
 
         // Note(albrow): Below we will establish a few Rcs which are a critical
@@ -49,8 +54,8 @@ impl Game {
 
         // Set up the player actor and add it to the Simulation.
         let bounds = Bounds {
-            max_x: width,
-            max_y: height,
+            max_x: WIDTH,
+            max_y: HEIGHT,
         };
         let player_actor = actors::PlayerChannelActor::new(player_action_rx.clone(), bounds);
 
@@ -72,7 +77,7 @@ impl Game {
             script_runner,
             level_index,
             player_action_rx,
-            player_action_tx,
+            // player_action_tx,
         }
     }
 
@@ -91,24 +96,10 @@ impl Game {
         script: String,
         level_index: usize,
     ) -> Result<RunResult, JsValue> {
-        // Reset the simulation and load the level.
-        self.level_index = level_index;
-        self.simulation
-            .borrow_mut()
-            .load_level(LEVELS[level_index].as_ref());
-        // Drain the channel.
-        while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
-        // Run the script and return an array of states.
-        let result = self.script_runner.run(script);
+        // Run the script and convert the results to the corresponding JS Types.
+        let result = self.run_player_script_internal(script, level_index);
         match result {
-            Ok(result) => {
-                match result.outcome {
-                    Outcome::Success => {}
-                    Outcome::Failure => {}
-                    Outcome::Continue => {}
-                }
-                Ok(to_js_run_result(&result))
-            }
+            Ok(result) => Ok(to_js_run_result(&result)),
             Err(err) => {
                 let message = err.to_string();
                 let col = err.position().position().unwrap_or(0);
@@ -116,6 +107,24 @@ impl Game {
                 Err(JsValue::from(RhaiError { message, line, col }))
             }
         }
+    }
+}
+
+impl Game {
+    fn run_player_script_internal(
+        &mut self,
+        script: String,
+        level_index: usize,
+    ) -> Result<ScriptResult, Box<EvalAltResult>> {
+        // Reset the simulation and load the level.
+        self.level_index = level_index;
+        self.simulation
+            .borrow_mut()
+            .load_level(LEVELS[level_index].as_ref());
+        // Drain the channel.
+        while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
+        // Run the script.
+        return self.script_runner.run(script);
     }
 }
 
@@ -269,4 +278,33 @@ pub struct LevelData {
     pub objective: String,
     pub initial_state: State,
     pub initial_code: String,
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::levels::Outcome;
+    use crate::levels::LEVELS;
+
+    #[test]
+    fn level_one() {
+        let mut game = crate::Game::new();
+
+        // Running the initial code should result in Outcome::Continue.
+        let script = LEVELS[0].initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), 0)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
+        assert_eq!(result.states.len(), 4);
+
+        // Running this code should result in Outcome::Success.
+        let script = "move_right(3); move_down(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), 0)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.states.len(), 7);
+
+        // Note(albrow): There is no way to get Outcome::Failure with this level.
+    }
 }

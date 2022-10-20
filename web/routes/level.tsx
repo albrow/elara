@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 
 import { Game, LevelData, RhaiError, RunResult } from "../../elara-lib/pkg";
-import { WIDTH, HEIGHT } from "../lib/constants";
 import {
   rustToJsState,
   StateWithLine,
@@ -17,7 +16,7 @@ import { saveCode, loadCode } from "../lib/storage";
 const GAME_SPEED = 1; // steps per second
 const MS_PER_STEP = 1000 / GAME_SPEED;
 
-const game = Game.new(WIDTH, HEIGHT);
+const game = Game.new();
 let replayTimerId: number | null = null;
 
 export default function Level() {
