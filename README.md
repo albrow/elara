@@ -29,10 +29,13 @@ npm run build:wasm
 ### Run dev server
 
 Running the dev server requires two separate commands (e.g. run in separate terminal windows).
+In the first terminal window:
 
 ```sh
 npm run watch:wasm
 ```
+
+In the second:
 
 ```sh
 npm run dev
