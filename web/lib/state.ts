@@ -2,7 +2,7 @@ import {
   State as RustState,
   StateWithPos as RustStateWithPos,
   Fuel as RustFuel,
-} from "../../battle-game-lib/pkg";
+} from "../../elara-lib/pkg";
 
 export interface StateWithLine {
   state: State;

@@ -2,12 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 
-import {
-  Game,
-  LevelData,
-  RhaiError,
-  RunResult,
-} from "../../battle-game-lib/pkg";
+import { Game, LevelData, RhaiError, RunResult } from "../../elara-lib/pkg";
 import { WIDTH, HEIGHT } from "../lib/constants";
 import {
   rustToJsState,

@@ -1,14 +1,14 @@
 {
   "author": "Alex Browne <stephenalexbrowne@gmail.com>",
-  "name": "battle-game",
+  "name": "elara",
   "version": "0.1.0",
   "license": "MIT or Apache-2.0",
   "scripts": {
-    "build:wasm": "wasm-pack build ./battle-game-lib --target web --release -- --features=wasm",
-    "watch:wasm": "cd ./battle-game-lib && cargo watch -i .gitignore -i \"pkg/*\" -s \"wasm-pack build --target web --dev -- --features=wasm\"",
+    "build:wasm": "wasm-pack build ./elara-lib --target web --release -- --features=wasm",
+    "watch:wasm": "cd ./elara-lib && cargo watch -i .gitignore -i \"pkg/*\" -s \"wasm-pack build --target web --dev -- --features=wasm\"",
     "dev": "vite",
     "build": "npm run build:wasm && tsc --noEmit && vite build",
-    "test": "cd ./battle-game-lib && cargo test && wasm-pack test --chrome --headless -- --features=wasm"
+    "test": "cd ./elara-lib && cargo test && wasm-pack test --chrome --headless -- --features=wasm"
   },
   "devDependencies": {
     "@types/react": "^18.0.21",

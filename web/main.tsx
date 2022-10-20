@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 
-import init from "../battle-game-lib/pkg/battle_game_lib";
+import init from "../elara-lib/pkg";
 
 (async function () {
   await init();

@@ -1,5 +1,5 @@
 [package]
-name = "battle-game-lib"
+name = "elara-lib"
 description = "A work-in-progress game which teaches you programming in a fun an interactive way :)"
 version = "0.1.0"
 authors = ["Alex Browne <stephenalexbrowne@gmail.com>"]

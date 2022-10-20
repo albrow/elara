@@ -1,6 +1,10 @@
+# Elara
+
+Elara is a a work-in-progress game which teaches you programming in a fun an interactive way :)
+
 ## Project structure
 
-- **battle-game-lib/** is the root directory for the Rust crate. The Rust code is responsible
+- **elara-lib/** is the root directory for the Rust crate. The Rust code is responsible
   for most game logic, but doesn't do any rendering.
 
 - **web/** is the root directory for the web UI. This is the part of the code responsible for
@@ -24,12 +28,18 @@ npm run build:wasm
 
 ### Run dev server
 
-Builds the project and starts a development server on http://127.0.0.1:5173/. Auto-reloads
-when any source code changes.
+Running the dev server requires two separate commands (e.g. run in separate terminal windows).
+
+```sh
+npm run watch:wasm
+```
 
 ```sh
 npm run dev
 ```
+
+This will start a development server on http://127.0.0.1:5173/. Auto-reloads
+when any source code changes.
 
 ### How to build in release mode
 

@@ -1,6 +1,6 @@
 /node_modules
-/battle-game-lib/target
-/battle-game-lib/pkg
+/elara-lib/target
+/elara-lib/pkg
 /wasm-pack.log
-/battle-game-lib/wasm-pack.log
+/elara-lib/wasm-pack.log
 /web/dist
