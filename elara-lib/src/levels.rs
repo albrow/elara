@@ -1,11 +1,12 @@
+use crate::constants::{ERR_OUT_OF_FUEL, MAX_FUEL};
 use crate::simulation::Actor;
-use crate::simulation::{Fuel, Player, Pos, State};
+use crate::simulation::{FuelSpot, Goal, Player, Pos, State};
 
-#[derive(PartialEq, Copy, Clone, Debug)]
+#[derive(PartialEq, Clone, Debug)]
 pub enum Outcome {
     Continue,
     Success,
-    Failure,
+    Failure(String),
 }
 
 pub trait Level {
@@ -22,10 +23,10 @@ pub struct Level1 {}
 
 impl Level for Level1 {
     fn name(&self) -> &'static str {
-        "Fuel Up"
+        "First Steps"
     }
     fn objective(&self) -> &'static str {
-        "Move the drone (🤖) to collect the fuel (⛽️)"
+        "Move the drone (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
         "// This code moves the drone, but it's not going to the right place.\n// Try changing the code to see what happens?\n\nmove_right(1);\nmove_down(2);\n"
@@ -34,17 +35,21 @@ impl Level for Level1 {
         State {
             player: Player {
                 pos: Pos { x: 0, y: 0 },
+                fuel: MAX_FUEL,
             },
-            fuel: vec![Fuel {
+            fuel_spots: vec![],
+            goal: Goal {
                 pos: Pos { x: 3, y: 3 },
-            }],
+            },
         }
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.fuel[0].pos {
+        if state.player.fuel == 0 {
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        } else if state.player.pos == state.goal.pos {
             Outcome::Success
         } else {
             Outcome::Continue
@@ -57,29 +62,36 @@ pub struct Level2 {}
 
 impl Level for Level2 {
     fn name(&self) -> &'static str {
-        "Fuel Up (Part Two)"
+        "Fuel Up"
     }
     fn objective(&self) -> &'static str {
-        "Move the drone (🤖) to collect the fuel (⛽️)"
+        "First move the drone (🤖) to collect the fuel (⛽️), then move to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        "// This is level two.\n\n"
+        "// If you try moving straight to the goal, you'll run out of fuel first.\n// Try collecting some fuel before moving to the goal.\n\nmove_down(4);\nmove_right(4);\n"
     }
     fn initial_state(&self) -> State {
         State {
             player: Player {
-                pos: Pos { x: 0, y: 7 },
+                pos: Pos { x: 0, y: 0 },
+                fuel: 5,
             },
-            fuel: vec![Fuel {
-                pos: Pos { x: 4, y: 2 },
+            fuel_spots: vec![FuelSpot {
+                pos: Pos { x: 0, y: 5 },
+                collected: false,
             }],
+            goal: Goal {
+                pos: Pos::new(4, 4),
+            },
         }
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.fuel[0].pos {
+        if state.player.fuel == 0 {
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        } else if state.player.pos == state.goal.pos {
             Outcome::Success
         } else {
             Outcome::Continue

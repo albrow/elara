@@ -32,14 +32,6 @@ impl Simulation {
         self.last_outcome = Outcome::Continue;
     }
 
-    pub fn reset(&mut self) {
-        self.state_idx = 0;
-        self.states.clear();
-        self.states.push(self.level.initial_state().clone());
-        self.last_outcome = Outcome::Continue;
-        // TODO(albrow): May need to reset other actors here.
-    }
-
     pub fn curr_state(&self) -> State {
         self.states[self.state_idx].clone()
     }
@@ -48,15 +40,16 @@ impl Simulation {
         self.states.to_vec()
     }
 
+    // TODO(albrow): Can we avoid cloning the outcome here and in other places?
     pub fn last_outcome(&self) -> Outcome {
-        self.last_outcome
+        self.last_outcome.clone()
     }
 
     pub fn step_forward(&mut self) -> Outcome {
         // If the current outcome is not Continue, then we can't take any more
         // steps forward. This happens if the player has already won or lost.
         if self.last_outcome != Outcome::Continue {
-            return self.last_outcome;
+            return self.last_outcome.clone();
         }
 
         // Otherwise, compute the next state and store it.
@@ -71,14 +64,14 @@ impl Simulation {
                 self.states.push(next_state);
                 self.state_idx += 1;
                 self.last_outcome = Outcome::Success;
-                return self.last_outcome;
+                return outcome;
             }
-            Outcome::Failure => {
+            Outcome::Failure(_) => {
                 log!("You lose!");
                 self.states.push(next_state);
                 self.state_idx += 1;
-                self.last_outcome = Outcome::Failure;
-                return self.last_outcome;
+                self.last_outcome = outcome.clone();
+                return outcome;
             }
             Outcome::Continue => {}
         }
@@ -96,23 +89,31 @@ impl Simulation {
         );
         self.states.push(next_state);
         self.state_idx += 1;
-        self.last_outcome
+        self.last_outcome.clone()
     }
 }
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct State {
     pub player: Player,
-    pub fuel: Vec<Fuel>,
+    pub fuel_spots: Vec<FuelSpot>,
+    pub goal: Goal,
 }
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct Player {
     pub pos: Pos,
+    pub fuel: u32,
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub struct Fuel {
+pub struct FuelSpot {
+    pub pos: Pos,
+    pub collected: bool,
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct Goal {
     pub pos: Pos,
 }
 
@@ -120,17 +121,6 @@ pub struct Fuel {
 pub struct Pos {
     pub x: u32,
     pub y: u32,
-}
-
-impl State {
-    pub fn new() -> State {
-        State {
-            player: Player {
-                pos: Pos::new(0, 0),
-            },
-            fuel: vec![],
-        }
-    }
 }
 
 impl Pos {

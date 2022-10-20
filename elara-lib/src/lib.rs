@@ -12,6 +12,8 @@ mod simulation;
 use simulation::Simulation;
 mod actors;
 use actors::{Action, Bounds};
+mod constants;
+use constants::{HEIGHT, WIDTH};
 use js_sys::Array;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -20,10 +22,6 @@ mod script_runner;
 use script_runner::{ScriptResult, ScriptRunner};
 mod levels;
 use levels::{Outcome, LEVELS};
-
-// Width and height of the grid.
-static WIDTH: u32 = 12;
-static HEIGHT: u32 = 8;
 
 #[wasm_bindgen]
 /// Game is the main entry point for the game. It is responsible for
@@ -214,7 +212,7 @@ pub struct Pos {
 #[derive(Clone, PartialEq, Debug)]
 pub struct RunResult {
     pub states: Array,   // Array<StateWithPos>
-    pub outcome: String, // "success" | "failure" | "continue"
+    pub outcome: String, // "success" | "continue" | "other failure message"
 }
 
 /// Converts script_runner::ScriptResult to a format that is wasm_bindgen
@@ -238,18 +236,17 @@ fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
     }
     RunResult {
         states: arr,
-        outcome: match result.outcome {
-            Outcome::Success => "success",
-            Outcome::Failure => "failure",
-            Outcome::Continue => "continue",
-        }
-        .to_string(),
+        outcome: match result.outcome.clone() {
+            Outcome::Success => String::from("success"),
+            Outcome::Failure(msg) => msg,
+            Outcome::Continue => String::from("continue"),
+        },
     }
 }
 
 fn to_js_state(state: &simulation::State) -> State {
-    let fuel_arr = Array::new_with_length(state.fuel.len() as u32);
-    for (i, fuel) in state.fuel.iter().enumerate() {
+    let fuel_arr = Array::new_with_length(state.fuel_spots.len() as u32);
+    for (i, fuel) in state.fuel_spots.iter().enumerate() {
         fuel_arr.set(
             i as u32,
             JsValue::from(Fuel {
@@ -282,29 +279,64 @@ pub struct LevelData {
 
 #[cfg(test)]
 mod tests {
+    use crate::constants::ERR_OUT_OF_FUEL;
     use crate::levels::Outcome;
     use crate::levels::LEVELS;
 
     #[test]
     fn level_one() {
         let mut game = crate::Game::new();
+        let level_index = 0;
 
         // Running the initial code should result in Outcome::Continue.
-        let script = LEVELS[0].initial_code();
+        let script = LEVELS[level_index].initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), 0)
+            .run_player_script_internal(script.to_string(), level_index)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
-        assert_eq!(result.states.len(), 4);
 
         // Running this code should result in Outcome::Success.
         let script = "move_right(3); move_down(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), 0)
+            .run_player_script_internal(script.to_string(), level_index)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.states.len(), 7);
 
-        // Note(albrow): There is no way to get Outcome::Failure with this level.
+        // Running this code should result in Outcome::Failure due to running out
+        // of fuel.
+        let script = "for x in 0..25 {move_right(1); move_left(1);}\nmove_right(3); move_down(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
+    }
+
+    #[test]
+    fn level_two() {
+        let mut game = crate::Game::new();
+        let level_index = 1;
+
+        // Running the initial code should result in Outcome::Failure due to
+        // running out of fuel.
+        let script = LEVELS[level_index].initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
+
+        // Running this code should result in Outcome::Success.
+        let script = "move_down(5); move_up(1); move_right(4);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.states.len(), 11);
     }
 }
