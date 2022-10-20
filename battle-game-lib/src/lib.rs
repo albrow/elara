@@ -20,13 +20,6 @@ use script_runner::ScriptRunner;
 mod levels;
 use levels::{Outcome, LEVELS};
 
-// Note(albrow): These channels will be used to communicate between the
-// Rhai script and the Rust code, particularly the Simulation. They are
-// ultimately used in a function which is registered with the Rhai Engine via
-// register_function, which requires a static lifetime.
-static mut PLAYER_ACTION_TX: Option<mpsc::Sender<Action>> = None;
-static mut PLAYER_ACTION_RX: Option<mpsc::Receiver<Action>> = None;
-
 #[wasm_bindgen]
 /// Game is the main entry point for the game. It is responsible for
 /// managing state, running user scripts, and gluing all the pieces
@@ -35,8 +28,8 @@ pub struct Game {
     simulation: Rc<RefCell<Simulation>>,
     script_runner: ScriptRunner,
     level_index: usize,
-    player_action_rx: &'static mpsc::Receiver<Action>,
-    player_action_tx: &'static mpsc::Sender<Action>,
+    player_action_rx: Rc<RefCell<mpsc::Receiver<Action>>>,
+    player_action_tx: Rc<RefCell<mpsc::Sender<Action>>>,
 }
 
 #[wasm_bindgen]
@@ -44,25 +37,22 @@ impl Game {
     pub fn new(width: u32, height: u32) -> Game {
         console_error_panic_hook::set_once();
 
-        // Initialize static channels. Note that unsafe code should
-        // be isolated to this function. Any other part of the code
-        // that needs to access the channels can do so by accessing
-        // the properties of the Game.
-        unsafe {
-            let (player_tx, player_rx) = mpsc::channel();
-            PLAYER_ACTION_TX = Some(player_tx);
-            PLAYER_ACTION_RX = Some(player_rx);
-        }
-
-        let player_action_rx = unsafe { PLAYER_ACTION_RX.as_ref().unwrap() };
-        let player_action_tx = unsafe { PLAYER_ACTION_TX.as_ref().unwrap() };
+        // Note(albrow): Below we will establish a few Rcs which are a critical
+        // part of the game (e.g. simulation and player_action_tx). They are
+        // ultimately used with the Rhai engine via register_fn or
+        // register_debugger. Normally Rhai only allows static lifetimes in this
+        // context, but we can workaround that by using Rc<RefCell<>>. See
+        // https://rhai.rs/book/patterns/control.html for more context.
+        let (tx, rx) = mpsc::channel();
+        let player_action_tx = Rc::new(RefCell::new(tx));
+        let player_action_rx = Rc::new(RefCell::new(rx));
 
         // Set up the player actor and add it to the Simulation.
         let bounds = Bounds {
             max_x: width,
             max_y: height,
         };
-        let player_actor = actors::PlayerChannelActor::new(player_action_rx, bounds);
+        let player_actor = actors::PlayerChannelActor::new(player_action_rx.clone(), bounds);
 
         // Simulation must be wrapped in Rc<RefCell> in order to be
         // used in the script_runner. This is due to a constraint
@@ -75,10 +65,10 @@ impl Game {
 
         // Set up the script runner, which holds references to the
         // player_tx channel and the simulation and glues them together.
-        let script_runner = ScriptRunner::new(simulation.clone(), player_action_tx);
+        let script_runner = ScriptRunner::new(simulation.clone(), player_action_tx.clone());
 
         Game {
-            simulation: simulation,
+            simulation,
             script_runner,
             level_index,
             player_action_rx,
@@ -107,7 +97,7 @@ impl Game {
             .borrow_mut()
             .load_level(LEVELS[level_index].as_ref());
         // Drain the channel.
-        while let Ok(_) = self.player_action_rx.try_recv() {}
+        while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
         // Run the script and return an array of states.
         let result = self.script_runner.run(script);
         match result {

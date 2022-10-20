@@ -1,5 +1,7 @@
 use crate::simulation::{Actor, Player, Pos, State};
+use std::cell::RefCell;
 use std::cmp;
+use std::rc::Rc;
 use std::sync::mpsc;
 pub enum Action {
     Wait,
@@ -19,12 +21,12 @@ pub enum Direction {
 }
 
 pub struct PlayerChannelActor {
-    rx: &'static mpsc::Receiver<Action>,
+    rx: Rc<RefCell<mpsc::Receiver<Action>>>,
     bounds: Bounds,
 }
 
 impl PlayerChannelActor {
-    pub fn new(rx: &'static mpsc::Receiver<Action>, bounds: Bounds) -> PlayerChannelActor {
+    pub fn new(rx: Rc<RefCell<mpsc::Receiver<Action>>>, bounds: Bounds) -> PlayerChannelActor {
         PlayerChannelActor { rx, bounds }
     }
 }
@@ -33,7 +35,8 @@ impl Actor for PlayerChannelActor {
     fn apply(&mut self, state: State) -> State {
         let mut new_x = state.player.pos.x;
         let mut new_y = state.player.pos.y;
-        match self.rx.try_recv() {
+        let rx = self.rx.clone();
+        match rx.borrow().try_recv() {
             Ok(Action::Wait) => {}
             Ok(Action::Move(direction)) => match direction {
                 Direction::Up => {

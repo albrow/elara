@@ -12,7 +12,8 @@ use std::sync::mpsc;
 /// between the Rhai Engine and the Simulation.
 pub struct ScriptRunner {
     simulation: Rc<RefCell<Simulation>>,
-    player_action_tx: &'static mpsc::Sender<Action>,
+    /// Used to send actions from the script to the PlayerChannelActor.
+    player_action_tx: Rc<RefCell<mpsc::Sender<Action>>>,
     /// Tracks which lines of code in the user script cause the simulation to
     /// step forward. This is used to highlight active/running lines of code in
     /// the editor UI.
@@ -28,7 +29,7 @@ pub struct ScriptResult {
 impl ScriptRunner {
     pub fn new(
         simulation: Rc<RefCell<Simulation>>,
-        player_action_tx: &'static mpsc::Sender<Action>,
+        player_action_tx: Rc<RefCell<mpsc::Sender<Action>>>,
     ) -> ScriptRunner {
         ScriptRunner {
             simulation,
@@ -139,44 +140,47 @@ impl ScriptRunner {
     /// Each function will simply send the corresponding action(s) through
     /// the channel.
     fn register_player_funcs(&self, engine: &mut Engine) {
-        // For each function, we clone and borrow the simulation. This is
-        // a workaround due to the fact that the Rhai engine does not allow
-        // for mutable non-static references in handlers. See
+        // For each function, we clone and borrow some pointers (e.g. simulation and
+        // player_action_tx). This is a workaround due to the fact that the Rhai engine
+        // does not allow for mutable non-static references in handlers. See
         // https://rhai.rs/book/patterns/control.html for more context.
-        let tx = self.player_action_tx;
+        let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("wait", move |duration: i64| {
             for _ in 0..duration {
-                tx.send(Action::Wait).unwrap();
+                tx.borrow().send(Action::Wait).unwrap();
                 simulation.borrow_mut().step_forward();
             }
         });
-
+        let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_right", move |spaces: i64| {
             for _ in 0..spaces {
-                tx.send(Action::Move(Direction::Right)).unwrap();
+                tx.borrow().send(Action::Move(Direction::Right)).unwrap();
                 simulation.borrow_mut().step_forward();
             }
         });
+        let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_left", move |spaces: i64| {
             for _ in 0..spaces {
-                tx.send(Action::Move(Direction::Left)).unwrap();
+                tx.borrow().send(Action::Move(Direction::Left)).unwrap();
                 simulation.borrow_mut().step_forward();
             }
         });
+        let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_up", move |spaces: i64| {
             for _ in 0..spaces {
-                tx.send(Action::Move(Direction::Up)).unwrap();
+                tx.borrow().send(Action::Move(Direction::Up)).unwrap();
                 simulation.borrow_mut().step_forward();
             }
         });
+        let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_down", move |spaces: i64| {
             for _ in 0..spaces {
-                tx.send(Action::Move(Direction::Down)).unwrap();
+                tx.borrow().send(Action::Move(Direction::Down)).unwrap();
                 simulation.borrow_mut().step_forward();
             }
         });
