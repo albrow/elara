@@ -14,14 +14,14 @@ mod actors;
 use actors::{Action, Bounds};
 mod constants;
 use constants::{HEIGHT, WIDTH};
-use js_sys::Array;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
 mod script_runner;
 use script_runner::{ScriptResult, ScriptRunner};
 mod levels;
-use levels::{Outcome, LEVELS};
+use levels::LEVELS;
+mod js_types;
 
 #[wasm_bindgen]
 /// Game is the main entry point for the game. It is responsible for
@@ -79,13 +79,13 @@ impl Game {
         }
     }
 
-    pub fn get_level_data(&self, level_index: usize) -> LevelData {
+    pub fn get_level_data(&self, level_index: usize) -> js_types::LevelData {
         let level = LEVELS[level_index].as_ref();
-        LevelData {
+        js_types::LevelData {
             name: level.name().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
-            initial_state: to_js_state(&level.initial_state()),
+            initial_state: js_types::to_js_state(&level.initial_state()),
         }
     }
 
@@ -93,16 +93,16 @@ impl Game {
         &mut self,
         script: String,
         level_index: usize,
-    ) -> Result<RunResult, JsValue> {
+    ) -> Result<js_types::RunResult, JsValue> {
         // Run the script and convert the results to the corresponding JS Types.
         let result = self.run_player_script_internal(script, level_index);
         match result {
-            Ok(result) => Ok(to_js_run_result(&result)),
+            Ok(result) => Ok(js_types::to_js_run_result(&result)),
             Err(err) => {
                 let message = err.to_string();
                 let col = err.position().position().unwrap_or(0);
                 let line = err.position().line().unwrap_or(0);
-                Err(JsValue::from(RhaiError { message, line, col }))
+                Err(JsValue::from(js_types::RhaiError { message, line, col }))
             }
         }
     }
@@ -124,157 +124,6 @@ impl Game {
         // Run the script.
         return self.script_runner.run(script);
     }
-}
-
-#[wasm_bindgen]
-pub struct RhaiError {
-    message: String,
-    line: usize,
-    col: usize,
-}
-
-#[wasm_bindgen]
-impl RhaiError {
-    #[wasm_bindgen(getter)]
-    pub fn message(&self) -> String {
-        self.message.clone()
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn line(&self) -> usize {
-        self.line
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn col(&self) -> usize {
-        self.col
-    }
-}
-
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, PartialEq, Debug)]
-pub struct State {
-    pub player: Player,
-    pub fuel: Array, // Array<Fuel>
-}
-
-#[wasm_bindgen]
-impl State {
-    pub fn new() -> State {
-        State {
-            player: Player {
-                pos: Pos { x: 0, y: 0 },
-            },
-            fuel: Array::new(),
-        }
-    }
-}
-
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, PartialEq, Debug)]
-pub struct StateWithPos {
-    pub state: State,
-    pub line: i32,
-    pub col: i32,
-}
-
-#[wasm_bindgen]
-impl StateWithPos {
-    pub fn new() -> StateWithPos {
-        StateWithPos {
-            state: State::new(),
-            line: 0,
-            col: 0,
-        }
-    }
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Player {
-    pub pos: Pos,
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Fuel {
-    pub pos: Pos,
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Pos {
-    pub x: i32,
-    pub y: i32,
-}
-
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, PartialEq, Debug)]
-pub struct RunResult {
-    pub states: Array,   // Array<StateWithPos>
-    pub outcome: String, // "success" | "continue" | "other failure message"
-}
-
-/// Converts script_runner::ScriptResult to a format that is wasm_bindgen
-/// compatible and can ultimately be used by the JavaScript code.
-fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
-    let arr = Array::new_with_length(result.states.len() as u32);
-    for (i, (state, pos)) in result
-        .states
-        .iter()
-        .zip(result.positions.iter())
-        .enumerate()
-    {
-        arr.set(
-            i as u32,
-            JsValue::from(StateWithPos {
-                state: to_js_state(state),
-                line: pos.line().unwrap_or(0) as i32,
-                col: pos.position().unwrap_or(0) as i32,
-            }),
-        );
-    }
-    RunResult {
-        states: arr,
-        outcome: match result.outcome.clone() {
-            Outcome::Success => String::from("success"),
-            Outcome::Failure(msg) => msg,
-            Outcome::Continue => String::from("continue"),
-        },
-    }
-}
-
-fn to_js_state(state: &simulation::State) -> State {
-    let fuel_arr = Array::new_with_length(state.fuel_spots.len() as u32);
-    for (i, fuel) in state.fuel_spots.iter().enumerate() {
-        fuel_arr.set(
-            i as u32,
-            JsValue::from(Fuel {
-                pos: Pos {
-                    x: fuel.pos.x as i32,
-                    y: fuel.pos.y as i32,
-                },
-            }),
-        );
-    }
-    State {
-        player: Player {
-            pos: Pos {
-                x: state.player.pos.x as i32,
-                y: state.player.pos.y as i32,
-            },
-        },
-        fuel: fuel_arr,
-    }
-}
-
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, PartialEq, Debug)]
-pub struct LevelData {
-    pub name: String,
-    pub objective: String,
-    pub initial_state: State,
-    pub initial_code: String,
 }
 
 #[cfg(test)]

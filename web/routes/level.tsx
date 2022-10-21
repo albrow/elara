@@ -2,13 +2,14 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 
-import { Game, LevelData, RhaiError, RunResult } from "../../elara-lib/pkg";
 import {
-  rustToJsState,
+  Game,
+  LevelData,
+  RhaiError,
+  RunResult,
   StateWithLine,
-  rustToJsStateWithLine,
   LinePos,
-} from "../lib/state";
+} from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { CodeError } from "../components/editor/editor";
 import { saveCode, loadCode } from "../lib/storage";
@@ -30,9 +31,7 @@ export default function Level() {
   const [isRunning, setIsRunning] = useState(false);
   const [lastOutcome, setOutcome] = useState("continue");
   const [replaySteps, setReplaySteps] = useState<readonly StateWithLine[]>([]);
-  const [boardState, setBoardState] = useState(
-    rustToJsState(level.initial_state)
-  );
+  const [boardState, setBoardState] = useState(level.initial_state);
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
 
@@ -47,7 +46,7 @@ export default function Level() {
     setReplaySteps([]);
     setActiveLine(undefined);
     setCodeError(undefined);
-    setBoardState(rustToJsState(levelToLoad.initial_state));
+    setBoardState(levelToLoad.initial_state);
   };
 
   // Reset the relevant state when the URL changes.
@@ -80,7 +79,7 @@ export default function Level() {
     }
     resetStateButKeepCode();
     setOutcome(result.outcome);
-    setReplaySteps(result.states.map(rustToJsStateWithLine));
+    setReplaySteps(result.states);
     setBoardState(result.states[0].state);
     setIsRunning(true);
   };
@@ -109,8 +108,8 @@ export default function Level() {
         stepIndex += 1;
 
         // Highlight the line that was just executed (if any).
-        if (step.linePos) {
-          setActiveLine(step.linePos);
+        if (step.line_pos) {
+          setActiveLine(step.line_pos);
         } else {
           setActiveLine(undefined);
         }
@@ -120,13 +119,13 @@ export default function Level() {
           case "success":
             alert("You win!");
             break;
-          case "failure":
-            alert("You lose!");
-            break;
           case "continue":
             alert(
               "Your code ran without any errors but you didn't finish the objective. Try again!"
             );
+            break;
+          default:
+            alert(lastOutcome);
             break;
         }
         // Stop the timer.

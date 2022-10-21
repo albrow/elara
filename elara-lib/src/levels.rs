@@ -68,7 +68,7 @@ impl Level for Level2 {
         "First move the drone (🤖) to collect the fuel (⛽️), then move to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        "// If you try moving straight to the goal, you'll run out of fuel first.\n// Try collecting some fuel before moving to the goal.\n\nmove_down(4);\nmove_right(4);\n"
+        "// If you try moving straight to the goal, you'll run out of fuel\n// first. Try collecting some fuel before moving to the goal.\n\nmove_down(4);\nmove_right(4);\n"
     }
     fn initial_state(&self) -> State {
         State {

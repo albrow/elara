@@ -66,12 +66,12 @@ impl Simulation {
                 self.last_outcome = Outcome::Success;
                 return outcome;
             }
-            Outcome::Failure(_) => {
-                log!("You lose!");
+            Outcome::Failure(msg) => {
+                log!("Failure: {}", msg);
                 self.states.push(next_state);
                 self.state_idx += 1;
-                self.last_outcome = outcome.clone();
-                return outcome;
+                self.last_outcome = Outcome::Failure(msg.clone());
+                return self.last_outcome.clone();
             }
             Outcome::Continue => {}
         }

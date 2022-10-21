@@ -21,9 +21,6 @@ table th {
 #board table tr th:last-child {
   border-right: 0;
 }
-.player {
-  position: absolute;
-}
-.fuel {
+.sprite {
   position: absolute;
 }
