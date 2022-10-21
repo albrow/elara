@@ -1,31 +1,18 @@
 // import { Pos, State } from "../../lib/state";
 
-import { FuelSpot, Pos, State } from "../../../elara-lib/pkg";
+import { FuelSpot, State } from "../../../elara-lib/pkg";
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
   TILE_SIZE,
   WIDTH,
   HEIGHT,
+  FUEL_Z_INDEX,
+  GOAL_Z_INDEX,
 } from "../../lib/constants";
-import { range } from "../../lib/utils";
+import { range, posToOffset } from "../../lib/utils";
+import Player from "../player/player";
 import "./board.css";
-
-const PLAYER_Z_INDEX = 200;
-const FUEL_Z_INDEX = 100;
-const GOAL_Z_INDEX = 100;
-
-interface Offset {
-  top: string;
-  left: string;
-}
-
-function posToOffset(pos: Pos): Offset {
-  return {
-    left: `${pos.x * (TILE_SIZE + 1) + 1}px`,
-    top: `${pos.y * (TILE_SIZE + 1) + 1}px`,
-  };
-}
 
 interface BoardProps {
   gameState: State;
@@ -53,17 +40,7 @@ export default function Board(props: BoardProps) {
           </tbody>
         </table>
       </div>
-      <img
-        className="player sprite"
-        src="/images/robot.png"
-        style={{
-          width: `${TILE_SIZE}px`,
-          height: `${TILE_SIZE}px`,
-          zIndex: PLAYER_Z_INDEX,
-          left: playerOffset.left,
-          top: playerOffset.top,
-        }}
-      />
+      <Player offset={playerOffset} fuel={props.gameState.player.fuel} />
       <img
         className="flag sprite"
         src="/images/flag.png"
@@ -77,12 +54,14 @@ export default function Board(props: BoardProps) {
       />
       {(props.gameState.fuel_spots as FuelSpot[]).map((fuel_spot, i) => {
         const fuelOffset = posToOffset(fuel_spot.pos);
+        if (fuel_spot.collected) {
+          return;
+        }
         return (
           <img
             key={i}
             className="fuel sprite"
             src="/images/fuel.png"
-            hidden={fuel_spot.collected}
             style={{
               width: TILE_SIZE + "px",
               height: TILE_SIZE + "px",
