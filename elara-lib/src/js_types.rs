@@ -46,8 +46,8 @@ pub struct StateWithLine {
 #[wasm_bindgen]
 #[derive(Clone, PartialEq, Debug)]
 pub struct LinePos {
-    line: i32,
-    col: i32,
+    pub line: i32,
+    pub col: i32,
 }
 
 #[wasm_bindgen]

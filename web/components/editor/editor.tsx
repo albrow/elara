@@ -6,7 +6,7 @@ import { basicSetup } from "codemirror";
 import { useEffect, useLayoutEffect, useRef } from "react";
 
 import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
-import { LinePos } from "../../lib/state";
+import { LinePos } from "../../../elara-lib/pkg";
 import "./editor.css";
 
 const extensions = [basicSetup, lintGutter(), keymap.of([indentWithTab])];
