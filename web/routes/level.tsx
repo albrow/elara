@@ -181,6 +181,17 @@ export default function Level() {
 
   return (
     <div className="2xl:container 2xl:mx-auto my-4">
+      <div className="flex flex-row px-8 mb-5">
+        <div className="flex w-full flex-col">
+          <h2 className="text-2xl font-bold">
+            Level {levelNumber}: {level.name}
+          </h2>
+          <p>
+            <span className="font-bold text-lg">Objective:</span>{" "}
+            {level.objective}
+          </p>
+        </div>
+      </div>
       <div className="flex flex-row px-4">
         <div className="flex w-full flex-col">
           {/* TODO(albrow): Move control panel to separate template? */}
@@ -207,14 +218,14 @@ export default function Level() {
               <button
                 onClick={saveCodeHandler}
                 disabled={isRunning}
-                className="bg-gray-300 rounded p-1 px-3 font-semibold disabled:cursor-not-allowed"
+                className="bg-gray-300 active:bg-gray-400 rounded p-1 px-3 font-semibold disabled:cursor-not-allowed"
               >
                 Save
               </button>
               <button
                 onClick={loadCodeHandler}
                 disabled={isRunning}
-                className="bg-gray-300 rounded p-1 px-3 font-semibold disabled:cursor-not-allowed"
+                className="bg-gray-300 active:bg-gray-400 rounded p-1 px-3 font-semibold disabled:cursor-not-allowed"
               >
                 Load
               </button>
