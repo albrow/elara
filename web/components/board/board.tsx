@@ -10,6 +10,7 @@ import {
 import { range, posToOffset } from "../../lib/utils";
 import Player from "../player/player";
 import FuelSpotCmpt from "../fuel_spot/fuel_spot";
+import Square from "../square/square";
 import "./board.css";
 
 interface BoardProps {
@@ -31,7 +32,7 @@ export default function Board(props: BoardProps) {
             {range(HEIGHT).map((y) => (
               <tr key={y} className="row">
                 {range(WIDTH).map((x) => (
-                  <td key={x} className="square"></td>
+                  <Square key={"" + x + "," + y} x={x} y={y} />
                 ))}
               </tr>
             ))}
