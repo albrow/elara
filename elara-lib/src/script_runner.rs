@@ -1,12 +1,14 @@
-use crate::actors::{Action, Direction};
-use crate::levels::Outcome;
-use crate::simulation::{Pos, Simulation, State};
 use rhai::debugger::DebuggerCommand;
 use rhai::{ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt};
 use std::cell::RefCell;
 use std::io::{Error, ErrorKind};
 use std::rc::Rc;
 use std::sync::mpsc;
+
+use crate::actors::{Action, Direction};
+use crate::constants::ERR_SIMULATION_END;
+use crate::levels::Outcome;
+use crate::simulation::{Pos, Simulation, State};
 
 /// Responsible for running user scripts and coordinating communication
 /// between the Rhai Engine and the Simulation.
@@ -40,9 +42,6 @@ impl ScriptRunner {
         }
     }
 
-    // TODO(albrow): Stop running the script (i.e. stop stepping forward) if
-    // we get Outcome::Success or Outcome::Failure. Currently the rest of the
-    // script still runs even though the simulation won't actual step forward.
     pub fn run(&mut self, script: String) -> Result<ScriptResult, Box<EvalAltResult>> {
         // Create and configure the Rhai engine.
         let mut engine = Engine::new();
@@ -61,12 +60,20 @@ impl ScriptRunner {
         // engine.
         let engine = engine;
 
-        // TODO(albrow): Consider using progress tracker to count the number of
-        // operations. Could be visualized as "fuel" for your drone/robot that
-        // will eventually run out if your script runs too long.
         // TODO(albrow): Manually overwrite certain common error messages to make
         // them more user-friendly.
-        engine.run(script.as_str())?;
+        match engine.run(script.as_str()) {
+            Err(err) => {
+                if err.to_string().contains(ERR_SIMULATION_END) {
+                    // Special case for when the simulation ends before the script
+                    // finishes running. This is not actually an error, so we continue.
+                } else {
+                    // For all other kinds of errors, we return the error.
+                    return Err(err);
+                }
+            }
+            _ => (),
+        };
 
         let states = self.simulation.borrow().get_history();
         let positions = self.step_positions.borrow().to_vec();
@@ -80,6 +87,7 @@ impl ScriptRunner {
 
     fn register_debugger(&self, engine: &mut Engine) {
         let step_positions = self.step_positions.clone();
+        let simulation = self.simulation.clone();
         // Note(albrow): register_debugger is not actually deprecated. The Rhai maintainers
         // have decided to use the "deprecated" attribute to indicate that the API is not
         // stable.
@@ -134,7 +142,13 @@ impl ScriptRunner {
                             _ => Ok(DebuggerCommand::StepInto),
                         }
                     }
-                    _ => Ok(DebuggerCommand::StepInto),
+                    _ => {
+                        if simulation.borrow().last_outcome() == Outcome::Continue {
+                            Ok(DebuggerCommand::StepInto)
+                        } else {
+                            Err(ERR_SIMULATION_END.into())
+                        }
+                    }
                 }
             },
         );

@@ -79,9 +79,26 @@ impl Simulation {
         for actor in &mut self.level.actors() {
             next_state = actor.apply(next_state);
         }
+        // 4. Check for win or lose conditions again.
+        let outcome = self.level.check_win(&next_state);
+        match outcome {
+            Outcome::Success => {
+                log!("You win!");
+                self.states.push(next_state);
+                self.state_idx += 1;
+                self.last_outcome = Outcome::Success;
+                return outcome;
+            }
+            Outcome::Failure(msg) => {
+                log!("Failure: {}", msg);
+                self.states.push(next_state);
+                self.state_idx += 1;
+                self.last_outcome = Outcome::Failure(msg.clone());
+                return self.last_outcome.clone();
+            }
+            Outcome::Continue => {}
+        }
 
-        // 4. Check for win or lose conditions again?
-        //
         // log!(
         //     "finished computing step {}: {:?}",
         //     self.state_idx,

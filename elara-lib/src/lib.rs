@@ -178,6 +178,27 @@ mod tests {
             .run_player_script_internal(script.to_string(), level_index)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
+
+        // It is *okay* for a script to contain an infinite loop, as long as we either
+        // run out of fuel or reach the objective before hitting the limitation for max
+        // operations in the Rhai engine.
+        // In this case, we reach the objective first, so we expect Outcome::Success.
+        let script =
+            "move_right(3);\nmove_down(3);\nwhile (true) {\n  move_up(1);\n  move_down(1);\n}";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        // In this case, we don't reach the objective so we expect ERR_OUT_OF_FUEL.
+        let script =
+            "while (true) {\n  move_up(1);\n  move_down(1);\n}\nmove_right(3);\nmove_down(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
     }
 
     #[test]
