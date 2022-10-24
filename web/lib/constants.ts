@@ -9,3 +9,4 @@ export const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
 export const PLAYER_Z_INDEX = 200;
 export const FUEL_Z_INDEX = 100;
 export const GOAL_Z_INDEX = 100;
+export const DEFAULT_FUEL_GAIN = 10;

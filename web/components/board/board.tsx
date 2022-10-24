@@ -1,17 +1,17 @@
 // import { Pos, State } from "../../lib/state";
 
-import { FuelSpot, State } from "../../../elara-lib/pkg";
+import { State, FuelSpot } from "../../../elara-lib/pkg";
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
   TILE_SIZE,
   WIDTH,
   HEIGHT,
-  FUEL_Z_INDEX,
   GOAL_Z_INDEX,
 } from "../../lib/constants";
 import { range, posToOffset } from "../../lib/utils";
 import Player from "../player/player";
+import FuelSpotCmpt from "../fuel_spot/fuel_spot";
 import "./board.css";
 
 interface BoardProps {
@@ -57,20 +57,7 @@ export default function Board(props: BoardProps) {
         if (fuel_spot.collected) {
           return;
         }
-        return (
-          <img
-            key={i}
-            className="fuel sprite"
-            src="/images/fuel.png"
-            style={{
-              width: TILE_SIZE + "px",
-              height: TILE_SIZE + "px",
-              zIndex: FUEL_Z_INDEX,
-              left: fuelOffset.left,
-              top: fuelOffset.top,
-            }}
-          />
-        );
+        return <FuelSpotCmpt key={i} offset={fuelOffset} />;
       })}
     </>
   );
