@@ -1,6 +1,4 @@
-// import { Pos, State } from "../../lib/state";
-
-import { State, FuelSpot } from "../../../elara-lib/pkg";
+import { State, FuelSpot, Obstacle } from "../../../elara-lib/pkg";
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
@@ -58,6 +56,23 @@ export default function Board(props: BoardProps) {
           return;
         }
         return <FuelSpotCmpt key={i} offset={fuelOffset} />;
+      })}
+      {(props.gameState.obstacles as Obstacle[]).map((obstacle, i) => {
+        const obsOffset = posToOffset(obstacle.pos);
+        return (
+          <img
+            className="obstacle sprite"
+            src="/images/rock.png"
+            key={i}
+            style={{
+              width: `${TILE_SIZE}px`,
+              height: `${TILE_SIZE}px`,
+              zIndex: GOAL_Z_INDEX,
+              left: obsOffset.left,
+              top: obsOffset.top,
+            }}
+          />
+        );
       })}
     </>
   );

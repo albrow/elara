@@ -80,6 +80,10 @@ impl ScriptRunner {
 
     fn register_debugger(&self, engine: &mut Engine) {
         let step_positions = self.step_positions.clone();
+        // Note(albrow): register_debugger is not actually deprecated. The Rhai maintainers
+        // have decided to use the "deprecated" attribute to indicate that the API is not
+        // stable.
+        #[allow(deprecated)]
         engine.register_debugger(
             |_| Dynamic::from(()),
             move |context, _event, node, _source, pos| {

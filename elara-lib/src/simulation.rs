@@ -82,11 +82,11 @@ impl Simulation {
 
         // 4. Check for win or lose conditions again?
         //
-        log!(
-            "finished computing step {}: {:?}",
-            self.state_idx,
-            next_state
-        );
+        // log!(
+        //     "finished computing step {}: {:?}",
+        //     self.state_idx,
+        //     next_state
+        // );
         self.states.push(next_state);
         self.state_idx += 1;
         self.last_outcome.clone()
@@ -98,6 +98,7 @@ pub struct State {
     pub player: Player,
     pub fuel_spots: Vec<FuelSpot>,
     pub goal: Goal,
+    pub obstacles: Vec<Obstacle>,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -115,6 +116,12 @@ pub struct FuelSpot {
 #[derive(Clone, PartialEq, Debug)]
 pub struct Goal {
     pub pos: Pos,
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct Obstacle {
+    pub pos: Pos,
+    // TODO(albrow): Make some obstacles destructible?
 }
 
 #[derive(Clone, PartialEq, Debug)]

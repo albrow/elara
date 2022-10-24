@@ -1,6 +1,6 @@
 use crate::constants::{ERR_OUT_OF_FUEL, MAX_FUEL};
 use crate::simulation::Actor;
-use crate::simulation::{FuelSpot, Goal, Player, Pos, State};
+use crate::simulation::{FuelSpot, Goal, Obstacle, Player, Pos, State};
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum Outcome {
@@ -41,6 +41,36 @@ impl Level for Level1 {
             goal: Goal {
                 pos: Pos { x: 3, y: 3 },
             },
+            obstacles: vec![
+                // Obstacles enclose the player and goal in a 4x4 square.
+                Obstacle {
+                    pos: Pos { x: 4, y: 0 },
+                },
+                Obstacle {
+                    pos: Pos { x: 4, y: 1 },
+                },
+                Obstacle {
+                    pos: Pos { x: 4, y: 2 },
+                },
+                Obstacle {
+                    pos: Pos { x: 4, y: 3 },
+                },
+                Obstacle {
+                    pos: Pos { x: 4, y: 4 },
+                },
+                Obstacle {
+                    pos: Pos { x: 0, y: 4 },
+                },
+                Obstacle {
+                    pos: Pos { x: 1, y: 4 },
+                },
+                Obstacle {
+                    pos: Pos { x: 2, y: 4 },
+                },
+                Obstacle {
+                    pos: Pos { x: 3, y: 4 },
+                },
+            ],
         }
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
@@ -83,6 +113,73 @@ impl Level for Level2 {
             goal: Goal {
                 pos: Pos::new(4, 4),
             },
+            obstacles: vec![
+                // Obstacles enclose the player, goal, and fuel with a few different
+                // branching paths.
+                Obstacle {
+                    pos: Pos { x: 1, y: 1 },
+                },
+                Obstacle {
+                    pos: Pos { x: 1, y: 2 },
+                },
+                Obstacle {
+                    pos: Pos { x: 1, y: 3 },
+                },
+                Obstacle {
+                    pos: Pos { x: 2, y: 1 },
+                },
+                Obstacle {
+                    pos: Pos { x: 2, y: 2 },
+                },
+                Obstacle {
+                    pos: Pos { x: 2, y: 3 },
+                },
+                Obstacle {
+                    pos: Pos { x: 3, y: 1 },
+                },
+                Obstacle {
+                    pos: Pos { x: 3, y: 2 },
+                },
+                Obstacle {
+                    pos: Pos { x: 3, y: 3 },
+                },
+                Obstacle {
+                    pos: Pos { x: 5, y: 0 },
+                },
+                Obstacle {
+                    pos: Pos { x: 5, y: 1 },
+                },
+                Obstacle {
+                    pos: Pos { x: 5, y: 2 },
+                },
+                Obstacle {
+                    pos: Pos { x: 5, y: 3 },
+                },
+                Obstacle {
+                    pos: Pos { x: 5, y: 4 },
+                },
+                Obstacle {
+                    pos: Pos { x: 5, y: 5 },
+                },
+                Obstacle {
+                    pos: Pos { x: 4, y: 5 },
+                },
+                Obstacle {
+                    pos: Pos { x: 3, y: 5 },
+                },
+                Obstacle {
+                    pos: Pos { x: 2, y: 5 },
+                },
+                Obstacle {
+                    pos: Pos { x: 1, y: 5 },
+                },
+                Obstacle {
+                    pos: Pos { x: 1, y: 6 },
+                },
+                Obstacle {
+                    pos: Pos { x: 1, y: 7 },
+                },
+            ],
         }
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {

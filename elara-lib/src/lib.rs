@@ -162,6 +162,22 @@ mod tests {
             result.outcome,
             Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
         );
+
+        // Player should not be able to move past the obstacles for this level.
+        // First try moving too far right. This should still be a success because
+        // the player should stop moving right after hitting the obstacle at (4, 0).
+        let script = "move_right(5); move_down(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
+        // Now try moving too far down.
+        let script = "move_down(5); move_right(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
     }
 
     #[test]
@@ -187,5 +203,12 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.states.len(), 11);
+
+        // Player should not be able to move past the obstacles for this level.
+        let script = "move_down(5); move_right(4); move_up(1);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
     }
 }
