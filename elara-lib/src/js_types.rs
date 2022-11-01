@@ -18,6 +18,7 @@ pub struct State {
     pub player: Player,
     pub fuel_spots: Array, // Array<FuelSpot>
     pub goal: Goal,
+    pub enemies: Array,   // Array<Enemy>
     pub obstacles: Array, // Array<Obstacle>
 }
 
@@ -33,6 +34,7 @@ impl State {
             goal: Goal {
                 pos: Pos { x: 1, y: 1 },
             },
+            enemies: Array::new(),
             obstacles: Array::new(),
         }
     }
@@ -80,6 +82,12 @@ pub struct Goal {
 pub struct FuelSpot {
     pub pos: Pos,
     pub collected: bool,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Enemy {
+    pub pos: Pos,
 }
 
 #[wasm_bindgen]
@@ -161,6 +169,19 @@ pub fn to_js_state(state: &simulation::State) -> State {
         );
     }
 
+    let enemies_arr = Array::new_with_length(state.enemies.len() as u32);
+    for (i, enemy) in state.enemies.iter().enumerate() {
+        enemies_arr.set(
+            i as u32,
+            JsValue::from(Enemy {
+                pos: Pos {
+                    x: enemy.pos.x as i32,
+                    y: enemy.pos.y as i32,
+                },
+            }),
+        );
+    }
+
     State {
         player: Player {
             pos: Pos {
@@ -176,6 +197,7 @@ pub fn to_js_state(state: &simulation::State) -> State {
                 y: state.goal.pos.y as i32,
             },
         },
+        enemies: enemies_arr,
         obstacles: obstacle_arr,
     }
 }

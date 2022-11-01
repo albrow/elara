@@ -19,6 +19,11 @@ export default function Root() {
             Level 2
           </span>
         </Link>
+        <Link to="/level/3">
+          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
+            Level 3
+          </span>
+        </Link>
       </div>
       <Outlet />
     </>

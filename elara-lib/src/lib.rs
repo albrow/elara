@@ -52,8 +52,8 @@ impl Game {
 
         // Set up the player actor and add it to the Simulation.
         let bounds = Bounds {
-            max_x: WIDTH,
-            max_y: HEIGHT,
+            max_x: WIDTH - 1,
+            max_y: HEIGHT - 1,
         };
         let player_actor = actors::PlayerChannelActor::new(player_action_rx.clone(), bounds);
 
@@ -128,6 +128,7 @@ impl Game {
 
 #[cfg(test)]
 mod tests {
+    use crate::constants::ERR_DESTROYED_BY_BUG;
     use crate::constants::ERR_OUT_OF_FUEL;
     use crate::levels::Outcome;
     use crate::levels::LEVELS;
@@ -231,5 +232,39 @@ mod tests {
             .run_player_script_internal(script.to_string(), level_index)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
+    }
+
+    #[test]
+    fn level_three() {
+        let mut game = crate::Game::new();
+        let level_index = 2;
+
+        // Running the initial code should result in Outcome::Failure due to
+        // being destroyed by a bug.
+        let script = LEVELS[level_index].initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_DESTROYED_BY_BUG))
+        );
+
+        // Running this code should result in Outcome::Success.
+        let script = "move_left(7);\nmove_down(1);\nmove_up(1);\nmove_left(4);\nmove_down(5);\nmove_right(9);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
+        // Forgetting to collect the first fuel spot should result in ERR_OUT_OF_FUEL.
+        let script = "move_left(11);\nmove_down(5);\nmove_right(9);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
     }
 }

@@ -83,6 +83,73 @@ impl PlayerChannelActor {
     }
 }
 
+/// A simple actor for "bug" enemies which always try to move closer to
+/// the player and do not do any path finding.
+pub struct EnemyBugActor {
+    /// The index in State.enemies of the enemy which will be constrolled by
+    /// this actor.
+    index: usize,
+    bounds: Bounds,
+}
+
+impl EnemyBugActor {
+    pub fn new(index: usize, bounds: Bounds) -> EnemyBugActor {
+        EnemyBugActor { index, bounds }
+    }
+
+    pub fn closer_pos_x(&self, enemy_pos: &Pos, player_pos: &Pos) -> Pos {
+        if player_pos.x > enemy_pos.x {
+            Pos::new(enemy_pos.x + 1, enemy_pos.y)
+        } else if player_pos.x < enemy_pos.x {
+            Pos::new(safe_decrement(enemy_pos.x), enemy_pos.y)
+        } else {
+            enemy_pos.clone()
+        }
+    }
+
+    pub fn closer_pos_y(&self, enemy_pos: &Pos, player_pos: &Pos) -> Pos {
+        if player_pos.y > enemy_pos.y {
+            Pos::new(enemy_pos.x, enemy_pos.y + 1)
+        } else if player_pos.y < enemy_pos.y {
+            Pos::new(enemy_pos.x, safe_decrement(enemy_pos.y))
+        } else {
+            enemy_pos.clone()
+        }
+    }
+}
+
+impl Actor for EnemyBugActor {
+    fn apply(&mut self, state: State) -> State {
+        let mut state = state.clone();
+
+        let player_pos = &state.player.pos;
+        let enemy_pos = &state.enemies[self.index].pos;
+
+        // Create an array of possible new positions for the enemy.
+        // Prioritize moving in the axis in which the player is the furthest away.
+        let x_dist = player_pos.x.abs_diff(enemy_pos.x);
+        let y_dist = player_pos.y.abs_diff(enemy_pos.y);
+        let mut possible_positions = vec![];
+        if x_dist >= y_dist {
+            possible_positions.push(self.closer_pos_x(enemy_pos, player_pos));
+            possible_positions.push(self.closer_pos_y(enemy_pos, player_pos));
+        } else {
+            possible_positions.push(self.closer_pos_y(enemy_pos, player_pos));
+            possible_positions.push(self.closer_pos_x(enemy_pos, player_pos));
+        }
+
+        // Iterate through possible positions and apply the first one which is unobstructed.
+        for pos in possible_positions {
+            if !is_obstacle_at(&state, &pos) && !is_outside_bounds(&self.bounds, &pos) {
+                state.enemies[self.index].pos = pos;
+                break;
+            }
+        }
+
+        state
+    }
+}
+
 /// Decrements x unless the result would be negative, in which case it returns 0.
 fn safe_decrement(x: u32) -> u32 {
     if x == 0 {
@@ -124,6 +191,7 @@ mod test {
             },
             fuel_spots: vec![],
             obstacles: vec![],
+            enemies: vec![],
             goal: Goal {
                 pos: Pos::new(3, 3),
             },

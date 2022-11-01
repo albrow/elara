@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::levels::{Level, Outcome};
 
 pub trait Actor {
@@ -99,23 +101,38 @@ impl Simulation {
             Outcome::Continue => {}
         }
 
-        // log!(
-        //     "finished computing step {}: {:?}",
-        //     self.state_idx,
-        //     next_state
-        // );
+        log!(
+            "finished computing step {}: {:?}",
+            self.state_idx,
+            next_state
+        );
         self.states.push(next_state);
         self.state_idx += 1;
         self.last_outcome.clone()
     }
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq)]
 pub struct State {
     pub player: Player,
     pub fuel_spots: Vec<FuelSpot>,
     pub goal: Goal,
+    pub enemies: Vec<Enemy>,
     pub obstacles: Vec<Obstacle>,
+}
+
+impl fmt::Debug for State {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("State")
+            .field("player", &self.player)
+            .field("fuel_spots", &self.fuel_spots)
+            .field("goal", &self.goal)
+            .field("enemies", &self.enemies)
+            // Omitting obstacles field since it can be very long and
+            // the obstacles never move.
+            // .field("obstacles", &self.obstacles)
+            .finish()
+    }
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -132,6 +149,11 @@ pub struct FuelSpot {
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct Goal {
+    pub pos: Pos,
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct Enemy {
     pub pos: Pos,
 }
 

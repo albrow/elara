@@ -1,4 +1,4 @@
-import { State, FuelSpot, Obstacle } from "../../../elara-lib/pkg";
+import { State, FuelSpot, Obstacle, Enemy } from "../../../elara-lib/pkg";
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
@@ -6,6 +6,8 @@ import {
   WIDTH,
   HEIGHT,
   GOAL_Z_INDEX,
+  WALL_Z_INDEX,
+  BUG_Z_INDEX,
 } from "../../lib/constants";
 import { range, posToOffset } from "../../lib/utils";
 import Player from "../player/player";
@@ -58,6 +60,23 @@ export default function Board(props: BoardProps) {
         }
         return <FuelSpotCmpt key={i} offset={fuelOffset} />;
       })}
+      {(props.gameState.enemies as Enemy[]).map((enemy, i) => {
+        const enemyOffset = posToOffset(enemy.pos);
+        return (
+          <img
+            className="bug sprite"
+            src="/images/bug.png"
+            key={i}
+            style={{
+              width: `${TILE_SIZE}px`,
+              height: `${TILE_SIZE}px`,
+              zIndex: BUG_Z_INDEX,
+              left: enemyOffset.left,
+              top: enemyOffset.top,
+            }}
+          />
+        );
+      })}
       {(props.gameState.obstacles as Obstacle[]).map((obstacle, i) => {
         const obsOffset = posToOffset(obstacle.pos);
         return (
@@ -68,7 +87,7 @@ export default function Board(props: BoardProps) {
             style={{
               width: `${TILE_SIZE}px`,
               height: `${TILE_SIZE}px`,
-              zIndex: GOAL_Z_INDEX,
+              zIndex: WALL_Z_INDEX,
               left: obsOffset.left,
               top: obsOffset.top,
             }}
