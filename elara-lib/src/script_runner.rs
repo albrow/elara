@@ -241,6 +241,7 @@ fn set_engine_safegaurds(engine: &mut Engine) {
     engine.set_max_operations(10_000);
     engine.set_max_call_levels(32);
     engine.set_max_expr_depths(64, 32);
+    engine.set_strict_variables(true);
 }
 
 fn set_print_fn(engine: &mut Engine) {
