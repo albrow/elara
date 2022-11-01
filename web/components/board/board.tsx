@@ -13,6 +13,9 @@ import { range, posToOffset } from "../../lib/utils";
 import Player from "../player/player";
 import FuelSpotCmpt from "../fuel_spot/fuel_spot";
 import Square from "../square/square";
+import flagImgUrl from "../../images/flag.png";
+import bugImgUrl from "../../images/bug.png";
+import rockImgUrl from "../../images/rock.png";
 import "./board.css";
 
 interface BoardProps {
@@ -44,7 +47,7 @@ export default function Board(props: BoardProps) {
       <Player offset={playerOffset} fuel={props.gameState.player.fuel} />
       <img
         className="flag sprite"
-        src="/images/flag.png"
+        src={flagImgUrl}
         style={{
           width: `${TILE_SIZE}px`,
           height: `${TILE_SIZE}px`,
@@ -65,7 +68,7 @@ export default function Board(props: BoardProps) {
         return (
           <img
             className="bug sprite"
-            src="/images/bug.png"
+            src={bugImgUrl}
             key={i}
             style={{
               width: `${TILE_SIZE}px`,
@@ -82,7 +85,7 @@ export default function Board(props: BoardProps) {
         return (
           <img
             className="obstacle sprite"
-            src="/images/rock.png"
+            src={rockImgUrl}
             key={i}
             style={{
               width: `${TILE_SIZE}px`,
