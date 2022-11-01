@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 
 import init from "../elara-lib/pkg";
 
@@ -12,7 +12,7 @@ import init from "../elara-lib/pkg";
   const Root = (await import("./routes/root")).default;
   const Level = (await import("./routes/level")).default;
 
-  const router = createBrowserRouter([
+  const router = createHashRouter([
     {
       path: "/",
       element: <Root />,
