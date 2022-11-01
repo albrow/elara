@@ -5,10 +5,17 @@ on:
   push:
     branches: ["main"]
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  # Builds the application
   build:
     runs-on: ubuntu-latest
     steps:
@@ -23,9 +30,25 @@ jobs:
       - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: npm install
       - run: npm run build
-      - run: git config user.name "GitHub Actions"
-      - run: git config user.email "()"
-      - run: git fetch origin publish
-      - run: git add ./web/dist --force
-      - run: git commit -m "(Automatic build)"
-      - run: git push origin main:publish --force-with-lease
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v1.0.4
+        with:
+          path: web/dist
+      # - run: git config user.name "GitHub Actions"
+      # - run: git config user.email "()"
+      # - run: git fetch origin publish
+      # - run: git add ./web/dist --force
+      # - run: git commit -m "(Automatic build)"
+      # - run: git push origin main:publish --force-with-lease
+
+  # Deploys to github pages
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
