@@ -1,0 +1,30 @@
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.17"
+      - uses: Swatinem/rust-cache@v2.0.1
+        with:
+          workspaces: |
+            elara-lib
+      - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - run: npm install
+      - run: npm run build
+      # - run: git config user.name "GitHub Actions"
+      # - run: git config user.email "()"
+      # - run: git add ./web/dist --force
+      # - run: git commit -m "(Automatic build)"
+      # - run: git push

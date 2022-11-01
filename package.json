@@ -9,7 +9,7 @@
     "test:rust": "cd ./elara-lib && cargo test",
     "dev": "vite",
     "build": "npm run build:wasm && tsc --noEmit && vite build",
-    "test": "npm run test:rust && wasm-pack test --chrome --headless -- --features=wasm"
+    "test": "npm run test:rust && cd ./elara-lib && wasm-pack test --chrome --headless -- --features=wasm"
   },
   "devDependencies": {
     "@types/react": "^18.0.21",
