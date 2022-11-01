@@ -1,6 +1,7 @@
 use rhai::debugger::DebuggerCommand;
 use rhai::{ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt};
 use std::cell::RefCell;
+use std::convert::TryInto;
 use std::io::{Error, ErrorKind};
 use std::rc::Rc;
 use std::sync::mpsc;
@@ -64,12 +65,35 @@ impl ScriptRunner {
         // them more user-friendly.
         match engine.run(script.as_str()) {
             Err(err) => {
-                if err.to_string().contains(ERR_SIMULATION_END) {
-                    // Special case for when the simulation ends before the script
-                    // finishes running. This is not actually an error, so we continue.
-                } else {
-                    // For all other kinds of errors, we return the error.
-                    return Err(err);
+                match *err {
+                    EvalAltResult::ErrorParsing(
+                        rhai::ParseErrorType::MissingToken(tok, msg),
+                        pos,
+                    ) if tok == String::from(";") => {
+                        // Special case for missing semicolon. Normally, Rhai
+                        // puts this error at the start of the next line, but
+                        // that can be confusing. We change the position of the
+                        // error so that it is at the previous line.
+                        let orig_line = pos.line().unwrap();
+                        let modified_line: u16 = (orig_line - 1).try_into().unwrap();
+                        return Err(Box::new(EvalAltResult::ErrorParsing(
+                            rhai::ParseErrorType::MissingToken(tok, msg),
+                            rhai::Position::new(
+                                modified_line,
+                                pos.position().unwrap().try_into().unwrap(),
+                            ),
+                        )));
+                    }
+                    EvalAltResult::ErrorRuntime(_, _)
+                        if err.to_string().contains(ERR_SIMULATION_END) =>
+                    {
+                        // Special case for when the simulation ends before the script
+                        // finishes running. This is not actually an error, so we continue.
+                    }
+                    _ => {
+                        // For all other kinds of errors, we return the error.
+                        return Err(err);
+                    }
                 }
             }
             _ => (),
