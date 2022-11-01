@@ -23,8 +23,9 @@ jobs:
       - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: npm install
       - run: npm run build
-      # - run: git config user.name "GitHub Actions"
-      # - run: git config user.email "()"
-      # - run: git add ./web/dist --force
-      # - run: git commit -m "(Automatic build)"
-      # - run: git push
+      - run: git config user.name "GitHub Actions"
+      - run: git config user.email "()"
+      - run: git fetch origin publish
+      - run: git add ./web/dist --force
+      - run: git commit -m "(Automatic build)"
+      - run: git push origin main:publish --force-with-lease
