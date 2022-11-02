@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 
 import init from "../elara-lib/pkg";
+import Home from "./routes/home";
 
 (async function () {
   await init();
@@ -26,6 +27,10 @@ import init from "../elara-lib/pkg";
         path: "/",
         element: <Root />,
         children: [
+          {
+            path: "/home",
+            element: <Home />,
+          },
           {
             path: "/level/:levelNumber",
             element: <Level />,
