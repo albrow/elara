@@ -14,7 +14,7 @@ export default function Root() {
 
   return (
     <>
-      <div id="nav" className="bg-gray-800 p-2">
+      <div id="nav" className="bg-gray-800 p-2 mb-0 2xl:mb-10">
         <Link to="/home">
           <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
             Home
