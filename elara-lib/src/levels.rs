@@ -54,33 +54,15 @@ impl Level for Level1 {
             enemies: vec![],
             obstacles: vec![
                 // Obstacles enclose the player and goal in a 4x4 square.
-                Obstacle {
-                    pos: Pos { x: 4, y: 0 },
-                },
-                Obstacle {
-                    pos: Pos { x: 4, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 4, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 4, y: 3 },
-                },
-                Obstacle {
-                    pos: Pos { x: 4, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 0, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 2, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 3, y: 4 },
-                },
+                Obstacle::new(4, 0),
+                Obstacle::new(4, 1),
+                Obstacle::new(4, 2),
+                Obstacle::new(4, 3),
+                Obstacle::new(4, 4),
+                Obstacle::new(0, 4),
+                Obstacle::new(1, 4),
+                Obstacle::new(2, 4),
+                Obstacle::new(3, 4),
             ],
         }
     }
@@ -128,69 +110,27 @@ impl Level for Level2 {
             obstacles: vec![
                 // Obstacles enclose the player, goal, and fuel with a few different
                 // branching paths.
-                Obstacle {
-                    pos: Pos { x: 1, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 3 },
-                },
-                Obstacle {
-                    pos: Pos { x: 2, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 2, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 2, y: 3 },
-                },
-                Obstacle {
-                    pos: Pos { x: 3, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 3, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 3, y: 3 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 0 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 3 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 5 },
-                },
-                Obstacle {
-                    pos: Pos { x: 4, y: 5 },
-                },
-                Obstacle {
-                    pos: Pos { x: 3, y: 5 },
-                },
-                Obstacle {
-                    pos: Pos { x: 2, y: 5 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 5 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 7 },
-                },
+                Obstacle::new(1, 1),
+                Obstacle::new(1, 2),
+                Obstacle::new(1, 3),
+                Obstacle::new(2, 1),
+                Obstacle::new(2, 2),
+                Obstacle::new(2, 3),
+                Obstacle::new(3, 1),
+                Obstacle::new(3, 2),
+                Obstacle::new(3, 3),
+                Obstacle::new(5, 0),
+                Obstacle::new(5, 1),
+                Obstacle::new(5, 2),
+                Obstacle::new(5, 3),
+                Obstacle::new(5, 4),
+                Obstacle::new(5, 5),
+                Obstacle::new(4, 5),
+                Obstacle::new(3, 5),
+                Obstacle::new(2, 5),
+                Obstacle::new(1, 5),
+                Obstacle::new(1, 6),
+                Obstacle::new(1, 7),
             ],
         }
     }
@@ -314,126 +254,46 @@ impl Level for Level4 {
                 pos: Pos { x: 9, y: 7 },
             }],
             obstacles: vec![
-                Obstacle {
-                    pos: Pos { x: 8, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 8, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 8, y: 3 },
-                },
-                Obstacle {
-                    pos: Pos { x: 8, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 7, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 6, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 8, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 7, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 6, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 4, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 3, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 7, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 6, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 4, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 3, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 2, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 4, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 3 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 1, y: 7 },
-                },
-                Obstacle {
-                    pos: Pos { x: 10, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 10, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 10, y: 3 },
-                },
-                Obstacle {
-                    pos: Pos { x: 10, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 10, y: 5 },
-                },
-                Obstacle {
-                    pos: Pos { x: 10, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 2, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 3, y: 4 },
-                },
-                Obstacle {
-                    pos: Pos { x: 2, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 6 },
-                },
-                Obstacle {
-                    pos: Pos { x: 11, y: 1 },
-                },
-                Obstacle {
-                    pos: Pos { x: 3, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 5, y: 2 },
-                },
-                Obstacle {
-                    pos: Pos { x: 8, y: 7 },
-                },
-                Obstacle {
-                    pos: Pos { x: 10, y: 7 },
-                },
+                Obstacle::new(8, 1),
+                Obstacle::new(8, 2),
+                Obstacle::new(8, 3),
+                Obstacle::new(8, 4),
+                Obstacle::new(7, 4),
+                Obstacle::new(6, 4),
+                Obstacle::new(8, 6),
+                Obstacle::new(7, 6),
+                Obstacle::new(6, 6),
+                Obstacle::new(4, 6),
+                Obstacle::new(3, 6),
+                Obstacle::new(7, 1),
+                Obstacle::new(6, 1),
+                Obstacle::new(5, 1),
+                Obstacle::new(4, 2),
+                Obstacle::new(3, 1),
+                Obstacle::new(2, 1),
+                Obstacle::new(5, 4),
+                Obstacle::new(4, 4),
+                Obstacle::new(1, 1),
+                Obstacle::new(1, 2),
+                Obstacle::new(1, 3),
+                Obstacle::new(1, 4),
+                Obstacle::new(1, 6),
+                Obstacle::new(1, 7),
+                Obstacle::new(10, 1),
+                Obstacle::new(10, 2),
+                Obstacle::new(10, 3),
+                Obstacle::new(10, 4),
+                Obstacle::new(10, 5),
+                Obstacle::new(10, 6),
+                Obstacle::new(2, 4),
+                Obstacle::new(3, 4),
+                Obstacle::new(2, 6),
+                Obstacle::new(5, 6),
+                Obstacle::new(11, 1),
+                Obstacle::new(3, 2),
+                Obstacle::new(5, 2),
+                Obstacle::new(8, 7),
+                Obstacle::new(10, 7),
             ],
         }
     }
