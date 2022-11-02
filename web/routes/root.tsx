@@ -9,6 +9,10 @@ export default function Root() {
     // of Home.tsx inside of Root.tsx, because that would result in the
     // content being displayed on *every* child route, which is not what
     // we want.
+    //
+    // So instead, we make it so Root.tsx contains *just* the nav bar
+    // then we automatically redirect to /home if you try to visit /
+    // directly.
     return <Navigate to="/home" />;
   }
 
@@ -33,6 +37,11 @@ export default function Root() {
         <Link to="/level/3">
           <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
             Level 3
+          </span>
+        </Link>
+        <Link to="/level/4">
+          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
+            Level 4
           </span>
         </Link>
       </div>

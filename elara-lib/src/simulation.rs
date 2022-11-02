@@ -147,6 +147,15 @@ pub struct FuelSpot {
     pub collected: bool,
 }
 
+impl FuelSpot {
+    pub fn new(x: u32, y: u32) -> FuelSpot {
+        FuelSpot {
+            pos: Pos { x, y },
+            collected: false,
+        }
+    }
+}
+
 #[derive(Clone, PartialEq, Debug)]
 pub struct Goal {
     pub pos: Pos,
@@ -161,6 +170,12 @@ pub struct Enemy {
 pub struct Obstacle {
     pub pos: Pos,
     // TODO(albrow): Make some obstacles destructible?
+}
+
+impl Obstacle {
+    pub fn new(x: u32, y: u32) -> Obstacle {
+        Obstacle { pos: Pos { x, y } }
+    }
 }
 
 #[derive(Clone, PartialEq, Debug)]

@@ -20,10 +20,11 @@ pub trait Level {
 }
 
 lazy_static! {
-    pub static ref LEVELS: [Box<dyn Level + Sync>; 3] = [
+    pub static ref LEVELS: [Box<dyn Level + Sync>; 4] = [
         Box::new(Level1 {}),
         Box::new(Level2 {}),
-        Box::new(Level3 {})
+        Box::new(Level3 {}),
+        Box::new(Level4 {}),
     ];
 }
 
@@ -211,6 +212,76 @@ impl Level for Level2 {
 pub struct Level3 {}
 
 impl Level for Level3 {
+    fn name(&self) -> &'static str {
+        "Loop the loop"
+    }
+    fn objective(&self) -> &'static str {
+        "Move the drone (🤖) to the goal (🏁) using a loop."
+    }
+    fn initial_code(&self) -> &'static str {
+        "// You can use the \"loop\" keyword to perform repeated actions.\n// Everything inside the curly braces \"{\" and \"}\" will be\n// repeated.\n\nloop {\n  move_right(1);\n  // Add a line of code here.\n}\n"
+    }
+    fn initial_state(&self) -> State {
+        State {
+            player: Player {
+                pos: Pos { x: 0, y: 7 },
+                fuel: 5,
+            },
+            fuel_spots: vec![FuelSpot::new(3, 5)],
+            goal: Goal {
+                pos: Pos::new(8, 0),
+            },
+            enemies: vec![],
+            obstacles: vec![
+                Obstacle::new(0, 6),
+                Obstacle::new(0, 5),
+                Obstacle::new(1, 5),
+                Obstacle::new(1, 4),
+                Obstacle::new(2, 4),
+                Obstacle::new(2, 3),
+                Obstacle::new(3, 3),
+                Obstacle::new(3, 2),
+                Obstacle::new(4, 2),
+                Obstacle::new(4, 1),
+                Obstacle::new(5, 1),
+                Obstacle::new(5, 0),
+                Obstacle::new(6, 0),
+                Obstacle::new(2, 7),
+                Obstacle::new(3, 7),
+                Obstacle::new(3, 6),
+                Obstacle::new(4, 6),
+                Obstacle::new(4, 5),
+                Obstacle::new(5, 5),
+                Obstacle::new(5, 4),
+                Obstacle::new(6, 4),
+                Obstacle::new(6, 3),
+                Obstacle::new(7, 3),
+                Obstacle::new(7, 2),
+                Obstacle::new(8, 2),
+                Obstacle::new(8, 1),
+                Obstacle::new(9, 1),
+                Obstacle::new(9, 0),
+            ],
+        }
+    }
+    fn actors(&self) -> Vec<Box<dyn Actor>> {
+        vec![]
+    }
+    fn check_win(&self, state: &State) -> Outcome {
+        if state.player.pos == state.goal.pos {
+            Outcome::Success
+        } else if state.player.fuel == 0 {
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        } else {
+            Outcome::Continue
+        }
+    }
+}
+
+#[derive(Copy, Clone)]
+pub struct Level4 {}
+
+impl Level for Level4 {
     fn name(&self) -> &'static str {
         "What's that Buzzing Sound?"
     }

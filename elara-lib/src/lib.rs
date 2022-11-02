@@ -240,6 +240,30 @@ mod tests {
         let level_index = 2;
 
         // Running the initial code should result in Outcome::Failure due to
+        // running out of fuel.
+        let script = LEVELS[level_index].initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
+
+        // Running this code should result in Outcome::Success.
+        let script = "loop {\n  move_right(1);\n  move_up(1);\n}";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+    }
+
+    #[test]
+    fn level_four() {
+        let mut game = crate::Game::new();
+        let level_index = 3;
+
+        // Running the initial code should result in Outcome::Failure due to
         // being destroyed by a bug.
         let script = LEVELS[level_index].initial_code();
         let result = game
