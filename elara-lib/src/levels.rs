@@ -39,7 +39,7 @@ impl Level for Level1 {
         "Move the drone (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        "// Every line that starts with two slashes \"//\" is called a \"comment\".\n// Comments don't affect the drone at all; they are just helpful\n// notes to help you understand the code. You can add your own\n// comments too!\n//\n// The code below moves the drone, but it's not going to the right\n// place. Try changing the code to see what happens.\n\nmove_right(1);\nmove_down(2);\n"
+        "// Every line that starts with two slashes \"//\" is called a\n// \"comment\". Comments don't affect the drone at all; they are\n// just little notes to help you understand the code. You can\n// add your own comments too!\n//\n// The code below moves the drone, but it's not going to the right\n// place. Try changing the code to see what happens.\n\nmove_right(1);\nmove_down(2);\n"
     }
     fn initial_state(&self) -> State {
         State {
@@ -289,7 +289,7 @@ impl Level for Level4 {
         "Move the drone (🤖) to the goal (🏁), but watch out for bugs (🪲)!"
     }
     fn initial_code(&self) -> &'static str {
-        "move_left(2);\nmove_down(5);\n"
+        "// If you try going straight for the goal, you might run\n// into trouble. Can you find a different path?\n\nmove_left(2);\nmove_down(5);\n"
     }
     fn initial_state(&self) -> State {
         State {
