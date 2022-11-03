@@ -1,7 +1,5 @@
 use rhai::debugger::DebuggerCommand;
-use rhai::{
-    ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt, Token, AST,
-};
+use rhai::{ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt};
 use std::cell::RefCell;
 use std::convert::TryInto;
 use std::io::{Error, ErrorKind};
