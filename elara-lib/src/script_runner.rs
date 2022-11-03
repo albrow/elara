@@ -1,10 +1,13 @@
 use rhai::debugger::DebuggerCommand;
-use rhai::{ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt};
+use rhai::{
+    ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt, Token, AST,
+};
 use std::cell::RefCell;
 use std::convert::TryInto;
 use std::io::{Error, ErrorKind};
 use std::rc::Rc;
 use std::sync::mpsc;
+use std::vec;
 
 use crate::actors::{Action, Direction};
 use crate::constants::ERR_SIMULATION_END;
@@ -44,8 +47,13 @@ impl ScriptRunner {
     }
 
     pub fn run(&mut self, script: String) -> Result<ScriptResult, Box<EvalAltResult>> {
+        // First use a custom check for semicolons at the end of each line
+        // (except for blocks or inside comments).
+        check_semicolons(script.as_str())?;
+
         // Create and configure the Rhai engine.
         let mut engine = Engine::new();
+        set_engine_config(&mut engine);
         set_engine_safegaurds(&mut engine);
         set_print_fn(&mut engine);
         self.register_debugger(&mut engine);
@@ -61,29 +69,24 @@ impl ScriptRunner {
         // engine.
         let engine = engine;
 
+        // Try compiling the AST first and check for lexer/parser errors.
+        let ast = match engine.compile(script.as_str()) {
+            Err(parse_err) => {
+                return Err(Box::new(EvalAltResult::ErrorParsing(
+                    *parse_err.0,
+                    parse_err.1,
+                )));
+            }
+            Ok(ast) => ast,
+        };
+
+        // If the AST looks good, try running the script.
+        //
         // TODO(albrow): Manually overwrite certain common error messages to make
         // them more user-friendly.
-        match engine.run(script.as_str()) {
+        match engine.run_ast(&ast) {
             Err(err) => {
                 match *err {
-                    EvalAltResult::ErrorParsing(
-                        rhai::ParseErrorType::MissingToken(tok, msg),
-                        pos,
-                    ) if tok == String::from(";") => {
-                        // Special case for missing semicolon. Normally, Rhai
-                        // puts this error at the start of the next line, but
-                        // that can be confusing. We change the position of the
-                        // error so that it is at the previous line.
-                        let orig_line = pos.line().unwrap();
-                        let modified_line: u16 = (orig_line - 1).try_into().unwrap();
-                        return Err(Box::new(EvalAltResult::ErrorParsing(
-                            rhai::ParseErrorType::MissingToken(tok, msg),
-                            rhai::Position::new(
-                                modified_line,
-                                pos.position().unwrap().try_into().unwrap(),
-                            ),
-                        )));
-                    }
                     EvalAltResult::ErrorRuntime(_, _)
                         if err.to_string().contains(ERR_SIMULATION_END) =>
                     {
@@ -233,6 +236,55 @@ impl ScriptRunner {
     }
 }
 
+fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {
+    let mut in_block_comment = false;
+    let lines: Vec<&str> = source.lines().collect();
+    'lines: for (i, line) in lines.iter().enumerate() {
+        let trimmed = line.trim();
+        if trimmed == "" {
+            continue;
+        } else if trimmed.starts_with("//") {
+            continue;
+        } else if trimmed.ends_with("{") || trimmed.ends_with("}") {
+            continue;
+        } else if trimmed.ends_with("*/") {
+            continue;
+        }
+        for (j, c) in trimmed.chars().enumerate() {
+            if !in_block_comment
+                && c == '/'
+                && j + 1 < trimmed.len()
+                && trimmed.chars().nth(j + 1) == Some('/')
+            {
+                continue 'lines;
+            } else if c == '/' && j + 1 < trimmed.len() && trimmed.chars().nth(j + 1) == Some('*') {
+                in_block_comment = true;
+            } else if c == '*' && j + 1 < trimmed.len() && trimmed.chars().nth(j + 1) == Some('/') {
+                in_block_comment = false;
+            }
+        }
+        if !in_block_comment && !trimmed.ends_with(';') {
+            let line_num: u16 = (i + 1).try_into().unwrap();
+            let col: u16 = (line.len() - 1).try_into().unwrap();
+            return Err(Box::new(EvalAltResult::ErrorParsing(
+                rhai::ParseErrorType::MissingToken(
+                    String::from(";"),
+                    String::from("at end of line"),
+                ),
+                rhai::Position::new(line_num, col),
+            )));
+        }
+    }
+
+    Ok(())
+}
+
+fn set_engine_config(engine: &mut Engine) {
+    // Causes unknown identifiers to be a compile-time error.
+    // See: https://rhai.rs/book/language/variables.html?highlight=strict#strict-variables-mode
+    engine.set_strict_variables(true);
+}
+
 fn set_engine_safegaurds(engine: &mut Engine) {
     // See https://rhai.rs/book/safety/
     engine.set_max_string_size(200);
@@ -241,7 +293,6 @@ fn set_engine_safegaurds(engine: &mut Engine) {
     engine.set_max_operations(10_000);
     engine.set_max_call_levels(32);
     engine.set_max_expr_depths(64, 32);
-    engine.set_strict_variables(true);
 }
 
 fn set_print_fn(engine: &mut Engine) {
@@ -311,5 +362,90 @@ fn eval_call_args_as_int(
 
 #[cfg(test)]
 mod test {
-    // TODO(albrow): Unit test ScriptRunner.
+    use super::*;
+
+    #[test]
+    fn test_check_semicolons() {
+        let source = r#"
+            // This is a comment
+            fn foo() {
+                // This is a comment
+                let a = 1;
+                let b = 2; // This is an inline comment.
+                let c = 3; /* This is a block comment */
+                let /* this is an intrusive comment */ d = 4;
+                /* 
+                    This is a multiline comment.
+                    It has more than one line.
+                 */
+            }
+        "#;
+        check_semicolons(source).unwrap();
+
+        let source = r#"
+            // This is a comment
+            fn foo() {
+                // This is a comment
+                let a = 1
+                let b = 2; // This is an inline comment.
+                let c = 3; /* This is a block comment */
+                let /* this is an intrusive comment */ d = 4;
+                /* 
+                    This is a multiline comment.
+                    It has more than one line.
+                */
+            }
+        "#;
+        assert!(check_semicolons(source).is_err());
+
+        // TODO(albrow): Uncomment this test once we handle the edge case.
+        // let source = r#"
+        //     // This is a comment
+        //     fn foo() {
+        //         // This is a comment
+        //         let a = 1;
+        //         let b = 2 // This is an inline comment.
+        //         let c = 3; /* This is a block comment */
+        //         let /* this is an intrusive comment */ d = 4;
+        //         /*
+        //             This is a multiline comment.
+        //             It has more than one line.
+        //         */
+        //     }
+        // "#;
+        // assert!(check_semicolons(source).is_err());
+
+        // TODO(albrow): Uncomment this test once we handle the edge case.
+        // let source = r#"
+        //     // This is a comment
+        //     fn foo() {
+        //         // This is a comment
+        //         let a = 1;
+        //         let b = 2; // This is an inline comment.
+        //         let c = 3 /* This is a block comment */
+        //         let /* this is an intrusive comment */ d = 4;
+        //         /*
+        //             This is a multiline comment.
+        //             It has more than one line.
+        //         */
+        //     }
+        // "#;
+        // assert!(check_semicolons(source).is_err());
+
+        let source = r#"
+        // This is a comment
+        fn foo() {
+            // This is a comment
+            let a = 1;
+            let b = 2; // This is an inline comment.
+            let c = 3; /* This is a block comment */
+            let /* this is an intrusive comment */ d = 4
+            /* 
+                This is a multiline comment.
+                It has more than one line.
+            */
+        }
+    "#;
+        assert!(check_semicolons(source).is_err());
+    }
 }

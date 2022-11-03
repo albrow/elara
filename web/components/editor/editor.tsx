@@ -76,25 +76,14 @@ function codeErrorToDiagnostic(view: EditorView, e: CodeError): Diagnostic {
   // In Rhai, positions are composed of (line, column), but
   // CodeMirror wants the absolute position. We need to do
   // some math to convert between the two.
+  //
+  // For now, we just want to highlight the entire line where
+  // the error occurred.
   const line = view.viewportLineBlocks[e.line - 1];
-  // start is the absolute position where the error
-  // first occurred, but we still need to get a range.
-  let start = line.from + e.col;
-  // Use wordAt to get a range encapsulating the "word" that
-  // caused the error.
-  let range = view.state.wordAt(start);
 
-  while (range === null) {
-    // If wordAt returns null, it means that the error occurred
-    // on a non-word character. In this case, we can just
-    // decrement the position and try again to find the closest
-    // word.
-    start -= 1;
-    range = view.state.wordAt(start);
-  }
   return {
-    from: range.from,
-    to: range.to,
+    from: line.from,
+    to: line.from + line.length - 1,
     message: e.message,
     severity: "error",
   };
