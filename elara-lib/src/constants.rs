@@ -10,8 +10,7 @@ pub static FUEL_SPOT_AMOUNT: u32 = 10;
 
 /// Various common error messages.
 pub static ERR_OUT_OF_FUEL: &str = "You ran out of fuel!";
-pub static ERR_DESTROYED_BY_BUG: &str =
-    "A bug has attacked the drone and it is damaged beyond repair.";
+pub static ERR_DESTROYED_BY_BUG: &str = "A bug has damaged the drone beyond repair. Try again!";
 /// A special error message that is returned when the simulation ends before
 /// the script finishes running. I.e., this is a way for us to abort running
 /// a script if the simulation outcome does not require us to continue running
