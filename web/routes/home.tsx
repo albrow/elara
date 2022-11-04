@@ -40,7 +40,7 @@ export default function Home() {
               Rhai
             </a>
             , chosen because it is easy to learn, runs efficiently, supports
-            WebAssembly, and offers important safegaurds such as limiting the
+            WebAssembly, and offers important safeguards such as limiting the
             kind of code a user can write and preventing infinite loops. Almost
             all of the features of the Rhai language are supported so feel free
             to read the Rhai docs and play around a bit. The current levels are
