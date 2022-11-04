@@ -39,7 +39,17 @@ impl Level for Level1 {
         "Move the drone (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        "// Every line that starts with two slashes \"//\" is called a\n// \"comment\". Comments don't affect the drone at all; they are\n// just little notes to help you understand the code. You can\n// add your own comments too!\n//\n// The code below moves the drone, but it's not going to the right\n// place. Try changing the code to see what happens.\n\nmove_right(1);\nmove_down(2);\n"
+        r#"// Every line that starts with two slashes "//" is called a
+// \"comment\". Comments don't affect the drone at all; they are
+// just little notes to help you understand the code. You can
+// add your own comments too!
+//
+// The code below moves the drone, but it's not going to the
+// right place. Try changing the code to see what happens.
+
+move_right(1);
+move_down(2);
+"#
     }
     fn initial_state(&self) -> State {
         State {
@@ -91,7 +101,12 @@ impl Level for Level2 {
         "First move the drone (🤖) to collect the fuel (⛽️), then move to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        "// If you try moving straight to the goal, you'll run out of fuel\n// first. Try collecting some fuel before moving to the goal.\n\nmove_down(4);\nmove_right(4);\n"
+        r#"// If you try moving straight to the goal, you'll run out of fuel
+// first. Try collecting some fuel before moving to the goal.
+
+move_down(4);
+move_right(4);
+"#
     }
     fn initial_state(&self) -> State {
         State {
@@ -159,7 +174,16 @@ impl Level for Level3 {
         "Move the drone (🤖) to the goal (🏁) using a loop."
     }
     fn initial_code(&self) -> &'static str {
-        "// You can use the \"loop\" keyword to perform repeated actions.\n// Everything inside the curly braces \"{\" and \"}\" will be\n// repeated.\n\nloop {\n  move_right(1);\n  // Add a line of code here.\n}\n"
+        r#"// You can use the "loop" keyword to perform repeated actions.
+// Everything inside the curly braces "{" and "}" will be
+// repeated. (Don't worry, the loop will stop running if you
+// run out of fuel or reach the objective).
+
+loop {
+  move_right(1);
+  // Add a line of code here.
+}
+"#
     }
     fn initial_state(&self) -> State {
         State {
@@ -229,7 +253,12 @@ impl Level for Level4 {
         "Move the drone (🤖) to the goal (🏁), but watch out for bugs (🪲)!"
     }
     fn initial_code(&self) -> &'static str {
-        "// If you try going straight for the goal, you might run\n// into trouble. Can you find a different path?\n\nmove_left(2);\nmove_down(5);\n"
+        r"// If you try going straight for the goal, you might run
+// into trouble. Can you find a different path?
+
+move_left(2);
+move_down(5);
+"
     }
     fn initial_state(&self) -> State {
         State {
