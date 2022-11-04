@@ -10,3 +10,8 @@
 .cm-focused {
   outline: none !important;
 }
+
+.cm-tooltip-hover {
+  /* We always want error messages and tooltips to be on top */
+  z-index: 99999;
+}
