@@ -1,6 +1,8 @@
 use std::fmt;
 
-use crate::levels::{Level, Outcome};
+use lazy_static::__Deref;
+
+use crate::levels::{Level, Outcome, LEVELS};
 
 pub trait Actor {
     fn apply(&mut self, state: State) -> State;
@@ -15,22 +17,28 @@ pub struct Simulation {
 }
 
 impl Simulation {
-    pub fn new(level: &'static dyn Level, player_actor: Box<dyn Actor>) -> Simulation {
+    pub fn new(player_actor: Box<dyn Actor>) -> Simulation {
         let sim = Simulation {
             state_idx: 0,
-            states: vec![level.initial_state().clone()],
+            states: vec![],
             player_actor: player_actor,
-            level,
+            level: LEVELS[0].deref(),
             last_outcome: Outcome::Continue,
         };
         sim
     }
 
-    pub fn load_level(&mut self, level: &'static dyn Level) {
+    /// Loads the given level and creates the initial state using the given
+    /// seed. If the level has multiple possible initial states, "seed"
+    /// determines which initial state to use.
+    ///
+    /// Note(albrow): "seed" may also be used as a random number generator
+    /// seed to control random behavior in the future.
+    pub fn load_level(&mut self, level: &'static dyn Level, seed: usize) {
         self.level = level;
         self.state_idx = 0;
         self.states.clear();
-        self.states.push(self.level.initial_state().clone());
+        self.states.push(self.level.initial_states()[seed].clone());
         self.last_outcome = Outcome::Continue;
     }
 

@@ -61,10 +61,7 @@ impl Game {
         // used in the script_runner. This is due to a constraint
         // imposed by the Rhai Engine for registered functions.
         let level_index = 0;
-        let simulation = Rc::new(RefCell::new(Simulation::new(
-            LEVELS[level_index].as_ref(),
-            Box::new(player_actor),
-        )));
+        let simulation = Rc::new(RefCell::new(Simulation::new(Box::new(player_actor))));
 
         // Set up the script runner, which holds references to the
         // player_tx channel and the simulation and glues them together.
@@ -85,7 +82,7 @@ impl Game {
             name: level.name().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
-            initial_state: js_types::to_js_state(&level.initial_state()),
+            initial_state: js_types::FuzzyState::from(level.initial_fuzzy_state()),
         }
     }
 
@@ -118,7 +115,7 @@ impl Game {
         self.level_index = level_index;
         self.simulation
             .borrow_mut()
-            .load_level(LEVELS[level_index].as_ref());
+            .load_level(LEVELS[level_index].as_ref(), 0);
         // Drain the channel.
         while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
         // Run the script.
@@ -155,7 +152,12 @@ mod tests {
 
         // Running this code should result in Outcome::Failure due to running out
         // of fuel.
-        let script = "for x in 0..25 {move_right(1); move_left(1);}\nmove_right(3); move_down(3);";
+        let script = r"for x in 0..25 {
+                move_right(1);
+                move_left(1);
+            }
+            move_right(3);
+            move_down(3);";
         let result = game
             .run_player_script_internal(script.to_string(), level_index)
             .unwrap();
@@ -184,15 +186,23 @@ mod tests {
         // run out of fuel or reach the objective before hitting the limitation for max
         // operations in the Rhai engine.
         // In this case, we reach the objective first, so we expect Outcome::Success.
-        let script =
-            "move_right(3);\nmove_down(3);\nwhile (true) {\n  move_up(1);\n  move_down(1);\n}";
+        let script = r"move_right(3);
+            move_down(3);
+            while (true) {
+                move_up(1);
+                move_down(1);
+            }";
         let result = game
             .run_player_script_internal(script.to_string(), level_index)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         // In this case, we don't reach the objective so we expect ERR_OUT_OF_FUEL.
-        let script =
-            "while (true) {\n  move_up(1);\n  move_down(1);\n}\nmove_right(3);\nmove_down(3);";
+        let script = r"while (true) {
+                move_up(1);
+                move_down(1);
+            }
+            move_right(3);
+            move_down(3);";
         let result = game
             .run_player_script_internal(script.to_string(), level_index)
             .unwrap();
@@ -251,7 +261,10 @@ mod tests {
         );
 
         // Running this code should result in Outcome::Success.
-        let script = "loop {\n  move_right(1);\n  move_up(1);\n}";
+        let script = r"loop {
+            move_right(1);
+            move_up(1);
+        }";
         let result = game
             .run_player_script_internal(script.to_string(), level_index)
             .unwrap();
@@ -275,14 +288,21 @@ mod tests {
         );
 
         // Running this code should result in Outcome::Success.
-        let script = "move_left(7);\nmove_down(1);\nmove_up(1);\nmove_left(4);\nmove_down(5);\nmove_right(9);";
+        let script = r"move_left(7);
+            move_down(1);
+            move_up(1);
+            move_left(4);
+            move_down(5);
+            move_right(9);";
         let result = game
             .run_player_script_internal(script.to_string(), level_index)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
         // Forgetting to collect the first fuel spot should result in ERR_OUT_OF_FUEL.
-        let script = "move_left(11);\nmove_down(5);\nmove_right(9);";
+        let script = r"move_left(11);
+            move_down(5);
+            move_right(9);";
         let result = game
             .run_player_script_internal(script.to_string(), level_index)
             .unwrap();

@@ -14,9 +14,12 @@ pub trait Level {
     fn name(&self) -> &'static str;
     fn objective(&self) -> &'static str;
     fn initial_code(&self) -> &'static str;
-    fn initial_state(&self) -> State;
+    fn initial_states(&self) -> Vec<State>;
     fn actors(&self) -> Vec<Box<dyn Actor>>;
     fn check_win(&self, state: &State) -> Outcome;
+    fn initial_fuzzy_state(&self) -> FuzzyState {
+        FuzzyState::from(self.initial_states())
+    }
 }
 
 lazy_static! {
@@ -40,7 +43,7 @@ impl Level for Level1 {
     }
     fn initial_code(&self) -> &'static str {
         r#"// Every line that starts with two slashes "//" is called a
-// \"comment\". Comments don't affect the drone at all; they are
+// "comment". Comments don't affect the drone at all; they are
 // just little notes to help you understand the code. You can
 // add your own comments too!
 //
@@ -51,8 +54,8 @@ move_right(1);
 move_down(2);
 "#
     }
-    fn initial_state(&self) -> State {
-        State {
+    fn initial_states(&self) -> Vec<State> {
+        vec![State {
             player: Player {
                 pos: Pos { x: 0, y: 0 },
                 fuel: MAX_FUEL,
@@ -74,7 +77,7 @@ move_down(2);
                 Obstacle::new(2, 4),
                 Obstacle::new(3, 4),
             ],
-        }
+        }]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]
@@ -108,8 +111,8 @@ move_down(4);
 move_right(4);
 "#
     }
-    fn initial_state(&self) -> State {
-        State {
+    fn initial_states(&self) -> Vec<State> {
+        vec![State {
             player: Player {
                 pos: Pos { x: 0, y: 0 },
                 fuel: 5,
@@ -147,7 +150,7 @@ move_right(4);
                 Obstacle::new(1, 6),
                 Obstacle::new(1, 7),
             ],
-        }
+        }]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]
@@ -185,8 +188,8 @@ loop {
 }
 "#
     }
-    fn initial_state(&self) -> State {
-        State {
+    fn initial_states(&self) -> Vec<State> {
+        vec![State {
             player: Player {
                 pos: Pos { x: 0, y: 7 },
                 fuel: 5,
@@ -226,7 +229,7 @@ loop {
                 Obstacle::new(9, 1),
                 Obstacle::new(9, 0),
             ],
-        }
+        }]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]
@@ -260,8 +263,8 @@ move_left(2);
 move_down(5);
 "
     }
-    fn initial_state(&self) -> State {
-        State {
+    fn initial_states(&self) -> Vec<State> {
+        vec![State {
             player: Player {
                 pos: Pos { x: 11, y: 0 },
                 fuel: 8,
@@ -324,7 +327,7 @@ move_down(5);
                 Obstacle::new(8, 7),
                 Obstacle::new(10, 7),
             ],
-        }
+        }]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![Box::new(EnemyBugActor::new(
@@ -353,4 +356,258 @@ fn is_destroyed_by_enemy(state: &State) -> bool {
         .enemies
         .iter()
         .any(|enemy| enemy.pos == state.player.pos)
+}
+
+/// A representation of multiple possible initial states in which any
+/// object that could have more than one state is marked as "fuzzy".
+/// When the level is loaded and the simulation is run, the "fuzziness"
+/// goes away and a discrete initial state is chosen.
+#[derive(PartialEq, Debug)]
+pub struct FuzzyState {
+    pub players: Vec<Fuzzy<Player>>,
+    pub fuel_spots: Vec<Fuzzy<FuelSpot>>,
+    pub goals: Vec<Fuzzy<Goal>>,
+    pub enemies: Vec<Fuzzy<Enemy>>,
+    pub obstacles: Vec<Fuzzy<Obstacle>>,
+}
+
+impl FuzzyState {
+    pub fn from_single_state(state: &State) -> Self {
+        Self {
+            players: vec![Fuzzy::new(state.player.clone(), false)],
+            fuel_spots: state
+                .fuel_spots
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
+            goals: vec![Fuzzy::new(state.goal.clone(), false)],
+            enemies: state
+                .enemies
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
+            obstacles: state
+                .obstacles
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
+        }
+    }
+
+    // Given all possible initial states for a level, return a FuzzyState
+    // representation in which any objects that differ between states are
+    // marked as "fuzzy".
+    pub fn from(possible_states: Vec<State>) -> Self {
+        if possible_states.len() == 0 {
+            panic!("Error computing fuzzy state: states cannot be empty");
+        }
+
+        // Start by looking at only the first possible state.
+        let mut fuzzy_state = Self::from_single_state(&possible_states[0]);
+
+        // Iterate through the remaining states (i.e. starting at index 1), and if
+        // any objects differ between the first state and the current state, mark
+        // them as fuzzy.
+        for state in possible_states.iter().skip(1) {
+            if !fuzzy_state
+                .players
+                .contains(&Fuzzy::new(state.player.clone(), false))
+            {
+                for player in fuzzy_state.players.iter_mut() {
+                    player.fuzzy = true;
+                }
+                fuzzy_state
+                    .players
+                    .push(Fuzzy::new(state.player.clone(), true));
+            }
+            if !fuzzy_state
+                .goals
+                .contains(&Fuzzy::new(state.goal.clone(), false))
+            {
+                for goal in fuzzy_state.goals.iter_mut() {
+                    goal.fuzzy = true;
+                }
+                fuzzy_state.goals.push(Fuzzy::new(state.goal.clone(), true));
+            }
+
+            // TODO(albrow): Support fuzziness for fuel_spots, enemies, and
+            // obstacles.
+        }
+
+        fuzzy_state
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Fuzzy<T> {
+    pub obj: T,
+    pub fuzzy: bool,
+}
+
+impl<T> Fuzzy<T> {
+    pub fn new(obj: T, fuzzy: bool) -> Self {
+        Self { obj, fuzzy }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn to_fuzzy_state() {
+        // Given one possible initial state, the fuzzy state should be identical,
+        // with all objects marked as non-fuzzy.
+        let states = vec![State {
+            player: Player {
+                pos: Pos::new(0, 0),
+                fuel: 10,
+            },
+            fuel_spots: vec![],
+            goal: Goal {
+                pos: Pos::new(1, 1),
+            },
+            enemies: vec![],
+            obstacles: vec![],
+        }];
+        let expected = FuzzyState {
+            players: vec![Fuzzy::new(
+                Player {
+                    pos: Pos::new(0, 0),
+                    fuel: 10,
+                },
+                false,
+            )],
+            fuel_spots: vec![],
+            goals: vec![Fuzzy::new(
+                Goal {
+                    pos: Pos::new(1, 1),
+                },
+                false,
+            )],
+            enemies: vec![],
+            obstacles: vec![],
+        };
+        let actual = FuzzyState::from(states);
+        assert_eq!(actual, expected);
+
+        // Given two possible player positions, both should be marked as fuzzy.
+        let states = vec![
+            State {
+                player: Player {
+                    pos: Pos::new(0, 0),
+                    fuel: 10,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos::new(2, 2),
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos::new(1, 1),
+                    fuel: 10,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos::new(2, 2),
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+        ];
+        let expected = FuzzyState {
+            players: vec![
+                Fuzzy::new(
+                    Player {
+                        pos: Pos::new(0, 0),
+                        fuel: 10,
+                    },
+                    true,
+                ),
+                Fuzzy::new(
+                    Player {
+                        pos: Pos::new(1, 1),
+                        fuel: 10,
+                    },
+                    true,
+                ),
+            ],
+            fuel_spots: vec![],
+            goals: vec![Fuzzy::new(
+                Goal {
+                    pos: Pos::new(2, 2),
+                },
+                false,
+            )],
+            enemies: vec![],
+            obstacles: vec![],
+        };
+        let actual = FuzzyState::from(states);
+        assert_eq!(actual, expected);
+
+        // Given two possible goal positions, both should be marked as fuzzy.
+        let states = vec![
+            State {
+                player: Player {
+                    pos: Pos::new(0, 0),
+                    fuel: 10,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos::new(2, 2),
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos::new(0, 0),
+                    fuel: 10,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos::new(3, 3),
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+        ];
+        let expected = FuzzyState {
+            players: vec![Fuzzy::new(
+                Player {
+                    pos: Pos::new(0, 0),
+                    fuel: 10,
+                },
+                false,
+            )],
+            fuel_spots: vec![],
+            goals: vec![
+                Fuzzy::new(
+                    Goal {
+                        pos: Pos::new(2, 2),
+                    },
+                    true,
+                ),
+                Fuzzy::new(
+                    Goal {
+                        pos: Pos::new(3, 3),
+                    },
+                    true,
+                ),
+            ],
+            enemies: vec![],
+            obstacles: vec![],
+        };
+        let actual = FuzzyState::from(states);
+        assert_eq!(actual, expected);
+
+        // TODO(albrow): Expand on tests when we support fuzziness for
+        // fuel_spots, enemies, and obstacles.
+    }
 }

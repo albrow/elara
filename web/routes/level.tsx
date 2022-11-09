@@ -7,7 +7,8 @@ import {
   LevelData,
   RhaiError,
   RunResult,
-  StateWithLine,
+  FuzzyStateWithLine,
+  FuzzyState,
   LinePos,
 } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
@@ -30,7 +31,9 @@ export default function Level() {
   const [code, setCode] = useState(level.initial_code);
   const [isRunning, setIsRunning] = useState(false);
   const [lastOutcome, setOutcome] = useState("continue");
-  const [replaySteps, setReplaySteps] = useState<readonly StateWithLine[]>([]);
+  const [replaySteps, setReplaySteps] = useState<readonly FuzzyStateWithLine[]>(
+    []
+  );
   const [boardState, setBoardState] = useState(level.initial_state);
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);

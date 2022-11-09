@@ -1,31 +1,34 @@
-import { State, FuelSpot, Obstacle, Enemy } from "../../../elara-lib/pkg";
+import {
+  FuzzyState,
+  FuzzyPlayer,
+  FuzzyGoal,
+  FuzzyFuelSpot,
+  FuzzyEnemy,
+  FuzzyObstacle,
+} from "../../../elara-lib/pkg";
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
   TILE_SIZE,
   WIDTH,
   HEIGHT,
-  GOAL_Z_INDEX,
   WALL_Z_INDEX,
   BUG_Z_INDEX,
 } from "../../lib/constants";
 import { range, posToOffset } from "../../lib/utils";
 import Player from "../player/player";
+import Goal from "../goal/goal";
 import FuelSpotCmpt from "../fuel_spot/fuel_spot";
 import Square from "../square/square";
-import flagImgUrl from "../../images/flag.png";
 import bugImgUrl from "../../images/bug.png";
 import rockImgUrl from "../../images/rock.png";
 import "./board.css";
 
 interface BoardProps {
-  gameState: State;
+  gameState: FuzzyState;
 }
 
 export default function Board(props: BoardProps) {
-  const playerOffset = posToOffset(props.gameState.player.pos);
-  const goalOffset = posToOffset(props.gameState.goal.pos);
-
   return (
     <>
       <div id="board">
@@ -44,26 +47,21 @@ export default function Board(props: BoardProps) {
           </tbody>
         </table>
       </div>
-      <Player offset={playerOffset} fuel={props.gameState.player.fuel} />
-      <img
-        className="flag sprite"
-        src={flagImgUrl}
-        style={{
-          width: `${TILE_SIZE}px`,
-          height: `${TILE_SIZE}px`,
-          zIndex: GOAL_Z_INDEX,
-          left: goalOffset.left,
-          top: goalOffset.top,
-        }}
-      />
-      {(props.gameState.fuel_spots as FuelSpot[]).map((fuel_spot, i) => {
+      {(props.gameState.players as FuzzyPlayer[]).map((player, i) => {
+        const playerOffset = posToOffset(player.pos);
+        return <Player key={i} offset={playerOffset} fuel={player.fuel} />;
+      })}
+      {(props.gameState.goals as FuzzyGoal[]).map((goal, i) => {
+        return <Goal key={i} offset={posToOffset(goal.pos)} />;
+      })}
+      {(props.gameState.fuel_spots as FuzzyFuelSpot[]).map((fuel_spot, i) => {
         const fuelOffset = posToOffset(fuel_spot.pos);
         if (fuel_spot.collected) {
           return;
         }
         return <FuelSpotCmpt key={i} offset={fuelOffset} />;
       })}
-      {(props.gameState.enemies as Enemy[]).map((enemy, i) => {
+      {(props.gameState.enemies as FuzzyEnemy[]).map((enemy, i) => {
         const enemyOffset = posToOffset(enemy.pos);
         return (
           <img
@@ -80,7 +78,7 @@ export default function Board(props: BoardProps) {
           />
         );
       })}
-      {(props.gameState.obstacles as Obstacle[]).map((obstacle, i) => {
+      {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => {
         const obsOffset = posToOffset(obstacle.pos);
         return (
           <img

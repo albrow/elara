@@ -39,7 +39,7 @@ impl ScriptRunner {
             simulation,
             player_action_tx,
             // Start with NONE position for step 0. This ensures that
-            // the positions aline with simulation steps.
+            // the positions align with simulation steps.
             step_positions: Rc::new(RefCell::new(vec![Position::NONE])),
         }
     }

@@ -1,9 +1,9 @@
 use js_sys::Array;
 use wasm_bindgen::prelude::*;
 
+use crate::levels;
 use crate::levels::Outcome;
 use crate::script_runner;
-use crate::simulation;
 
 #[wasm_bindgen(getter_with_clone)]
 pub struct RhaiError {
@@ -14,36 +14,8 @@ pub struct RhaiError {
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct State {
-    pub player: Player,
-    pub fuel_spots: Array, // Array<FuelSpot>
-    pub goal: Goal,
-    pub enemies: Array,   // Array<Enemy>
-    pub obstacles: Array, // Array<Obstacle>
-}
-
-#[wasm_bindgen]
-impl State {
-    pub fn new() -> State {
-        State {
-            player: Player {
-                pos: Pos { x: 0, y: 0 },
-                fuel: 0,
-            },
-            fuel_spots: Array::new(),
-            goal: Goal {
-                pos: Pos { x: 1, y: 1 },
-            },
-            enemies: Array::new(),
-            obstacles: Array::new(),
-        }
-    }
-}
-
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Clone, PartialEq, Debug)]
-pub struct StateWithLine {
-    pub state: State,
+pub struct FuzzyStateWithLine {
+    pub state: FuzzyState,
     pub line_pos: LinePos,
 }
 
@@ -55,45 +27,13 @@ pub struct LinePos {
 }
 
 #[wasm_bindgen]
-impl StateWithLine {
-    pub fn new() -> StateWithLine {
-        StateWithLine {
-            state: State::new(),
+impl FuzzyStateWithLine {
+    pub fn new() -> FuzzyStateWithLine {
+        FuzzyStateWithLine {
+            state: FuzzyState::new(),
             line_pos: LinePos { line: 0, col: 0 },
         }
     }
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Player {
-    pub pos: Pos,
-    pub fuel: i32,
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Goal {
-    pub pos: Pos,
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct FuelSpot {
-    pub pos: Pos,
-    pub collected: bool,
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Enemy {
-    pub pos: Pos,
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Obstacle {
-    pub pos: Pos,
 }
 
 #[wasm_bindgen]
@@ -122,8 +62,8 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
     {
         arr.set(
             i as u32,
-            JsValue::from(StateWithLine {
-                state: to_js_state(state),
+            JsValue::from(FuzzyStateWithLine {
+                state: FuzzyState::from(levels::FuzzyState::from_single_state(state)),
                 line_pos: LinePos {
                     line: pos.line().unwrap_or(0) as i32,
                     col: pos.position().unwrap_or(0) as i32,
@@ -141,72 +81,157 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
     }
 }
 
-pub fn to_js_state(state: &simulation::State) -> State {
-    let fuel_arr = Array::new_with_length(state.fuel_spots.len() as u32);
-    for (i, fuel_spot) in state.fuel_spots.iter().enumerate() {
-        fuel_arr.set(
-            i as u32,
-            JsValue::from(FuelSpot {
-                pos: Pos {
-                    x: fuel_spot.pos.x as i32,
-                    y: fuel_spot.pos.y as i32,
-                },
-                collected: fuel_spot.collected,
-            }),
-        );
-    }
-
-    let obstacle_arr = Array::new_with_length(state.obstacles.len() as u32);
-    for (i, obstacle) in state.obstacles.iter().enumerate() {
-        obstacle_arr.set(
-            i as u32,
-            JsValue::from(Obstacle {
-                pos: Pos {
-                    x: obstacle.pos.x as i32,
-                    y: obstacle.pos.y as i32,
-                },
-            }),
-        );
-    }
-
-    let enemies_arr = Array::new_with_length(state.enemies.len() as u32);
-    for (i, enemy) in state.enemies.iter().enumerate() {
-        enemies_arr.set(
-            i as u32,
-            JsValue::from(Enemy {
-                pos: Pos {
-                    x: enemy.pos.x as i32,
-                    y: enemy.pos.y as i32,
-                },
-            }),
-        );
-    }
-
-    State {
-        player: Player {
-            pos: Pos {
-                x: state.player.pos.x as i32,
-                y: state.player.pos.y as i32,
-            },
-            fuel: state.player.fuel as i32,
-        },
-        fuel_spots: fuel_arr,
-        goal: Goal {
-            pos: Pos {
-                x: state.goal.pos.x as i32,
-                y: state.goal.pos.y as i32,
-            },
-        },
-        enemies: enemies_arr,
-        obstacles: obstacle_arr,
-    }
-}
-
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
 pub struct LevelData {
     pub name: String,
     pub objective: String,
-    pub initial_state: State,
+    pub initial_state: FuzzyState,
     pub initial_code: String,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct FuzzyState {
+    pub players: Array,    // Array<FuzzyPlayer>
+    pub fuel_spots: Array, // Array<FuzzyFuelSpot>
+    pub goals: Array,      // Array<FuzzyGoal>
+    pub enemies: Array,    // Array<FuzzyEnemy>
+    pub obstacles: Array,  // Array<FuzzyObstacle>
+}
+
+impl FuzzyState {
+    pub fn new() -> Self {
+        FuzzyState {
+            players: Array::new(),
+            fuel_spots: Array::new(),
+            goals: Array::new(),
+            enemies: Array::new(),
+            obstacles: Array::new(),
+        }
+    }
+
+    pub fn from(state: levels::FuzzyState) -> Self {
+        let players = Array::new_with_length(state.players.len() as u32);
+        for (i, fuzzy_player) in state.players.iter().enumerate() {
+            let player = &fuzzy_player.obj;
+            players.set(
+                i as u32,
+                JsValue::from(FuzzyPlayer {
+                    pos: Pos {
+                        x: player.pos.x as i32,
+                        y: player.pos.y as i32,
+                    },
+                    fuel: player.fuel as i32,
+                    fuzzy: fuzzy_player.fuzzy,
+                }),
+            );
+        }
+
+        let fuel_spots = Array::new_with_length(state.fuel_spots.len() as u32);
+        for (i, fuzzy_fuel_spot) in state.fuel_spots.iter().enumerate() {
+            let fuel_spot = &fuzzy_fuel_spot.obj;
+            fuel_spots.set(
+                i as u32,
+                JsValue::from(FuzzyFuelSpot {
+                    pos: Pos {
+                        x: fuel_spot.pos.x as i32,
+                        y: fuel_spot.pos.y as i32,
+                    },
+                    collected: fuel_spot.collected,
+                    fuzzy: fuzzy_fuel_spot.fuzzy,
+                }),
+            );
+        }
+
+        let goals = Array::new_with_length(state.goals.len() as u32);
+        for (i, fuzzy_goal) in state.goals.iter().enumerate() {
+            let goal = &fuzzy_goal.obj;
+            goals.set(
+                i as u32,
+                JsValue::from(FuzzyGoal {
+                    pos: Pos {
+                        x: goal.pos.x as i32,
+                        y: goal.pos.y as i32,
+                    },
+                    fuzzy: fuzzy_goal.fuzzy,
+                }),
+            );
+        }
+
+        let enemies = Array::new_with_length(state.enemies.len() as u32);
+        for (i, fuzzy_enemy) in state.enemies.iter().enumerate() {
+            let enemy = &fuzzy_enemy.obj;
+            enemies.set(
+                i as u32,
+                JsValue::from(FuzzyEnemy {
+                    pos: Pos {
+                        x: enemy.pos.x as i32,
+                        y: enemy.pos.y as i32,
+                    },
+                    fuzzy: fuzzy_enemy.fuzzy,
+                }),
+            );
+        }
+
+        let obstacles = Array::new_with_length(state.obstacles.len() as u32);
+        for (i, fuzzy_obstacle) in state.obstacles.iter().enumerate() {
+            let obstacle = &fuzzy_obstacle.obj;
+            obstacles.set(
+                i as u32,
+                JsValue::from(FuzzyObstacle {
+                    pos: Pos {
+                        x: obstacle.pos.x as i32,
+                        y: obstacle.pos.y as i32,
+                    },
+                    fuzzy: fuzzy_obstacle.fuzzy,
+                }),
+            );
+        }
+
+        FuzzyState {
+            players,
+            fuel_spots,
+            goals,
+            enemies,
+            obstacles,
+        }
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct FuzzyPlayer {
+    pub pos: Pos,
+    pub fuel: i32,
+    fuzzy: bool,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct FuzzyGoal {
+    pub pos: Pos,
+    fuzzy: bool,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct FuzzyFuelSpot {
+    pub pos: Pos,
+    pub collected: bool,
+    fuzzy: bool,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct FuzzyEnemy {
+    pub pos: Pos,
+    fuzzy: bool,
+}
+
+#[wasm_bindgen]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct FuzzyObstacle {
+    pub pos: Pos,
+    fuzzy: bool,
 }
