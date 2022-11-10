@@ -46,23 +46,40 @@ export default function Board(props: BoardProps) {
       </div>
       {(props.gameState.players as FuzzyPlayer[]).map((player, i) => {
         const playerOffset = posToOffset(player.pos);
-        return <Player key={i} offset={playerOffset} fuel={player.fuel} />;
+        return (
+          <Player
+            key={i}
+            offset={playerOffset}
+            fuel={player.fuel}
+            fuzzy={player.fuzzy}
+          />
+        );
       })}
       {(props.gameState.goals as FuzzyGoal[]).map((goal, i) => {
-        return <Goal key={i} offset={posToOffset(goal.pos)} />;
+        return (
+          <Goal key={i} offset={posToOffset(goal.pos)} fuzzy={goal.fuzzy} />
+        );
       })}
       {(props.gameState.fuel_spots as FuzzyFuelSpot[]).map((fuel_spot, i) => {
         const fuelOffset = posToOffset(fuel_spot.pos);
         if (fuel_spot.collected) {
           return;
         }
-        return <FuelSpot key={i} offset={fuelOffset} />;
+        return <FuelSpot key={i} offset={fuelOffset} fuzzy={fuel_spot.fuzzy} />;
       })}
       {(props.gameState.enemies as FuzzyEnemy[]).map((enemy, i) => {
-        return <Enemy key={i} offset={posToOffset(enemy.pos)} />;
+        return (
+          <Enemy key={i} offset={posToOffset(enemy.pos)} fuzzy={enemy.fuzzy} />
+        );
       })}
       {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => {
-        return <Obstacle key={i} offset={posToOffset(obstacle.pos)} />;
+        return (
+          <Obstacle
+            key={i}
+            offset={posToOffset(obstacle.pos)}
+            fuzzy={obstacle.fuzzy}
+          />
+        );
       })}
     </>
   );

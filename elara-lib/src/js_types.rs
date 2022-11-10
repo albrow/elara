@@ -204,14 +204,14 @@ impl FuzzyState {
 pub struct FuzzyPlayer {
     pub pos: Pos,
     pub fuel: i32,
-    fuzzy: bool,
+    pub fuzzy: bool,
 }
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct FuzzyGoal {
     pub pos: Pos,
-    fuzzy: bool,
+    pub fuzzy: bool,
 }
 
 #[wasm_bindgen]
@@ -219,19 +219,19 @@ pub struct FuzzyGoal {
 pub struct FuzzyFuelSpot {
     pub pos: Pos,
     pub collected: bool,
-    fuzzy: bool,
+    pub fuzzy: bool,
 }
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct FuzzyEnemy {
     pub pos: Pos,
-    fuzzy: bool,
+    pub fuzzy: bool,
 }
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct FuzzyObstacle {
     pub pos: Pos,
-    fuzzy: bool,
+    pub fuzzy: bool,
 }

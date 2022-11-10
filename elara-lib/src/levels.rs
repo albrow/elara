@@ -23,11 +23,12 @@ pub trait Level {
 }
 
 lazy_static! {
-    pub static ref LEVELS: [Box<dyn Level + Sync>; 4] = [
+    pub static ref LEVELS: [Box<dyn Level + Sync>; 5] = [
         Box::new(Level1 {}),
         Box::new(Level2 {}),
         Box::new(Level3 {}),
         Box::new(Level4 {}),
+        Box::new(Level5 {}),
     ];
 }
 
@@ -343,6 +344,65 @@ move_down(5);
             Outcome::Success
         } else if is_destroyed_by_enemy(state) {
             Outcome::Failure(ERR_DESTROYED_BY_BUG.to_string())
+        } else if state.player.fuel == 0 {
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        } else {
+            Outcome::Continue
+        }
+    }
+}
+
+#[derive(Copy, Clone)]
+pub struct Level5 {}
+
+impl Level for Level5 {
+    fn name(&self) -> &'static str {
+        "W̴͕̐̉̓̿̀͐̋h̴͈͋̒̌̑͑͑ă̶̡̘̺̌̈̑̔͌t̵̜̰͙̪̲̫͚̉?̵̨̢̥̖̝̿̈́̎͜͜"
+    }
+    fn objective(&self) -> &'static str {
+        "Move the drone (🤖) to the goal (🏁)."
+    }
+    fn initial_code(&self) -> &'static str {
+        r#"// TODO(albrow): Add a description here.
+
+move_right(1);
+move_down(2);
+"#
+    }
+    fn initial_states(&self) -> Vec<State> {
+        vec![
+            State {
+                player: Player {
+                    pos: Pos { x: 0, y: 3 },
+                    fuel: 5,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 5, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 10, y: 3 },
+                    fuel: 5,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 5, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+        ]
+    }
+    fn actors(&self) -> Vec<Box<dyn Actor>> {
+        vec![]
+    }
+    fn check_win(&self, state: &State) -> Outcome {
+        if state.player.pos == state.goal.pos {
+            Outcome::Success
         } else if state.player.fuel == 0 {
             Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
         } else {
