@@ -40,7 +40,7 @@ const myTheme = createTheme({
     gutterForeground: "#9ca3af",
     gutterBorder: "#d1d5db",
   },
-  styles: [{ tag: t.comment, color: "#5b21b6dd" }],
+  styles: [{ tag: t.comment, color: "#166534ee" }],
 });
 
 export default function Editor(props: EditorProps) {
