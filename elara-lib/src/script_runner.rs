@@ -44,10 +44,10 @@ impl ScriptRunner {
         }
     }
 
-    pub fn run(&mut self, script: String) -> Result<ScriptResult, Box<EvalAltResult>> {
+    pub fn run(&mut self, script: &str) -> Result<ScriptResult, Box<EvalAltResult>> {
         // First use a custom check for semicolons at the end of each line
         // (except for blocks or inside comments).
-        check_semicolons(script.as_str())?;
+        check_semicolons(script)?;
 
         // Create and configure the Rhai engine.
         let mut engine = Engine::new();
@@ -68,7 +68,7 @@ impl ScriptRunner {
         let engine = engine;
 
         // Try compiling the AST first and check for lexer/parser errors.
-        let ast = match engine.compile(script.as_str()) {
+        let ast = match engine.compile(script) {
             Err(parse_err) => {
                 return Err(Box::new(EvalAltResult::ErrorParsing(
                     *parse_err.0,
@@ -227,9 +227,16 @@ impl ScriptRunner {
                 simulation.borrow_mut().step_forward();
             }
         });
+        // get_pos returns the current position of the player as an array
+        // of [x, y].
         let simulation = self.simulation.clone();
-        engine.register_fn("my_position", move || {
-            simulation.borrow().curr_state().player.pos
+        engine.register_fn("get_pos", move || -> Dynamic {
+            let pos = simulation.borrow().curr_state().player.pos;
+            rhai::Array::from(vec![
+                Dynamic::from(pos.x as i64),
+                Dynamic::from(pos.y as i64),
+            ])
+            .into()
         });
     }
 }

@@ -363,10 +363,28 @@ impl Level for Level5 {
         "Move the drone (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// TODO(albrow): Add a description here.
+        r#"// Hmmm.. I wasn't able to get an lock on your position,
+// but I narrowed it down to two possible locations. No worries
+// though! The drone has a built-in position sensor that you can
+// use.
 
-move_right(1);
-move_down(2);
+// The get_pos() function returns your current position as an
+// "array". An array is just a list of values. The first value
+// represents your x position and the second value represents
+// your y position.
+let pos = get_pos();
+
+// An "if" statement lets you do different things depending on
+// some condition.
+if pos[0] == 0 {
+  // The code inside the curly brace will only run if the
+  // condition is true, (i.e., if your x position is equal to
+  // 0).
+  
+} else if pos[0] == 10 {
+  // This code will run if your x position is equal to 10.
+  
+}
 "#
     }
     fn initial_states(&self) -> Vec<State> {

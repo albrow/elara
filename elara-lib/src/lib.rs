@@ -6,7 +6,10 @@ mod log;
 #[macro_use]
 extern crate lazy_static;
 
+use js_sys::Math::random;
+use rand::seq::SliceRandom;
 use rhai::EvalAltResult;
+use std::time::{Instant, SystemTime, UNIX_EPOCH};
 use wasm_bindgen::prelude::*;
 mod simulation;
 use simulation::Simulation;
@@ -20,7 +23,7 @@ use std::sync::mpsc;
 mod script_runner;
 use script_runner::{ScriptResult, ScriptRunner};
 mod levels;
-use levels::LEVELS;
+use levels::{Outcome, LEVELS};
 mod js_types;
 
 #[wasm_bindgen]
@@ -111,15 +114,37 @@ impl Game {
         script: String,
         level_index: usize,
     ) -> Result<ScriptResult, Box<EvalAltResult>> {
-        // Reset the simulation and load the level.
-        self.level_index = level_index;
-        self.simulation
-            .borrow_mut()
-            .load_level(LEVELS[level_index].as_ref(), 0);
-        // Drain the channel.
-        while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
-        // Run the script.
-        return self.script_runner.run(script);
+        // Run the simulation multiple times, once for each possible initial
+        // state. Return the first result that fails (if any), otherwise return
+        // a random successful result.
+        let level = LEVELS[level_index].as_ref();
+        let mut last_success: Option<ScriptResult> = None;
+
+        // Shuffle the seeds to keep up the illusion that the game behaviour is
+        // random.
+        let mut seeds: Vec<usize> = (0..(level.initial_states().len())).collect();
+        let mut rng = rand::thread_rng();
+        seeds.shuffle(&mut rng);
+
+        for i in seeds {
+            // Reset the simulation and load the level.
+            self.level_index = level_index;
+            self.simulation
+                .borrow_mut()
+                .load_level(LEVELS[level_index].as_ref(), i);
+            // Drain the channel.
+            while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
+            // Run the script.
+            let result = self.script_runner.run(script.as_str())?;
+            match result.outcome {
+                Outcome::Success => {
+                    last_success = Some(result);
+                }
+                // Return the first failure.
+                _ => return Ok(result),
+            }
+        }
+        Ok(last_success.unwrap())
     }
 }
 
@@ -311,4 +336,6 @@ mod tests {
             Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
         );
     }
+
+    // TODO(albrow): Test level 5.
 }

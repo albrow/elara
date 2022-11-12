@@ -38,6 +38,7 @@ spmc = "0.3.0"
 wasm-bindgen-futures = "0.4.33"
 js-sys = "0.3.22"
 lazy_static = "1.4.0"
+rand = "0.8.5"
 
 
 # # The `console_error_panic_hook` crate provides better debugging of panics by
