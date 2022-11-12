@@ -15,3 +15,8 @@
   /* We always want error messages and tooltips to be on top */
   z-index: 99999;
 }
+
+.cm-foldGutter {
+  /* We're not using the fold gutter, so hide it for now. */
+  width: 0;
+}

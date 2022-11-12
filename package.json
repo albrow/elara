@@ -27,6 +27,7 @@
     "vite-plugin-wasm-pack": "^0.1.12"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.1.1",
     "@uiw/react-codemirror": "^4.12.4",
     "browser-fs-access": "^0.31.0",
     "codemirror": "^6.0.1",

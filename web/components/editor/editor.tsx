@@ -2,14 +2,16 @@ import { indentWithTab } from "@codemirror/commands";
 import { lintGutter, setDiagnostics, Diagnostic } from "@codemirror/lint";
 import { keymap, EditorView } from "@codemirror/view";
 import { useCodeMirror } from "@uiw/react-codemirror";
-import { basicSetup } from "codemirror";
 import { useEffect, useLayoutEffect, useRef } from "react";
+import { createTheme } from "@uiw/codemirror-themes";
+import { tags as t } from "@lezer/highlight";
 
 import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
 import { LinePos } from "../../../elara-lib/pkg";
+import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 
-const extensions = [basicSetup, lintGutter(), keymap.of([indentWithTab])];
+const extensions = [lintGutter(), keymap.of([indentWithTab]), rhaiSupport()];
 
 export interface CodeError {
   line: number;
@@ -25,6 +27,22 @@ interface EditorProps {
   codeError?: CodeError;
 }
 
+const myTheme = createTheme({
+  theme: "light",
+  settings: {
+    background: "#ffffff",
+    foreground: "#000000",
+    caret: "#374151",
+    selection: "#9ca3af77",
+    selectionMatch: "#9ca3af77",
+    lineHighlight: "#00000000",
+    gutterBackground: "#e5e7ebdd",
+    gutterForeground: "#9ca3af",
+    gutterBorder: "#d1d5db",
+  },
+  styles: [{ tag: t.comment, color: "#5b21b6dd" }],
+});
+
 export default function Editor(props: EditorProps) {
   const editor = useRef<HTMLDivElement | null>(null);
 
@@ -36,6 +54,7 @@ export default function Editor(props: EditorProps) {
     container: editor.current,
     extensions,
     value: props.code,
+    theme: myTheme,
   });
 
   useEffect(() => {
