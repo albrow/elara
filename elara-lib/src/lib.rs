@@ -419,7 +419,7 @@ mod tests {
         // Running this code should result in Outcome::Success because we
         // are accounting for both possible positions.
         let script = r#"let goal = [6, 3];
-            while true {
+            loop {
                 let pos = get_pos();
                 if pos[0] < goal[0] {
                     move_right(1);

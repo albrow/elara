@@ -487,7 +487,7 @@ impl Level for Level6 {
 // more "else if" statements to complete the code. (Hint: We
 // need to check our y position too.)
 let goal = [6, 3];
-while true {
+loop {
   // In each iteration of the loop we check our current
   // position. Remember pos[0] represents the x coordinate
   // and pos[1] represents the y coordinate.
