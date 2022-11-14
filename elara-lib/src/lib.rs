@@ -6,10 +6,8 @@ mod log;
 #[macro_use]
 extern crate lazy_static;
 
-use js_sys::Math::random;
 use rand::seq::SliceRandom;
 use rhai::EvalAltResult;
-use std::time::{Instant, SystemTime, UNIX_EPOCH};
 use wasm_bindgen::prelude::*;
 mod simulation;
 use simulation::Simulation;
@@ -337,5 +335,71 @@ mod tests {
         );
     }
 
-    // TODO(albrow): Test level 5.
+    #[test]
+    fn level_five() {
+        let mut game = crate::Game::new();
+        let level_index = 4;
+
+        // Running the initial code should result in Outcome::Failure due to
+        // being destroyed by a bug.
+        let script = LEVELS[level_index].initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
+
+        // Running this code should result in Outcome::Success because we
+        // are accounting for both possible positions.
+        let script = r"let pos = get_pos();
+            if pos[0] == 0 {
+                move_right(5);
+            } else if pos[0] == 10 {
+                move_left(5);
+            }";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
+        // Hard-coding the movement direction should always result in failure.
+        let script = "move_right(5);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
+        let script = "move_left(5);";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
+
+        // Only accounting for one branch of the if statement should
+        // result in failure, this time Outcome::Continue.
+        let script = r"let pos = get_pos();
+            if pos[0] == 0 {
+                move_right(5);
+            } else if pos[0] == 10 {
+                // Do nothing.
+            }";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
+        let script = r"let pos = get_pos();
+            if pos[0] == 0 {
+                // Do nothing.
+            } else if pos[0] == 10 {
+                move_left(5);
+            }";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
+    }
 }

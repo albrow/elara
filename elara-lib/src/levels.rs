@@ -172,7 +172,7 @@ pub struct Level3 {}
 
 impl Level for Level3 {
     fn name(&self) -> &'static str {
-        "Loop the loop"
+        "Loop the Loop"
     }
     fn objective(&self) -> &'static str {
         "Move the drone (🤖) to the goal (🏁) using a loop."
@@ -355,12 +355,46 @@ move_down(5);
 #[derive(Copy, Clone)]
 pub struct Level5 {}
 
+impl Level5 {
+    // Note: We make obstacles a method so we can re-use the same set of
+    // obstacles for each possible state.
+    fn obstacles(&self) -> Vec<Obstacle> {
+        return vec![
+            Obstacle::new(0, 2),
+            Obstacle::new(1, 2),
+            Obstacle::new(2, 2),
+            Obstacle::new(3, 2),
+            Obstacle::new(4, 2),
+            Obstacle::new(5, 2),
+            Obstacle::new(6, 2),
+            Obstacle::new(7, 2),
+            Obstacle::new(8, 2),
+            Obstacle::new(9, 2),
+            Obstacle::new(10, 2),
+            Obstacle::new(11, 2),
+            Obstacle::new(11, 3),
+            Obstacle::new(0, 4),
+            Obstacle::new(1, 4),
+            Obstacle::new(2, 4),
+            Obstacle::new(3, 4),
+            Obstacle::new(4, 4),
+            Obstacle::new(5, 4),
+            Obstacle::new(6, 4),
+            Obstacle::new(7, 4),
+            Obstacle::new(8, 4),
+            Obstacle::new(9, 4),
+            Obstacle::new(10, 4),
+            Obstacle::new(11, 4),
+        ];
+    }
+}
+
 impl Level for Level5 {
     fn name(&self) -> &'static str {
-        "W̴͕̐̉̓̿̀͐̋h̴͈͋̒̌̑͑͑ă̶̡̘̺̌̈̑̔͌t̵̜̰͙̪̲̫͚̉?̵̨̢̥̖̝̿̈́̎͜͜"
+        "Seeing Double"
     }
     fn objective(&self) -> &'static str {
-        "Move the drone (🤖) to the goal (🏁)."
+        "Determine your position, then move the drone (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Hmmm.. I wasn't able to get an lock on your position,
@@ -387,6 +421,7 @@ if pos[0] == 0 {
 }
 "#
     }
+
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
@@ -399,7 +434,7 @@ if pos[0] == 0 {
                     pos: Pos { x: 5, y: 3 },
                 },
                 enemies: vec![],
-                obstacles: vec![],
+                obstacles: self.obstacles(),
             },
             State {
                 player: Player {
@@ -411,7 +446,7 @@ if pos[0] == 0 {
                     pos: Pos { x: 5, y: 3 },
                 },
                 enemies: vec![],
-                obstacles: vec![],
+                obstacles: self.obstacles(),
             },
         ]
     }
