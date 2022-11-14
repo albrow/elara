@@ -23,12 +23,13 @@ pub trait Level {
 }
 
 lazy_static! {
-    pub static ref LEVELS: [Box<dyn Level + Sync>; 5] = [
+    pub static ref LEVELS: [Box<dyn Level + Sync>; 6] = [
         Box::new(Level1 {}),
         Box::new(Level2 {}),
         Box::new(Level3 {}),
         Box::new(Level4 {}),
         Box::new(Level5 {}),
+        Box::new(Level6 {}),
     ];
 }
 
@@ -186,6 +187,7 @@ impl Level for Level3 {
 loop {
   move_right(1);
   // Add a line of code here.
+
 }
 "#
     }
@@ -447,6 +449,186 @@ if pos[0] == 0 {
                 },
                 enemies: vec![],
                 obstacles: self.obstacles(),
+            },
+        ]
+    }
+    fn actors(&self) -> Vec<Box<dyn Actor>> {
+        vec![]
+    }
+    fn check_win(&self, state: &State) -> Outcome {
+        if state.player.pos == state.goal.pos {
+            Outcome::Success
+        } else if state.player.fuel == 0 {
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        } else {
+            Outcome::Continue
+        }
+    }
+}
+
+#[derive(Copy, Clone)]
+pub struct Level6 {}
+
+impl Level for Level6 {
+    fn name(&self) -> &'static str {
+        "Even More Trouble"
+    }
+    fn objective(&self) -> &'static str {
+        "Determine your position, then move the drone (🤖) to the goal (🏁)."
+    }
+    fn initial_code(&self) -> &'static str {
+        r#"// Now the satellite is really going haywire! You could be almost
+// anywhere. I think you can use the get_pos() function in
+// combination with a while loop to navigate to the goal, no matter
+// where you are.
+//
+// Let's try moving closer to the goal one step at a time. The
+// code below almost works, but it's not quite finished. Add
+// more "else if" statements to complete the code. (Hint: We
+// need to check our y position too.)
+let goal = [6, 3];
+while true {
+  // In each iteration of the loop we check our current
+  // position. Remember pos[0] represents the x coordinate
+  // and pos[1] represents the y coordinate.
+  let pos = get_pos();
+  if pos[0] < goal[0] {
+    // If our x position is less than the goal's x position,
+    // we need to move right.
+    move_right(1);
+  } else if pos[0] > goal[0] {
+    // If our x position is greater than the goal's x position,
+    // we need to move left.
+    move_left(1);
+  } else {
+    // The "break" keyword will exit the loop.
+    break;
+  }
+}
+"#
+    }
+
+    fn initial_states(&self) -> Vec<State> {
+        vec![
+            State {
+                player: Player {
+                    pos: Pos { x: 0, y: 0 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 4, y: 0 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 8, y: 0 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 0, y: 3 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 0, y: 7 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 11, y: 0 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 11, y: 4 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 11, y: 7 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 7, y: 7 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
+            },
+            State {
+                player: Player {
+                    pos: Pos { x: 3, y: 7 },
+                    fuel: MAX_FUEL,
+                },
+                fuel_spots: vec![],
+                goal: Goal {
+                    pos: Pos { x: 6, y: 3 },
+                },
+                enemies: vec![],
+                obstacles: vec![],
             },
         ]
     }

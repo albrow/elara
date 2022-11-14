@@ -402,4 +402,62 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
     }
+
+    #[test]
+    fn level_six() {
+        let mut game = crate::Game::new();
+        let level_index = 5;
+
+        // Running the initial code should result in Outcome::Failure due to
+        // being destroyed by a bug.
+        let script = LEVELS[level_index].initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
+
+        // Running this code should result in Outcome::Success because we
+        // are accounting for both possible positions.
+        let script = r#"let goal = [6, 3];
+            while true {
+                let pos = get_pos();
+                if pos[0] < goal[0] {
+                    move_right(1);
+                } else if pos[0] > goal[0] {
+                    move_left(1);
+                } else if pos[1] < goal[1] {
+                    move_down(1);
+                } else if pos[1] > goal[1] {
+                    move_up(1);
+                }
+            }"#;
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
+        // Hard-coding the movement direction should always result in failure.
+        let script = r"while true {
+            move_right(1);
+            move_up(1);
+        }";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
+        let script = r"while true {
+            move_left(1);
+            move_down(1);
+        }";
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
+    }
 }
