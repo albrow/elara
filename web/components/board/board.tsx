@@ -30,7 +30,7 @@ export default function Board(props: BoardProps) {
     <>
       <div id="board">
         <table
-          className="table-fixed"
+          className="table-fixed cursor-crosshair"
           style={{ width: CANVAS_WIDTH + "px", height: CANVAS_HEIGHT + "px" }}
         >
           <tbody>
