@@ -11,6 +11,8 @@ import {
   CANVAS_HEIGHT,
   WIDTH,
   HEIGHT,
+  AXIS_HEIGHT,
+  AXIS_WIDTH,
 } from "../../lib/constants";
 import { range, posToOffset } from "../../lib/utils";
 import Player from "../player/player";
@@ -31,11 +33,40 @@ export default function Board(props: BoardProps) {
       <div id="board">
         <table
           className="table-fixed cursor-crosshair"
-          style={{ width: CANVAS_WIDTH + "px", height: CANVAS_HEIGHT + "px" }}
+          style={{
+            width: CANVAS_WIDTH + AXIS_WIDTH + 1 + "px",
+            height: CANVAS_HEIGHT + AXIS_HEIGHT + 1 + "px",
+          }}
         >
           <tbody>
+            <tr
+              id="x-axis-labels"
+              className="bg-white text-xs"
+              style={{ height: AXIS_HEIGHT + "px" }}
+            >
+              <th
+                id="axis-spacer"
+                style={{ width: AXIS_WIDTH + "px", height: AXIS_WIDTH + "px" }}
+              ></th>
+              {range(WIDTH).map((x) => (
+                <th
+                  id="x-axis-labels"
+                  key={x}
+                  style={{ height: AXIS_HEIGHT + "px" }}
+                >
+                  {x}
+                </th>
+              ))}
+            </tr>
             {range(HEIGHT).map((y) => (
               <tr key={y} className="row">
+                <td
+                  id="y-axis-label"
+                  className="bg-white text-xs font-bold text-center"
+                  style={{ width: AXIS_WIDTH + "px" }}
+                >
+                  {y}
+                </td>
                 {range(WIDTH).map((x) => (
                   <Square key={"" + x + "," + y} x={x} y={y} />
                 ))}

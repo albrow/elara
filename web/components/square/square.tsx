@@ -12,7 +12,7 @@ export default function Square(props: SquareProps) {
 
   return (
     <td
-      className="square"
+      className="square p-0 border-0"
       style={{ width: `${TILE_SIZE}px`, height: `${TILE_SIZE}px` }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -21,12 +21,9 @@ export default function Square(props: SquareProps) {
         className="coords text-xs font-mono relative w-full h-full py-2 text-center"
         style={{
           zIndex: 99999999999,
-          // width: `${TILE_SIZE}px`,
-          // height: `${TILE_SIZE}px`,
           backgroundColor: isHovered
             ? "rgba(255, 255, 255, 0.8)"
             : "transparent",
-          // top: "-10px",
         }}
       >
         <div>{isHovered ? `x=${props.x}` : ""}</div>

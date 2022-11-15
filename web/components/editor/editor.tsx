@@ -48,7 +48,7 @@ export default function Editor(props: EditorProps) {
 
   const { setContainer, view } = useCodeMirror({
     onChange: props.onChange,
-    height: "357px",
+    height: "377px",
     editable: props.editable,
     readOnly: !props.editable,
     container: editor.current,

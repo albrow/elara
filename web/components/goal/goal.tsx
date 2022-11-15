@@ -14,8 +14,8 @@ export default function Goal(props: GoalProps) {
       className="flag sprite"
       src={props.fuzzy ? glitchyFlagImgUrl : flagImgUrl}
       style={{
-        width: `${TILE_SIZE}px`,
-        height: `${TILE_SIZE}px`,
+        width: `${props.fuzzy ? TILE_SIZE : TILE_SIZE - 1}px`,
+        height: `${props.fuzzy ? TILE_SIZE : TILE_SIZE - 1}px`,
         zIndex: GOAL_Z_INDEX,
         left: props.offset.left,
         top: props.offset.top,
