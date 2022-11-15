@@ -19,8 +19,8 @@ export default function FuelSpot(props: FuelSpotProps) {
     <div
       className="fuel sprite"
       style={{
-        width: `${props.fuzzy ? TILE_SIZE : TILE_SIZE - 1}px`,
-        height: `${props.fuzzy ? TILE_SIZE : TILE_SIZE - 1}px`,
+        width: `${TILE_SIZE - 1}px`,
+        height: `${TILE_SIZE - 1}px`,
         zIndex: FUEL_Z_INDEX,
         left: props.offset.left,
         top: props.offset.top,

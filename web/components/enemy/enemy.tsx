@@ -14,8 +14,8 @@ export default function Enemy(props: EnemyProps) {
       className="bug sprite"
       src={props.fuzzy ? glitchyBugImgUrl : bugImgUrl}
       style={{
-        width: `${props.fuzzy ? TILE_SIZE : TILE_SIZE - 1}px`,
-        height: `${props.fuzzy ? TILE_SIZE : TILE_SIZE - 1}px`,
+        width: `${TILE_SIZE - 1}px`,
+        height: `${TILE_SIZE - 1}px`,
         zIndex: BUG_Z_INDEX,
         left: props.offset.left,
         top: props.offset.top,
