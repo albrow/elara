@@ -1,5 +1,5 @@
 use crate::actors::{Bounds, EnemyBugActor};
-use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, MAX_FUEL, WIDTH};
+use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
 use crate::simulation::Actor;
 use crate::simulation::{Enemy, FuelSpot, Goal, Obstacle, Player, Pos, State};
 
@@ -60,7 +60,7 @@ move_down(2);
         vec![State {
             player: Player {
                 pos: Pos { x: 0, y: 0 },
-                fuel: MAX_FUEL,
+                fuel: 10,
             },
             fuel_spots: vec![],
             goal: Goal {
@@ -479,8 +479,8 @@ impl Level for Level6 {
     fn initial_code(&self) -> &'static str {
         r#"// Now the satellite is really going haywire! You could be almost
 // anywhere. I think you can use the get_pos() function in
-// combination with a while loop to navigate to the goal, no matter
-// where you are.
+// combination with a loop to navigate to the goal, no matter where
+// you are.
 //
 // Let's try moving closer to the goal one step at a time. The
 // code below almost works, but it's not quite finished. Add
@@ -513,7 +513,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 0, y: 0 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
@@ -525,7 +525,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 4, y: 0 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
@@ -537,7 +537,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 8, y: 0 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
@@ -549,7 +549,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 0, y: 3 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
@@ -561,7 +561,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 0, y: 7 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
@@ -573,7 +573,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 11, y: 0 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
@@ -585,7 +585,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 11, y: 4 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
@@ -597,7 +597,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 11, y: 7 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
@@ -609,7 +609,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 7, y: 7 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
@@ -621,7 +621,7 @@ loop {
             State {
                 player: Player {
                     pos: Pos { x: 3, y: 7 },
-                    fuel: MAX_FUEL,
+                    fuel: 10,
                 },
                 fuel_spots: vec![],
                 goal: Goal {
