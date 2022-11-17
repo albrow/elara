@@ -79,12 +79,7 @@ impl Game {
 
     pub fn get_level_data(&self, level_index: usize) -> js_types::LevelData {
         let level = LEVELS[level_index].as_ref();
-        js_types::LevelData {
-            name: level.name().to_string(),
-            objective: level.objective().to_string(),
-            initial_code: level.initial_code().to_string(),
-            initial_state: js_types::FuzzyState::from(level.initial_fuzzy_state()),
-        }
+        js_types::LevelData::from(level)
     }
 
     pub async fn run_player_script(

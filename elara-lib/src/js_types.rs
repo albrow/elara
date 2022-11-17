@@ -88,6 +88,23 @@ pub struct LevelData {
     pub objective: String,
     pub initial_state: FuzzyState,
     pub initial_code: String,
+    pub new_core_concepts: Array, // Array<String>
+}
+
+impl LevelData {
+    pub fn from(level: &dyn levels::Level) -> Self {
+        let concepts = Array::new_with_length(level.new_core_concepts().len() as u32);
+        for (i, concept) in level.new_core_concepts().iter().enumerate() {
+            concepts.set(i as u32, (*concept).into());
+        }
+        Self {
+            name: level.name().to_string(),
+            objective: level.objective().to_string(),
+            initial_code: level.initial_code().to_string(),
+            initial_state: FuzzyState::from(level.initial_fuzzy_state()),
+            new_core_concepts: concepts,
+        }
+    }
 }
 
 #[wasm_bindgen(getter_with_clone)]

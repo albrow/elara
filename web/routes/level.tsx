@@ -8,12 +8,14 @@ import {
   RhaiError,
   RunResult,
   FuzzyStateWithLine,
-  FuzzyState,
   LinePos,
 } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { CodeError } from "../components/editor/editor";
 import { saveCode, loadCode } from "../lib/storage";
+import JournalPopOver from "../components/journal/pop_over";
+import { SectionName } from "../components/journal/journal";
+import OpenJournalLink from "../components/journal/open_journal_link";
 
 const GAME_SPEED = 1; // steps per second
 const MS_PER_STEP = 1000 / GAME_SPEED;
@@ -37,6 +39,9 @@ export default function Level() {
   const [boardState, setBoardState] = useState(level.initial_state);
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
+  const [showJournal, setShowJournal] = useState(false);
+  const [journalSection, setJournalSection] =
+    useState<SectionName>("functions");
 
   const onCodeChange = useCallback((newCode: string) => {
     setCode(newCode);
@@ -184,11 +189,32 @@ export default function Level() {
 
   return (
     <div className="2xl:container 2xl:mx-auto my-4">
+      <JournalPopOver
+        show={showJournal}
+        section={journalSection}
+        setShow={setShowJournal}
+        setSection={setJournalSection}
+      />
       <div className="flex flex-row px-8 mb-5">
         <div className="flex w-full flex-col">
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-2xl font-bold mb-1">
             Level {levelNumber}: {level.name}
           </h2>
+          <div hidden={level.new_core_concepts.length == 0}>
+            <span className="font-bold text-lg">Key Concepts:</span>
+            <ul className="list-disc ml-6 mb-2">
+              {level.new_core_concepts.map((concept) => (
+                <li key={concept}>
+                  <OpenJournalLink
+                    key={concept}
+                    section={concept}
+                    setSection={setJournalSection}
+                    setShowJournal={setShowJournal}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
           <p>
             <span className="font-bold text-lg">Objective:</span>{" "}
             {level.objective}
@@ -197,7 +223,7 @@ export default function Level() {
       </div>
       <div className="flex flex-row px-4">
         <div className="flex w-full flex-col">
-          {/* TODO(albrow): Move control panel to separate template? */}
+          {/* TODO(albrow): Move control panel to separate component? */}
           <div className="grid grid-flow-col bg-gray-800 rounded-t-md p-2">
             <div className="flex justify-start justify-self-start gap-2">
               {!isRunning && (

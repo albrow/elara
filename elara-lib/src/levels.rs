@@ -17,6 +17,9 @@ pub trait Level {
     fn initial_states(&self) -> Vec<State>;
     fn actors(&self) -> Vec<Box<dyn Actor>>;
     fn check_win(&self, state: &State) -> Outcome;
+    fn new_core_concepts(&self) -> Vec<&'static str> {
+        vec![]
+    }
     fn initial_fuzzy_state(&self) -> FuzzyState {
         FuzzyState::from(self.initial_states())
     }
@@ -44,12 +47,7 @@ impl Level for Level1 {
         "Move the drone (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Every line that starts with two slashes "//" is called a
-// "comment". Comments don't affect the drone at all; they are
-// just little notes to help you understand the code. You can
-// add your own comments too!
-//
-// The code below moves the drone, but it's not going to the
+        r#"// The code below moves the drone, but it's not going to the
 // right place. Try changing the code to see what happens.
 
 move_right(1);
@@ -92,6 +90,9 @@ move_down(2);
         } else {
             Outcome::Continue
         }
+    }
+    fn new_core_concepts(&self) -> Vec<&'static str> {
+        vec!["functions", "comments"]
     }
 }
 
