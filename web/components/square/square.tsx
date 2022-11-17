@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { TILE_SIZE } from "../../lib/constants";
+import { AXIS_LABEL_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 
 export interface SquareProps {
   x: number;
@@ -20,7 +20,7 @@ export default function Square(props: SquareProps) {
       <div
         className="coords text-xs font-mono relative w-full h-full py-2 text-center"
         style={{
-          zIndex: 99999999999,
+          zIndex: AXIS_LABEL_Z_INDEX,
           backgroundColor: isHovered
             ? "rgba(255, 255, 255, 0.8)"
             : "transparent",

@@ -1,5 +1,4 @@
-import { useState } from "react";
-
+import { JOURNAL_POP_OVER_Z_INDEX } from "../../lib/constants";
 import Journal, { JournalProps } from "./journal";
 
 interface JournalPopOverProps extends JournalProps {
@@ -15,7 +14,7 @@ export default function JournalPopOver(props: JournalPopOverProps) {
         className={
           (props.show ? "" : "hidden") + " fixed top-15 left-0 w-screen"
         }
-        style={{ zIndex: 999999999999999 }}
+        style={{ zIndex: JOURNAL_POP_OVER_Z_INDEX }}
       >
         <div className="container mx-auto my-4">
           <div className="max-h-[85vh] overflow-y-auto xl:mx-10 sm:mx-4 bg-yellow-100 border border-gray-700 rounded-lg drop-shadow-md">

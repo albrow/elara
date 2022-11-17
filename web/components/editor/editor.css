@@ -12,8 +12,10 @@
 }
 
 .cm-tooltip-hover {
-  /* We always want error messages and tooltips to be on top */
-  z-index: 99999;
+  /* Unfortunately there's no way to import typescript constants here,
+  but we should make sure this matches TOOL_TIP_Z_INDEX in
+  web/lib/constants.ts */
+  z-index: 1100;
 }
 
 .cm-foldGutter {
