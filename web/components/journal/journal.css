@@ -32,6 +32,10 @@
   font-size: 0.88rem;
 }
 
+#journal-content p {
+  margin-bottom: 1rem;
+}
+
 #journal-content code {
   background: #ffffff;
   border: solid 1px #ccc;
@@ -39,10 +43,31 @@
 }
 
 #journal-content pre > code {
-  margin-top: 1rem;
+  margin-bottom: 1rem;
   display: inline-block;
   padding: 1.5rem;
   width: 100%;
   line-height: 1.25;
   /* overflow-x: scroll; */
+}
+
+#journal-content table {
+  margin-bottom: 1rem;
+  background: #fff;
+  border: solid 1px #ccc;
+  padding: 0.1rem 0.4rem;
+}
+
+#journal-content table code {
+  background: #ddd;
+}
+
+#journal-content table th {
+  border: solid 1px #ccc;
+  padding: 0.2rem 0.4rem;
+}
+
+#journal-content table td {
+  border: solid 1px #ccc;
+  padding: 0.2rem 0.4rem;
 }

@@ -8,11 +8,17 @@ export default defineConfig(async () => {
   // See: https://github.com/brillout/vite-plugin-mdx/issues/44
   // @ts-ignore
   const mdx = await import("@mdx-js/rollup");
+  // @ts-ignore
+  const remarkGfm = await import("remark-gfm");
   // Set base="/elara/" as a workaround for hosting on GitHub Pages.
   // See: https://dev.to/shashannkbawa/deploying-vite-app-to-github-pages-3ane
   return {
     base: "/elara/",
     root: "web",
-    plugins: [react(), wasmPack("./elara-lib"), mdx.default()],
+    plugins: [
+      react(),
+      wasmPack("./elara-lib"),
+      mdx.default({ remarkPlugins: [remarkGfm.default as any] }),
+    ],
   };
 });

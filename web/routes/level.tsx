@@ -14,7 +14,7 @@ import Board from "../components/board/board";
 import Editor, { CodeError } from "../components/editor/editor";
 import { saveCode, loadCode } from "../lib/storage";
 import JournalPopOver from "../components/journal/pop_over";
-import { SectionName } from "../components/journal/journal";
+import { SectionName, sections } from "../components/journal/journal";
 import OpenJournalLink from "../components/journal/open_journal_link";
 
 const GAME_SPEED = 1; // steps per second
@@ -40,8 +40,9 @@ export default function Level() {
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
   const [showJournal, setShowJournal] = useState(false);
-  const [journalSection, setJournalSection] =
-    useState<SectionName>("functions");
+  const [journalSection, setJournalSection] = useState<SectionName>(
+    Object.keys(sections)[0] as SectionName
+  );
 
   const onCodeChange = useCallback((newCode: string) => {
     setCode(newCode);

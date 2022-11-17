@@ -1,4 +1,4 @@
-import { SectionName } from "./journal";
+import { SectionName, sections } from "./journal";
 
 export interface OpenJournalLinkProps {
   section: SectionName;
@@ -7,6 +7,10 @@ export interface OpenJournalLinkProps {
 }
 
 export default function OpenJournalLink(props: OpenJournalLinkProps) {
+  if (!(props.section in sections)) {
+    throw new Error(`Invalid section name: ${props.section}`);
+  }
+
   return (
     <span
       className="hover:cursor-pointer hover:underline text-blue-700 active:text-blue-800"

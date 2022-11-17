@@ -1,0 +1,50 @@
+### While Loop
+
+A while loop allows you to perform repeated actions. Everything inside the curly
+braces (`{` and `}`) will be repeated as long as the "condition" is true. The
+"condition" is a boolean expression (i.e., an expression that evaluates to
+`true` or `false`).
+
+In Elara, there are some safegaurds in place to prevent infinite loops: the code
+stops running if you reach the end of a level, e.g. by reaching the objective or
+running out of fuel. As a backup safegaurd, the code will stop running
+if an infinite loop is detected, in which case you'll see an error. (This can happen
+if the condition is always true and the code inside the loop doesn't use any fuel).
+
+#### Comparison Operators
+
+The following comparison operators can be used in boolean expressions:
+
+| Operator | Example  | Meaning                             |
+| -------- | -------- | ----------------------------------- |
+| `<`      | `x < 5`  | `x` is "less than" 5                |
+| `>`      | `x > 5`  | `x` is "greater than" 5             |
+| `==`     | `x == 5` | `x` is "equal to" 5                 |
+| `!=`     | `x != 5` | `x` is "not equal to" 5             |
+| `<=`     | `x <= 5` | `x` is "less than or equal to" 5    |
+| `>=`     | `x >= 5` | `x` is "greater than or equal to" 5 |
+
+#### Examples
+
+This while loop will run forever (or at least until the end of the level)
+becuase the condition is always `true`:
+
+```rhai
+while true {
+    move_down(1);
+}
+```
+
+This while loop uses the condition `x < 5`, so that means it will run as long
+as the variable `x` is less than 5. Since we increase the value of `x` on each
+iteration of the loop, the loop will run 5 times:
+
+{/* TODO(albrow): Add a call to "say" or "print" here? */}
+
+```rhai
+let x = 0;
+
+while x < 5 {
+    x = x + 1;
+}
+```

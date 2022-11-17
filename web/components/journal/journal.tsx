@@ -1,12 +1,12 @@
-import { useState } from "react";
-
-import Functions from "./sections/functions.mdx";
-import Comments from "./sections/comments.mdx";
+import Function from "./sections/function.mdx";
+import Comment from "./sections/comment.mdx";
+import WhileLoop from "./sections/while_loop.mdx";
 import "./journal.css";
 
 export const sections = {
-  functions: Functions,
-  comments: Comments,
+  Comment: Comment,
+  Function: Function,
+  "While Loop": WhileLoop,
 };
 
 export type SectionName = keyof typeof sections;

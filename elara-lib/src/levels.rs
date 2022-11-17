@@ -92,7 +92,7 @@ move_down(2);
         }
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["functions", "comments"]
+        vec!["Function", "Comment"]
     }
 }
 
@@ -177,18 +177,17 @@ impl Level for Level3 {
         "Loop the Loop"
     }
     fn objective(&self) -> &'static str {
-        "Move the drone (🤖) to the goal (🏁) using a loop."
+        "Move the drone (🤖) to the goal (🏁) using a while loop."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// You can use the "loop" keyword to perform repeated actions.
-// Everything inside the curly braces "{" and "}" will be
-// repeated. (Don't worry, the loop will stop running if you
-// run out of fuel or reach the objective).
+        r#"// Instead of writing the same code over and over, you can
+// use a "while loop" to repeat any code you want. Try using
+// a while loop below:
 
-loop {
+while true {
   move_right(1);
   // Add a line of code here.
-
+  
 }
 "#
     }
@@ -246,6 +245,9 @@ loop {
         } else {
             Outcome::Continue
         }
+    }
+    fn new_core_concepts(&self) -> Vec<&'static str> {
+        vec!["While Loop"]
     }
 }
 
