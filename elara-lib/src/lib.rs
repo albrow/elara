@@ -414,17 +414,17 @@ mod tests {
         // Running this code should result in Outcome::Success because we
         // are accounting for both possible positions.
         let script = r#"let goal = [6, 3];
-            loop {
-                let pos = get_pos();
-                if pos[0] < goal[0] {
-                    move_right(1);
-                } else if pos[0] > goal[0] {
-                    move_left(1);
-                } else if pos[1] < goal[1] {
-                    move_down(1);
-                } else if pos[1] > goal[1] {
-                    move_up(1);
-                }
+            while get_pos()[0] < goal[0] {
+                move_right(1);
+            }
+            while get_pos()[0] > goal[0] {
+                move_left(1);
+            }
+            while get_pos()[1] < goal[1] {
+                move_down(1);
+            }
+            while get_pos()[1] > goal[1] {
+                move_up(1);
             }"#;
         let result = game
             .run_player_script_internal(script.to_string(), level_index)

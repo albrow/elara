@@ -482,32 +482,24 @@ impl Level for Level6 {
     fn initial_code(&self) -> &'static str {
         r#"// Now the satellite is really going haywire! You could be almost
 // anywhere. I think you can use the get_pos() function in
-// combination with a loop to navigate to the goal, no matter where
-// you are.
-//
-// Let's try moving closer to the goal one step at a time. The
-// code below almost works, but it's not quite finished. Add
-// more "else if" statements to complete the code. (Hint: We
-// need to check our y position too.)
+// combination with a loop to navigate to the goal, no matter
+// where you are.
+
+// The code below almost works, but it's not quite finished.
 let goal = [6, 3];
-loop {
-  // In each iteration of the loop we check our current
-  // position. Remember pos[0] represents the x coordinate
-  // and pos[1] represents the y coordinate.
-  let pos = get_pos();
-  if pos[0] < goal[0] {
-    // If our x position is less than the goal's x position,
-    // we need to move right.
-    move_right(1);
-  } else if pos[0] > goal[0] {
-    // If our x position is greater than the goal's x position,
-    // we need to move left.
-    move_left(1);
-  } else {
-    // The "break" keyword will exit the loop.
-    break;
-  }
+
+while get_pos()[0] < goal[0] {
+  // While our x position is less than the goal's x position,
+  // we need to keep moving right.
+  move_right(1);
 }
+while get_pos()[0] > goal[0] {
+  // While our x position is greater than the goal's x position,
+  // we need to keep moving left.
+  move_left(1);
+}
+// Add more "while loops" to complete the code. (Hint: We need 
+// to check our y position too.)
 "#
     }
 
