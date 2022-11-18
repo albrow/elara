@@ -199,7 +199,7 @@ export default function Level() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span className="hover:underline text-blue-600 active:text-blue-700">
+                    <span className="hover:underline text-blue-700 active:text-blue-800">
                       {concept}
                     </span>
                   </a>

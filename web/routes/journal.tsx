@@ -8,8 +8,8 @@ export default function Journal() {
   let { sectionName } = useParams();
 
   // Default to the first section.
-  sectionName ||= Object.keys(sections)[0] as SectionName;
-  if (!(sectionName in sections)) {
+  //   sectionName ||= Object.keys(sections)[0] as SectionName;
+  if (sectionName !== undefined && !(sectionName in sections)) {
     throw new Error(`Unknown section: ${sectionName}`);
   }
 
@@ -37,7 +37,22 @@ export default function Journal() {
             ))}
           </div>
           <div id="journal-main" className="bg-white p-4 px-8 min-h-[90vh]">
-            <JournalSection section={sectionName as SectionName} />
+            {sectionName !== undefined && (
+              <JournalSection section={sectionName as SectionName} />
+            )}
+            {sectionName === undefined && (
+              <div className="w-full">
+                <h1 className="text-3xl font-semibold mt-4">
+                  Welcome to the Journal
+                </h1>
+                <p className="text-lg mt-4">
+                  The Journal contains helpful information and teaches core
+                  programming concepts that you will need in order to play the
+                  game. Choose a topic from the sidebar on the left to get
+                  started!
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

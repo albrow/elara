@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <>
-      <div className="lg:container lg:mx-auto my-4 px-8">
+      <div className="lg:container lg:mx-auto lg:mt-10 my-4 px-8">
         <h1 className="text-3xl font-bold">Welcome to Elara</h1>
         <div className="my-4">
           <p className="my-2 mt-10">
