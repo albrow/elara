@@ -1,4 +1,5 @@
-import { Outlet, Link, useLocation, Navigate } from "react-router-dom";
+import { Outlet, useLocation, Navigate } from "react-router-dom";
+import NavbarLink from "../components/navbar_link";
 
 export default function Root() {
   let location = useLocation();
@@ -18,47 +19,16 @@ export default function Root() {
 
   return (
     <div className="h-screen">
-      <div id="nav" className="bg-gray-800 p-2 mb-0">
-        <Link to="/home">
-          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
-            Home
-          </span>
-        </Link>
-        <Link to="/journal">
-          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
-            Journal
-          </span>
-        </Link>
-        <Link to="/level/1">
-          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
-            Level 1
-          </span>
-        </Link>
-        <Link to="/level/2">
-          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
-            Level 2
-          </span>
-        </Link>
-        <Link to="/level/3">
-          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
-            Level 3
-          </span>
-        </Link>
-        <Link to="/level/4">
-          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
-            Level 4
-          </span>
-        </Link>
-        <Link to="/level/5">
-          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
-            Level 5
-          </span>
-        </Link>
-        <Link to="/level/6">
-          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
-            Level 6
-          </span>
-        </Link>
+      <div className="w-full h-1 bg-gray-900"></div>
+      <div id="nav" className="bg-gray-800 pb-2 px-2 mb-0 flex flex-row">
+        <NavbarLink to="/home" name="Home" />
+        <NavbarLink to="/journal" name="Journal" />
+        <NavbarLink to="/level/1" name="Level 1" />
+        <NavbarLink to="/level/2" name="Level 2" />
+        <NavbarLink to="/level/3" name="Level 3" />
+        <NavbarLink to="/level/4" name="Level 4" />
+        <NavbarLink to="/level/5" name="Level 5" />
+        <NavbarLink to="/level/6" name="Level 6" />
       </div>
       <Outlet />
     </div>
