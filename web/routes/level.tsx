@@ -13,9 +13,7 @@ import {
 import Board from "../components/board/board";
 import Editor, { CodeError } from "../components/editor/editor";
 import { saveCode, loadCode } from "../lib/storage";
-import JournalPopOver from "../components/journal/pop_over";
-import { SectionName, sections } from "../components/journal/journal";
-import OpenJournalLink from "../components/journal/open_journal_link";
+import { Link } from "react-router-dom";
 
 const GAME_SPEED = 1; // steps per second
 const MS_PER_STEP = 1000 / GAME_SPEED;
@@ -39,10 +37,6 @@ export default function Level() {
   const [boardState, setBoardState] = useState(level.initial_state);
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
-  const [showJournal, setShowJournal] = useState(false);
-  const [journalSection, setJournalSection] = useState<SectionName>(
-    Object.keys(sections)[0] as SectionName
-  );
 
   const onCodeChange = useCallback((newCode: string) => {
     setCode(newCode);
@@ -190,12 +184,6 @@ export default function Level() {
 
   return (
     <div className="2xl:container 2xl:mx-auto my-4">
-      <JournalPopOver
-        show={showJournal}
-        section={journalSection}
-        setShow={setShowJournal}
-        setSection={setJournalSection}
-      />
       <div className="flex flex-row px-8 mb-5">
         <div className="flex w-full flex-col">
           <h2 className="text-2xl font-bold mb-1">
@@ -206,12 +194,15 @@ export default function Level() {
             <ul className="list-disc ml-6 mb-2">
               {level.new_core_concepts.map((concept) => (
                 <li key={concept}>
-                  <OpenJournalLink
-                    key={concept}
-                    section={concept}
-                    setSection={setJournalSection}
-                    setShowJournal={setShowJournal}
-                  />
+                  <a
+                    href={"/elara/#/journal/concepts/" + concept}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="hover:underline text-blue-600 active:text-blue-700">
+                      {concept}
+                    </span>
+                  </a>
                 </li>
               ))}
             </ul>

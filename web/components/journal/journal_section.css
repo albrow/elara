@@ -37,7 +37,7 @@
 }
 
 #journal-content code {
-  background: #ffffff;
+  background: #ddd;
   border: solid 1px #ccc;
   padding: 0.1rem 0.4rem;
 }
@@ -53,21 +53,17 @@
 
 #journal-content table {
   margin-bottom: 1rem;
-  background: #fff;
   border: solid 1px #ccc;
   padding: 0.1rem 0.4rem;
 }
 
-#journal-content table code {
-  background: #ddd;
-}
-
 #journal-content table th {
-  border: solid 1px #ccc;
-  padding: 0.2rem 0.4rem;
+  background: #ddd;
+  border: solid 1px #bbb;
+  padding: 0.4rem 1rem;
 }
 
 #journal-content table td {
   border: solid 1px #ccc;
-  padding: 0.2rem 0.4rem;
+  padding: 0.4rem 1rem;
 }

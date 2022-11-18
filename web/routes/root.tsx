@@ -17,11 +17,16 @@ export default function Root() {
   }
 
   return (
-    <>
-      <div id="nav" className="bg-gray-800 p-2 mb-0 2xl:mb-10">
+    <div className="h-screen">
+      <div id="nav" className="bg-gray-800 p-2 mb-0">
         <Link to="/home">
           <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
             Home
+          </span>
+        </Link>
+        <Link to="/journal">
+          <span className="text-lg text-white hover:text-blue-400 active:text-blue-500 mx-4">
+            Journal
           </span>
         </Link>
         <Link to="/level/1">
@@ -56,6 +61,6 @@ export default function Root() {
         </Link>
       </div>
       <Outlet />
-    </>
+    </div>
   );
 }

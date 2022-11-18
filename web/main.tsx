@@ -4,6 +4,7 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 
 import init from "../elara-lib/pkg";
 import Home from "./routes/home";
+import Journal from "./routes/journal";
 
 (async function () {
   await init();
@@ -34,6 +35,14 @@ import Home from "./routes/home";
           {
             path: "/level/:levelNumber",
             element: <Level />,
+          },
+          {
+            path: "/journal",
+            element: <Journal />,
+          },
+          {
+            path: "/journal/concepts/:sectionName",
+            element: <Journal />,
           },
         ],
       },
