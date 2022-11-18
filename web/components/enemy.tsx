@@ -1,7 +1,7 @@
-import { Offset } from "../../lib/utils";
-import { TILE_SIZE, BUG_Z_INDEX } from "../../lib/constants";
-import bugImgUrl from "../../images/bug.png";
-import glitchyBugImgUrl from "../../images/bug_glitchy.gif";
+import { Offset } from "../lib/utils";
+import { TILE_SIZE, BUG_Z_INDEX } from "../lib/constants";
+import bugImgUrl from "../images/bug.png";
+import glitchyBugImgUrl from "../images/bug_glitchy.gif";
 
 interface EnemyProps {
   offset: Offset;

@@ -1,7 +1,7 @@
-import { Offset } from "../../lib/utils";
-import { TILE_SIZE, WALL_Z_INDEX } from "../../lib/constants";
-import rockImgUrl from "../../images/rock.png";
-import glitchyRockImgUrl from "../../images/rock_glitchy.gif";
+import { Offset } from "../lib/utils";
+import { TILE_SIZE, WALL_Z_INDEX } from "../lib/constants";
+import rockImgUrl from "../images/rock.png";
+import glitchyRockImgUrl from "../images/rock_glitchy.gif";
 
 interface ObstacleProps {
   offset: Offset;

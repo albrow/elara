@@ -1,7 +1,7 @@
-import { Offset } from "../../lib/utils";
-import { TILE_SIZE, PLAYER_Z_INDEX } from "../../lib/constants";
-import robotImgUrl from "../../images/robot.png";
-import glitchyRobotImgUrl from "../../images/robot_glitchy.gif";
+import { Offset } from "../lib/utils";
+import { TILE_SIZE, PLAYER_Z_INDEX } from "../lib/constants";
+import robotImgUrl from "../images/robot.png";
+import glitchyRobotImgUrl from "../images/robot_glitchy.gif";
 
 interface PlayerProps {
   offset: Offset;
