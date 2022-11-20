@@ -27,7 +27,7 @@ export default function Home() {
           </p>
           <p className="my-2">
             Right now, we are focusing on testing the core mechanics of the
-            game, which includes writing code to control a drone and solve
+            game, which includes writing code to control a rover and solve
             various puzzles. For now, you will need to switch between levels
             manually. Select a level above to get started!
           </p>

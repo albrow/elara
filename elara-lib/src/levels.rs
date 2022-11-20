@@ -44,10 +44,10 @@ impl Level for Level1 {
         "First Steps"
     }
     fn objective(&self) -> &'static str {
-        "Move the drone (🤖) to the goal (🏁)."
+        "Move the rover (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// The code below moves the drone, but it's not going to the
+        r#"// The code below moves the rover, but it's not going to the
 // right place. Try changing the code to see what happens.
 
 move_right(1);
@@ -104,7 +104,7 @@ impl Level for Level2 {
         "Fuel Up"
     }
     fn objective(&self) -> &'static str {
-        "First move the drone (🤖) to collect the fuel (⛽️), then move to the goal (🏁)."
+        "First move the rover (🤖) to collect the fuel (⛽️), then move to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
         r#"// If you try moving straight to the goal, you'll run out of fuel
@@ -177,7 +177,7 @@ impl Level for Level3 {
         "Loop the Loop"
     }
     fn objective(&self) -> &'static str {
-        "Move the drone (🤖) to the goal (🏁) using a while loop."
+        "Move the rover (🤖) to the goal (🏁) using a while loop."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Instead of writing the same code over and over, you can
@@ -259,7 +259,7 @@ impl Level for Level4 {
         "What's that Buzzing Sound?"
     }
     fn objective(&self) -> &'static str {
-        "Move the drone (🤖) to the goal (🏁), but watch out for bugs (🪲)!"
+        "Move the rover (🤖) to the goal (🏁), but watch out for bugs (🪲)!"
     }
     fn initial_code(&self) -> &'static str {
         r"// If you try going straight for the goal, you might run
@@ -399,12 +399,12 @@ impl Level for Level5 {
         "Seeing Double"
     }
     fn objective(&self) -> &'static str {
-        "Determine your position, then move the drone (🤖) to the goal (🏁)."
+        "Determine your position, then move the rover (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Hmmm.. I wasn't able to get an lock on your position,
 // but I narrowed it down to two possible locations. No worries
-// though! The drone has a built-in position sensor that you can
+// though! The rover has a built-in position sensor that you can
 // use.
 
 // The get_pos() function returns your current position as an
@@ -477,7 +477,7 @@ impl Level for Level6 {
         "Even More Trouble"
     }
     fn objective(&self) -> &'static str {
-        "Determine your position, then move the drone (🤖) to the goal (🏁)."
+        "Determine your position, then move the rover (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Now the satellite is really going haywire! You could be almost
