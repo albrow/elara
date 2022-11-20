@@ -402,19 +402,13 @@ impl Level for Level5 {
         "Determine your position, then move the rover (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Hmmm.. I wasn't able to get an lock on your position,
-// but I narrowed it down to two possible locations. No worries
-// though! The rover has a built-in position sensor that you can
-// use.
-
-// The get_pos() function returns your current position as an
-// "array". An array is just a list of values. The first value
-// represents your x position and the second value represents
-// your y position.
+        r#"// The get_pos() function returns your current position as an
+// "array". The first value represents your x position and the
+// second value represents your y position.
 let pos = get_pos();
 
-// An "if" statement lets you do different things depending on
-// some condition.
+// Use an "if" statement to move in a different direction depending
+// on your position.
 if pos[0] == 0 {
   // The code inside the curly brace will only run if the
   // condition is true, (i.e., if your x position is equal to
@@ -426,7 +420,6 @@ if pos[0] == 0 {
 }
 "#
     }
-
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
@@ -467,6 +460,9 @@ if pos[0] == 0 {
             Outcome::Continue
         }
     }
+    fn new_core_concepts(&self) -> Vec<&'static str> {
+        vec!["Variable", "Array", "If Statement"]
+    }
 }
 
 #[derive(Copy, Clone)]
@@ -480,12 +476,7 @@ impl Level for Level6 {
         "Determine your position, then move the rover (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Now the satellite is really going haywire! You could be almost
-// anywhere. I think you can use the get_pos() function in
-// combination with a loop to navigate to the goal, no matter
-// where you are.
-
-// The code below almost works, but it's not quite finished.
+        r#"// The code below almost works, but it's not quite finished.
 let goal = [6, 3];
 
 while get_pos()[0] < goal[0] {
@@ -498,11 +489,11 @@ while get_pos()[0] > goal[0] {
   // we need to keep moving left.
   move_left(1);
 }
+
 // Add more "while loops" to complete the code. (Hint: We need 
 // to check our y position too.)
 "#
     }
-
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
@@ -638,6 +629,9 @@ while get_pos()[0] > goal[0] {
         } else {
             Outcome::Continue
         }
+    }
+    fn new_core_concepts(&self) -> Vec<&'static str> {
+        vec!["While Loop"]
     }
 }
 

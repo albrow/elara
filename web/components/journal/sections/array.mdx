@@ -1,0 +1,38 @@
+### Array
+
+An array is a list of values. The values can be of any type, and they
+are not necessarily all of the same type. The values inside an array
+are sometimes called "elements".
+
+You can access the elements of an array by providing an "index" in
+between square brackets (`[` and `]`). See below for some examples. Note
+that the first element of the array has index `0`, **_not_** `1`.
+
+You can also use the `len` function on an array to determine its length,
+i.e., how many elements it contains.
+
+#### Examples
+
+Declaring an array and assigning it to a variable:
+
+```rhai
+let arr = [1, 2, 3];
+```
+
+Accessing the first element of an array:
+
+```rhai
+arr[0];
+```
+
+Getting the next element of an array (i.e., the element at index 1):
+
+```rhai
+arr[1];
+```
+
+Using the `len` function to determine the length of an array:
+
+```rhai
+len(arr);
+```

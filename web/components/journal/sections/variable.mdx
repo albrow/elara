@@ -1,0 +1,37 @@
+### Variable
+
+Any value can be assigned to a variable, which you can reference later on.
+You can think of variables as "containers" that you can put values into.
+You can declare a new variable with the `let` keyword.
+
+#### Variable types
+
+A variable has a "type" based on the value that was assigned to it. The
+variable's type determines what you can do with it. For example, some
+functions expect certain types as arguments. There are only a handful
+of types you need to worry about for Elara:
+
+{/* TODO(albrow): Link to the page about arrays */}
+
+| Type     | Example             | Description                                           |
+| -------- | ------------------- | ----------------------------------------------------- |
+| `i64`    | `let x = 3`         | An integer, i.e. a whole number (including negatives) |
+| `bool`   | `let x = true`      | A boolean, which can be either `true` or `false`      |
+| `string` | `let x = "hello"`   | A string, i.e. a sequence of letters or symbols       |
+| `array`  | `let x = [1, 2, 3]` | A list of values                                      |
+
+#### Examples
+
+Assigning the value `"hello"` to the variable named
+`greeting`:
+
+```rhai
+let greeting = "hello";
+```
+
+Assigning the return value the `get_pos` function
+to the variable named `pos`:
+
+```rhai
+let pos = get_pos();
+```
