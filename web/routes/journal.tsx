@@ -15,10 +15,10 @@ export default function Journal() {
 
   return (
     <>
-      <div className="bg-gray-300 p-0 fixed top-0 left-0 w-screen h-screen -z-10"></div>
+      <div className="bg-gray-300 p-0 fixed top-0 left-0 w-full h-full -z-10"></div>
       <div className="lg:container lg:mx-auto px-8">
         <div className="flex flex-row">
-          <div id="journal-sidebar" className="p-3 min-w-max">
+          <div id="journal-sidebar" className="p-3 min-w-max pr-4 text-right">
             <h4 className="font-bold text-lg">Concepts</h4>
             {Object.keys(sections).map((linkName) => (
               <div key={linkName}>

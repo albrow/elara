@@ -9,9 +9,9 @@ import "./journal_section.css";
 export const sections = {
   Comment: Comment,
   Function: Function,
-  "While Loop": WhileLoop,
   Variable: Variable,
   Array: Array,
+  "While Loop": WhileLoop,
   "If Statement": IfStatement,
 };
 
