@@ -15,11 +15,18 @@ interface PlayerProps {
   fuzzy: boolean;
 }
 
-function speechBubbleClass(pos: Pos): string {
+function speechBubbleClass(pos: Pos, msg: string): string {
   // This part is common regardless of whether the speech bubble
   // is aligned to the left or right.
   let classNames =
-    "absolute rounded bg-white p-1 shadow -top-3 min-w-max border-gray-400 border ";
+    "absolute rounded bg-white p-1 shadow -top-3 border-gray-400 border ";
+
+  if (msg.length <= 2) {
+    classNames += "w-8 ";
+  } else {
+    classNames += "min-w-max ";
+  }
+
   if (pos.x <= 4) {
     // left-aligned speech bubble.
     classNames += "text-left left-3 ";
@@ -76,7 +83,7 @@ export default function Player(props: PlayerProps) {
         id="player-message"
         hidden={props.message == ""}
         className={
-          speechBubbleClass(props.offset.pos) +
+          speechBubbleClass(props.offset.pos, props.message) +
           speechBubblePsuedoClass(props.offset.pos)
         }
         style={{
