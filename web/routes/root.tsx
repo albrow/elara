@@ -29,6 +29,7 @@ export default function Root() {
         <NavbarLink to="/level/4" name="Level 4" />
         <NavbarLink to="/level/5" name="Level 5" />
         <NavbarLink to="/level/6" name="Level 6" />
+        <NavbarLink to="/level/7" name="Level 7" />
       </div>
       <Outlet />
     </div>

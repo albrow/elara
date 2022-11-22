@@ -124,6 +124,9 @@ export default function Level() {
       } else {
         // There are no more steps to iterate through, display the outcome.
         switch (lastOutcome) {
+          case "no_objective":
+            // Do nothing. Used for levels without any specific objective.
+            break;
           case "success":
             alert("You win!");
             break;

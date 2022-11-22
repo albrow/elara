@@ -198,9 +198,9 @@ mod test {
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
-            goal: Goal {
+            goal: Some(Goal {
                 pos: Pos::new(3, 3),
-            },
+            }),
         };
 
         // Simple case where no obstacles are in the way and we are not

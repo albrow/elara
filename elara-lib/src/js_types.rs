@@ -77,6 +77,7 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
             Outcome::Success => String::from("success"),
             Outcome::Failure(msg) => msg,
             Outcome::Continue => String::from("continue"),
+            Outcome::NoObjective => String::from("no_objective"),
         },
     }
 }

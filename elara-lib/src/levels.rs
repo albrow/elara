@@ -1,13 +1,18 @@
 use crate::actors::{Bounds, EnemyBugActor};
-use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
+use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, MAX_FUEL, WIDTH};
 use crate::simulation::Actor;
 use crate::simulation::{Enemy, FuelSpot, Goal, Obstacle, Player, Pos, State};
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum Outcome {
+    // Continue running the code, but this is considered a failure if there is no code left to run.
     Continue,
+    // The win condition was met.
     Success,
+    // Some failure condition was reached.
     Failure(String),
+    // Used for levels without any set objective.
+    NoObjective,
 }
 
 pub trait Level {
@@ -26,7 +31,8 @@ pub trait Level {
 }
 
 lazy_static! {
-    pub static ref LEVELS: [Box<dyn Level + Sync>; 6] = [
+    pub static ref LEVELS: [Box<dyn Level + Sync>; 7] = [
+        Box::new(Level0 {}),
         Box::new(Level1 {}),
         Box::new(Level2 {}),
         Box::new(Level3 {}),
@@ -34,6 +40,50 @@ lazy_static! {
         Box::new(Level5 {}),
         Box::new(Level6 {}),
     ];
+}
+
+#[derive(Copy, Clone)]
+pub struct Level0 {}
+
+impl Level for Level0 {
+    fn name(&self) -> &'static str {
+        "Hello World"
+    }
+    fn objective(&self) -> &'static str {
+        "Use the \"say\" function to make the rover say something."
+    }
+    fn initial_code(&self) -> &'static str {
+        r#"// Any line that starts with "//" is a comment. Comments
+// don't actually do anything; they're just helpful notes to
+// help you understand the code :)
+//
+// The "say" function makes the rover say something. Try changing
+// the code to see all the things the rover can say!
+
+say("Hello, world!");
+say(2 + 2);
+say(5 < 10);
+say(7 > 8);
+"#
+    }
+    fn initial_states(&self) -> Vec<State> {
+        vec![State {
+            player: Player::new(0, 0, MAX_FUEL),
+            fuel_spots: vec![],
+            goal: None,
+            enemies: vec![],
+            obstacles: vec![],
+        }]
+    }
+    fn actors(&self) -> Vec<Box<dyn Actor>> {
+        vec![]
+    }
+    fn check_win(&self, _state: &State) -> Outcome {
+        Outcome::NoObjective
+    }
+    fn new_core_concepts(&self) -> Vec<&'static str> {
+        vec!["Comment", "Function"]
+    }
 }
 
 #[derive(Copy, Clone)]
@@ -47,11 +97,7 @@ impl Level for Level1 {
         "Move the rover (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Any line that starts with "//" is a comment. Comments
-// don't actually do anything; they're just helpful notes to
-// help you understand the code :)
-//
-// The code below moves the rover, but it's not going to the
+        r#"// The code below moves the rover, but it's not going to the
 // right place. Try changing the code to see what happens.
 
 move_right(1);
@@ -62,9 +108,9 @@ move_down(2);
         vec![State {
             player: Player::new(0, 0, 10),
             fuel_spots: vec![],
-            goal: Goal {
+            goal: Some(Goal {
                 pos: Pos { x: 3, y: 3 },
-            },
+            }),
             enemies: vec![],
             obstacles: vec![
                 // Obstacles enclose the player and goal in a 4x4 square.
@@ -84,7 +130,7 @@ move_down(2);
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.pos {
+        if state.player.pos == state.goal.as_ref().unwrap().pos {
             Outcome::Success
         } else if state.player.fuel == 0 {
             Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
@@ -122,9 +168,9 @@ move_right(4);
                 pos: Pos { x: 0, y: 5 },
                 collected: false,
             }],
-            goal: Goal {
+            goal: Some(Goal {
                 pos: Pos::new(4, 4),
-            },
+            }),
             enemies: vec![],
             obstacles: vec![
                 // Obstacles enclose the player, goal, and fuel with a few different
@@ -157,7 +203,7 @@ move_right(4);
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.pos {
+        if state.player.pos == state.goal.as_ref().unwrap().pos {
             Outcome::Success
         } else if state.player.fuel == 0 {
             Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
@@ -193,9 +239,9 @@ while true {
         vec![State {
             player: Player::new(0, 7, 5),
             fuel_spots: vec![FuelSpot::new(3, 5)],
-            goal: Goal {
+            goal: Some(Goal {
                 pos: Pos::new(8, 0),
-            },
+            }),
             enemies: vec![],
             obstacles: vec![
                 Obstacle::new(0, 6),
@@ -233,7 +279,7 @@ while true {
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.pos {
+        if state.player.pos == state.goal.as_ref().unwrap().pos {
             Outcome::Success
         } else if state.player.fuel == 0 {
             Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
@@ -277,9 +323,9 @@ move_down(5);
                     collected: false,
                 },
             ],
-            goal: Goal {
+            goal: Some(Goal {
                 pos: Pos { x: 9, y: 5 },
-            },
+            }),
             enemies: vec![Enemy {
                 pos: Pos { x: 9, y: 7 },
             }],
@@ -337,7 +383,7 @@ move_down(5);
         ))]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.pos {
+        if state.player.pos == state.goal.as_ref().unwrap().pos {
             Outcome::Success
         } else if is_destroyed_by_enemy(state) {
             Outcome::Failure(ERR_DESTROYED_BY_BUG.to_string())
@@ -417,18 +463,18 @@ if pos[0] == 0 {
             State {
                 player: Player::new(0, 3, 5),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 5, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: self.obstacles(),
             },
             State {
                 player: Player::new(10, 3, 5),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 5, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: self.obstacles(),
             },
@@ -438,7 +484,7 @@ if pos[0] == 0 {
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.pos {
+        if state.player.pos == state.goal.as_ref().unwrap().pos {
             Outcome::Success
         } else if state.player.fuel == 0 {
             Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
@@ -485,90 +531,90 @@ while get_pos()[0] > goal[0] {
             State {
                 player: Player::new(0, 0, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(4, 0, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(8, 0, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(0, 3, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(0, 7, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(11, 0, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(11, 4, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(11, 7, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(7, 7, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(3, 7, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
@@ -578,7 +624,7 @@ while get_pos()[0] > goal[0] {
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.pos {
+        if state.player.pos == state.goal.as_ref().unwrap().pos {
             Outcome::Success
         } else if state.player.fuel == 0 {
             Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
@@ -613,6 +659,11 @@ pub struct FuzzyState {
 
 impl FuzzyState {
     pub fn from_single_state(state: &State) -> Self {
+        let goals = if let Some(goal) = state.goal.clone() {
+            vec![Fuzzy::new(goal, false)]
+        } else {
+            vec![]
+        };
         Self {
             players: vec![Fuzzy::new(state.player.clone(), false)],
             fuel_spots: state
@@ -621,13 +672,14 @@ impl FuzzyState {
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
                 .collect(),
-            goals: vec![Fuzzy::new(state.goal.clone(), false)],
+            goals: goals,
             enemies: state
                 .enemies
                 .clone()
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
                 .collect(),
+
             obstacles: state
                 .obstacles
                 .clone()
@@ -663,14 +715,13 @@ impl FuzzyState {
                     .players
                     .push(Fuzzy::new(state.player.clone(), true));
             }
-            if !fuzzy_state
-                .goals
-                .contains(&Fuzzy::new(state.goal.clone(), false))
-            {
-                for goal in fuzzy_state.goals.iter_mut() {
-                    goal.fuzzy = true;
+            if let Some(goal) = state.goal.clone() {
+                if !fuzzy_state.goals.contains(&Fuzzy::new(goal.clone(), false)) {
+                    for goal in fuzzy_state.goals.iter_mut() {
+                        goal.fuzzy = true;
+                    }
+                    fuzzy_state.goals.push(Fuzzy::new(goal, true));
                 }
-                fuzzy_state.goals.push(Fuzzy::new(state.goal.clone(), true));
             }
 
             // TODO(albrow): Support fuzziness for fuel_spots, enemies, and
@@ -704,9 +755,9 @@ mod tests {
         let states = vec![State {
             player: Player::new(0, 0, 10),
             fuel_spots: vec![],
-            goal: Goal {
+            goal: Some(Goal {
                 pos: Pos::new(1, 1),
-            },
+            }),
             enemies: vec![],
             obstacles: vec![],
         }];
@@ -730,18 +781,18 @@ mod tests {
             State {
                 player: Player::new(0, 0, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos::new(2, 2),
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(1, 1, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos::new(2, 2),
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
@@ -769,18 +820,18 @@ mod tests {
             State {
                 player: Player::new(0, 0, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos::new(2, 2),
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
             State {
                 player: Player::new(0, 0, 10),
                 fuel_spots: vec![],
-                goal: Goal {
+                goal: Some(Goal {
                     pos: Pos::new(3, 3),
-                },
+                }),
                 enemies: vec![],
                 obstacles: vec![],
             },
@@ -802,6 +853,24 @@ mod tests {
                     true,
                 ),
             ],
+            enemies: vec![],
+            obstacles: vec![],
+        };
+        let actual = FuzzyState::from(states);
+        assert_eq!(actual, expected);
+
+        // If goal is None, FuzzyState.goals should be an empty vector.
+        let states = vec![State {
+            player: Player::new(0, 0, 10),
+            fuel_spots: vec![],
+            goal: None,
+            enemies: vec![],
+            obstacles: vec![],
+        }];
+        let expected = FuzzyState {
+            players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],
+            fuel_spots: vec![],
+            goals: vec![],
             enemies: vec![],
             obstacles: vec![],
         };

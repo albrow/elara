@@ -58,7 +58,7 @@ impl Simulation {
     pub fn step_forward(&mut self) -> Outcome {
         // If the current outcome is not Continue, then we can't take any more
         // steps forward. This happens if the player has already won or lost.
-        if self.last_outcome != Outcome::Continue {
+        if self.last_outcome != Outcome::Continue && self.last_outcome != Outcome::NoObjective {
             return self.last_outcome.clone();
         }
 
@@ -84,6 +84,9 @@ impl Simulation {
                 return self.last_outcome.clone();
             }
             Outcome::Continue => {}
+            Outcome::NoObjective => {
+                self.last_outcome = Outcome::NoObjective;
+            }
         }
         // 3. Apply the other actors.
         for actor in &mut self.level.actors() {
@@ -107,6 +110,9 @@ impl Simulation {
                 return self.last_outcome.clone();
             }
             Outcome::Continue => {}
+            Outcome::NoObjective => {
+                self.last_outcome = Outcome::NoObjective;
+            }
         }
 
         log!(
@@ -124,7 +130,7 @@ impl Simulation {
 pub struct State {
     pub player: Player,
     pub fuel_spots: Vec<FuelSpot>,
-    pub goal: Goal,
+    pub goal: Option<Goal>,
     pub enemies: Vec<Enemy>,
     pub obstacles: Vec<Obstacle>,
 }

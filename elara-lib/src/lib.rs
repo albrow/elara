@@ -151,7 +151,7 @@ mod tests {
     #[test]
     fn level_one() {
         let mut game = crate::Game::new();
-        let level_index = 0;
+        let level_index = 1;
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVELS[level_index].initial_code();
@@ -233,7 +233,7 @@ mod tests {
     #[test]
     fn level_two() {
         let mut game = crate::Game::new();
-        let level_index = 1;
+        let level_index = 2;
 
         // Running the initial code should result in Outcome::Failure due to
         // running out of fuel.
@@ -265,7 +265,7 @@ mod tests {
     #[test]
     fn level_three() {
         let mut game = crate::Game::new();
-        let level_index = 2;
+        let level_index = 3;
 
         // Running the initial code should result in Outcome::Failure due to
         // running out of fuel.
@@ -292,7 +292,7 @@ mod tests {
     #[test]
     fn level_four() {
         let mut game = crate::Game::new();
-        let level_index = 3;
+        let level_index = 4;
 
         // Running the initial code should result in Outcome::Failure due to
         // being destroyed by a bug.
@@ -333,7 +333,7 @@ mod tests {
     #[test]
     fn level_five() {
         let mut game = crate::Game::new();
-        let level_index = 4;
+        let level_index = 5;
 
         // Running the initial code should result in Outcome::Failure due to
         // being destroyed by a bug.
@@ -401,7 +401,7 @@ mod tests {
     #[test]
     fn level_six() {
         let mut game = crate::Game::new();
-        let level_index = 5;
+        let level_index = 6;
 
         // Running the initial code should result in Outcome::Failure due to
         // being destroyed by a bug.

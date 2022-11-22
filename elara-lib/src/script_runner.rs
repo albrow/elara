@@ -176,7 +176,9 @@ impl ScriptRunner {
                         }
                     }
                     _ => {
-                        if simulation.borrow().last_outcome() == Outcome::Continue {
+                        let last_outcome = simulation.borrow().last_outcome();
+                        if last_outcome == Outcome::Continue || last_outcome == Outcome::NoObjective
+                        {
                             Ok(DebuggerCommand::StepInto)
                         } else {
                             Err(ERR_SIMULATION_END.into())
