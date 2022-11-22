@@ -8,6 +8,7 @@ use crate::simulation::{Actor, Pos, State};
 pub enum Action {
     Wait,
     Move(Direction),
+    Say(String),
 }
 
 pub struct Bounds {
@@ -36,6 +37,11 @@ impl PlayerChannelActor {
 impl Actor for PlayerChannelActor {
     fn apply(&mut self, state: State) -> State {
         let mut state = state.clone();
+
+        // Reset the player message every time an action is taken.
+        // We only want messages to persist for one step.
+        state.player.message = String::new();
+
         let rx = self.rx.clone();
         match rx.borrow().try_recv() {
             Ok(Action::Wait) => {}
@@ -49,6 +55,9 @@ impl Actor for PlayerChannelActor {
                 state.player.fuel -= 1;
 
                 state.player.pos = self.get_new_player_pos(&state, direction);
+            }
+            Ok(Action::Say(message)) => {
+                state.player.message = message;
             }
             Err(_) => {}
         }
@@ -185,10 +194,7 @@ mod test {
         let bounds = Bounds { max_x: 2, max_y: 2 };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player {
-                pos: Pos::new(1, 1),
-                fuel: MAX_FUEL,
-            },
+            player: Player::new(1, 1, MAX_FUEL),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],

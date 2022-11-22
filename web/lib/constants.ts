@@ -13,6 +13,7 @@ export const DEFAULT_FUEL_GAIN = 10;
 export const JOURNAL_MODAL_Z_INDEX = 1200;
 export const TOOL_TIP_Z_INDEX = 1100;
 export const AXIS_LABEL_Z_INDEX = 1000;
+export const PLAYER_MESSAGE_Z_INDEX = 400;
 export const BUG_Z_INDEX = 300;
 export const PLAYER_Z_INDEX = 200;
 export const FUEL_Z_INDEX = 100;

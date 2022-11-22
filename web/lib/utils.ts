@@ -7,12 +7,14 @@ export function range(size: number): ReadonlyArray<number> {
 }
 
 export interface Offset {
+  pos: Pos;
   top: string;
   left: string;
 }
 
 export function posToOffset(pos: Pos): Offset {
   return {
+    pos,
     left: `${pos.x * (TILE_SIZE + 1) + AXIS_WIDTH + 2}px`,
     top: `${pos.y * (TILE_SIZE + 1) + AXIS_HEIGHT + 2}px`,
   };

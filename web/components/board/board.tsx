@@ -82,6 +82,7 @@ export default function Board(props: BoardProps) {
             key={i}
             offset={playerOffset}
             fuel={player.fuel}
+            message={player.message}
             fuzzy={player.fuzzy}
           />
         );

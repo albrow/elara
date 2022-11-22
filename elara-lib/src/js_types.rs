@@ -140,6 +140,7 @@ impl FuzzyState {
                         y: player.pos.y as i32,
                     },
                     fuel: player.fuel as i32,
+                    message: player.message.clone(),
                     fuzzy: fuzzy_player.fuzzy,
                 }),
             );
@@ -216,11 +217,12 @@ impl FuzzyState {
     }
 }
 
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyPlayer {
     pub pos: Pos,
     pub fuel: i32,
+    pub message: String,
     pub fuzzy: bool,
 }
 

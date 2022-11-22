@@ -125,6 +125,9 @@ impl ScriptRunner {
                     ASTNode::Stmt(Stmt::FnCall(fn_call_expr, ..)) => {
                         match fn_call_expr.name.as_str() {
                             "wait" => {
+                                // For wait (and other functions like move_right, move_left),
+                                // we need to parse the argument to determine how many steps
+                                // this position should be considered "active".
                                 let duration =
                                     eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
                                 for _ in 0..duration {
@@ -162,6 +165,11 @@ impl ScriptRunner {
                                 for _ in 0..spaces {
                                     step_positions.borrow_mut().push(pos);
                                 }
+                                Ok(DebuggerCommand::StepInto)
+                            }
+                            "say" => {
+                                // The say function always has a duration of one step.
+                                step_positions.borrow_mut().push(pos);
                                 Ok(DebuggerCommand::StepInto)
                             }
                             _ => Ok(DebuggerCommand::StepInto),
@@ -237,6 +245,14 @@ impl ScriptRunner {
                 Dynamic::from(pos.y as i64),
             ])
             .into()
+        });
+        let tx = self.player_action_tx.clone();
+        let simulation = self.simulation.clone();
+        engine.register_fn("say", move |s: Dynamic| {
+            let message = format!("{}", s);
+            log!("say: {}", message);
+            tx.borrow().send(Action::Say(message)).unwrap();
+            simulation.borrow_mut().step_forward();
         });
     }
 }

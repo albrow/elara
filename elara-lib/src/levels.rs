@@ -47,7 +47,11 @@ impl Level for Level1 {
         "Move the rover (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// The code below moves the rover, but it's not going to the
+        r#"// Any line that starts with "//" is a comment. Comments
+// don't actually do anything; they're just helpful notes to
+// help you understand the code :)
+//
+// The code below moves the rover, but it's not going to the
 // right place. Try changing the code to see what happens.
 
 move_right(1);
@@ -56,10 +60,7 @@ move_down(2);
     }
     fn initial_states(&self) -> Vec<State> {
         vec![State {
-            player: Player {
-                pos: Pos { x: 0, y: 0 },
-                fuel: 10,
-            },
+            player: Player::new(0, 0, 10),
             fuel_spots: vec![],
             goal: Goal {
                 pos: Pos { x: 3, y: 3 },
@@ -116,10 +117,7 @@ move_right(4);
     }
     fn initial_states(&self) -> Vec<State> {
         vec![State {
-            player: Player {
-                pos: Pos { x: 0, y: 0 },
-                fuel: 5,
-            },
+            player: Player::new(0, 0, 5),
             fuel_spots: vec![FuelSpot {
                 pos: Pos { x: 0, y: 5 },
                 collected: false,
@@ -193,10 +191,7 @@ while true {
     }
     fn initial_states(&self) -> Vec<State> {
         vec![State {
-            player: Player {
-                pos: Pos { x: 0, y: 7 },
-                fuel: 5,
-            },
+            player: Player::new(0, 7, 5),
             fuel_spots: vec![FuelSpot::new(3, 5)],
             goal: Goal {
                 pos: Pos::new(8, 0),
@@ -271,10 +266,7 @@ move_down(5);
     }
     fn initial_states(&self) -> Vec<State> {
         vec![State {
-            player: Player {
-                pos: Pos { x: 11, y: 0 },
-                fuel: 8,
-            },
+            player: Player::new(11, 0, 8),
             fuel_spots: vec![
                 FuelSpot {
                     pos: Pos { x: 4, y: 1 },
@@ -423,10 +415,7 @@ if pos[0] == 0 {
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
-                player: Player {
-                    pos: Pos { x: 0, y: 3 },
-                    fuel: 5,
-                },
+                player: Player::new(0, 3, 5),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 5, y: 3 },
@@ -435,10 +424,7 @@ if pos[0] == 0 {
                 obstacles: self.obstacles(),
             },
             State {
-                player: Player {
-                    pos: Pos { x: 10, y: 3 },
-                    fuel: 5,
-                },
+                player: Player::new(10, 3, 5),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 5, y: 3 },
@@ -497,10 +483,7 @@ while get_pos()[0] > goal[0] {
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
-                player: Player {
-                    pos: Pos { x: 0, y: 0 },
-                    fuel: 10,
-                },
+                player: Player::new(0, 0, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -509,10 +492,7 @@ while get_pos()[0] > goal[0] {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos { x: 4, y: 0 },
-                    fuel: 10,
-                },
+                player: Player::new(4, 0, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -521,10 +501,7 @@ while get_pos()[0] > goal[0] {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos { x: 8, y: 0 },
-                    fuel: 10,
-                },
+                player: Player::new(8, 0, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -533,10 +510,7 @@ while get_pos()[0] > goal[0] {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos { x: 0, y: 3 },
-                    fuel: 10,
-                },
+                player: Player::new(0, 3, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -545,10 +519,7 @@ while get_pos()[0] > goal[0] {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos { x: 0, y: 7 },
-                    fuel: 10,
-                },
+                player: Player::new(0, 7, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -557,10 +528,7 @@ while get_pos()[0] > goal[0] {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos { x: 11, y: 0 },
-                    fuel: 10,
-                },
+                player: Player::new(11, 0, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -569,10 +537,7 @@ while get_pos()[0] > goal[0] {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos { x: 11, y: 4 },
-                    fuel: 10,
-                },
+                player: Player::new(11, 4, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -581,10 +546,7 @@ while get_pos()[0] > goal[0] {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos { x: 11, y: 7 },
-                    fuel: 10,
-                },
+                player: Player::new(11, 7, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -593,10 +555,7 @@ while get_pos()[0] > goal[0] {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos { x: 7, y: 7 },
-                    fuel: 10,
-                },
+                player: Player::new(7, 7, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -605,10 +564,7 @@ while get_pos()[0] > goal[0] {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos { x: 3, y: 7 },
-                    fuel: 10,
-                },
+                player: Player::new(3, 7, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -746,10 +702,7 @@ mod tests {
         // Given one possible initial state, the fuzzy state should be identical,
         // with all objects marked as non-fuzzy.
         let states = vec![State {
-            player: Player {
-                pos: Pos::new(0, 0),
-                fuel: 10,
-            },
+            player: Player::new(0, 0, 10),
             fuel_spots: vec![],
             goal: Goal {
                 pos: Pos::new(1, 1),
@@ -758,13 +711,7 @@ mod tests {
             obstacles: vec![],
         }];
         let expected = FuzzyState {
-            players: vec![Fuzzy::new(
-                Player {
-                    pos: Pos::new(0, 0),
-                    fuel: 10,
-                },
-                false,
-            )],
+            players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],
             fuel_spots: vec![],
             goals: vec![Fuzzy::new(
                 Goal {
@@ -781,10 +728,7 @@ mod tests {
         // Given two possible player positions, both should be marked as fuzzy.
         let states = vec![
             State {
-                player: Player {
-                    pos: Pos::new(0, 0),
-                    fuel: 10,
-                },
+                player: Player::new(0, 0, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos::new(2, 2),
@@ -793,10 +737,7 @@ mod tests {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos::new(1, 1),
-                    fuel: 10,
-                },
+                player: Player::new(1, 1, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos::new(2, 2),
@@ -807,20 +748,8 @@ mod tests {
         ];
         let expected = FuzzyState {
             players: vec![
-                Fuzzy::new(
-                    Player {
-                        pos: Pos::new(0, 0),
-                        fuel: 10,
-                    },
-                    true,
-                ),
-                Fuzzy::new(
-                    Player {
-                        pos: Pos::new(1, 1),
-                        fuel: 10,
-                    },
-                    true,
-                ),
+                Fuzzy::new(Player::new(0, 0, 10), true),
+                Fuzzy::new(Player::new(1, 1, 10), true),
             ],
             fuel_spots: vec![],
             goals: vec![Fuzzy::new(
@@ -838,10 +767,7 @@ mod tests {
         // Given two possible goal positions, both should be marked as fuzzy.
         let states = vec![
             State {
-                player: Player {
-                    pos: Pos::new(0, 0),
-                    fuel: 10,
-                },
+                player: Player::new(0, 0, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos::new(2, 2),
@@ -850,10 +776,7 @@ mod tests {
                 obstacles: vec![],
             },
             State {
-                player: Player {
-                    pos: Pos::new(0, 0),
-                    fuel: 10,
-                },
+                player: Player::new(0, 0, 10),
                 fuel_spots: vec![],
                 goal: Goal {
                     pos: Pos::new(3, 3),
@@ -863,13 +786,7 @@ mod tests {
             },
         ];
         let expected = FuzzyState {
-            players: vec![Fuzzy::new(
-                Player {
-                    pos: Pos::new(0, 0),
-                    fuel: 10,
-                },
-                false,
-            )],
+            players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],
             fuel_spots: vec![],
             goals: vec![
                 Fuzzy::new(

@@ -147,6 +147,17 @@ impl fmt::Debug for State {
 pub struct Player {
     pub pos: Pos,
     pub fuel: u32,
+    pub message: String,
+}
+
+impl Player {
+    pub fn new(x: u32, y: u32, fuel: u32) -> Player {
+        Player {
+            pos: Pos::new(x, y),
+            fuel: fuel,
+            message: String::new(),
+        }
+    }
 }
 
 #[derive(Clone, PartialEq, Debug)]
