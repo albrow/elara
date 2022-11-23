@@ -1,14 +1,14 @@
 import { Tooltip, PlacementWithLogical } from "@chakra-ui/react";
 
-import { Offset } from "../lib/utils";
+import { Offset } from "../../lib/utils";
 import {
   TILE_SIZE,
   PLAYER_Z_INDEX,
   PLAYER_MESSAGE_Z_INDEX,
-} from "../lib/constants";
-import robotImgUrl from "../images/robot.png";
-import glitchyRobotImgUrl from "../images/robot_glitchy.gif";
-import { Pos } from "../../elara-lib/pkg/elara_lib";
+} from "../../lib/constants";
+import robotImgUrl from "../../images/robot.png";
+import glitchyRobotImgUrl from "../../images/robot_glitchy.gif";
+import { Pos } from "../../../elara-lib/pkg/elara_lib";
 import SpriteLabel from "./sprite_label";
 
 interface PlayerProps {

@@ -1,7 +1,7 @@
-import { Offset } from "../lib/utils";
-import { TILE_SIZE, GOAL_Z_INDEX } from "../lib/constants";
-import flagImgUrl from "../images/flag.png";
-import glitchyFlagImgUrl from "../images/flag_glitchy.gif";
+import { Offset } from "../../lib/utils";
+import { TILE_SIZE, GOAL_Z_INDEX } from "../../lib/constants";
+import flagImgUrl from "../../images/flag.png";
+import glitchyFlagImgUrl from "../../images/flag_glitchy.gif";
 
 interface GoalProps {
   offset: Offset;

@@ -1,7 +1,11 @@
-import { Offset } from "../lib/utils";
-import { TILE_SIZE, FUEL_Z_INDEX, DEFAULT_FUEL_GAIN } from "../lib/constants";
-import fuelImgUrl from "../images/fuel.png";
-import glitchyFuelImgUrl from "../images/fuel_glitchy.gif";
+import { Offset } from "../../lib/utils";
+import {
+  TILE_SIZE,
+  FUEL_Z_INDEX,
+  DEFAULT_FUEL_GAIN,
+} from "../../lib/constants";
+import fuelImgUrl from "../../images/fuel.png";
+import glitchyFuelImgUrl from "../../images/fuel_glitchy.gif";
 import SpriteLabel from "./sprite_label";
 
 interface FuelSpotProps {

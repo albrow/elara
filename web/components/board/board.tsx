@@ -15,13 +15,13 @@ import {
   AXIS_WIDTH,
 } from "../../lib/constants";
 import { range, posToOffset } from "../../lib/utils";
-import Player from "../player";
-import Goal from "../goal";
-import FuelSpot from "../fuel_spot";
-import Square from "../square";
+import Player from "./player";
+import Goal from "./goal";
+import FuelSpot from "./fuel_spot";
+import Square from "./square";
 import "./board.css";
-import Enemy from "../enemy";
-import Obstacle from "../obstacle";
+import Enemy from "./enemy";
+import Obstacle from "./obstacle";
 
 interface BoardProps {
   gameState: FuzzyState;

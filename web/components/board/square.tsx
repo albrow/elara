@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { AXIS_LABEL_Z_INDEX, TILE_SIZE } from "../lib/constants";
+import { AXIS_LABEL_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 
 export interface SquareProps {
   x: number;

@@ -16,8 +16,6 @@ export default function SpriteLabel(props: SpriteLabelProps) {
       fontSize="xs"
       style={{ zIndex: props.zIndex }}
       w="fit-content"
-      rounded="md"
-      textAlign="right"
       textShadow="0px 0px 3px black"
     >
       {props.value}
