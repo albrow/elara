@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { Box } from "@chakra-ui/react";
 
 interface NavbarLinkProps {
   to: string;
@@ -18,15 +19,21 @@ export default function NavbarLink(props: NavbarLinkProps) {
 
   return (
     <Link to={props.to}>
-      <div
-        className={
-          (isActive ? "bg-blue-400 " : "") +
-          "h-1 mb-1 z-10 mx-2 relative -top-1"
+      <Box
+        fontWeight="bold"
+        minW="max"
+        mr={4}
+        p={1}
+        px={4}
+        rounded="lg"
+        color={isActive ? "white" : "gray.300"}
+        background={isActive ? "gray.700" : "gray.800"}
+        _hover={
+          !isActive ? { background: "var(--chakra-colors-gray-700)" } : {}
         }
-      ></div>
-      <div className="text-lg text-white hover:text-gray-300 active:text-gray-400 mx-4">
+      >
         {props.name}
-      </div>
+      </Box>
     </Link>
   );
 }

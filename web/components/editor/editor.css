@@ -22,3 +22,7 @@
   /* We're not using the fold gutter, so hide it for now. */
   width: 0;
 }
+
+.line-running {
+  background-color: var(--chakra-colors-gray-300);
+}

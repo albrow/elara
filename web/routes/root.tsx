@@ -1,5 +1,6 @@
 import { Outlet, useLocation, Navigate } from "react-router-dom";
 import NavbarLink from "../components/navbar_link";
+import { Container, Box, Flex } from "@chakra-ui/react";
 
 export default function Root() {
   let location = useLocation();
@@ -18,20 +19,23 @@ export default function Root() {
   }
 
   return (
-    <div className="h-screen">
-      <div className="w-full h-1 bg-gray-900"></div>
-      <div id="nav" className="bg-gray-800 pb-2 px-2 mb-0 flex flex-row">
-        <NavbarLink to="/home" name="Home" />
-        <NavbarLink to="/journal" name="Journal" />
-        <NavbarLink to="/level/1" name="Level 1" />
-        <NavbarLink to="/level/2" name="Level 2" />
-        <NavbarLink to="/level/3" name="Level 3" />
-        <NavbarLink to="/level/4" name="Level 4" />
-        <NavbarLink to="/level/5" name="Level 5" />
-        <NavbarLink to="/level/6" name="Level 6" />
-        <NavbarLink to="/level/7" name="Level 7" />
-      </div>
+    <Container minW="container.md" maxW="none" p={0}>
+      <Box bg="gray.800" p={2} textColor="white">
+        <Container maxW="container.xl" height="40px">
+          <Flex height="100%" align="center">
+            <NavbarLink to="/home" name="Home" />
+            <NavbarLink to="/journal" name="Journal" />
+            <NavbarLink to="/level/1" name="Level 1" />
+            <NavbarLink to="/level/2" name="Level 2" />
+            <NavbarLink to="/level/3" name="Level 3" />
+            <NavbarLink to="/level/4" name="Level 4" />
+            <NavbarLink to="/level/5" name="Level 5" />
+            <NavbarLink to="/level/6" name="Level 6" />
+            <NavbarLink to="/level/7" name="Level 7" />
+          </Flex>
+        </Container>
+      </Box>
       <Outlet />
-    </div>
+    </Container>
   );
 }

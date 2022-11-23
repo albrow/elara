@@ -5,6 +5,7 @@ import { useCodeMirror } from "@uiw/react-codemirror";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { createTheme } from "@uiw/codemirror-themes";
 import { tags as t } from "@lezer/highlight";
+import { Box } from "@chakra-ui/react";
 
 import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
 import { LinePos } from "../../../elara-lib/pkg";
@@ -85,9 +86,9 @@ export default function Editor(props: EditorProps) {
   }, [props.codeError]);
 
   return (
-    <div id="editor-wrapper" className="w-full h-full p-0">
+    <Box id="editor-wrapper">
       <div ref={editor} />
-    </div>
+    </Box>
   );
 }
 

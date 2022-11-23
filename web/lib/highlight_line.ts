@@ -38,7 +38,7 @@ const highlightField = StateField.define<DecorationSet>({
   provide: (f) => EditorView.decorations.from(f),
 });
 
-const highlightMark = Decoration.mark({ class: "bg-gray-400" });
+const highlightMark = Decoration.mark({ class: "line-running" });
 
 /**
  * Highlights the given line number in the editor (and unhighlights

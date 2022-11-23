@@ -1,6 +1,17 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
+import {
+  Container,
+  Flex,
+  Text,
+  Box,
+  Button,
+  Link,
+  UnorderedList,
+  ListItem,
+} from "@chakra-ui/react";
+import { MdPlayArrow, MdStop } from "react-icons/md";
 
 import {
   Game,
@@ -197,75 +208,54 @@ export default function Level() {
         section={journalSection}
         setVisible={setJournalVisible}
       />
-      <div className="2xl:container 2xl:mx-auto my-4">
-        <div className="flex flex-row px-8 mb-5">
-          <div className="flex w-full flex-col">
-            <h2 className="text-2xl font-bold mb-1">
-              Level {levelNumber}: {level.name}
-            </h2>
-            <div hidden={level.new_core_concepts.length == 0}>
-              <span className="font-bold text-lg">Key Concepts:</span>
-              <ul className="list-disc ml-6 mb-2">
-                {level.new_core_concepts.map((concept) => (
-                  <li key={concept}>
-                    <span
-                      onClick={() => {
-                        setJournalSection(concept);
-                        setJournalVisible(true);
-                      }}
-                      className="hover:underline hover:cursor-pointer text-blue-700 active:text-blue-800"
-                    >
-                      {concept}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <p>
-              <span className="font-bold text-lg">Objective:</span>{" "}
-              {level.objective}
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-row px-4">
-          <div className="flex w-full flex-col">
-            {/* TODO(albrow): Move control panel to separate component? */}
-            <div className="grid grid-flow-col bg-gray-800 rounded-t-md p-2">
-              <div className="flex justify-start justify-self-start gap-2">
-                {!isRunning && (
-                  <button
-                    onClick={runHandler}
-                    className="bg-emerald-500 active:bg-emerald-600 rounded p-1 px-3 font-semibold"
+      <Container maxW="container.xl" mt={6}>
+        <Box>
+          <Text fontSize="2xl" fontWeight="bold" mb={1}>
+            Level {levelNumber}: {level.name}
+          </Text>
+          <Box hidden={level.new_core_concepts.length == 0}>
+            <b>Key Concepts:</b>
+            <UnorderedList>
+              {level.new_core_concepts.map((concept) => (
+                <ListItem key={concept} ml={2}>
+                  <Link
+                    fontWeight={"semibold"}
+                    color={"blue.500"}
+                    onClick={() => {
+                      setJournalSection(concept);
+                      setJournalVisible(true);
+                    }}
                   >
-                    ▶ Run
-                  </button>
-                )}
-                {isRunning && (
-                  <button
-                    onClick={stopHandler}
-                    className="bg-red-500 active:bg-red-700 rounded p-1 px-3 font-semibold"
-                  >
-                    ◾️ Stop
-                  </button>
-                )}
-              </div>
-              <div className="flex justify-end justify-self-end gap-2">
-                <button
-                  onClick={saveCodeHandler}
-                  disabled={isRunning}
-                  className="bg-gray-300 active:bg-gray-400 rounded p-1 px-3 font-semibold disabled:cursor-not-allowed"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={loadCodeHandler}
-                  disabled={isRunning}
-                  className="bg-gray-300 active:bg-gray-400 rounded p-1 px-3 font-semibold disabled:cursor-not-allowed"
-                >
-                  Load
-                </button>
-              </div>
-            </div>
+                    {concept}
+                  </Link>
+                </ListItem>
+              ))}
+            </UnorderedList>
+          </Box>
+          <p>
+            <b>Objective:</b> {level.objective}
+          </p>
+        </Box>
+        <Flex direction="row" mt={4}>
+          <Box id="editor-section" mr={2} flexGrow={1}>
+            <Box bg="gray.800" p={2} roundedTop="md">
+              {!isRunning && (
+                <Button size="sm" colorScheme="green" onClick={runHandler}>
+                  <MdPlayArrow
+                    size={"1.3em"}
+                    style={{ marginRight: "0.1rem" }}
+                  />{" "}
+                  Run
+                </Button>
+              )}
+              {isRunning && (
+                <Button size="sm" colorScheme="red" onClick={stopHandler}>
+                  <MdStop size={"1.3em"} style={{ marginRight: "0.1rem" }} />{" "}
+                  Stop
+                </Button>
+              )}
+            </Box>
+
             <Editor
               code={code}
               editable={!isRunning}
@@ -273,14 +263,12 @@ export default function Level() {
               activeLine={activeLine}
               codeError={codeError}
             />
-          </div>
-          <div className="px-4">
-            <div id="board-wrapper" className="relative">
-              <Board gameState={boardState} />
-            </div>
-          </div>
-        </div>
-      </div>
+          </Box>
+          <Box id="board-wrapper" position="relative">
+            <Board gameState={boardState} />
+          </Box>
+        </Flex>
+      </Container>
     </>
   );
 }

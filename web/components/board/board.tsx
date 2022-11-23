@@ -32,8 +32,8 @@ export default function Board(props: BoardProps) {
     <>
       <div id="board">
         <table
-          className="table-fixed cursor-crosshair"
           style={{
+            cursor: "crosshair",
             width: CANVAS_WIDTH + AXIS_WIDTH + 1 + "px",
             height: CANVAS_HEIGHT + AXIS_HEIGHT + 1 + "px",
           }}
@@ -41,19 +41,18 @@ export default function Board(props: BoardProps) {
           <tbody>
             <tr
               id="x-axis-labels"
-              className="bg-white text-xs"
-              style={{ height: AXIS_HEIGHT + "px" }}
+              style={{
+                background: "white",
+                fontSize: "var(--chakra-fontSizes-xs)",
+                height: AXIS_HEIGHT + "px",
+              }}
             >
               <th
                 id="axis-spacer"
                 style={{ width: AXIS_WIDTH + "px", height: AXIS_WIDTH + "px" }}
               ></th>
               {range(WIDTH).map((x) => (
-                <th
-                  id="x-axis-labels"
-                  key={x}
-                  style={{ height: AXIS_HEIGHT + "px" }}
-                >
+                <th key={x} style={{ height: AXIS_HEIGHT + "px" }}>
                   {x}
                 </th>
               ))}
@@ -62,8 +61,13 @@ export default function Board(props: BoardProps) {
               <tr key={y} className="row">
                 <td
                   id="y-axis-label"
-                  className="bg-white text-xs font-bold text-center"
-                  style={{ width: AXIS_WIDTH + "px" }}
+                  style={{
+                    background: "white",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    fontSize: "var(--chakra-fontSizes-xs)",
+                    width: AXIS_WIDTH + "px",
+                  }}
                 >
                   {y}
                 </td>

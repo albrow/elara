@@ -2,6 +2,7 @@ import { Offset } from "../lib/utils";
 import { TILE_SIZE, FUEL_Z_INDEX, DEFAULT_FUEL_GAIN } from "../lib/constants";
 import fuelImgUrl from "../images/fuel.png";
 import glitchyFuelImgUrl from "../images/fuel_glitchy.gif";
+import SpriteLabel from "./sprite_label";
 
 interface FuelSpotProps {
   offset: Offset;
@@ -26,12 +27,10 @@ export default function FuelSpot(props: FuelSpotProps) {
         className="fuelImage"
         src={props.fuzzy ? glitchyFuelImgUrl : fuelImgUrl}
       />
-      <span
-        className="fuelAmount text-white text-xs font-mono absolute bottom-0 right-0.5 drop-shadow-[0_0_1px_rgba(0,0,0,1.0)]"
-        style={{ zIndex: FUEL_Z_INDEX + 1 }}
-      >
-        +{fuelAmount}
-      </span>
+      <SpriteLabel
+        zIndex={FUEL_Z_INDEX + 1}
+        value={"+" + fuelAmount}
+      ></SpriteLabel>
     </div>
   );
 }

@@ -20,22 +20,26 @@
     "@vitejs/plugin-react": "^2.1.0",
     "autoprefixer": "^10.4.12",
     "gh-pages": "^4.0.0",
-    "postcss": "^8.4.17",
     "rimraf": "^3.0.0",
-    "tailwindcss": "^3.1.8",
     "typescript": "^4.8.2",
     "vite": "^3.1.7",
     "vite-plugin-wasm-pack": "^0.1.12"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.4.1",
     "@codemirror/lang-javascript": "^6.1.1",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fontsource/nunito": "^4.5.11",
     "@mdx-js/rollup": "^2.1.5",
     "@uiw/codemirror-themes": "^4.13.2",
     "@uiw/react-codemirror": "^4.12.4",
     "browser-fs-access": "^0.31.0",
     "codemirror": "^6.0.1",
+    "framer-motion": "^7.6.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.6.0",
     "react-router-dom": "^6.4.2",
     "remark-gfm": "^3.0.1"
   }

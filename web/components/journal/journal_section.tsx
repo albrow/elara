@@ -4,7 +4,7 @@ import WhileLoop from "./sections/while_loop.mdx";
 import Variable from "./sections/variable.mdx";
 import Array from "./sections/array.mdx";
 import IfStatement from "./sections/if_statement.mdx";
-import "./journal_section.css";
+import "../md_content.css";
 
 export const sections = {
   Comment: Comment,
@@ -25,7 +25,7 @@ export default function JournalSection(props: JournalProps) {
   const SectionComponent = sections[props.section];
 
   return (
-    <div id="journal-content">
+    <div className="md-content">
       <SectionComponent />
     </div>
   );

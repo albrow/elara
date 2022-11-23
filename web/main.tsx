@@ -1,10 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { createHashRouter, RouterProvider } from "react-router-dom";
+
+import "@fontsource/nunito/300.css";
+import "@fontsource/nunito/400.css";
+import "@fontsource/nunito/500.css";
+import "@fontsource/nunito/700.css";
 
 import init from "../elara-lib/pkg";
 import Home from "./routes/home";
 import Journal from "./routes/journal";
+
+const elaraTheme = extendTheme({
+  fonts: {
+    heading: "Nunito, sans-serif",
+    body: "Nunito, sans-serif",
+  },
+});
 
 (async function () {
   await init();
@@ -54,7 +67,9 @@ import Journal from "./routes/journal";
 
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-      <RouterProvider router={router} />
+      <ChakraProvider theme={elaraTheme} resetCSS={true}>
+        <RouterProvider router={router} />
+      </ChakraProvider>
     </React.StrictMode>
   );
 })();
