@@ -4,6 +4,9 @@ Any value can be assigned to a variable, which you can reference later on.
 You can think of variables as "containers" that you can put values into.
 You can declare a new variable with the `let` keyword.
 
+**Tip:** If you are ever unsure about the value a variable holds, you can use
+the `say` function to have the rover say the value for you.
+
 #### Variable types
 
 A variable has a "type" based on the value that was assigned to it. The
@@ -27,6 +30,7 @@ Assigning the value `"hello"` to the variable named
 
 ```rhai
 let greeting = "hello";
+say(greeting);
 ```
 
 Assigning the return value the `get_pos` function
@@ -34,4 +38,5 @@ to the variable named `pos`:
 
 ```rhai
 let pos = get_pos();
+say(pos);
 ```

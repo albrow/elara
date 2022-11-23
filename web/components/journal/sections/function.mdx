@@ -1,6 +1,6 @@
 ### Function
 
-Functions are a fundemental building block of programming. They
+Functions are a fundamental building block of programming. They
 are a way to organize code into smaller chunks that can be re-used
 and combined in different ways. To use a function, you "call" it.
 
@@ -8,13 +8,34 @@ Some functions expect you to pass in one or more "arguments" when
 you call them. The arguments affect the behavior of the function,
 and different functions may have different types of arguments.
 
-{/* TODO(albrow): Add examples of functions with return values? */}
+#### Return Values
+
+Some functions have a "return value". That means the function spits
+out a value whenever it is called. A function that has a return value
+can be used anywhere you would use an expression. So for example, you
+can assign the return value to a variable or pass it directly to another
+function.
 
 #### Examples
 
-Here's an example of calling the function `move_right` with the argument
-`5`:
+Calling the function `move_right` with the argument `5`:
 
 ```rhai
 move_right(5);
+```
+
+Calling the function `get_pos` and assigning the return value to
+a variable named `pos`. If you call `say` you can see the value
+of the `pos` variable:
+
+```rhai
+let pos = get_pos();
+say(pos);
+```
+
+You can also pass the return value of a function directly to
+another function:
+
+```rhai
+say(get_pos());
 ```

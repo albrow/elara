@@ -33,21 +33,24 @@ The following comparison operators can be used in boolean expressions:
 
 #### Examples
 
-If the variable `x` is less than 10, move to the right:
+If the variable `x` is less than 10, say "x is less than 10":
 
 ```rhai
+let x = 5;
 if x < 10 {
-    move_right(1);
+    say("x is less than 10");
 }
 ```
 
-If the variable `x` is less than 10, move to the right. Otherwise, move to the left:
+If the variable `x` is less than 10, say "x is less than 10". Otherwise,
+say "x is not less than 10".
 
 ```rhai
+let x = 12;
 if x < 10 {
-    move_right(1);
+    say("x is less than 10");
 } else {
-    move_left(1);
+    say("x is not less than 10");
 }
 ```
 
@@ -55,6 +58,7 @@ If the variable `x` is less than 5, move to the right. Otherwise, if `x` is less
 10, move to the left. Finally, if all other conditions are false, move down:
 
 ```rhai
+let x = 7;
 if x < 5 {
     move_right(1);
 } else if x < 10 {
