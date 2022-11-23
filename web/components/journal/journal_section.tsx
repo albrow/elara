@@ -4,7 +4,7 @@ import WhileLoop from "./sections/while_loop.mdx";
 import Variable from "./sections/variable.mdx";
 import Array from "./sections/array.mdx";
 import IfStatement from "./sections/if_statement.mdx";
-import "../md_content.css";
+import "../../styles/md_content.css";
 
 export const sections = {
   Comment: Comment,

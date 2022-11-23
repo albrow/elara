@@ -1,7 +1,7 @@
 import { Container } from "@chakra-ui/react";
 
 import HomeContent from "../components/home.mdx";
-import "../components/md_content.css";
+import "../styles/md_content.css";
 
 export default function Home() {
   return (
