@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Box } from "@chakra-ui/react";
 
 import { AXIS_LABEL_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 
@@ -12,23 +13,31 @@ export default function Square(props: SquareProps) {
 
   return (
     <td
-      className="square p-0 border-0"
-      style={{ width: `${TILE_SIZE}px`, height: `${TILE_SIZE}px` }}
+      className="square"
+      style={{
+        width: `${TILE_SIZE}px`,
+        height: `${TILE_SIZE}px`,
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div
-        className="coords text-xs font-mono relative w-full h-full py-2 text-center"
-        style={{
-          zIndex: AXIS_LABEL_Z_INDEX,
-          backgroundColor: isHovered
-            ? "rgba(255, 255, 255, 0.8)"
-            : "transparent",
-        }}
+      <Box
+        className="coords"
+        bg={isHovered ? "rgba(255, 255, 255, 0.8)" : "transparent"}
+        zIndex={AXIS_LABEL_Z_INDEX}
+        fontSize="xs"
+        color="gray.700"
+        fontWeight="bold"
+        fontFamily="mono"
+        position="relative"
+        w="full"
+        h="full"
+        textAlign="center"
+        py={2}
       >
         <div>{isHovered ? `x=${props.x}` : ""}</div>
         <div>{isHovered ? `y=${props.y}` : ""}</div>
-      </div>
+      </Box>
     </td>
   );
 }
