@@ -252,7 +252,6 @@ impl ScriptRunner {
         let simulation = self.simulation.clone();
         engine.register_fn("say", move |s: Dynamic| {
             let message = format!("{}", s);
-            log!("say: {}", message);
             tx.borrow().send(Action::Say(message)).unwrap();
             simulation.borrow_mut().step_forward();
         });

@@ -11,7 +11,13 @@ import {
   UnorderedList,
   ListItem,
 } from "@chakra-ui/react";
-import { MdPlayArrow, MdStop } from "react-icons/md";
+import {
+  MdPause,
+  MdPlayArrow,
+  MdSkipNext,
+  MdSkipPrevious,
+  MdStop,
+} from "react-icons/md";
 
 import {
   Game,
@@ -26,12 +32,10 @@ import Editor, { CodeError } from "../components/editor/editor";
 import { saveCode, loadCode } from "../lib/storage";
 import { sections, SectionName } from "../components/journal/journal_section";
 import JournalModal from "../components/journal/journal_modal";
-
-const GAME_SPEED = 1; // steps per second
-const MS_PER_STEP = 1000 / GAME_SPEED;
+import { Replayer } from "../lib/replayer";
 
 const game = Game.new();
-let replayTimerId: number | null = null;
+let replayer: Replayer | null = null;
 
 export default function Level() {
   const { levelNumber } = useParams();
@@ -42,10 +46,7 @@ export default function Level() {
   const level = game.get_level_data(levelIndex);
   const [code, setCode] = useState(level.initial_code);
   const [isRunning, setIsRunning] = useState(false);
-  const [lastOutcome, setOutcome] = useState("continue");
-  const [replaySteps, setReplaySteps] = useState<readonly FuzzyStateWithLine[]>(
-    []
-  );
+  const [isPaused, setIsPaused] = useState(false);
   const [boardState, setBoardState] = useState(level.initial_state);
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
@@ -62,7 +63,10 @@ export default function Level() {
   const resetStateButKeepCode = (levelOverride?: LevelData) => {
     const levelToLoad = levelOverride || level;
     setIsRunning(false);
-    setReplaySteps([]);
+    setIsPaused(false);
+    if (replayer) {
+      replayer.stop();
+    }
     setActiveLine(undefined);
     setCodeError(undefined);
     setBoardState(levelToLoad.initial_state);
@@ -76,6 +80,38 @@ export default function Level() {
     resetStateButKeepCode(level);
     setCode(level.initial_code);
   }, [location]);
+
+  const onStepHandler = (step: FuzzyStateWithLine) => {
+    setBoardState(step.state);
+    if (step.line_pos) {
+      setActiveLine(step.line_pos);
+    } else {
+      setActiveLine(undefined);
+    }
+  };
+
+  const onReplayDoneHandler = (result: RunResult) => {
+    return () => {
+      // There are no more steps to iterate through, display the outcome.
+      switch (result.outcome) {
+        case "no_objective":
+          // Do nothing. Used for levels without any specific objective.
+          break;
+        case "success":
+          alert("You win!");
+          break;
+        case "continue":
+          alert(
+            "Your code ran without any errors but you didn't finish the objective. Try again!"
+          );
+          break;
+        default:
+          alert(result.outcome);
+          break;
+      }
+      resetStateButKeepCode();
+    };
+  };
 
   // When the run button is clicked, run the code and start the replay.
   const runHandler = async () => {
@@ -97,73 +133,45 @@ export default function Level() {
       }
     }
     resetStateButKeepCode();
-    setOutcome(result.outcome);
-    setReplaySteps(result.states);
     setBoardState(result.states[0].state);
     setIsRunning(true);
+    replayer = new Replayer(
+      result.states,
+      onStepHandler,
+      onReplayDoneHandler(result)
+    );
+    replayer.start();
   };
 
   const stopHandler = () => {
     resetStateButKeepCode();
   };
 
-  // Timer used for replays.
-  useEffect(() => {
-    // Reset any existing timer.
-    if (replayTimerId) {
-      clearInterval(replayTimerId);
+  const pauseHandler = () => {
+    if (replayer) {
+      replayer.pause();
+      setIsPaused(true);
     }
-    // If the code is not running, don't do anything.
-    if (!isRunning) {
-      return;
-    }
-    // If the code is running, iterate through the steps, starting at 1
-    // because the initial state is already being shown.
-    let stepIndex = 1;
-    replayTimerId = setInterval(() => {
-      if (stepIndex < replaySteps.length) {
-        const step = replaySteps[stepIndex];
-        setBoardState(step.state);
-        stepIndex += 1;
+  };
 
-        // Highlight the line that was just executed (if any).
-        if (step.line_pos) {
-          setActiveLine(step.line_pos);
-        } else {
-          setActiveLine(undefined);
-        }
-      } else {
-        // There are no more steps to iterate through, display the outcome.
-        switch (lastOutcome) {
-          case "no_objective":
-            // Do nothing. Used for levels without any specific objective.
-            break;
-          case "success":
-            alert("You win!");
-            break;
-          case "continue":
-            alert(
-              "Your code ran without any errors but you didn't finish the objective. Try again!"
-            );
-            break;
-          default:
-            alert(lastOutcome);
-            break;
-        }
-        // Stop the timer.
-        if (replayTimerId) {
-          clearInterval(replayTimerId);
-        }
-        resetStateButKeepCode();
-      }
-    }, MS_PER_STEP);
-    return () => {
-      // When the component unmounts, reset the timer.
-      if (replayTimerId) {
-        clearInterval(replayTimerId);
-      }
-    };
-  }, [isRunning]);
+  const stepForwardHandler = () => {
+    if (replayer) {
+      replayer.stepForward();
+    }
+  };
+
+  const stepBackHandler = () => {
+    if (replayer) {
+      replayer.stepBackward();
+    }
+  };
+
+  const resumeHandler = () => {
+    if (replayer) {
+      replayer.start();
+      setIsPaused(false);
+    }
+  };
 
   const saveCodeHandler = async () => {
     await saveCode(code);
@@ -239,23 +247,71 @@ export default function Level() {
         <Flex direction="row" mt={4}>
           <Box id="editor-section" mr={2} flexGrow={1}>
             <Box bg="gray.800" p={2} roundedTop="md">
-              {!isRunning && (
-                <Button size="sm" colorScheme="green" onClick={runHandler}>
-                  <MdPlayArrow
-                    size={"1.3em"}
-                    style={{ marginRight: "0.1rem" }}
-                  />{" "}
-                  Run
-                </Button>
-              )}
-              {isRunning && (
-                <Button size="sm" colorScheme="red" onClick={stopHandler}>
-                  <MdStop size={"1.3em"} style={{ marginRight: "0.1rem" }} />{" "}
-                  Stop
-                </Button>
-              )}
+              <Flex direction="row">
+                <Box>
+                  {!isRunning && (
+                    <Button size="sm" colorScheme="green" onClick={runHandler}>
+                      <MdPlayArrow
+                        size={"1.3em"}
+                        style={{ marginRight: "0.1rem" }}
+                      />{" "}
+                      Run
+                    </Button>
+                  )}
+                  {isRunning && (
+                    <Button size="sm" colorScheme="red" onClick={stopHandler}>
+                      <MdStop
+                        size={"1.3em"}
+                        style={{ marginRight: "0.1rem" }}
+                      />{" "}
+                      Stop
+                    </Button>
+                  )}
+                </Box>
+                <Box ml={2}>
+                  {isRunning && (
+                    <Button
+                      size="sm"
+                      colorScheme="whiteAlpha"
+                      ml={1}
+                      onClick={stepBackHandler}
+                    >
+                      <MdSkipPrevious size={"1.3em"} />
+                    </Button>
+                  )}
+                  {isRunning && !isPaused && (
+                    <Button
+                      size="sm"
+                      colorScheme="whiteAlpha"
+                      ml={1}
+                      onClick={pauseHandler}
+                    >
+                      <MdPause size={"1.3em"} />
+                    </Button>
+                  )}
+                  {isRunning && isPaused && (
+                    <Button
+                      size="sm"
+                      colorScheme="whiteAlpha"
+                      ml={1}
+                      onClick={resumeHandler}
+                    >
+                      <MdPlayArrow size={"1.3em"} />
+                    </Button>
+                  )}
+                  {isRunning && (
+                    <Button
+                      size="sm"
+                      colorScheme="whiteAlpha"
+                      ml={1}
+                      onClick={stepForwardHandler}
+                    >
+                      <MdSkipNext size={"1.3em"} />
+                    </Button>
+                  )}
+                </Box>
+              </Flex>
             </Box>
-
             <Editor
               code={code}
               editable={!isRunning}
