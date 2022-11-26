@@ -95,7 +95,10 @@ export default function Level() {
       // There are no more steps to iterate through, display the outcome.
       switch (result.outcome) {
         case "no_objective":
-          // Do nothing. Used for levels without any specific objective.
+          alert(
+            "Great! Keep playing around with the code as much as you like! Whenever you are " +
+              "ready, you can move on to the next level."
+          );
           break;
         case "success":
           alert("You win!");
