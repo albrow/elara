@@ -315,13 +315,15 @@ export default function Level() {
                 </Box>
               </Flex>
             </Box>
-            <Editor
-              code={code}
-              editable={!isRunning}
-              onChange={onCodeChange}
-              activeLine={activeLine}
-              codeError={codeError}
-            />
+            <Box maxW="608px">
+              <Editor
+                code={code}
+                editable={!isRunning}
+                onChange={onCodeChange}
+                activeLine={activeLine}
+                codeError={codeError}
+              />
+            </Box>
           </Box>
           <Box id="board-wrapper" position="relative">
             <Board gameState={boardState} />
