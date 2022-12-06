@@ -54,7 +54,7 @@ move_down(2);
         }
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Function", "Comment"]
+        vec!["Comment", "Function"]
     }
 }
 
