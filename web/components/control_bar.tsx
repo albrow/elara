@@ -94,10 +94,14 @@ export default function ControlBar(props: ControlBarProps) {
         <Spacer />
         <Box>
           <Menu placement="bottom-end">
-            <MenuButton rounded="md" _hover={{ background: "gray.700" }}>
-              <Button size="sm" colorScheme="none">
-                <MdMenu size={"1.3em"} />
-              </Button>
+            <MenuButton
+              rounded="md"
+              _hover={{ background: "gray.700" }}
+              color="white"
+              p={1}
+              px={2}
+            >
+              <MdMenu size={"1.3em"} />
             </MenuButton>
             <MenuList
               background="gray.700"
