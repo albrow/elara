@@ -1,3 +1,4 @@
+use rand::Rng;
 use rhai::debugger::DebuggerCommand;
 use rhai::{ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt};
 use std::cell::RefCell;
@@ -52,7 +53,7 @@ impl ScriptRunner {
         // Create and configure the Rhai engine.
         let mut engine = Engine::new();
         set_engine_config(&mut engine);
-        set_engine_safegaurds(&mut engine);
+        set_engine_safeguards(&mut engine);
         set_print_fn(&mut engine);
         self.register_debugger(&mut engine);
         register_custom_types(&mut engine);
@@ -63,7 +64,7 @@ impl ScriptRunner {
         self.step_positions.borrow_mut().push(Position::NONE);
 
         // Make engine non-mutable now that we are done configuring it.
-        // This is a saftey measure to prevent scripts from mutating the
+        // This is a safety measure to prevent scripts from mutating the
         // engine.
         let engine = engine;
 
@@ -248,12 +249,19 @@ impl ScriptRunner {
             ])
             .into()
         });
+        // say causes the rover to say (i.e. display in a speech bubble)
+        // the given expression.
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("say", move |s: Dynamic| {
             let message = format!("{}", s);
             tx.borrow().send(Action::Say(message)).unwrap();
             simulation.borrow_mut().step_forward();
+        });
+        // random returns a random number between 1 and 100.
+        engine.register_fn("random", || -> i64 {
+            let mut rng = rand::thread_rng();
+            rng.gen_range(1..=100)
         });
     }
 }
@@ -307,7 +315,7 @@ fn set_engine_config(engine: &mut Engine) {
     engine.set_strict_variables(true);
 }
 
-fn set_engine_safegaurds(engine: &mut Engine) {
+fn set_engine_safeguards(engine: &mut Engine) {
     // See https://rhai.rs/book/safety/
     engine.set_max_string_size(200);
     engine.set_max_array_size(100);

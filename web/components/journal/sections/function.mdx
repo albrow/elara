@@ -4,38 +4,48 @@ Functions are a fundamental building block of programming. They
 are a way to organize code into smaller chunks that can be re-used
 and combined in different ways. To use a function, you "call" it.
 
-Some functions expect you to pass in one or more "arguments" when
-you call them. The arguments affect the behavior of the function,
-and different functions may have different types of arguments.
+Functions can have inputs and outputs. The inputs (also called
+"arguments") affect the behavior of the function, and different
+functions may have different types of inputs.
 
-#### Return Values
-
-Some functions have a "return value". That means the function spits
-out a value whenever it is called. A function that has a return value
-can be used anywhere you would use an expression. So for example, you
-can assign the return value to a variable or pass it directly to another
-function.
-
-#### Examples
-
-Calling the function `move_right` with the argument `5`:
+Here's an example of calling the function `move_right` with the
+input `5`:
 
 ```rhai
 move_right(5);
 ```
 
-Calling the function `get_pos` and assigning the return value to
-a variable named `pos`. If you call `say` you can see the value
-of the `pos` variable:
+Some functions, like the `get_pos` function, do not have any inputs.
+When calling a function that does not have any inputs, you still need
+to include the parentheses (just don't put anything inside them):
 
 ```rhai
-let pos = get_pos();
-say(pos);
+get_pos();
 ```
 
-You can also pass the return value of a function directly to
-another function:
+#### Outputs
+
+Some functions may have an output, also called a "return value". If a
+function has an output, it just means that it spits out a value whenever
+it is called. The output of a function can be used the same way as
+any other value.
+
+For example, the `random` function outputs (or "returns") a random
+number between 1 and 100. We can use that output as the _input_ to
+the `say` function:
 
 ```rhai
-say(get_pos());
+say(random());
 ```
+
+As another example, we can also assign the output of the `random`
+function to a variable called `number`. Then we can use the `number`
+variable as the input to the `say` function:
+
+```rhai
+let number = random();
+say(number);
+```
+
+Not all functions have an output. For example, the `move_right` function
+does not output anything.
