@@ -25,13 +25,13 @@ export default function Root() {
           <Flex height="100%" align="center">
             <NavbarLink to="/home" name="Home" />
             <NavbarLink to="/journal" name="Journal" />
+            <NavbarLink to="/level/0" name="Level 0" />
             <NavbarLink to="/level/1" name="Level 1" />
             <NavbarLink to="/level/2" name="Level 2" />
             <NavbarLink to="/level/3" name="Level 3" />
             <NavbarLink to="/level/4" name="Level 4" />
             <NavbarLink to="/level/5" name="Level 5" />
             <NavbarLink to="/level/6" name="Level 6" />
-            <NavbarLink to="/level/7" name="Level 7" />
           </Flex>
         </Container>
       </Box>

@@ -42,7 +42,7 @@ export default function Level() {
   if (!levelNumber) {
     throw new Error("levelNumber is required");
   }
-  const levelIndex = parseInt(levelNumber, 10) - 1;
+  const levelIndex = parseInt(levelNumber, 10);
   const level = game.get_level_data(levelIndex);
   const [code, setCode] = useState(level.initial_code);
   const [isRunning, setIsRunning] = useState(false);
@@ -75,7 +75,7 @@ export default function Level() {
   // Reset the relevant state when the URL changes.
   const location = useLocation();
   useEffect(() => {
-    const levelIndex = parseInt(levelNumber, 10) - 1;
+    const levelIndex = parseInt(levelNumber, 10);
     const level = game.get_level_data(levelIndex);
     resetStateButKeepCode(level);
     setCode(level.initial_code);
