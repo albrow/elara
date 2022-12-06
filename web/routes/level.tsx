@@ -11,13 +11,6 @@ import {
   UnorderedList,
   ListItem,
 } from "@chakra-ui/react";
-import {
-  MdPause,
-  MdPlayArrow,
-  MdSkipNext,
-  MdSkipPrevious,
-  MdStop,
-} from "react-icons/md";
 
 import {
   Game,
@@ -33,6 +26,7 @@ import { saveCode, loadCode } from "../lib/storage";
 import { sections, SectionName } from "../components/journal/journal_section";
 import JournalModal from "../components/journal/journal_modal";
 import { Replayer } from "../lib/replayer";
+import ControlBar from "../components/control_bar";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
@@ -249,72 +243,16 @@ export default function Level() {
         </Box>
         <Flex direction="row" mt={4}>
           <Box id="editor-section" mr={2} flexGrow={1}>
-            <Box bg="gray.800" p={2} roundedTop="md">
-              <Flex direction="row">
-                <Box>
-                  {!isRunning && (
-                    <Button size="sm" colorScheme="green" onClick={runHandler}>
-                      <MdPlayArrow
-                        size={"1.3em"}
-                        style={{ marginRight: "0.1rem" }}
-                      />{" "}
-                      Run
-                    </Button>
-                  )}
-                  {isRunning && (
-                    <Button size="sm" colorScheme="red" onClick={stopHandler}>
-                      <MdStop
-                        size={"1.3em"}
-                        style={{ marginRight: "0.1rem" }}
-                      />{" "}
-                      Stop
-                    </Button>
-                  )}
-                </Box>
-                <Box ml={2}>
-                  {isRunning && (
-                    <Button
-                      size="sm"
-                      colorScheme="whiteAlpha"
-                      ml={1}
-                      onClick={stepBackHandler}
-                    >
-                      <MdSkipPrevious size={"1.3em"} />
-                    </Button>
-                  )}
-                  {isRunning && !isPaused && (
-                    <Button
-                      size="sm"
-                      colorScheme="whiteAlpha"
-                      ml={1}
-                      onClick={pauseHandler}
-                    >
-                      <MdPause size={"1.3em"} />
-                    </Button>
-                  )}
-                  {isRunning && isPaused && (
-                    <Button
-                      size="sm"
-                      colorScheme="whiteAlpha"
-                      ml={1}
-                      onClick={resumeHandler}
-                    >
-                      <MdPlayArrow size={"1.3em"} />
-                    </Button>
-                  )}
-                  {isRunning && (
-                    <Button
-                      size="sm"
-                      colorScheme="whiteAlpha"
-                      ml={1}
-                      onClick={stepForwardHandler}
-                    >
-                      <MdSkipNext size={"1.3em"} />
-                    </Button>
-                  )}
-                </Box>
-              </Flex>
-            </Box>
+            <ControlBar
+              isRunning={isRunning}
+              isPaused={isPaused}
+              runHandler={runHandler}
+              stopHandler={stopHandler}
+              pauseHandler={pauseHandler}
+              stepForwardHandler={stepForwardHandler}
+              stepBackHandler={stepBackHandler}
+              resumeHandler={resumeHandler}
+            />
             <Box maxW="608px">
               <Editor
                 code={code}
