@@ -252,6 +252,8 @@ export default function Level() {
               stepForwardHandler={stepForwardHandler}
               stepBackHandler={stepBackHandler}
               resumeHandler={resumeHandler}
+              saveCodeHandler={saveCodeHandler}
+              loadCodeHandler={loadCodeHandler}
             />
             <Box maxW="608px">
               <Editor

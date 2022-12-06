@@ -1,10 +1,22 @@
-import { Flex, Box, Button } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Button,
+  Spacer,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
 import {
   MdPause,
   MdPlayArrow,
   MdSkipNext,
   MdSkipPrevious,
   MdStop,
+  MdMenu,
+  MdUploadFile,
+  MdSave,
 } from "react-icons/md";
 
 interface ControlBarProps {
@@ -16,6 +28,8 @@ interface ControlBarProps {
   pauseHandler: () => void;
   resumeHandler: () => void;
   stepForwardHandler: () => void;
+  saveCodeHandler: () => void;
+  loadCodeHandler: () => void;
 }
 
 export default function ControlBar(props: ControlBarProps) {
@@ -76,6 +90,40 @@ export default function ControlBar(props: ControlBarProps) {
               <MdSkipNext size={"1.3em"} />
             </Button>
           )}
+        </Box>
+        <Spacer />
+        <Box>
+          <Menu placement="bottom-end">
+            <MenuButton rounded="md" _hover={{ background: "gray.700" }}>
+              <Button size="sm" colorScheme="none">
+                <MdMenu size={"1.3em"} />
+              </Button>
+            </MenuButton>
+            <MenuList
+              background="gray.700"
+              borderColor="black"
+              shadow="dark-lg"
+            >
+              <MenuItem
+                background="gray.700"
+                color="white"
+                _hover={{ background: "gray.600" }}
+                onClick={props.saveCodeHandler}
+              >
+                <MdSave style={{ marginRight: "0.3rem" }} />
+                Save
+              </MenuItem>
+              <MenuItem
+                background="gray.700"
+                color="white"
+                _hover={{ background: "gray.600" }}
+                onClick={props.loadCodeHandler}
+              >
+                <MdUploadFile style={{ marginRight: "0.3rem" }} />
+                Load
+              </MenuItem>
+            </MenuList>
+          </Menu>
         </Box>
       </Flex>
     </Box>
