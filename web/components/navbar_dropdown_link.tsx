@@ -11,15 +11,17 @@ export default function NavbarDropdownLink(props: NavbarDropdownLinkProps) {
   let isActive = location.pathname == props.to;
 
   return (
-    <MenuItem
-      background={isActive ? "gray.600" : "gray.700"}
-      _hover={!isActive ? { background: "var(--chakra-colors-gray-600)" } : {}}
-    >
-      <Link to={props.to}>
+    <Link to={props.to}>
+      <MenuItem
+        background={isActive ? "gray.600" : "gray.700"}
+        _hover={
+          !isActive ? { background: "var(--chakra-colors-gray-600)" } : {}
+        }
+      >
         <Box fontWeight="bold" color={isActive ? "white" : "gray.300"}>
           {props.name}
         </Box>
-      </Link>
-    </MenuItem>
+      </MenuItem>
+    </Link>
   );
 }
