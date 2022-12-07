@@ -77,11 +77,6 @@ impl Game {
         }
     }
 
-    pub fn get_level_data(&self, level_index: usize) -> js_types::LevelData {
-        let level = LEVELS[level_index].as_ref();
-        js_types::LevelData::from(level)
-    }
-
     pub async fn run_player_script(
         &mut self,
         script: String,
@@ -139,4 +134,9 @@ impl Game {
         }
         Ok(last_success.unwrap())
     }
+}
+
+#[wasm_bindgen]
+pub fn get_level_data() -> js_sys::Array {
+    js_types::to_level_data_array(LEVELS.as_ref())
 }

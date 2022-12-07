@@ -1,0 +1,70 @@
+import {
+  Container,
+  Box,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuList,
+  Text,
+} from "@chakra-ui/react";
+import { MdExpandMore } from "react-icons/md";
+
+import { get_level_data, LevelData } from "../../../elara-lib/pkg/elara_lib";
+import NavbarLink from "./navbar_link";
+import NavbarDropdownLink from "./navbar_dropdown_link";
+
+const LEVELS: LevelData[] = get_level_data();
+
+export default function Navbar() {
+  return (
+    <Box bg="gray.800" p={2} textColor="white">
+      <Container maxW="container.xl" height="40px">
+        <Flex height="100%" align="center">
+          <NavbarLink to="/home" name="Home" />
+          <NavbarLink to="/journal" name="Journal" />
+          <Menu>
+            <MenuButton
+              cursor="pointer"
+              fontWeight="bold"
+              minW="max"
+              mr={4}
+              p={1}
+              px={4}
+              rounded="lg"
+              color="gray.300"
+              background="gray.800"
+              _hover={{ background: "var(--chakra-colors-gray-700)" }}
+            >
+              <Box as="span" display="inline-flex">
+                {" "}
+                Levels
+                <MdExpandMore size={"1.3em"} style={{ marginTop: "0.2rem" }} />
+              </Box>
+            </MenuButton>
+            <MenuList
+              background="gray.700"
+              borderColor="black"
+              shadow="dark-lg"
+            >
+              {LEVELS.map((level, i) => (
+                <NavbarDropdownLink to={`/level/${i}`} key={i}>
+                  <Text
+                    as="span"
+                    fontFamily="monospace"
+                    fontSize="md"
+                    fontWeight="bold"
+                  >
+                    {i}:
+                  </Text>
+                  <Text as="span" ml={1}>
+                    {level.name}
+                  </Text>
+                </NavbarDropdownLink>
+              ))}
+            </MenuList>
+          </Menu>
+        </Flex>
+      </Container>
+    </Box>
+  );
+}

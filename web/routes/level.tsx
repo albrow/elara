@@ -6,7 +6,6 @@ import {
   Flex,
   Text,
   Box,
-  Button,
   Link,
   UnorderedList,
   ListItem,
@@ -19,6 +18,7 @@ import {
   RunResult,
   FuzzyStateWithLine,
   LinePos,
+  get_level_data,
 } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { CodeError } from "../components/editor/editor";
@@ -31,13 +31,15 @@ import ControlBar from "../components/control_bar";
 const game = Game.new();
 let replayer: Replayer | null = null;
 
+const LEVELS: LevelData[] = get_level_data();
+
 export default function Level() {
   const { levelNumber } = useParams();
   if (!levelNumber) {
     throw new Error("levelNumber is required");
   }
   const levelIndex = parseInt(levelNumber, 10);
-  const level = game.get_level_data(levelIndex);
+  const level = LEVELS[levelIndex];
   const [code, setCode] = useState(level.initial_code);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -70,7 +72,7 @@ export default function Level() {
   const location = useLocation();
   useEffect(() => {
     const levelIndex = parseInt(levelNumber, 10);
-    const level = game.get_level_data(levelIndex);
+    const level = LEVELS[levelIndex];
     resetStateButKeepCode(level);
     setCode(level.initial_code);
   }, [location]);

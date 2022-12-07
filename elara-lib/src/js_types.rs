@@ -108,6 +108,14 @@ impl LevelData {
     }
 }
 
+pub fn to_level_data_array(levels: &[Box<dyn levels::Level + Sync>]) -> Array {
+    let arr = Array::new_with_length(levels.len() as u32);
+    for (i, level) in levels.iter().enumerate() {
+        arr.set(i as u32, JsValue::from(LevelData::from(level.as_ref())));
+    }
+    arr
+}
+
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyState {

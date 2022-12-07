@@ -1,17 +1,7 @@
 import { Outlet, useLocation, Navigate, Link } from "react-router-dom";
-import {
-  Container,
-  Box,
-  Flex,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-} from "@chakra-ui/react";
-import { MdExpandMore } from "react-icons/md";
+import { Container } from "@chakra-ui/react";
 
-import NavbarLink from "../components/navbar_link";
-import NavbarDropdownLink from "../components/navbar_dropdown_link";
+import Navbar from "../components/navbar/navbar";
 
 export default function Root() {
   let location = useLocation();
@@ -31,53 +21,7 @@ export default function Root() {
 
   return (
     <Container minW="container.md" maxW="none" p={0}>
-      <Box bg="gray.800" p={2} textColor="white">
-        <Container maxW="container.xl" height="40px">
-          <Flex height="100%" align="center">
-            <NavbarLink to="/home" name="Home" />
-            <NavbarLink to="/journal" name="Journal" />
-            <Menu>
-              <MenuButton
-                cursor="pointer"
-                fontWeight="bold"
-                minW="max"
-                mr={4}
-                p={1}
-                px={4}
-                rounded="lg"
-                color="gray.300"
-                background="gray.800"
-                _hover={{ background: "var(--chakra-colors-gray-700)" }}
-              >
-                <Box as="span" display="inline-flex">
-                  {" "}
-                  Levels
-                  <MdExpandMore
-                    size={"1.3em"}
-                    style={{ marginTop: "0.2rem" }}
-                  />
-                </Box>
-              </MenuButton>
-              <MenuList
-                background="gray.700"
-                borderColor="black"
-                shadow="dark-lg"
-              >
-                <NavbarDropdownLink to="/level/0" name="Level 0" />
-                <NavbarDropdownLink to="/level/1" name="Level 1" />
-                <NavbarDropdownLink to="/level/2" name="Level 2" />
-                <NavbarDropdownLink to="/level/3" name="Level 3" />
-                <NavbarDropdownLink to="/level/4" name="Level 4" />
-                <NavbarDropdownLink to="/level/5" name="Level 5" />
-                <NavbarDropdownLink to="/level/6" name="Level 6" />
-                <NavbarDropdownLink to="/level/7" name="Level 7" />
-                <NavbarDropdownLink to="/level/8" name="Level 8" />
-                <NavbarDropdownLink to="/level/9" name="Level 9" />
-              </MenuList>
-            </Menu>
-          </Flex>
-        </Container>
-      </Box>
+      <Navbar />
       <Outlet />
     </Container>
   );

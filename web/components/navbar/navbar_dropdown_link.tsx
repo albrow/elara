@@ -3,10 +3,11 @@ import { Box, MenuItem } from "@chakra-ui/react";
 
 interface NavbarDropdownLinkProps {
   to: string;
-  name: string;
 }
 
-export default function NavbarDropdownLink(props: NavbarDropdownLinkProps) {
+export default function NavbarDropdownLink(
+  props: React.PropsWithChildren<NavbarDropdownLinkProps>
+) {
   const location = useLocation();
   let isActive = location.pathname == props.to;
 
@@ -19,7 +20,7 @@ export default function NavbarDropdownLink(props: NavbarDropdownLinkProps) {
         }
       >
         <Box fontWeight="bold" color={isActive ? "white" : "gray.300"}>
-          {props.name}
+          {props.children}
         </Box>
       </MenuItem>
     </Link>
