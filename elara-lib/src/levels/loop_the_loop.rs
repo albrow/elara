@@ -18,7 +18,7 @@ impl Level for LoopTheLoop {
 
 while true {
   move_right(1);
-  // Add a line of code here.
+  // Add a line of code below:
   
 }
 "#

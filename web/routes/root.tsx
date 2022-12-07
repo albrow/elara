@@ -70,6 +70,9 @@ export default function Root() {
                 <NavbarDropdownLink to="/level/4" name="Level 4" />
                 <NavbarDropdownLink to="/level/5" name="Level 5" />
                 <NavbarDropdownLink to="/level/6" name="Level 6" />
+                <NavbarDropdownLink to="/level/7" name="Level 7" />
+                <NavbarDropdownLink to="/level/8" name="Level 8" />
+                <NavbarDropdownLink to="/level/9" name="Level 9" />
               </MenuList>
             </Menu>
           </Flex>

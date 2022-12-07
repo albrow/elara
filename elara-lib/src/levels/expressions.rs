@@ -3,25 +3,32 @@ use crate::levels::{Level, Outcome};
 use crate::simulation::{Actor, Player, State};
 
 #[derive(Copy, Clone)]
-pub struct HelloWorld {}
+pub struct Expressions {}
 
-impl Level for HelloWorld {
+impl Level for Expressions {
     fn name(&self) -> &'static str {
-        "Hello World"
+        "Express Yourself"
     }
     fn objective(&self) -> &'static str {
-        "Use the \"say\" function to make the rover say something."
+        "Call the \"say\" function with different types of expressions."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Any line that starts with "//" is a comment. Comments
-// don't actually do anything; they're just helpful notes to
-// help you understand the code :)
-//
-// The "say" function makes the rover say something. Click
-// the "Run" button above to see what happens.
+        r#"// An "expression" is either a plain value or an operation that
+// produces a value. Let's look at some simple expressions using
+// the "say" function.
 
-say("Hello, world!");
-say("My name is G.R.O.V.E.R.");
+// A "string" is just a piece of text surrounded by double quotes.
+say("This is a string");
+
+// An "integer" is just a whole number and can be positive or
+// negative.
+say(42);
+say(-9);
+
+// A "boolean" is either true or false. Note that boolean values
+// are not surrounded by quotes.
+say(true);
+say(false);
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -40,7 +47,7 @@ say("My name is G.R.O.V.E.R.");
         Outcome::NoObjective
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Comment", "Function"]
+        vec![]
     }
 }
 
@@ -53,7 +60,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(HelloWorld {}.name());
+        let level_index = level_index_by_name(Expressions {}.name());
 
         // Running the initial code should result in Outcome::NoObjective.
         let script = LEVELS[level_index].initial_code();

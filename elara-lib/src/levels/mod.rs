@@ -1,8 +1,11 @@
 mod buzzing_sound;
+mod comparisons;
+mod expressions;
 mod first_steps;
 mod fuel_up;
 mod hello_world;
 mod loop_the_loop;
+mod math_expressions;
 mod more_trouble;
 mod seeing_double;
 
@@ -11,10 +14,13 @@ use crate::simulation::Actor;
 use crate::simulation::{Enemy, FuelSpot, Goal, Obstacle, Player, State};
 
 use crate::levels::buzzing_sound::BuzzingSound;
+use crate::levels::comparisons::Comparisons;
+use crate::levels::expressions::Expressions;
 use crate::levels::first_steps::FirstSteps;
 use crate::levels::fuel_up::FuelUp;
 use crate::levels::hello_world::HelloWorld;
 use crate::levels::loop_the_loop::LoopTheLoop;
+use crate::levels::math_expressions::MathExpressions;
 use crate::levels::more_trouble::MoreTrouble;
 use crate::levels::seeing_double::SeeingDouble;
 
@@ -46,10 +52,13 @@ pub trait Level {
 }
 
 lazy_static! {
-    pub static ref LEVELS: [Box<dyn Level + Sync>; 7] = [
+    pub static ref LEVELS: [Box<dyn Level + Sync>; 10] = [
         Box::new(HelloWorld {}),
         Box::new(FirstSteps {}),
+        Box::new(Expressions {}),
         Box::new(FuelUp {}),
+        Box::new(MathExpressions {}),
+        Box::new(Comparisons {}),
         Box::new(LoopTheLoop {}),
         Box::new(BuzzingSound {}),
         Box::new(SeeingDouble {}),

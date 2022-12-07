@@ -3,25 +3,35 @@ use crate::levels::{Level, Outcome};
 use crate::simulation::{Actor, Player, State};
 
 #[derive(Copy, Clone)]
-pub struct HelloWorld {}
+pub struct Comparisons {}
 
-impl Level for HelloWorld {
+impl Level for Comparisons {
     fn name(&self) -> &'static str {
-        "Hello World"
+        "Apples and Oranges"
     }
     fn objective(&self) -> &'static str {
-        "Use the \"say\" function to make the rover say something."
+        "Call the \"say\" function with different comparison operators."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Any line that starts with "//" is a comment. Comments
-// don't actually do anything; they're just helpful notes to
-// help you understand the code :)
-//
-// The "say" function makes the rover say something. Click
-// the "Run" button above to see what happens.
+        r#"// A "comparison operator" can be used to compare two different
+// values. They are similar to mathematical operators, but instead
+// of producing numbers, they produce true or false.
+say(5 > 3);
+say(3 < 1);
 
-say("Hello, world!");
-say("My name is G.R.O.V.E.R.");
+// The "equals" operator tells us if two things are equal. Note
+// that when checking for equality, you need to use two equals
+// signs ("==") instead of one. This works for strings too.
+say(0 == 1);
+say("love" == "love");
+
+// The "not equals" operator is the opposite of "equals". It
+// tells us if two things are *not* equal.
+say("apples" != "oranges");
+
+// You can also combine comparison operators and math operators.
+say(2 + 2 == 4);
+say(2 + 2 == 5);
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -40,7 +50,7 @@ say("My name is G.R.O.V.E.R.");
         Outcome::NoObjective
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Comment", "Function"]
+        vec![]
     }
 }
 
@@ -53,7 +63,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(HelloWorld {}.name());
+        let level_index = level_index_by_name(Comparisons {}.name());
 
         // Running the initial code should result in Outcome::NoObjective.
         let script = LEVELS[level_index].initial_code();
