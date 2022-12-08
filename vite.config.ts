@@ -15,13 +15,11 @@ export default defineConfig(async () => {
   return {
     server: {
       watch: {
-        // This prevents an issue where Vite tries to rebuild
-        // the TypeScript files before the Rust files are built.
-        ignored: ["!**/node_modules/elara-lib/**"],
+        awaitWriteFinish: {
+          stabilityThreshold: 2000,
+          pollInterval: 100,
+        },
       },
-    },
-    optimizeDeps: {
-      exclude: ["elara-lib"],
     },
     base: "/elara/",
     root: "web",

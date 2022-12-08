@@ -211,13 +211,13 @@ fn get_adjacent_gate(state: &State, pos: &Pos) -> Option<usize> {
         if gate.pos.x == pos.x && gate.pos.y == pos.y + 1 {
             return Some(i);
         }
-        if gate.pos.x == pos.x && gate.pos.y == pos.y - 1 {
+        if pos.y != 0 && gate.pos.x == pos.x && gate.pos.y == pos.y - 1 {
             return Some(i);
         }
         if gate.pos.x == pos.x + 1 && gate.pos.y == pos.y {
             return Some(i);
         }
-        if gate.pos.x == pos.x - 1 && gate.pos.y == pos.y {
+        if pos.x != 0 && gate.pos.x == pos.x - 1 && gate.pos.y == pos.y {
             return Some(i);
         }
     }

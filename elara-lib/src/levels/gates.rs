@@ -9,13 +9,12 @@ impl Level for Gates {
         "Let Me In"
     }
     fn objective(&self) -> &'static str {
-        "Open the gate (🔒), then move the rover (🤖) to the goal (🏁)."
+        "Open the locked gate (🔒), then move the rover (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Looks like a locked gate is blocking the way. To open
-// the gate, move the rover right next to it, then say the
-// password using the "say" function. The password for
-// this gate is "lovelace".
+        r#"// Looks like a locked gate is blocking the way! To open the
+// gate, move the rover next to it, then say the password using
+// the "say" function. The password for this gate is "lovelace".
 
 move_right(2);
 "#
@@ -86,6 +85,14 @@ mod tests {
             result.outcome,
             Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
         );
+
+        // Saying the password when not next to the gate should not
+        // open it.
+        let script = r#"say("lovelace"); move_right(2); move_right(5);"#;
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
 
         // Saying the password again, should close the gate, meaning we
         // can't reach the goal.
