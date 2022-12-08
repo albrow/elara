@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
 
 import { AXIS_LABEL_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 
@@ -33,10 +33,11 @@ export default function Square(props: SquareProps) {
         w="full"
         h="full"
         textAlign="center"
-        py={2}
       >
-        <div>{isHovered ? `x=${props.x}` : ""}</div>
-        <div>{isHovered ? `y=${props.y}` : ""}</div>
+        <VStack spacing={0} justify="center" h="full">
+          <div>{isHovered ? `x=${props.x}` : ""}</div>
+          <div>{isHovered ? `y=${props.y}` : ""}</div>
+        </VStack>
       </Box>
     </td>
   );
