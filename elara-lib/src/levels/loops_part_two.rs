@@ -17,47 +17,46 @@ impl Level for LoopsPartTwo {
 "#
     }
     fn initial_states(&self) -> Vec<State> {
-        vec![State {
-            player: Player::new(0, 0, 10),
-            fuel_spots: vec![FuelSpot::new(7, 3)],
-            goal: Some(Goal {
-                pos: Pos::new(10, 5),
-            }),
-            enemies: vec![],
-            obstacles: vec![
-                Obstacle::new(0, 1),
-                Obstacle::new(1, 1),
-                Obstacle::new(1, 2),
-                Obstacle::new(2, 2),
-                Obstacle::new(3, 2),
-                Obstacle::new(3, 3),
-                Obstacle::new(4, 3),
-                Obstacle::new(5, 3),
-                Obstacle::new(5, 4),
-                Obstacle::new(6, 4),
-                Obstacle::new(7, 4),
-                Obstacle::new(7, 5),
-                Obstacle::new(8, 5),
-                Obstacle::new(9, 5),
-                Obstacle::new(9, 6),
-                Obstacle::new(10, 6),
-                Obstacle::new(11, 6),
-                Obstacle::new(3, 0),
-                Obstacle::new(4, 0),
-                Obstacle::new(5, 0),
-                Obstacle::new(5, 1),
-                Obstacle::new(6, 1),
-                Obstacle::new(7, 1),
-                Obstacle::new(7, 2),
-                Obstacle::new(8, 2),
-                Obstacle::new(9, 2),
-                Obstacle::new(9, 3),
-                Obstacle::new(10, 3),
-                Obstacle::new(11, 3),
-                Obstacle::new(11, 4),
-                Obstacle::new(11, 5),
-            ],
-        }]
+        let mut state = State::new();
+        state.player = Player::new(0, 0, 10);
+        state.fuel_spots = vec![FuelSpot::new(7, 3)];
+        state.goal = Some(Goal {
+            pos: Pos::new(10, 5),
+        });
+        state.obstacles = vec![
+            Obstacle::new(0, 1),
+            Obstacle::new(1, 1),
+            Obstacle::new(1, 2),
+            Obstacle::new(2, 2),
+            Obstacle::new(3, 2),
+            Obstacle::new(3, 3),
+            Obstacle::new(4, 3),
+            Obstacle::new(5, 3),
+            Obstacle::new(5, 4),
+            Obstacle::new(6, 4),
+            Obstacle::new(7, 4),
+            Obstacle::new(7, 5),
+            Obstacle::new(8, 5),
+            Obstacle::new(9, 5),
+            Obstacle::new(9, 6),
+            Obstacle::new(10, 6),
+            Obstacle::new(11, 6),
+            Obstacle::new(3, 0),
+            Obstacle::new(4, 0),
+            Obstacle::new(5, 0),
+            Obstacle::new(5, 1),
+            Obstacle::new(6, 1),
+            Obstacle::new(7, 1),
+            Obstacle::new(7, 2),
+            Obstacle::new(8, 2),
+            Obstacle::new(9, 2),
+            Obstacle::new(9, 3),
+            Obstacle::new(10, 3),
+            Obstacle::new(11, 3),
+            Obstacle::new(11, 4),
+            Obstacle::new(11, 5),
+        ];
+        vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]
@@ -76,7 +75,7 @@ mod tests {
     use crate::levels::{level_index_by_name, Outcome, LEVELS};
 
     #[test]
-    fn level_three() {
+    fn level() {
         let mut game = crate::Game::new();
         let level_index = level_index_by_name(LoopsPartTwo {}.name());
 

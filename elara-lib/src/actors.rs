@@ -84,7 +84,10 @@ impl PlayerChannelActor {
             Direction::Left => Pos::new(safe_decrement(state.player.pos.x), state.player.pos.y),
             Direction::Right => Pos::new(state.player.pos.x + 1, state.player.pos.y),
         };
-        if is_obstacle_at(state, &desired_pos) || is_outside_bounds(&self.bounds, &desired_pos) {
+        if is_obstacle_at(state, &desired_pos)
+            || is_outside_bounds(&self.bounds, &desired_pos)
+            || is_closed_gate_at(state, &desired_pos)
+        {
             state.player.pos.clone()
         } else {
             desired_pos
@@ -95,7 +98,7 @@ impl PlayerChannelActor {
 /// A simple actor for "bug" enemies which always try to move closer to
 /// the player and do not do any path finding.
 pub struct EnemyBugActor {
-    /// The index in State.enemies of the enemy which will be constrolled by
+    /// The index in State.enemies of the enemy which will be controlled by
     /// this actor.
     index: usize,
     bounds: Bounds,
@@ -149,7 +152,10 @@ impl Actor for EnemyBugActor {
 
         // Iterate through possible positions and apply the first one which is unobstructed.
         for pos in possible_positions {
-            if !is_obstacle_at(&state, &pos) && !is_outside_bounds(&self.bounds, &pos) {
+            if !is_obstacle_at(&state, &pos)
+                && !is_outside_bounds(&self.bounds, &pos)
+                && !is_closed_gate_at(&state, &pos)
+            {
                 state.enemies[self.index].pos = pos;
                 break;
             }
@@ -177,6 +183,15 @@ fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
     false
 }
 
+fn is_closed_gate_at(state: &State, pos: &Pos) -> bool {
+    for gate in &state.password_gates {
+        if gate.pos == *pos && !gate.open {
+            return true;
+        }
+    }
+    false
+}
+
 fn is_outside_bounds(bounds: &Bounds, pos: &Pos) -> bool {
     pos.x > bounds.max_x || pos.y > bounds.max_y
 }
@@ -186,14 +201,17 @@ mod test {
     use super::*;
     use crate::{
         constants::MAX_FUEL,
-        simulation::{Goal, Obstacle, Player, Pos, State},
+        simulation::{Goal, Obstacle, PasswordGate, Player, Pos, State},
     };
 
     #[test]
-    fn test_get_new_player_pos() {
-        let bounds = Bounds { max_x: 2, max_y: 2 };
+    fn get_new_player_pos() {
+        let bounds = Bounds {
+            max_x: 10,
+            max_y: 10,
+        };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
-        let mut state = State {
+        let state = State {
             player: Player::new(1, 1, MAX_FUEL),
             fuel_spots: vec![],
             obstacles: vec![],
@@ -201,6 +219,8 @@ mod test {
             goal: Some(Goal {
                 pos: Pos::new(3, 3),
             }),
+            password_gates: vec![],
+            password_terminals: vec![],
         };
 
         // Simple case where no obstacles are in the way and we are not
@@ -221,6 +241,23 @@ mod test {
             actor.get_new_player_pos(&state, Direction::Right),
             Pos::new(2, 1)
         );
+    }
+
+    #[test]
+    fn get_new_player_pos_with_bounds() {
+        let bounds = Bounds { max_x: 2, max_y: 2 };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State {
+            player: Player::new(1, 1, MAX_FUEL),
+            fuel_spots: vec![],
+            obstacles: vec![],
+            enemies: vec![],
+            goal: Some(Goal {
+                pos: Pos::new(3, 3),
+            }),
+            password_gates: vec![],
+            password_terminals: vec![],
+        };
 
         // We can't move outside the bounds.
         state.player.pos = Pos::new(0, 0);
@@ -241,35 +278,37 @@ mod test {
             actor.get_new_player_pos(&state, Direction::Right),
             Pos::new(2, 2)
         );
+    }
+
+    #[test]
+    fn get_new_player_pos_with_obstacles() {
+        let bounds = Bounds {
+            max_x: 10,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let state = State {
+            player: Player::new(1, 1, MAX_FUEL),
+            fuel_spots: vec![],
+            obstacles: vec![
+                Obstacle::new(0, 0),
+                Obstacle::new(1, 0),
+                Obstacle::new(2, 0),
+                Obstacle::new(2, 1),
+                Obstacle::new(2, 2),
+                Obstacle::new(1, 2),
+                Obstacle::new(0, 2),
+                Obstacle::new(0, 1),
+            ],
+            enemies: vec![],
+            goal: Some(Goal {
+                pos: Pos::new(3, 3),
+            }),
+            password_gates: vec![],
+            password_terminals: vec![],
+        };
 
         // We can't move past obstacles.
-        state.player.pos = Pos::new(1, 1);
-        state.obstacles = vec![
-            Obstacle {
-                pos: Pos::new(0, 0),
-            },
-            Obstacle {
-                pos: Pos::new(1, 0),
-            },
-            Obstacle {
-                pos: Pos::new(2, 0),
-            },
-            Obstacle {
-                pos: Pos::new(2, 1),
-            },
-            Obstacle {
-                pos: Pos::new(2, 2),
-            },
-            Obstacle {
-                pos: Pos::new(1, 2),
-            },
-            Obstacle {
-                pos: Pos::new(0, 2),
-            },
-            Obstacle {
-                pos: Pos::new(0, 1),
-            },
-        ];
         assert_eq!(
             actor.get_new_player_pos(&state, Direction::Up),
             Pos::new(1, 1)
@@ -285,6 +324,100 @@ mod test {
         assert_eq!(
             actor.get_new_player_pos(&state, Direction::Right),
             Pos::new(1, 1)
+        );
+    }
+
+    #[test]
+    fn get_new_player_pos_with_closed_gates() {
+        let bounds = Bounds {
+            max_x: 10,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let state = State {
+            player: Player::new(1, 1, MAX_FUEL),
+            fuel_spots: vec![],
+            obstacles: vec![],
+            enemies: vec![],
+            goal: Some(Goal {
+                pos: Pos::new(3, 3),
+            }),
+            password_gates: vec![
+                PasswordGate::new(0, 0, "lovelace".to_string(), false),
+                PasswordGate::new(1, 0, "lovelace".to_string(), false),
+                PasswordGate::new(2, 0, "lovelace".to_string(), false),
+                PasswordGate::new(2, 1, "lovelace".to_string(), false),
+                PasswordGate::new(2, 2, "lovelace".to_string(), false),
+                PasswordGate::new(1, 2, "lovelace".to_string(), false),
+                PasswordGate::new(0, 2, "lovelace".to_string(), false),
+                PasswordGate::new(0, 1, "lovelace".to_string(), false),
+            ],
+            password_terminals: vec![],
+        };
+
+        // We can't move past closed gates.
+        assert_eq!(
+            actor.get_new_player_pos(&state, Direction::Up),
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.get_new_player_pos(&state, Direction::Left),
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.get_new_player_pos(&state, Direction::Down),
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.get_new_player_pos(&state, Direction::Right),
+            Pos::new(1, 1)
+        );
+    }
+
+    #[test]
+    fn get_new_player_pos_with_open_gates() {
+        let bounds = Bounds {
+            max_x: 10,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let state = State {
+            player: Player::new(1, 1, MAX_FUEL),
+            fuel_spots: vec![],
+            obstacles: vec![],
+            enemies: vec![],
+            goal: Some(Goal {
+                pos: Pos::new(3, 3),
+            }),
+            password_gates: vec![
+                PasswordGate::new(0, 0, "lovelace".to_string(), true),
+                PasswordGate::new(1, 0, "lovelace".to_string(), true),
+                PasswordGate::new(2, 0, "lovelace".to_string(), true),
+                PasswordGate::new(2, 1, "lovelace".to_string(), true),
+                PasswordGate::new(2, 2, "lovelace".to_string(), true),
+                PasswordGate::new(1, 2, "lovelace".to_string(), true),
+                PasswordGate::new(0, 2, "lovelace".to_string(), true),
+                PasswordGate::new(0, 1, "lovelace".to_string(), true),
+            ],
+            password_terminals: vec![],
+        };
+
+        // We *can* move past closed gates.
+        assert_eq!(
+            actor.get_new_player_pos(&state, Direction::Up),
+            Pos::new(1, 0)
+        );
+        assert_eq!(
+            actor.get_new_player_pos(&state, Direction::Down),
+            Pos::new(1, 2)
+        );
+        assert_eq!(
+            actor.get_new_player_pos(&state, Direction::Left),
+            Pos::new(0, 1)
+        );
+        assert_eq!(
+            actor.get_new_player_pos(&state, Direction::Right),
+            Pos::new(2, 1)
         );
     }
 }

@@ -1,6 +1,5 @@
 use super::{no_objective_check_win, Level, Outcome};
-use crate::constants::MAX_FUEL;
-use crate::simulation::{Actor, Player, State};
+use crate::simulation::{Actor, State};
 
 #[derive(Copy, Clone)]
 pub struct MathExpressions {}
@@ -30,13 +29,7 @@ say((2 + 3) * 4);
 "#
     }
     fn initial_states(&self) -> Vec<State> {
-        vec![State {
-            player: Player::new(0, 0, MAX_FUEL),
-            fuel_spots: vec![],
-            goal: None,
-            enemies: vec![],
-            obstacles: vec![],
-        }]
+        vec![State::new()]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]

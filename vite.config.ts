@@ -16,8 +16,8 @@ export default defineConfig(async () => {
     base: "/elara/",
     root: "web",
     plugins: [
-      react(),
       wasmPack("./elara-lib"),
+      react(),
       mdx.default({ remarkPlugins: [remarkGfm.default as any] }),
     ],
   };

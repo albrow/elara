@@ -223,6 +223,8 @@ mod tests {
             }),
             enemies: vec![],
             obstacles: vec![],
+            password_gates: vec![],
+            password_terminals: vec![],
         }];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],
@@ -249,6 +251,8 @@ mod tests {
                 }),
                 enemies: vec![],
                 obstacles: vec![],
+                password_gates: vec![],
+                password_terminals: vec![],
             },
             State {
                 player: Player::new(1, 1, 10),
@@ -258,6 +262,8 @@ mod tests {
                 }),
                 enemies: vec![],
                 obstacles: vec![],
+                password_gates: vec![],
+                password_terminals: vec![],
             },
         ];
         let expected = FuzzyState {
@@ -288,6 +294,8 @@ mod tests {
                 }),
                 enemies: vec![],
                 obstacles: vec![],
+                password_gates: vec![],
+                password_terminals: vec![],
             },
             State {
                 player: Player::new(0, 0, 10),
@@ -297,6 +305,8 @@ mod tests {
                 }),
                 enemies: vec![],
                 obstacles: vec![],
+                password_gates: vec![],
+                password_terminals: vec![],
             },
         ];
         let expected = FuzzyState {
@@ -329,6 +339,8 @@ mod tests {
             goal: None,
             enemies: vec![],
             obstacles: vec![],
+            password_gates: vec![],
+            password_terminals: vec![],
         }];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],

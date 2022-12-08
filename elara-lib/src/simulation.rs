@@ -2,7 +2,10 @@ use std::fmt;
 
 use lazy_static::__Deref;
 
-use crate::levels::{Level, Outcome, LEVELS};
+use crate::{
+    constants::MAX_FUEL,
+    levels::{Level, Outcome, LEVELS},
+};
 
 pub trait Actor {
     fn apply(&mut self, state: State) -> State;
@@ -133,6 +136,22 @@ pub struct State {
     pub goal: Option<Goal>,
     pub enemies: Vec<Enemy>,
     pub obstacles: Vec<Obstacle>,
+    pub password_gates: Vec<PasswordGate>,
+    pub password_terminals: Vec<PasswordTerminal>,
+}
+
+impl State {
+    pub fn new() -> State {
+        State {
+            player: Player::new(0, 0, MAX_FUEL),
+            fuel_spots: vec![],
+            goal: None,
+            enemies: vec![],
+            obstacles: vec![],
+            password_gates: vec![],
+            password_terminals: vec![],
+        }
+    }
 }
 
 impl fmt::Debug for State {
@@ -142,6 +161,8 @@ impl fmt::Debug for State {
             .field("fuel_spots", &self.fuel_spots)
             .field("goal", &self.goal)
             .field("enemies", &self.enemies)
+            .field("password_gates", &self.password_gates)
+            .field("password_terminals", &self.password_terminals)
             // Omitting obstacles field since it can be very long and
             // the obstacles never move.
             // .field("obstacles", &self.obstacles)
@@ -200,6 +221,38 @@ pub struct Obstacle {
 impl Obstacle {
     pub fn new(x: u32, y: u32) -> Obstacle {
         Obstacle { pos: Pos { x, y } }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct PasswordGate {
+    pub pos: Pos,
+    pub open: bool,
+    pub password: String,
+}
+
+impl PasswordGate {
+    pub fn new(x: u32, y: u32, password: String, open: bool) -> PasswordGate {
+        PasswordGate {
+            pos: Pos { x, y },
+            open,
+            password,
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct PasswordTerminal {
+    pub pos: Pos,
+    pub password: String,
+}
+
+impl PasswordTerminal {
+    pub fn new(x: u32, y: u32, password: String) -> PasswordTerminal {
+        PasswordTerminal {
+            pos: Pos { x, y },
+            password,
+        }
     }
 }
 

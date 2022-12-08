@@ -22,67 +22,67 @@ move_down(5);
 "
     }
     fn initial_states(&self) -> Vec<State> {
-        vec![State {
-            player: Player::new(11, 0, 8),
-            fuel_spots: vec![
-                FuelSpot {
-                    pos: Pos { x: 4, y: 1 },
-                    collected: false,
-                },
-                FuelSpot {
-                    pos: Pos { x: 0, y: 5 },
-                    collected: false,
-                },
-            ],
-            goal: Some(Goal {
-                pos: Pos { x: 9, y: 5 },
-            }),
-            enemies: vec![Enemy {
-                pos: Pos { x: 9, y: 7 },
-            }],
-            obstacles: vec![
-                Obstacle::new(8, 1),
-                Obstacle::new(8, 2),
-                Obstacle::new(8, 3),
-                Obstacle::new(8, 4),
-                Obstacle::new(7, 4),
-                Obstacle::new(6, 4),
-                Obstacle::new(8, 6),
-                Obstacle::new(7, 6),
-                Obstacle::new(6, 6),
-                Obstacle::new(4, 6),
-                Obstacle::new(3, 6),
-                Obstacle::new(7, 1),
-                Obstacle::new(6, 1),
-                Obstacle::new(5, 1),
-                Obstacle::new(4, 2),
-                Obstacle::new(3, 1),
-                Obstacle::new(2, 1),
-                Obstacle::new(5, 4),
-                Obstacle::new(4, 4),
-                Obstacle::new(1, 1),
-                Obstacle::new(1, 2),
-                Obstacle::new(1, 3),
-                Obstacle::new(1, 4),
-                Obstacle::new(1, 6),
-                Obstacle::new(1, 7),
-                Obstacle::new(10, 1),
-                Obstacle::new(10, 2),
-                Obstacle::new(10, 3),
-                Obstacle::new(10, 4),
-                Obstacle::new(10, 5),
-                Obstacle::new(10, 6),
-                Obstacle::new(2, 4),
-                Obstacle::new(3, 4),
-                Obstacle::new(2, 6),
-                Obstacle::new(5, 6),
-                Obstacle::new(11, 1),
-                Obstacle::new(3, 2),
-                Obstacle::new(5, 2),
-                Obstacle::new(8, 7),
-                Obstacle::new(10, 7),
-            ],
-        }]
+        let mut state = State::new();
+        state.player = Player::new(11, 0, 8);
+        state.fuel_spots = vec![
+            FuelSpot {
+                pos: Pos { x: 4, y: 1 },
+                collected: false,
+            },
+            FuelSpot {
+                pos: Pos { x: 0, y: 5 },
+                collected: false,
+            },
+        ];
+        state.goal = Some(Goal {
+            pos: Pos { x: 9, y: 5 },
+        });
+        state.enemies = vec![Enemy {
+            pos: Pos { x: 9, y: 7 },
+        }];
+        state.obstacles = vec![
+            Obstacle::new(8, 1),
+            Obstacle::new(8, 2),
+            Obstacle::new(8, 3),
+            Obstacle::new(8, 4),
+            Obstacle::new(7, 4),
+            Obstacle::new(6, 4),
+            Obstacle::new(8, 6),
+            Obstacle::new(7, 6),
+            Obstacle::new(6, 6),
+            Obstacle::new(4, 6),
+            Obstacle::new(3, 6),
+            Obstacle::new(7, 1),
+            Obstacle::new(6, 1),
+            Obstacle::new(5, 1),
+            Obstacle::new(4, 2),
+            Obstacle::new(3, 1),
+            Obstacle::new(2, 1),
+            Obstacle::new(5, 4),
+            Obstacle::new(4, 4),
+            Obstacle::new(1, 1),
+            Obstacle::new(1, 2),
+            Obstacle::new(1, 3),
+            Obstacle::new(1, 4),
+            Obstacle::new(1, 6),
+            Obstacle::new(1, 7),
+            Obstacle::new(10, 1),
+            Obstacle::new(10, 2),
+            Obstacle::new(10, 3),
+            Obstacle::new(10, 4),
+            Obstacle::new(10, 5),
+            Obstacle::new(10, 6),
+            Obstacle::new(2, 4),
+            Obstacle::new(3, 4),
+            Obstacle::new(2, 6),
+            Obstacle::new(5, 6),
+            Obstacle::new(11, 1),
+            Obstacle::new(3, 2),
+            Obstacle::new(5, 2),
+            Obstacle::new(8, 7),
+            Obstacle::new(10, 7),
+        ];
+        vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![Box::new(EnemyBugActor::new(
@@ -105,7 +105,7 @@ mod tests {
     use crate::levels::{level_index_by_name, Outcome, LEVELS};
 
     #[test]
-    fn level_four() {
+    fn level() {
         let mut game = crate::Game::new();
         let level_index = level_index_by_name(BuzzingSound {}.name());
 

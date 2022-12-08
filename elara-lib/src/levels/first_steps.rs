@@ -20,26 +20,24 @@ move_down(2);
 "#
     }
     fn initial_states(&self) -> Vec<State> {
-        vec![State {
-            player: Player::new(0, 0, 10),
-            fuel_spots: vec![],
-            goal: Some(Goal {
-                pos: Pos { x: 3, y: 3 },
-            }),
-            enemies: vec![],
-            obstacles: vec![
-                // Obstacles enclose the player and goal in a 4x4 square.
-                Obstacle::new(4, 0),
-                Obstacle::new(4, 1),
-                Obstacle::new(4, 2),
-                Obstacle::new(4, 3),
-                Obstacle::new(4, 4),
-                Obstacle::new(0, 4),
-                Obstacle::new(1, 4),
-                Obstacle::new(2, 4),
-                Obstacle::new(3, 4),
-            ],
-        }]
+        let mut state = State::new();
+        state.player = Player::new(0, 0, 10);
+        state.goal = Some(Goal {
+            pos: Pos { x: 3, y: 3 },
+        });
+        state.obstacles = vec![
+            // Obstacles enclose the player and goal in a 4x4 square.
+            Obstacle::new(4, 0),
+            Obstacle::new(4, 1),
+            Obstacle::new(4, 2),
+            Obstacle::new(4, 3),
+            Obstacle::new(4, 4),
+            Obstacle::new(0, 4),
+            Obstacle::new(1, 4),
+            Obstacle::new(2, 4),
+            Obstacle::new(3, 4),
+        ];
+        vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]

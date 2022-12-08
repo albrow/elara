@@ -20,42 +20,41 @@ move_right(4);
 "#
     }
     fn initial_states(&self) -> Vec<State> {
-        vec![State {
-            player: Player::new(0, 0, 5),
-            fuel_spots: vec![FuelSpot {
-                pos: Pos { x: 0, y: 5 },
-                collected: false,
-            }],
-            goal: Some(Goal {
-                pos: Pos::new(4, 4),
-            }),
-            enemies: vec![],
-            obstacles: vec![
-                // Obstacles enclose the player, goal, and fuel with a few different
-                // branching paths.
-                Obstacle::new(1, 1),
-                Obstacle::new(1, 2),
-                Obstacle::new(1, 3),
-                Obstacle::new(2, 1),
-                Obstacle::new(2, 2),
-                Obstacle::new(2, 3),
-                Obstacle::new(3, 1),
-                Obstacle::new(3, 2),
-                Obstacle::new(3, 3),
-                Obstacle::new(5, 0),
-                Obstacle::new(5, 1),
-                Obstacle::new(5, 2),
-                Obstacle::new(5, 3),
-                Obstacle::new(5, 4),
-                Obstacle::new(5, 5),
-                Obstacle::new(4, 5),
-                Obstacle::new(3, 5),
-                Obstacle::new(2, 5),
-                Obstacle::new(1, 5),
-                Obstacle::new(1, 6),
-                Obstacle::new(1, 7),
-            ],
-        }]
+        let mut state = State::new();
+        state.player = Player::new(0, 0, 5);
+        state.fuel_spots = vec![FuelSpot {
+            pos: Pos { x: 0, y: 5 },
+            collected: false,
+        }];
+        state.goal = Some(Goal {
+            pos: Pos::new(4, 4),
+        });
+        state.obstacles = vec![
+            // Obstacles enclose the player, goal, and fuel with a few different
+            // branching paths.
+            Obstacle::new(1, 1),
+            Obstacle::new(1, 2),
+            Obstacle::new(1, 3),
+            Obstacle::new(2, 1),
+            Obstacle::new(2, 2),
+            Obstacle::new(2, 3),
+            Obstacle::new(3, 1),
+            Obstacle::new(3, 2),
+            Obstacle::new(3, 3),
+            Obstacle::new(5, 0),
+            Obstacle::new(5, 1),
+            Obstacle::new(5, 2),
+            Obstacle::new(5, 3),
+            Obstacle::new(5, 4),
+            Obstacle::new(5, 5),
+            Obstacle::new(4, 5),
+            Obstacle::new(3, 5),
+            Obstacle::new(2, 5),
+            Obstacle::new(1, 5),
+            Obstacle::new(1, 6),
+            Obstacle::new(1, 7),
+        ];
+        vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]

@@ -75,6 +75,8 @@ if pos[0] == 0 {
                 }),
                 enemies: vec![],
                 obstacles: self.obstacles(),
+                password_gates: vec![],
+                password_terminals: vec![],
             },
             State {
                 player: Player::new(10, 3, 5),
@@ -84,6 +86,8 @@ if pos[0] == 0 {
                 }),
                 enemies: vec![],
                 obstacles: self.obstacles(),
+                password_gates: vec![],
+                password_terminals: vec![],
             },
         ]
     }
@@ -105,7 +109,7 @@ mod tests {
     use crate::levels::{level_index_by_name, Outcome, LEVELS};
 
     #[test]
-    fn level_five() {
+    fn level() {
         let mut game = crate::Game::new();
         let level_index = level_index_by_name(SeeingDouble {}.name());
 
