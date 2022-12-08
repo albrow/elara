@@ -13,9 +13,10 @@ impl Level for Expressions {
         "Call the \"say\" function with different types of expressions."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// An "expression" is either a plain value or an operation that
-// produces a value. Let's look at some simple expressions using
-// the "say" function.
+        r#"// An "expression" is either a value (e.g. a number like `42`) or
+// something that results in a value (e.g. an addition operation
+// like `2 + 3`). Let's look at some simple expressions using the
+// "say" function.
 
 // A "string" is just a piece of text surrounded by double quotes.
 say("This is a string");
@@ -47,7 +48,7 @@ say(false);
         Outcome::NoObjective
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec![]
+        vec!["Expressions", "Literals"]
     }
 }
 

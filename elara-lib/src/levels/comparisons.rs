@@ -10,12 +10,12 @@ impl Level for Comparisons {
         "Apples and Oranges"
     }
     fn objective(&self) -> &'static str {
-        "Call the \"say\" function with different comparison operators."
+        "Call the \"say\" function with different comparison expressions."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// A "comparison operator" can be used to compare two different
-// values. They are similar to mathematical operators, but instead
-// of producing numbers, they produce true or false.
+        r#"// A "comparison expression" can be used to compare two different
+// values. A comparison expression always results in a boolean
+// value (either true or false).
 say(5 > 3);
 say(3 < 1);
 
@@ -29,7 +29,7 @@ say("love" == "love");
 // tells us if two things are *not* equal.
 say("apples" != "oranges");
 
-// You can also combine comparison operators and math operators.
+// You can also combine comparison expressions and math expressions.
 say(2 + 2 == 4);
 say(2 + 2 == 5);
 "#
@@ -50,7 +50,7 @@ say(2 + 2 == 5);
         Outcome::NoObjective
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec![]
+        vec!["Comparisons"]
     }
 }
 

@@ -45,7 +45,7 @@ say((2 + 3) * 4);
         Outcome::NoObjective
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec![]
+        vec!["Math Expressions"]
     }
 }
 

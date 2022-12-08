@@ -1,4 +1,4 @@
-### Function
+### Functions
 
 Functions are a fundamental building block of programming. They
 are a way to organize code into smaller chunks that can be re-used
@@ -31,20 +31,12 @@ it is called. The output of a function can be used the same way as
 any other value.
 
 For example, the `random` function outputs (or "returns") a random
-number between 1 and 100. We can use that output as the _input_ to
+number between 1 and 100. We can use the output of the `random` function
+in the same way as any other number. E.g., we can use it as the _input_ to
 the `say` function:
 
 ```rhai
 say(random());
-```
-
-As another example, we can also assign the output of the `random`
-function to a variable called `number`. Then we can use the `number`
-variable as the input to the `say` function:
-
-```rhai
-let number = random();
-say(number);
 ```
 
 Not all functions have an output. For example, the `move_right` function

@@ -1,0 +1,39 @@
+### Math Expressions
+
+A math expression uses numbers and a mathematical operator
+(e.g. `+` or `-`) to produce a new number. You may already be
+familiar with math expressions from your math class.
+
+Since math expressions result in a number, they can be used
+in your code anywhere a number can be used. For example, you
+can use a math expression in the `move_right` function:
+
+```rhai
+move_right(1 + 2);
+```
+
+Since `1 + 2` results in `3`, the above code will cause the
+rover to move right 3 spaces.
+
+#### Math Operators
+
+There are a few different kinds of operators that can be used in
+math expressions.
+
+| Operator | Description    | Example |
+| -------- | -------------- | ------- |
+| `+`      | Addition       | `1 + 2` |
+| `-`      | Subtraction    | `3 - 4` |
+| `*`      | Multiplication | `5 * 6` |
+| `/`      | Division       | `7 / 8` |
+
+#### Order of Operations
+
+Math expressions follow the same order of operations you're
+probably used to. For example, multiplication and division
+are done before addition or subtraction. For example, `2 + 3 * 4`
+results in `14` because `3 * 4` is done first, then `2 + 14`.
+
+As you might expect, you can use parentheses to change the order
+of operations. For example, `(2 + 3) * 4` results in `20` because
+`2 + 3` is done first, then `20 * 4`.

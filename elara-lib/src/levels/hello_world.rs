@@ -40,7 +40,7 @@ say("My name is G.R.O.V.E.R.");
         Outcome::NoObjective
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Comment", "Function"]
+        vec!["Comments"]
     }
 }
 

@@ -13,12 +13,13 @@ impl Level for LoopTheLoop {
     }
     fn initial_code(&self) -> &'static str {
         r#"// Instead of writing the same code over and over, you can
-// use a "while loop" to repeat any code you want. Try using
-// a while loop below:
+// use a "while loop" to repeat any code you want. In a while loop,
+// all the code inside the two curly brackets ("{ }") will be
+// repeated.
 
 while true {
   move_right(1);
-  // Add a line of code below:
+  // Try adding a line of code below:
   
 }
 "#
@@ -76,7 +77,7 @@ while true {
         }
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["While Loop"]
+        vec!["While Loops"]
     }
 }
 
@@ -103,7 +104,7 @@ mod tests {
         );
 
         // Running this code should result in Outcome::Success.
-        let script = r"loop {
+        let script = r"while true {
             move_right(1);
             move_up(1);
         }";

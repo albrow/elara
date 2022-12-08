@@ -1,18 +1,26 @@
-import Function from "./sections/function.mdx";
-import Comment from "./sections/comment.mdx";
-import WhileLoop from "./sections/while_loop.mdx";
-import Variable from "./sections/variable.mdx";
-import Array from "./sections/array.mdx";
-import IfStatement from "./sections/if_statement.mdx";
+import Functions from "./sections/functions.mdx";
+import Comments from "./sections/comments.mdx";
+import Expressions from "./sections/expressions.mdx";
+import WhileLoops from "./sections/while_loops.mdx";
+import Variables from "./sections/variables.mdx";
+import Literals from "./sections/literals.mdx";
+import Arrays from "./sections/arrays.mdx";
+import MathExpressions from "./sections/math_expressions.mdx";
+import Comparisons from "./sections/comparisons.mdx";
+import IfStatements from "./sections/if_statements.mdx";
 import "../../styles/md_content.css";
 
 export const sections = {
-  Comment: Comment,
-  Function: Function,
-  Variable: Variable,
-  Array: Array,
-  "While Loop": WhileLoop,
-  "If Statement": IfStatement,
+  Comments: Comments,
+  Functions: Functions,
+  Expressions: Expressions,
+  Literals: Literals,
+  "Math Expressions": MathExpressions,
+  Comparisons: Comparisons,
+  Variables: Variables,
+  Arrays: Arrays,
+  "While Loops": WhileLoops,
+  "If Statements": IfStatements,
 };
 
 export type SectionName = keyof typeof sections;
