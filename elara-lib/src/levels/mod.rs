@@ -8,6 +8,7 @@ mod loop_the_loop;
 mod math_expressions;
 mod more_trouble;
 mod seeing_double;
+mod variables;
 
 use crate::constants::ERR_OUT_OF_FUEL;
 use crate::simulation::Actor;
@@ -23,6 +24,7 @@ use crate::levels::loop_the_loop::LoopTheLoop;
 use crate::levels::math_expressions::MathExpressions;
 use crate::levels::more_trouble::MoreTrouble;
 use crate::levels::seeing_double::SeeingDouble;
+use crate::levels::variables::Variables;
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum Outcome {
@@ -52,7 +54,7 @@ pub trait Level {
 }
 
 lazy_static! {
-    pub static ref LEVELS: [Box<dyn Level + Sync>; 10] = [
+    pub static ref LEVELS: [Box<dyn Level + Sync>; 11] = [
         Box::new(HelloWorld {}),
         Box::new(FirstSteps {}),
         Box::new(Expressions {}),
@@ -61,6 +63,7 @@ lazy_static! {
         Box::new(LoopTheLoop {}),
         Box::new(BuzzingSound {}),
         Box::new(Comparisons {}),
+        Box::new(Variables {}),
         Box::new(SeeingDouble {}),
         Box::new(MoreTrouble {}),
     ];
