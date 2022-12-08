@@ -5,6 +5,7 @@ import {
   FuzzyFuelSpot,
   FuzzyEnemy,
   FuzzyObstacle,
+  FuzzyPasswordGate,
 } from "../../../elara-lib/pkg";
 import {
   CANVAS_WIDTH,
@@ -22,6 +23,7 @@ import Square from "./square";
 import "./board.css";
 import Enemy from "./enemy";
 import Obstacle from "./obstacle";
+import Gate from "./gate";
 
 interface BoardProps {
   gameState: FuzzyState;
@@ -117,6 +119,18 @@ export default function Board(props: BoardProps) {
           />
         );
       })}
+      {(props.gameState.password_gates as FuzzyPasswordGate[]).map(
+        (gate, i) => {
+          return (
+            <Gate
+              key={i}
+              offset={posToOffset(gate.pos)}
+              open={gate.open}
+              fuzzy={gate.fuzzy}
+            />
+          );
+        }
+      )}
     </>
   );
 }

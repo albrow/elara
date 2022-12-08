@@ -119,11 +119,12 @@ pub fn to_level_data_array(levels: &[Box<dyn levels::Level + Sync>]) -> Array {
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyState {
-    pub players: Array,    // Array<FuzzyPlayer>
-    pub fuel_spots: Array, // Array<FuzzyFuelSpot>
-    pub goals: Array,      // Array<FuzzyGoal>
-    pub enemies: Array,    // Array<FuzzyEnemy>
-    pub obstacles: Array,  // Array<FuzzyObstacle>
+    pub players: Array,        // Array<FuzzyPlayer>
+    pub fuel_spots: Array,     // Array<FuzzyFuelSpot>
+    pub goals: Array,          // Array<FuzzyGoal>
+    pub enemies: Array,        // Array<FuzzyEnemy>
+    pub obstacles: Array,      // Array<FuzzyObstacle>
+    pub password_gates: Array, // Array<FuzzyPasswordGate>
 }
 
 impl FuzzyState {
@@ -134,6 +135,7 @@ impl FuzzyState {
             goals: Array::new(),
             enemies: Array::new(),
             obstacles: Array::new(),
+            password_gates: Array::new(),
         }
     }
 
@@ -216,12 +218,30 @@ impl FuzzyState {
             );
         }
 
+        let password_gates = Array::new_with_length(state.password_gates.len() as u32);
+        for (i, fuzzy_password_gate) in state.password_gates.iter().enumerate() {
+            let password_gate = &fuzzy_password_gate.obj;
+            password_gates.set(
+                i as u32,
+                JsValue::from(FuzzyPasswordGate {
+                    pos: Pos {
+                        x: password_gate.pos.x as i32,
+                        y: password_gate.pos.y as i32,
+                    },
+                    password: password_gate.password.clone(),
+                    open: password_gate.open,
+                    fuzzy: fuzzy_password_gate.fuzzy,
+                }),
+            );
+        }
+
         FuzzyState {
             players,
             fuel_spots,
             goals,
             enemies,
             obstacles,
+            password_gates,
         }
     }
 }
@@ -261,5 +281,14 @@ pub struct FuzzyEnemy {
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct FuzzyObstacle {
     pub pos: Pos,
+    pub fuzzy: bool,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct FuzzyPasswordGate {
+    pub pos: Pos,
+    pub password: String,
+    pub open: bool,
     pub fuzzy: bool,
 }
