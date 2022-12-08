@@ -11,7 +11,7 @@ mod more_trouble;
 mod seeing_double;
 mod variables;
 
-use crate::constants::ERR_OUT_OF_FUEL;
+use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL};
 use crate::simulation::Actor;
 use crate::simulation::{Enemy, FuelSpot, Goal, Obstacle, Player, State};
 
@@ -70,6 +70,14 @@ fn is_destroyed_by_enemy(state: &State) -> bool {
         .enemies
         .iter()
         .any(|enemy| enemy.pos == state.player.pos)
+}
+
+fn did_reach_goal(state: &State) -> bool {
+    if state.goal.is_some() && state.player.pos == state.goal.as_ref().unwrap().pos {
+        true
+    } else {
+        false
+    }
 }
 
 /// A representation of multiple possible initial states in which any
@@ -157,6 +165,32 @@ impl FuzzyState {
         }
 
         fuzzy_state
+    }
+}
+
+/// An implementation of Level::check_win which covers some common
+/// success and failure cases. Some levels may need to implement
+/// their own logic on top of this.
+pub fn std_check_win(state: &State) -> Outcome {
+    if did_reach_goal(state) {
+        Outcome::Success
+    } else if state.player.fuel == 0 {
+        Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+    } else if is_destroyed_by_enemy(state) {
+        Outcome::Failure(ERR_DESTROYED_BY_BUG.to_string())
+    } else {
+        Outcome::Continue
+    }
+}
+
+/// An implementation of Level::check_win for levels without an
+/// explicit objective. Some levels may need to implement
+/// their own logic on top of this.
+pub fn no_objective_check_win(state: &State) -> Outcome {
+    if state.player.fuel == 0 {
+        Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+    } else {
+        Outcome::NoObjective
     }
 }
 

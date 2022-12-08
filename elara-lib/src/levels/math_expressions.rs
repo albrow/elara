@@ -1,5 +1,5 @@
+use super::{no_objective_check_win, Level, Outcome};
 use crate::constants::MAX_FUEL;
-use crate::levels::{Level, Outcome};
 use crate::simulation::{Actor, Player, State};
 
 #[derive(Copy, Clone)]
@@ -41,8 +41,8 @@ say((2 + 3) * 4);
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]
     }
-    fn check_win(&self, _state: &State) -> Outcome {
-        Outcome::NoObjective
+    fn check_win(&self, state: &State) -> Outcome {
+        no_objective_check_win(state)
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
         vec!["Math Expressions"]

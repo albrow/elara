@@ -1,5 +1,4 @@
-use crate::constants::ERR_OUT_OF_FUEL;
-use crate::levels::{Level, Outcome};
+use super::{std_check_win, Level, Outcome};
 use crate::simulation::Actor;
 use crate::simulation::{Goal, Obstacle, Player, Pos, State};
 
@@ -92,13 +91,7 @@ if pos[0] == 0 {
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.as_ref().unwrap().pos {
-            Outcome::Success
-        } else if state.player.fuel == 0 {
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
-        } else {
-            Outcome::Continue
-        }
+        std_check_win(state)
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
         vec!["Variables", "Arrays", "If Statements"]

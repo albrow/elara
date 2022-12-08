@@ -1,4 +1,4 @@
-use crate::levels::{Level, Outcome, ERR_OUT_OF_FUEL};
+use super::{std_check_win, Level, Outcome};
 use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
@@ -61,21 +61,14 @@ move_right(4);
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.as_ref().unwrap().pos {
-            Outcome::Success
-        } else if state.player.fuel == 0 {
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
-        } else {
-            Outcome::Continue
-        }
+        std_check_win(state)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::levels::LEVELS;
-    use crate::levels::{level_index_by_name, Outcome};
+    use crate::levels::{level_index_by_name, Outcome, ERR_OUT_OF_FUEL, LEVELS};
 
     #[test]
     fn level() {

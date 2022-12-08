@@ -1,4 +1,4 @@
-use crate::levels::{Level, Outcome, ERR_OUT_OF_FUEL};
+use super::{std_check_win, Level, Outcome};
 use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
@@ -63,13 +63,7 @@ impl Level for LoopsPartTwo {
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.as_ref().unwrap().pos {
-            Outcome::Success
-        } else if state.player.fuel == 0 {
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
-        } else {
-            Outcome::Continue
-        }
+        std_check_win(state)
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
         vec!["Loops"]

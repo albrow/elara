@@ -1,6 +1,6 @@
+use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EnemyBugActor};
-use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
-use crate::levels::{is_destroyed_by_enemy, Level, Outcome};
+use crate::constants::{HEIGHT, WIDTH};
 use crate::simulation::{Actor, Enemy, FuelSpot, Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
@@ -94,15 +94,7 @@ move_down(5);
         ))]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        if state.player.pos == state.goal.as_ref().unwrap().pos {
-            Outcome::Success
-        } else if is_destroyed_by_enemy(state) {
-            Outcome::Failure(ERR_DESTROYED_BY_BUG.to_string())
-        } else if state.player.fuel == 0 {
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
-        } else {
-            Outcome::Continue
-        }
+        std_check_win(state)
     }
 }
 
