@@ -16,10 +16,6 @@ impl Level for Variables {
         r#"// Variables are used to store values. For example, this creates
 // a variable named "greeting" which holds the value "Hello!"
 let greeting = "Hello!";
-
-// You can use a variable in place of a value. So for for
-// example, you can use the variable "greeting" as the input
-// to the say function.
 say(greeting);
 
 // You also can change the value that a variable holds. You don't
