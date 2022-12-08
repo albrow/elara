@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import { Container, Flex, Button, Text, Box } from "@chakra-ui/react";
+import { useEffect } from "react";
+import { Container, Flex, Button, Box } from "@chakra-ui/react";
 
 import JournalSection, {
   sections,
@@ -14,6 +15,14 @@ export default function Journal() {
   if (sectionName !== undefined && !(sectionName in sections)) {
     throw new Error(`Unknown section: ${sectionName}`);
   }
+
+  useEffect(() => {
+    if (sectionName) {
+      document.title = `Elara | Journal: ${sectionName}`;
+    } else {
+      document.title = "Elara | Journal";
+    }
+  }, [sectionName]);
 
   return (
     <Box bg="gray.300">

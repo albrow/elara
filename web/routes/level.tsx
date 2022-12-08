@@ -51,6 +51,10 @@ export default function Level() {
     Object.keys(sections)[0] as SectionName
   );
 
+  useEffect(() => {
+    document.title = `Elara | Level ${levelIndex}: ${level.name}`;
+  }, [levelIndex]);
+
   const onCodeChange = useCallback((newCode: string) => {
     setCode(newCode);
     setCodeError(undefined);
