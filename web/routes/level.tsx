@@ -261,7 +261,7 @@ export default function Level() {
               saveCodeHandler={saveCodeHandler}
               loadCodeHandler={loadCodeHandler}
             />
-            <Box maxW="608px">
+            <Box w="608px">
               <Editor
                 code={code}
                 editable={!isRunning}
