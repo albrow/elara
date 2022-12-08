@@ -5,6 +5,7 @@ mod first_steps;
 mod fuel_up;
 mod hello_world;
 mod loop_the_loop;
+mod loops_part_two;
 mod math_expressions;
 mod more_trouble;
 mod seeing_double;
@@ -13,18 +14,6 @@ mod variables;
 use crate::constants::ERR_OUT_OF_FUEL;
 use crate::simulation::Actor;
 use crate::simulation::{Enemy, FuelSpot, Goal, Obstacle, Player, State};
-
-use crate::levels::buzzing_sound::BuzzingSound;
-use crate::levels::comparisons::Comparisons;
-use crate::levels::expressions::Expressions;
-use crate::levels::first_steps::FirstSteps;
-use crate::levels::fuel_up::FuelUp;
-use crate::levels::hello_world::HelloWorld;
-use crate::levels::loop_the_loop::LoopTheLoop;
-use crate::levels::math_expressions::MathExpressions;
-use crate::levels::more_trouble::MoreTrouble;
-use crate::levels::seeing_double::SeeingDouble;
-use crate::levels::variables::Variables;
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum Outcome {
@@ -54,18 +43,19 @@ pub trait Level {
 }
 
 lazy_static! {
-    pub static ref LEVELS: [Box<dyn Level + Sync>; 11] = [
-        Box::new(HelloWorld {}),
-        Box::new(FirstSteps {}),
-        Box::new(Expressions {}),
-        Box::new(MathExpressions {}),
-        Box::new(FuelUp {}),
-        Box::new(LoopTheLoop {}),
-        Box::new(BuzzingSound {}),
-        Box::new(Comparisons {}),
-        Box::new(Variables {}),
-        Box::new(SeeingDouble {}),
-        Box::new(MoreTrouble {}),
+    pub static ref LEVELS: Vec<Box<dyn Level + Sync>> = vec![
+        Box::new(hello_world::HelloWorld {}),
+        Box::new(first_steps::FirstSteps {}),
+        Box::new(expressions::Expressions {}),
+        Box::new(math_expressions::MathExpressions {}),
+        Box::new(fuel_up::FuelUp {}),
+        Box::new(loop_the_loop::LoopTheLoop {}),
+        Box::new(loops_part_two::LoopsPartTwo {}),
+        Box::new(buzzing_sound::BuzzingSound {}),
+        Box::new(comparisons::Comparisons {}),
+        Box::new(variables::Variables {}),
+        Box::new(seeing_double::SeeingDouble {}),
+        Box::new(more_trouble::MoreTrouble {}),
     ];
 }
 

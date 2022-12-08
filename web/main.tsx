@@ -3,10 +3,10 @@ import ReactDOM from "react-dom/client";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 
-import "@fontsource/nunito/300.css";
 import "@fontsource/nunito/400.css";
 import "@fontsource/nunito/500.css";
 import "@fontsource/nunito/700.css";
+import "@fontsource/nunito/900.css";
 
 import init from "../elara-lib/pkg";
 import Home from "./routes/home";
