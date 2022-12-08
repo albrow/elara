@@ -13,6 +13,16 @@ export default defineConfig(async () => {
   // Set base="/elara/" as a workaround for hosting on GitHub Pages.
   // See: https://dev.to/shashannkbawa/deploying-vite-app-to-github-pages-3ane
   return {
+    server: {
+      watch: {
+        // This prevents an issue where Vite tries to rebuild
+        // the TypeScript files before the Rust files are built.
+        ignored: ["!**/node_modules/elara-lib/**"],
+      },
+    },
+    optimizeDeps: {
+      exclude: ["elara-lib"],
+    },
     base: "/elara/",
     root: "web",
     plugins: [

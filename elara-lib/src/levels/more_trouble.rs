@@ -42,7 +42,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(4, 0, 10),
@@ -53,7 +53,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(8, 0, 10),
@@ -64,7 +64,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(0, 3, 10),
@@ -75,7 +75,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(0, 7, 10),
@@ -86,7 +86,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(11, 0, 10),
@@ -97,7 +97,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(11, 4, 10),
@@ -108,7 +108,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(11, 7, 10),
@@ -119,7 +119,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(7, 7, 10),
@@ -130,7 +130,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(3, 7, 10),
@@ -141,7 +141,7 @@ while get_pos()[0] > goal[0] {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
         ]
     }

@@ -137,7 +137,7 @@ pub struct State {
     pub enemies: Vec<Enemy>,
     pub obstacles: Vec<Obstacle>,
     pub password_gates: Vec<PasswordGate>,
-    pub password_terminals: Vec<PasswordTerminal>,
+    pub data_terminals: Vec<DataTerminal>,
 }
 
 impl State {
@@ -149,7 +149,7 @@ impl State {
             enemies: vec![],
             obstacles: vec![],
             password_gates: vec![],
-            password_terminals: vec![],
+            data_terminals: vec![],
         }
     }
 }
@@ -162,7 +162,7 @@ impl fmt::Debug for State {
             .field("goal", &self.goal)
             .field("enemies", &self.enemies)
             .field("password_gates", &self.password_gates)
-            .field("password_terminals", &self.password_terminals)
+            .field("password_terminals", &self.data_terminals)
             // Omitting obstacles field since it can be very long and
             // the obstacles never move.
             // .field("obstacles", &self.obstacles)
@@ -242,16 +242,16 @@ impl PasswordGate {
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub struct PasswordTerminal {
+pub struct DataTerminal {
     pub pos: Pos,
-    pub password: String,
+    pub data: String,
 }
 
-impl PasswordTerminal {
-    pub fn new(x: u32, y: u32, password: String) -> PasswordTerminal {
-        PasswordTerminal {
+impl DataTerminal {
+    pub fn new(x: u32, y: u32, data: String) -> DataTerminal {
+        DataTerminal {
             pos: Pos { x, y },
-            password,
+            data,
         }
     }
 }

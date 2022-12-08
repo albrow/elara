@@ -57,6 +57,14 @@ impl Actor for PlayerChannelActor {
                 state.player.pos = self.get_new_player_pos(&state, direction);
             }
             Ok(Action::Say(message)) => {
+                // If we're next to a password gate and we said the password, toggle the gate.
+                if let Some(gate_index) = get_adjacent_gate(&state, &state.player.pos) {
+                    let gate = &state.password_gates[gate_index];
+                    if message == gate.password {
+                        state.password_gates[gate_index].open = !gate.open;
+                    }
+                }
+
                 state.player.message = message;
             }
             Err(_) => {}
@@ -196,6 +204,26 @@ fn is_outside_bounds(bounds: &Bounds, pos: &Pos) -> bool {
     pos.x > bounds.max_x || pos.y > bounds.max_y
 }
 
+/// Returns the index of the password gate adjacent to the given position.
+/// Returns None if there is no adjacent gate.
+fn get_adjacent_gate(state: &State, pos: &Pos) -> Option<usize> {
+    for (i, gate) in state.password_gates.iter().enumerate() {
+        if gate.pos.x == pos.x && gate.pos.y == pos.y + 1 {
+            return Some(i);
+        }
+        if gate.pos.x == pos.x && gate.pos.y == pos.y - 1 {
+            return Some(i);
+        }
+        if gate.pos.x == pos.x + 1 && gate.pos.y == pos.y {
+            return Some(i);
+        }
+        if gate.pos.x == pos.x - 1 && gate.pos.y == pos.y {
+            return Some(i);
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -220,7 +248,7 @@ mod test {
                 pos: Pos::new(3, 3),
             }),
             password_gates: vec![],
-            password_terminals: vec![],
+            data_terminals: vec![],
         };
 
         // Simple case where no obstacles are in the way and we are not
@@ -256,7 +284,7 @@ mod test {
                 pos: Pos::new(3, 3),
             }),
             password_gates: vec![],
-            password_terminals: vec![],
+            data_terminals: vec![],
         };
 
         // We can't move outside the bounds.
@@ -305,7 +333,7 @@ mod test {
                 pos: Pos::new(3, 3),
             }),
             password_gates: vec![],
-            password_terminals: vec![],
+            data_terminals: vec![],
         };
 
         // We can't move past obstacles.
@@ -352,7 +380,7 @@ mod test {
                 PasswordGate::new(0, 2, "lovelace".to_string(), false),
                 PasswordGate::new(0, 1, "lovelace".to_string(), false),
             ],
-            password_terminals: vec![],
+            data_terminals: vec![],
         };
 
         // We can't move past closed gates.
@@ -399,7 +427,7 @@ mod test {
                 PasswordGate::new(0, 2, "lovelace".to_string(), true),
                 PasswordGate::new(0, 1, "lovelace".to_string(), true),
             ],
-            password_terminals: vec![],
+            data_terminals: vec![],
         };
 
         // We *can* move past closed gates.

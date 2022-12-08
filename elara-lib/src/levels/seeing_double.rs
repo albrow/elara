@@ -76,7 +76,7 @@ if pos[0] == 0 {
                 enemies: vec![],
                 obstacles: self.obstacles(),
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(10, 3, 5),
@@ -87,7 +87,7 @@ if pos[0] == 0 {
                 enemies: vec![],
                 obstacles: self.obstacles(),
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
         ]
     }

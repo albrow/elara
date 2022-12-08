@@ -3,6 +3,7 @@ mod comparisons;
 mod expressions;
 mod first_steps;
 mod fuel_up;
+mod gates;
 mod hello_world;
 mod loop_the_loop;
 mod loops_part_two;
@@ -13,7 +14,9 @@ mod variables;
 
 use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL};
 use crate::simulation::Actor;
-use crate::simulation::{Enemy, FuelSpot, Goal, Obstacle, Player, State};
+use crate::simulation::{
+    DataTerminal, Enemy, FuelSpot, Goal, Obstacle, PasswordGate, Player, State,
+};
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum Outcome {
@@ -49,11 +52,12 @@ lazy_static! {
         Box::new(expressions::Expressions {}),
         Box::new(math_expressions::MathExpressions {}),
         Box::new(fuel_up::FuelUp {}),
+        Box::new(gates::Gates {}),
+        Box::new(variables::Variables {}),
+        Box::new(buzzing_sound::BuzzingSound {}),
         Box::new(loop_the_loop::LoopTheLoop {}),
         Box::new(loops_part_two::LoopsPartTwo {}),
-        Box::new(buzzing_sound::BuzzingSound {}),
         Box::new(comparisons::Comparisons {}),
-        Box::new(variables::Variables {}),
         Box::new(seeing_double::SeeingDouble {}),
         Box::new(more_trouble::MoreTrouble {}),
     ];
@@ -91,6 +95,8 @@ pub struct FuzzyState {
     pub goals: Vec<Fuzzy<Goal>>,
     pub enemies: Vec<Fuzzy<Enemy>>,
     pub obstacles: Vec<Fuzzy<Obstacle>>,
+    pub password_gates: Vec<Fuzzy<PasswordGate>>,
+    pub data_terminals: Vec<Fuzzy<DataTerminal>>,
 }
 
 impl FuzzyState {
@@ -115,9 +121,20 @@ impl FuzzyState {
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
                 .collect(),
-
             obstacles: state
                 .obstacles
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
+            password_gates: state
+                .password_gates
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
+            data_terminals: state
+                .data_terminals
                 .clone()
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
@@ -224,7 +241,7 @@ mod tests {
             enemies: vec![],
             obstacles: vec![],
             password_gates: vec![],
-            password_terminals: vec![],
+            data_terminals: vec![],
         }];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],
@@ -237,6 +254,8 @@ mod tests {
             )],
             enemies: vec![],
             obstacles: vec![],
+            password_gates: vec![],
+            data_terminals: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -252,7 +271,7 @@ mod tests {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(1, 1, 10),
@@ -263,7 +282,7 @@ mod tests {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
         ];
         let expected = FuzzyState {
@@ -280,6 +299,8 @@ mod tests {
             )],
             enemies: vec![],
             obstacles: vec![],
+            password_gates: vec![],
+            data_terminals: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -295,7 +316,7 @@ mod tests {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
             State {
                 player: Player::new(0, 0, 10),
@@ -306,7 +327,7 @@ mod tests {
                 enemies: vec![],
                 obstacles: vec![],
                 password_gates: vec![],
-                password_terminals: vec![],
+                data_terminals: vec![],
             },
         ];
         let expected = FuzzyState {
@@ -328,6 +349,8 @@ mod tests {
             ],
             enemies: vec![],
             obstacles: vec![],
+            password_gates: vec![],
+            data_terminals: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -340,7 +363,7 @@ mod tests {
             enemies: vec![],
             obstacles: vec![],
             password_gates: vec![],
-            password_terminals: vec![],
+            data_terminals: vec![],
         }];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],
@@ -348,11 +371,14 @@ mod tests {
             goals: vec![],
             enemies: vec![],
             obstacles: vec![],
+            password_gates: vec![],
+            data_terminals: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
 
         // TODO(albrow): Expand on tests when we support fuzziness for
-        // fuel_spots, enemies, and obstacles.
+        // fuel_spots, enemies, and obstacles, etc. Right now we don't
+        // support fuzziness for arrays/vectors.
     }
 }
