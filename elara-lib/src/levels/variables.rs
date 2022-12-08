@@ -7,7 +7,7 @@ pub struct Variables {}
 
 impl Level for Variables {
     fn name(&self) -> &'static str {
-        "Variables"
+        "Variety is the Spice of Life"
     }
     fn objective(&self) -> &'static str {
         "Learn about and experiment with variables."
