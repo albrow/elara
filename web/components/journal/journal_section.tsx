@@ -8,6 +8,7 @@ import Arrays from "./sections/arrays.mdx";
 import MathExpressions from "./sections/math_expressions.mdx";
 import Comparisons from "./sections/comparisons.mdx";
 import IfStatements from "./sections/if_statements.mdx";
+import Loops from "./sections/loops.mdx";
 import "../../styles/md_content.css";
 
 export const sections = {
@@ -16,6 +17,7 @@ export const sections = {
   Expressions: Expressions,
   Literals: Literals,
   "Math Expressions": MathExpressions,
+  Loops: Loops,
   Comparisons: Comparisons,
   Variables: Variables,
   Arrays: Arrays,

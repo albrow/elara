@@ -9,18 +9,18 @@ impl Level for LoopTheLoop {
         "Loop the Loop"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover (🤖) to the goal (🏁) using a while loop."
+        "Move the rover (🤖) to the goal (🏁) using a loop."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Instead of writing the same code over and over, you can
-// use a "while loop" to repeat any code you want. In a while loop,
-// all the code inside the two curly brackets ("{ }") will be
-// repeated.
+// use a "loop". When using a loop, all the code inside the
+// two curly brackets "{" and "}" will be repeated.
 
-while true {
+loop {
   move_right(1);
-  // Try adding a line of code below:
-  
+  // Try changing the line of code below so that the
+  // rover moves in the right direction:
+  move_left(1);
 }
 "#
     }
@@ -77,7 +77,7 @@ while true {
         }
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["While Loops"]
+        vec!["Loops"]
     }
 }
 
@@ -104,7 +104,7 @@ mod tests {
         );
 
         // Running this code should result in Outcome::Success.
-        let script = r"while true {
+        let script = r"loop {
             move_right(1);
             move_up(1);
         }";

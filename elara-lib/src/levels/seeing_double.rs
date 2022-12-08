@@ -101,7 +101,7 @@ if pos[0] == 0 {
         }
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Variable", "Array", "If Statement"]
+        vec!["Variables", "Arrays", "If Statements"]
     }
 }
 

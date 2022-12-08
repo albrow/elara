@@ -1,0 +1,18 @@
+### Loops
+
+Loops are a way to repeat code over and over again. Everything
+inside the curly braces (`{` and `}`) will be repeated until you
+reach the end of the level or run out of fuel.
+
+For example, this loop will cause the rover to move right 1 space,
+then left 1 space, over and over again until it runs out of fuel.
+
+```
+loop {
+    move_right(1);
+    move_left(1);
+}
+```
+
+⚠️ Be careful! Elara has safeguards in place to prevent infinite loops.
+If a possible infinite loop is detected, you will see an error message.

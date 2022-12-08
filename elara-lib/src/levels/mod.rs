@@ -58,9 +58,9 @@ lazy_static! {
         Box::new(Expressions {}),
         Box::new(MathExpressions {}),
         Box::new(FuelUp {}),
-        Box::new(Comparisons {}),
         Box::new(LoopTheLoop {}),
         Box::new(BuzzingSound {}),
+        Box::new(Comparisons {}),
         Box::new(SeeingDouble {}),
         Box::new(MoreTrouble {}),
     ];
