@@ -139,7 +139,7 @@ while get_pos()[0] > goal[0] {
         }
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["While Loop"]
+        vec!["While Loops"]
     }
 }
 
