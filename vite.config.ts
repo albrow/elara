@@ -10,17 +10,20 @@ export default defineConfig(async () => {
   const mdx = await import("@mdx-js/rollup");
   // @ts-ignore
   const remarkGfm = await import("remark-gfm");
-  // Set base="/elara/" as a workaround for hosting on GitHub Pages.
-  // See: https://dev.to/shashannkbawa/deploying-vite-app-to-github-pages-3ane
   return {
+    // Chokidar options to try and work around an error
+    // that can occur when Vite tries to rebuild TypeScript files
+    // while Rust/wasmpack is still compiling.
     server: {
       watch: {
         awaitWriteFinish: {
-          stabilityThreshold: 2000,
+          stabilityThreshold: 1000,
           pollInterval: 100,
         },
       },
     },
+    // Set base="/elara/" as a workaround for hosting on GitHub Pages.
+    // See: https://dev.to/shashannkbawa/deploying-vite-app-to-github-pages-3ane
     base: "/elara/",
     root: "web",
     plugins: [

@@ -86,6 +86,13 @@ mod tests {
             Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
         );
 
+        // Saying the wrong password should not open the gate.
+        let script = r#"move_right(2); say("wrong password"); move_right(5);"#;
+        let result = game
+            .run_player_script_internal(script.to_string(), level_index)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
+
         // Saying the password when not next to the gate should not
         // open it.
         let script = r#"say("lovelace"); move_right(2); move_right(5);"#;
