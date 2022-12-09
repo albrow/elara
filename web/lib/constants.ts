@@ -20,6 +20,7 @@ export const FUEL_Z_INDEX = 100;
 export const GOAL_Z_INDEX = 100;
 export const WALL_Z_INDEX = 100;
 export const GATE_Z_INDEX = 100;
+export const TERMINAL_Z_INDEX = 100;
 
 // Width and hight of the axis labels at the top and left of the
 // game board.

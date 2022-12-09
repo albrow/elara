@@ -125,6 +125,7 @@ pub struct FuzzyState {
     pub enemies: Array,        // Array<FuzzyEnemy>
     pub obstacles: Array,      // Array<FuzzyObstacle>
     pub password_gates: Array, // Array<FuzzyPasswordGate>
+    pub data_terminals: Array, // Array<FuzzyDataTerminal>
 }
 
 impl FuzzyState {
@@ -136,6 +137,7 @@ impl FuzzyState {
             enemies: Array::new(),
             obstacles: Array::new(),
             password_gates: Array::new(),
+            data_terminals: Array::new(),
         }
     }
 
@@ -235,6 +237,22 @@ impl FuzzyState {
             );
         }
 
+        let data_terminals = Array::new_with_length(state.data_terminals.len() as u32);
+        for (i, fuzzy_data_terminal) in state.data_terminals.iter().enumerate() {
+            let data_terminal = &fuzzy_data_terminal.obj;
+            data_terminals.set(
+                i as u32,
+                JsValue::from(FuzzyDataTerminal {
+                    pos: Pos {
+                        x: data_terminal.pos.x as i32,
+                        y: data_terminal.pos.y as i32,
+                    },
+                    data: data_terminal.data.clone(),
+                    fuzzy: fuzzy_data_terminal.fuzzy,
+                }),
+            );
+        }
+
         FuzzyState {
             players,
             fuel_spots,
@@ -242,6 +260,7 @@ impl FuzzyState {
             enemies,
             obstacles,
             password_gates,
+            data_terminals,
         }
     }
 }
@@ -290,5 +309,13 @@ pub struct FuzzyPasswordGate {
     pub pos: Pos,
     pub password: String,
     pub open: bool,
+    pub fuzzy: bool,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct FuzzyDataTerminal {
+    pub pos: Pos,
+    pub data: String,
     pub fuzzy: bool,
 }

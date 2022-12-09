@@ -1,29 +1,31 @@
 import {
-  FuzzyState,
-  FuzzyPlayer,
-  FuzzyGoal,
-  FuzzyFuelSpot,
+  FuzzyDataTerminal,
   FuzzyEnemy,
+  FuzzyFuelSpot,
+  FuzzyGoal,
   FuzzyObstacle,
   FuzzyPasswordGate,
+  FuzzyPlayer,
+  FuzzyState,
 } from "../../../elara-lib/pkg";
 import {
-  CANVAS_WIDTH,
-  CANVAS_HEIGHT,
-  WIDTH,
-  HEIGHT,
   AXIS_HEIGHT,
   AXIS_WIDTH,
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  HEIGHT,
+  WIDTH,
 } from "../../lib/constants";
-import { range, posToOffset } from "../../lib/utils";
-import Player from "./player";
-import Goal from "./goal";
-import FuelSpot from "./fuel_spot";
-import Square from "./square";
+import { posToOffset, range } from "../../lib/utils";
 import "./board.css";
+import DataTerminal from "./data_terminal";
 import Enemy from "./enemy";
-import Obstacle from "./obstacle";
+import FuelSpot from "./fuel_spot";
 import Gate from "./gate";
+import Goal from "./goal";
+import Obstacle from "./obstacle";
+import Player from "./player";
+import Square from "./square";
 
 interface BoardProps {
   gameState: FuzzyState;
@@ -126,6 +128,17 @@ export default function Board(props: BoardProps) {
               key={i}
               offset={posToOffset(gate.pos)}
               open={gate.open}
+              fuzzy={gate.fuzzy}
+            />
+          );
+        }
+      )}
+      {(props.gameState.data_terminals as FuzzyDataTerminal[]).map(
+        (gate, i) => {
+          return (
+            <DataTerminal
+              key={i}
+              offset={posToOffset(gate.pos)}
               fuzzy={gate.fuzzy}
             />
           );
