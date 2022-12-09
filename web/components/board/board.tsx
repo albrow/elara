@@ -139,6 +139,7 @@ export default function Board(props: BoardProps) {
             <DataTerminal
               key={i}
               offset={posToOffset(gate.pos)}
+              reading={gate.reading}
               fuzzy={gate.fuzzy}
             />
           );

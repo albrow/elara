@@ -3,7 +3,7 @@ use std::rc::Rc;
 use std::sync::mpsc;
 
 use crate::constants::FUEL_SPOT_AMOUNT;
-use crate::simulation::{Actor, Pos, State};
+use crate::simulation::{get_adjacent_terminal, Actor, Pos, State};
 
 pub enum Action {
     Wait,
@@ -43,6 +43,11 @@ impl Actor for PlayerChannelActor {
         // We only want messages to persist for one step.
         state.player.message = String::new();
 
+        // Reset the reading state of all data terminals.
+        for terminal in state.data_terminals.iter_mut() {
+            terminal.reading = false;
+        }
+
         let rx = self.rx.clone();
         match rx.borrow().try_recv() {
             Ok(Action::Wait) => {}
@@ -69,7 +74,11 @@ impl Actor for PlayerChannelActor {
                 state.player.message = message;
             }
             Ok(Action::ReadData) => {
-                // TODO(albrow): Do we need to do something here?
+                // If we're next to a data terminal, mark it as being currently read.
+                // (The reading state only affects the UI).
+                if let Some(terminal_index) = get_adjacent_terminal(&state, &state.player.pos) {
+                    state.data_terminals[terminal_index].reading = true;
+                }
             }
             Err(_) => {}
         }

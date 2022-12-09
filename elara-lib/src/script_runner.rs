@@ -13,7 +13,7 @@ use std::vec;
 use crate::actors::{Action, Direction};
 use crate::constants::{ERR_NO_DATA_TERMINAL, ERR_SIMULATION_END};
 use crate::levels::Outcome;
-use crate::simulation::{Pos, Simulation, State};
+use crate::simulation::{get_adjacent_terminal, Pos, Simulation, State};
 
 /// Responsible for running user scripts and coordinating communication
 /// between the Rhai Engine and the Simulation.
@@ -312,32 +312,12 @@ impl ScriptRunner {
                     let data = state.data_terminals[terminal_index].data.clone();
                     Ok(Dynamic::from(data))
                 } else {
-                    // TODO(albrow): Can we produce a line number here?
+                    // TODO(albrow): Can we determine the line number for the error message?
                     Err(ERR_NO_DATA_TERMINAL.into())
                 }
             },
         );
     }
-}
-
-/// Returns the index of the data terminal adjacent to the given
-/// position. Returns None if there is no adjacent data terminal.
-fn get_adjacent_terminal(state: &State, pos: &Pos) -> Option<usize> {
-    for (i, terminal) in state.data_terminals.iter().enumerate() {
-        if terminal.pos.x == pos.x && terminal.pos.y == pos.y + 1 {
-            return Some(i);
-        }
-        if pos.y != 0 && terminal.pos.x == pos.x && terminal.pos.y == pos.y - 1 {
-            return Some(i);
-        }
-        if terminal.pos.x == pos.x + 1 && terminal.pos.y == pos.y {
-            return Some(i);
-        }
-        if pos.x != 0 && terminal.pos.x == pos.x - 1 && terminal.pos.y == pos.y {
-            return Some(i);
-        }
-    }
-    None
 }
 
 fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {

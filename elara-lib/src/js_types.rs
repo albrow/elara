@@ -248,6 +248,7 @@ impl FuzzyState {
                         y: data_terminal.pos.y as i32,
                     },
                     data: data_terminal.data.clone(),
+                    reading: data_terminal.reading,
                     fuzzy: fuzzy_data_terminal.fuzzy,
                 }),
             );
@@ -317,5 +318,6 @@ pub struct FuzzyPasswordGate {
 pub struct FuzzyDataTerminal {
     pub pos: Pos,
     pub data: String,
+    pub reading: bool,
     pub fuzzy: bool,
 }

@@ -245,6 +245,7 @@ impl PasswordGate {
 pub struct DataTerminal {
     pub pos: Pos,
     pub data: String,
+    pub reading: bool,
 }
 
 impl DataTerminal {
@@ -252,6 +253,7 @@ impl DataTerminal {
         DataTerminal {
             pos: Pos { x, y },
             data,
+            reading: false,
         }
     }
 }
@@ -276,6 +278,26 @@ impl Pos {
     pub fn get_y(&mut self) -> i64 {
         self.y as i64
     }
+}
+
+/// Returns the index of the data terminal adjacent to the given
+/// position. Returns None if there is no adjacent data terminal.
+pub fn get_adjacent_terminal(state: &State, pos: &Pos) -> Option<usize> {
+    for (i, terminal) in state.data_terminals.iter().enumerate() {
+        if terminal.pos.x == pos.x && terminal.pos.y == pos.y + 1 {
+            return Some(i);
+        }
+        if pos.y != 0 && terminal.pos.x == pos.x && terminal.pos.y == pos.y - 1 {
+            return Some(i);
+        }
+        if terminal.pos.x == pos.x + 1 && terminal.pos.y == pos.y {
+            return Some(i);
+        }
+        if pos.x != 0 && terminal.pos.x == pos.x - 1 && terminal.pos.y == pos.y {
+            return Some(i);
+        }
+    }
+    None
 }
 
 #[cfg(test)]
