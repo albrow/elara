@@ -6,13 +6,26 @@ pub struct GateAndTerminal {}
 
 impl Level for GateAndTerminal {
     fn name(&self) -> &'static str {
-        "What's the Password?"
+        "Forgotten Password"
     }
     fn objective(&self) -> &'static str {
         "Get the password from the data terminal (📺), unlock the gate (🔒), then move the rover (🤖) to the goal (🏁)."
     }
     fn initial_code(&self) -> &'static str {
-        r#"//
+        r#"// There's another locked gate, but this time I don't
+// remember the password. You'll need to read it from
+// the nearby data terminal.
+move_down(1);
+move_left(1);
+
+// The "read_data" function outputs the data from a
+// nearby data terminal. In this case, you can use
+// it to get the password, then store it in a variable
+// called "password".
+let password = read_data();
+
+// Add some code below to move to the gate,
+// unlock it, and then move to the goal...
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -43,7 +56,7 @@ impl Level for GateAndTerminal {
         std_check_win(state)
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Variables"]
+        vec!["Functions", "Variables"]
     }
 }
 

@@ -44,7 +44,7 @@ move_right(2);
         std_check_win(state)
     }
     fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Functions"]
+        vec![]
     }
 }
 
