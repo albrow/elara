@@ -9,6 +9,7 @@ pub enum Action {
     Wait,
     Move(Direction),
     Say(String),
+    ReadData,
 }
 
 pub struct Bounds {
@@ -66,6 +67,9 @@ impl Actor for PlayerChannelActor {
                 }
 
                 state.player.message = message;
+            }
+            Ok(Action::ReadData) => {
+                // TODO(albrow): Do we need to do something here?
             }
             Err(_) => {}
         }
@@ -185,6 +189,13 @@ fn safe_decrement(x: u32) -> u32 {
 fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
     for obstacle in &state.obstacles {
         if obstacle.pos == *pos {
+            return true;
+        }
+    }
+    // Data terminals are treated as simple obstacles since
+    // they can never move or be opened.
+    for data_terminal in &state.data_terminals {
+        if data_terminal.pos == *pos {
             return true;
         }
     }

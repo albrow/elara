@@ -1,6 +1,8 @@
 use rand::Rng;
 use rhai::debugger::DebuggerCommand;
-use rhai::{ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, FnCallExpr, Position, Stmt};
+use rhai::{
+    ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, Expr, FnCallExpr, Position, Stmt,
+};
 use std::cell::RefCell;
 use std::convert::TryInto;
 use std::io::{Error, ErrorKind};
@@ -9,7 +11,7 @@ use std::sync::mpsc;
 use std::vec;
 
 use crate::actors::{Action, Direction};
-use crate::constants::ERR_SIMULATION_END;
+use crate::constants::{ERR_NO_DATA_TERMINAL, ERR_SIMULATION_END};
 use crate::levels::Outcome;
 use crate::simulation::{Pos, Simulation, State};
 
@@ -121,60 +123,31 @@ impl ScriptRunner {
         engine.register_debugger(
             |_| Dynamic::from(()),
             move |context, _event, node, _source, pos| {
-                // println!("{:?}: {:?} at {}", event, node, pos);
+                // log!("{:?}: {:?} at {}", _event, node, pos);
                 match node {
+                    ASTNode::Expr(Expr::FnCall(fn_call_expr, ..)) => {
+                        // log!(
+                        //     "Match on function call expression: {:?}",
+                        //     fn_call_expr.name.as_str()
+                        // );
+                        Self::handle_debugger_function_call(
+                            step_positions.clone(),
+                            context,
+                            pos,
+                            fn_call_expr,
+                        )
+                    }
                     ASTNode::Stmt(Stmt::FnCall(fn_call_expr, ..)) => {
-                        match fn_call_expr.name.as_str() {
-                            "wait" => {
-                                // For wait (and other functions like move_right, move_left),
-                                // we need to parse the argument to determine how many steps
-                                // this position should be considered "active".
-                                let duration =
-                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
-                                for _ in 0..duration {
-                                    step_positions.borrow_mut().push(pos);
-                                }
-                                Ok(DebuggerCommand::StepInto)
-                            }
-                            "move_right" => {
-                                let spaces =
-                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
-                                for _ in 0..spaces {
-                                    step_positions.borrow_mut().push(pos);
-                                }
-                                Ok(DebuggerCommand::StepInto)
-                            }
-                            "move_left" => {
-                                let spaces =
-                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
-                                for _ in 0..spaces {
-                                    step_positions.borrow_mut().push(pos);
-                                }
-                                Ok(DebuggerCommand::StepInto)
-                            }
-                            "move_up" => {
-                                let spaces =
-                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
-                                for _ in 0..spaces {
-                                    step_positions.borrow_mut().push(pos);
-                                }
-                                Ok(DebuggerCommand::StepInto)
-                            }
-                            "move_down" => {
-                                let spaces =
-                                    eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
-                                for _ in 0..spaces {
-                                    step_positions.borrow_mut().push(pos);
-                                }
-                                Ok(DebuggerCommand::StepInto)
-                            }
-                            "say" => {
-                                // The say function always has a duration of one step.
-                                step_positions.borrow_mut().push(pos);
-                                Ok(DebuggerCommand::StepInto)
-                            }
-                            _ => Ok(DebuggerCommand::StepInto),
-                        }
+                        // log!(
+                        //     "Match on function call statement: {:?}",
+                        //     fn_call_expr.name.as_str()
+                        // );
+                        Self::handle_debugger_function_call(
+                            step_positions.clone(),
+                            context,
+                            pos,
+                            fn_call_expr,
+                        )
                     }
                     _ => {
                         let last_outcome = simulation.borrow().last_outcome();
@@ -188,6 +161,65 @@ impl ScriptRunner {
                 }
             },
         );
+    }
+
+    fn handle_debugger_function_call(
+        step_positions: Rc<RefCell<Vec<Position>>>,
+        context: EvalContext,
+        pos: Position,
+        fn_call_expr: &Box<FnCallExpr>,
+    ) -> Result<DebuggerCommand, Box<EvalAltResult>> {
+        match fn_call_expr.name.as_str() {
+            "wait" => {
+                // For wait (and other functions like move_right, move_left),
+                // we need to parse the argument to determine how many steps
+                // this position should be considered "active".
+                let duration = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
+                for _ in 0..duration {
+                    step_positions.borrow_mut().push(pos);
+                }
+                Ok(DebuggerCommand::StepInto)
+            }
+            "move_right" => {
+                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
+                for _ in 0..spaces {
+                    step_positions.borrow_mut().push(pos);
+                }
+                Ok(DebuggerCommand::StepInto)
+            }
+            "move_left" => {
+                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
+                for _ in 0..spaces {
+                    step_positions.borrow_mut().push(pos);
+                }
+                Ok(DebuggerCommand::StepInto)
+            }
+            "move_up" => {
+                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
+                for _ in 0..spaces {
+                    step_positions.borrow_mut().push(pos);
+                }
+                Ok(DebuggerCommand::StepInto)
+            }
+            "move_down" => {
+                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
+                for _ in 0..spaces {
+                    step_positions.borrow_mut().push(pos);
+                }
+                Ok(DebuggerCommand::StepInto)
+            }
+            "say" => {
+                // The say function always has a duration of one step.
+                step_positions.borrow_mut().push(pos);
+                Ok(DebuggerCommand::StepInto)
+            }
+            "read_data" => {
+                // The read_data function always has a duration of one step.
+                step_positions.borrow_mut().push(pos);
+                Ok(DebuggerCommand::StepInto)
+            }
+            _ => Ok(DebuggerCommand::StepInto),
+        }
     }
 
     /// Register functions for each action that can exist in a user script.
@@ -263,7 +295,49 @@ impl ScriptRunner {
             let mut rng = rand::thread_rng();
             rng.gen_range(1..=100)
         });
+        // read_data returns the data held by an adjacent data terminal.
+        // If there is no data terminal adjacent to the player, it returns
+        // an error.
+        let tx = self.player_action_tx.clone();
+        let simulation = self.simulation.clone();
+        engine.register_result_fn(
+            "read_data",
+            move || -> Result<Dynamic, Box<EvalAltResult>> {
+                tx.borrow().send(Action::ReadData).unwrap();
+                simulation.borrow_mut().step_forward();
+
+                let state = simulation.borrow().curr_state();
+                let pos = &state.player.pos;
+                if let Some(terminal_index) = get_adjacent_terminal(&state, pos) {
+                    let data = state.data_terminals[terminal_index].data.clone();
+                    Ok(Dynamic::from(data))
+                } else {
+                    // TODO(albrow): Can we produce a line number here?
+                    Err(ERR_NO_DATA_TERMINAL.into())
+                }
+            },
+        );
     }
+}
+
+/// Returns the index of the data terminal adjacent to the given
+/// position. Returns None if there is no adjacent data terminal.
+fn get_adjacent_terminal(state: &State, pos: &Pos) -> Option<usize> {
+    for (i, terminal) in state.data_terminals.iter().enumerate() {
+        if terminal.pos.x == pos.x && terminal.pos.y == pos.y + 1 {
+            return Some(i);
+        }
+        if pos.y != 0 && terminal.pos.x == pos.x && terminal.pos.y == pos.y - 1 {
+            return Some(i);
+        }
+        if terminal.pos.x == pos.x + 1 && terminal.pos.y == pos.y {
+            return Some(i);
+        }
+        if pos.x != 0 && terminal.pos.x == pos.x - 1 && terminal.pos.y == pos.y {
+            return Some(i);
+        }
+    }
+    None
 }
 
 fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {

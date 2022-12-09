@@ -3,6 +3,7 @@ mod comparisons;
 mod expressions;
 mod first_steps;
 mod fuel_up;
+mod gate_and_terminal;
 mod gates;
 mod hello_world;
 mod loop_the_loop;
@@ -54,6 +55,7 @@ lazy_static! {
         Box::new(fuel_up::FuelUp {}),
         Box::new(gates::Gates {}),
         Box::new(variables::Variables {}),
+        Box::new(gate_and_terminal::GateAndTerminal {}),
         Box::new(buzzing_sound::BuzzingSound {}),
         Box::new(loop_the_loop::LoopTheLoop {}),
         Box::new(loops_part_two::LoopsPartTwo {}),

@@ -125,11 +125,16 @@ export default function Level() {
       // If there is an error, display it in the editor.
       if (e instanceof RhaiError) {
         console.warn(`Rhai Error detected: ${e.message}`);
-        setCodeError({
-          line: e.line,
-          col: e.col,
-          message: e.message,
-        });
+        if (e.line) {
+          setCodeError({
+            line: e.line,
+            col: e.col,
+            message: e.message,
+          });
+        } else {
+          alert(e.message);
+        }
+
         return;
       } else {
         throw e;

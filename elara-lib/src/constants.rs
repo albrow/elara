@@ -16,3 +16,5 @@ pub static ERR_DESTROYED_BY_BUG: &str = "A bug has damaged the rover beyond repa
 /// a script if the simulation outcome does not require us to continue running
 /// it.
 pub static ERR_SIMULATION_END: &str = "SIMULATION_END";
+/// Returned from read_data if you call it when not adjacent to a data terminal.
+pub static ERR_NO_DATA_TERMINAL: &str = "read_data only works if you are next to a data terminal.";
