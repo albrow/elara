@@ -34,6 +34,10 @@ let replayer: Replayer | null = null;
 
 const LEVELS: LevelData[] = get_level_data();
 
+// A handler used to get the current code from the editor.
+// Starts out unset, but will be set by the editor component.
+var getCode: () => string;
+
 export default function Level() {
   const { levelNumber } = useParams();
   if (!levelNumber) {
@@ -56,9 +60,11 @@ export default function Level() {
     document.title = `Elara | Level ${levelIndex}: ${level.name}`;
   }, [levelIndex]);
 
-  const onCodeChange = useCallback((newCode: string) => {
-    setCode(newCode);
-    setCodeError(undefined);
+  // Passed through to the Editor component to allow us
+  // to get the current code from the editor in an efficient
+  // way.
+  const setGetCodeHandler = useCallback((handler: () => string) => {
+    getCode = handler;
   }, []);
 
   const resetStateButKeepCode = (levelOverride?: LevelData) => {
@@ -121,7 +127,7 @@ export default function Level() {
   const runHandler = async () => {
     let result: RunResult;
     try {
-      result = await game.run_player_script(code, levelIndex);
+      result = await game.run_player_script(getCode(), levelIndex);
     } catch (e) {
       // If there is an error, display it in the editor.
       if (e instanceof RhaiError) {
@@ -183,7 +189,7 @@ export default function Level() {
   };
 
   const saveCodeHandler = async () => {
-    await saveCode(code);
+    await saveCode(getCode());
   };
 
   const loadCodeHandler = async () => {
@@ -271,7 +277,7 @@ export default function Level() {
               <Editor
                 code={code}
                 editable={!isRunning}
-                onChange={onCodeChange}
+                setGetCodeHandler={setGetCodeHandler}
                 activeLine={activeLine}
                 codeError={codeError}
               />

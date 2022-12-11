@@ -2,7 +2,7 @@ import { indentWithTab } from "@codemirror/commands";
 import { lintGutter, setDiagnostics, Diagnostic } from "@codemirror/lint";
 import { keymap, EditorView } from "@codemirror/view";
 import { useCodeMirror } from "@uiw/react-codemirror";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { createTheme } from "@uiw/codemirror-themes";
 import { tags as t } from "@lezer/highlight";
 import { Box } from "@chakra-ui/react";
@@ -23,7 +23,7 @@ export interface CodeError {
 interface EditorProps {
   code: string;
   editable: boolean;
-  onChange: (code: string) => void;
+  setGetCodeHandler: (handler: () => string) => void;
   activeLine?: LinePos;
   codeError?: CodeError;
 }
@@ -48,7 +48,6 @@ export default function Editor(props: EditorProps) {
   const editor = useRef<HTMLDivElement | null>(null);
 
   const { setContainer, view } = useCodeMirror({
-    onChange: props.onChange,
     height: "377px",
     editable: props.editable,
     readOnly: !props.editable,
@@ -58,13 +57,26 @@ export default function Editor(props: EditorProps) {
     theme: myTheme,
   });
 
+  // Note(albrow): This is a bit of a hack but greatly improves performance.
+  //
+  // Using the CodeMirror.onChange function to update the code in the parent
+  // every time it changes can easily cause browser jank, so we use this
+  // callback instead. When the parent needs to get the current code (e.g.
+  // when the "Run" button is pressed), it calls the callback set by
+  // setGetCodeHandler.
+  useEffect(() => {
+    props.setGetCodeHandler(() => {
+      return view?.state.doc.toString() || "";
+    });
+  });
+
   useEffect(() => {
     if (editor.current) {
       setContainer(editor.current);
     }
   }, [editor.current]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (view) {
       if (props.activeLine) {
         highlightLine(view, props.activeLine.line);
@@ -74,7 +86,7 @@ export default function Editor(props: EditorProps) {
     }
   }, [props.activeLine]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (view) {
       if (props.codeError) {
         const diagnostic = codeErrorToDiagnostic(view, props.codeError);
