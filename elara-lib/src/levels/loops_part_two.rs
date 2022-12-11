@@ -9,7 +9,7 @@ impl Level for LoopsPartTwo {
         "All By Yourself"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover (🤖) to the goal (🏁) using a loop."
+        "Move the rover ({robot}) to the goal ({goal}) using a loop."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Try writing a loop on your own this time.

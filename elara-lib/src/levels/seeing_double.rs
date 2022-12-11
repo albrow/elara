@@ -44,7 +44,7 @@ impl Level for SeeingDouble {
         "Seeing Double"
     }
     fn objective(&self) -> &'static str {
-        "Determine your position, then move the rover (🤖) to the goal (🏁)."
+        "Determine your position, then move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"// The get_pos() function returns your current position as an

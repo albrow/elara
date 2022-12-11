@@ -9,7 +9,7 @@ impl Level for LoopTheLoop {
         "Loop the Loop"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover (🤖) to the goal (🏁) using a loop."
+        "Move the rover ({robot}) to the goal ({goal}) using a loop."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Instead of writing the same code over and over, you can

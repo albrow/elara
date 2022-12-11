@@ -11,7 +11,7 @@ impl Level for BuzzingSound {
         "What's that Buzzing Sound?"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover (🤖) to the goal (🏁), but watch out for bugs (🪲)!"
+        "Move the rover ({robot}) to the goal ({goal}), but watch out for bugs ({bug})!"
     }
     fn initial_code(&self) -> &'static str {
         r"// If you try going straight for the goal, you might run

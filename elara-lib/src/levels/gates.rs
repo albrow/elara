@@ -9,7 +9,7 @@ impl Level for Gates {
         "Let Me In"
     }
     fn objective(&self) -> &'static str {
-        "Open the locked gate (🔒), then move the rover (🤖) to the goal (🏁)."
+        "Open the locked gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Looks like a locked gate is blocking the way! To open the

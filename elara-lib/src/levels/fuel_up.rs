@@ -9,7 +9,7 @@ impl Level for FuelUp {
         "Fuel Up"
     }
     fn objective(&self) -> &'static str {
-        "First move the rover (🤖) to collect the fuel (⛽️), then move to the goal (🏁)."
+        "First move the rover ({robot}) to collect the fuel ({fuel}), then move to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"// If you try moving straight to the goal, you'll run out of fuel

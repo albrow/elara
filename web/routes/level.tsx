@@ -27,6 +27,7 @@ import { sections, SectionName } from "../components/journal/journal_section";
 import JournalModal from "../components/journal/journal_modal";
 import { Replayer } from "../lib/replayer";
 import ControlBar from "../components/control_bar";
+import ObjectiveText from "../components/objective_text";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
@@ -249,7 +250,7 @@ export default function Level() {
             </UnorderedList>
           </Box>
           <p>
-            <b>Objective:</b> {level.objective}
+            <b>Objective:</b> <ObjectiveText text={level.objective} />
           </p>
         </Box>
         <Flex direction="row" mt={4}>

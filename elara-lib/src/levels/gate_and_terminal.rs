@@ -9,7 +9,7 @@ impl Level for GateAndTerminal {
         "Forgotten Password"
     }
     fn objective(&self) -> &'static str {
-        "Get the password from the data terminal (📺), unlock the gate (🔒), then move the rover (🤖) to the goal (🏁)."
+        "Get the password from the data terminal ({terminal}), unlock the gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"// There's another locked gate, but this time I don't

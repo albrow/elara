@@ -9,7 +9,7 @@ impl Level for FirstSteps {
         "First Steps"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover (🤖) to the goal (🏁)."
+        "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"// The code below moves the rover, but it's not going to the
