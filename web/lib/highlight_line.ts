@@ -17,24 +17,30 @@ const removeHighlight = StateEffect.define<{ from: number; to: number }>({
 
 const highlightMark = Decoration.mark({ class: "line-running" });
 
+// Note(albrow): Many linter rules are disabled in this function.
+// When I attempting to address the linter errors, it caused the
+// code to not work correctly. Might take a closer look later.
 const highlightField = StateField.define<DecorationSet>({
   create() {
     return Decoration.none;
   },
   update(highlights, tr) {
-    let newHighlights = highlights.map(tr.changes);
+    // eslint-disable-next-line no-param-reassign
+    highlights = highlights.map(tr.changes);
     // eslint-disable-next-line no-restricted-syntax
     for (const e of tr.effects)
       if (e.is(addHighlight)) {
-        newHighlights = highlights.update({
+        // eslint-disable-next-line no-param-reassign
+        highlights = highlights.update({
           add: [highlightMark.range(e.value.from, e.value.to)],
         });
       } else if (e.is(removeHighlight)) {
-        newHighlights = highlights.update({
+        // eslint-disable-next-line no-param-reassign
+        highlights = highlights.update({
           filter: (from, to) => from === e.value.from && to === e.value.to,
         });
       }
-    return newHighlights;
+    return highlights;
   },
   provide: (f) => EditorView.decorations.from(f),
 });
