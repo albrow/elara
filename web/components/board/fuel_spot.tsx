@@ -11,12 +11,13 @@ import SpriteLabel from "./sprite_label";
 interface FuelSpotProps {
   offset: Offset;
   fuel?: number;
+  collected: boolean;
   fuzzy: boolean;
 }
 
 export default function FuelSpot(props: FuelSpotProps) {
   const fuelAmount = props.fuel || DEFAULT_FUEL_GAIN;
-  return (
+  return props.collected ? null : (
     <div
       className="fuel sprite"
       style={{
@@ -29,12 +30,10 @@ export default function FuelSpot(props: FuelSpotProps) {
     >
       <img
         className="fuelImage"
+        alt="fuel"
         src={props.fuzzy ? glitchyFuelImgUrl : fuelImgUrl}
       />
-      <SpriteLabel
-        zIndex={FUEL_Z_INDEX + 1}
-        value={"+" + fuelAmount}
-      ></SpriteLabel>
+      <SpriteLabel zIndex={FUEL_Z_INDEX + 1} value={`+${fuelAmount}`} />
     </div>
   );
 }

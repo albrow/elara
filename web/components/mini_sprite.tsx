@@ -5,6 +5,7 @@ export interface MiniSpriteProps {
 export default function MiniSprite(props: MiniSpriteProps) {
   return (
     <img
+      alt=""
       style={{
         display: "inline",
         width: "1.3rem",
@@ -14,6 +15,6 @@ export default function MiniSprite(props: MiniSpriteProps) {
         marginLeft: "0.1rem",
       }}
       src={props.imgUrl}
-    ></img>
+    />
   );
 }

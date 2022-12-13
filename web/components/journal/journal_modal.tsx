@@ -6,10 +6,10 @@ import {
   Box,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import React from "react";
 
 import { JOURNAL_MODAL_Z_INDEX } from "../../lib/constants";
-import { JournalProps } from "./journal_section";
-import JournalSection from "./journal_section";
+import JournalSection, { JournalProps } from "./journal_section";
 
 interface JournalModalProps extends JournalProps {
   visible: boolean;
@@ -26,7 +26,7 @@ export default function JournalModal(props: JournalModalProps) {
         isOpen={props.visible}
         onClose={() => props.setVisible(false)}
         scrollBehavior="inside"
-        preserveScrollBarGap={true}
+        preserveScrollBarGap
       >
         <ModalOverlay zIndex={JOURNAL_MODAL_Z_INDEX} />
         <ModalContent minW="container.lg" zIndex={JOURNAL_MODAL_Z_INDEX + 1}>

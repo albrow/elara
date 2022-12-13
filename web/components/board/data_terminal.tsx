@@ -7,7 +7,7 @@ import tvImageUrl from "../../images/tv.png";
 interface GateProps {
   offset: Offset;
   reading: boolean;
-  fuzzy: boolean;
+  // fuzzy: boolean;
 }
 
 export default function Gate(props: GateProps) {
@@ -22,7 +22,7 @@ export default function Gate(props: GateProps) {
         top: props.offset.top,
       }}
     >
-      <img src={tvImageUrl} />
+      <img src={tvImageUrl} alt="data terminal" />
 
       {props.reading && (
         <Box position="absolute" left={3} top={2} zIndex={TERMINAL_Z_INDEX + 1}>

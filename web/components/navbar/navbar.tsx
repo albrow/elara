@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { MdExpandMore } from "react-icons/md";
 
+// eslint-disable-next-line camelcase
 import { get_level_data, LevelData } from "../../../elara-lib/pkg/elara_lib";
 import NavbarLink from "./navbar_link";
 import NavbarDropdownLink from "./navbar_dropdown_link";
@@ -38,7 +39,7 @@ export default function Navbar() {
               <Box as="span" display="inline-flex">
                 {" "}
                 Levels
-                <MdExpandMore size={"1.3em"} style={{ marginTop: "0.2rem" }} />
+                <MdExpandMore size="1.3em" style={{ marginTop: "0.2rem" }} />
               </Box>
             </MenuButton>
             <MenuList
@@ -47,7 +48,7 @@ export default function Navbar() {
               shadow="dark-lg"
             >
               {LEVELS.map((level, i) => (
-                <NavbarDropdownLink to={`/level/${i}`} key={i}>
+                <NavbarDropdownLink to={`/level/${i}`} key={level.name}>
                   <Text
                     as="span"
                     fontFamily="monospace"

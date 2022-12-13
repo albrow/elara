@@ -1,12 +1,12 @@
-import { Outlet, useLocation, Navigate, Link } from "react-router-dom";
+import { Outlet, useLocation, Navigate } from "react-router-dom";
 import { Container } from "@chakra-ui/react";
 
 import Navbar from "../components/navbar/navbar";
 
 export default function Root() {
-  let location = useLocation();
+  const location = useLocation();
 
-  if (location.pathname == "/") {
+  if (location.pathname === "/") {
     // This seems to be necessary because of how child routes
     // work in React Router v6. We can't simply display the content
     // of Home.tsx inside of Root.tsx, because that would result in the

@@ -1,18 +1,19 @@
 import { Offset } from "../../lib/utils";
-import { GATE_Z_INDEX, TILE_SIZE, WALL_Z_INDEX } from "../../lib/constants";
+import { GATE_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 import lockedImgUrl from "../../images/locked.png";
 import unlockedImgUrl from "../../images/unlocked.png";
 
 interface GateProps {
   offset: Offset;
   open: boolean;
-  fuzzy: boolean;
+  // fuzzy: boolean;
 }
 
 export default function Gate(props: GateProps) {
   return (
     <img
       className="gate sprite"
+      alt={props.open ? "locked gate" : "unlocked gate"}
       src={props.open ? unlockedImgUrl : lockedImgUrl}
       style={{
         width: `${TILE_SIZE - 1}px`,

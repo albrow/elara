@@ -44,6 +44,23 @@ const myTheme = createTheme({
   styles: [{ tag: t.comment, color: "var(--chakra-colors-green-600)" }],
 });
 
+function codeErrorToDiagnostic(view: EditorView, e: CodeError): Diagnostic {
+  // In Rhai, positions are composed of (line, column), but
+  // CodeMirror wants the absolute position. We need to do
+  // some math to convert between the two.
+  //
+  // For now, we just want to highlight the entire line where
+  // the error occurred.
+  const line = view.viewportLineBlocks[e.line - 1];
+
+  return {
+    from: line.from,
+    to: line.from + line.length - 1,
+    message: e.message,
+    severity: "error",
+  };
+}
+
 export default function Editor(props: EditorProps) {
   const editor = useRef<HTMLDivElement | null>(null);
 
@@ -65,16 +82,14 @@ export default function Editor(props: EditorProps) {
   // when the "Run" button is pressed), it calls the callback set by
   // setGetCodeHandler.
   useEffect(() => {
-    props.setGetCodeHandler(() => {
-      return view?.state.doc.toString() || "";
-    });
+    props.setGetCodeHandler(() => view?.state.doc.toString() || "");
   });
 
   useEffect(() => {
     if (editor.current) {
       setContainer(editor.current);
     }
-  }, [editor.current]);
+  }, [setContainer]);
 
   useEffect(() => {
     if (view) {
@@ -84,7 +99,7 @@ export default function Editor(props: EditorProps) {
         unhighlightAll(view);
       }
     }
-  }, [props.activeLine]);
+  }, [props.activeLine, view]);
 
   useEffect(() => {
     if (view) {
@@ -95,28 +110,11 @@ export default function Editor(props: EditorProps) {
         view.dispatch(setDiagnostics(view.state, []));
       }
     }
-  }, [props.codeError]);
+  }, [props.codeError, view]);
 
   return (
     <Box id="editor-wrapper">
       <div ref={editor} />
     </Box>
   );
-}
-
-function codeErrorToDiagnostic(view: EditorView, e: CodeError): Diagnostic {
-  // In Rhai, positions are composed of (line, column), but
-  // CodeMirror wants the absolute position. We need to do
-  // some math to convert between the two.
-  //
-  // For now, we just want to highlight the entire line where
-  // the error occurred.
-  const line = view.viewportLineBlocks[e.line - 1];
-
-  return {
-    from: line.from,
-    to: line.from + line.length - 1,
-    message: e.message,
-    severity: "error",
-  };
 }

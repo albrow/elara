@@ -10,14 +10,6 @@ export interface ObjectiveTextProps {
   text: string;
 }
 
-// Formats text with tags like "{robot}" and "{goal}" into a span with
-// inline images for each tag. This allows us to define level properties
-// in Rust and then format them in the UI.
-export default function ObjectiveText(props: ObjectiveTextProps) {
-  const segments = splitText(props.text);
-  return <span>{segments}</span>;
-}
-
 const imgUrlMappping = {
   "{robot}": robotImgUrl,
   "{goal}": flagImageUrl,
@@ -41,8 +33,15 @@ function splitText(text: string) {
     const imgUrl = imgUrlMappping[segment];
     if (imgUrl) {
       return <MiniSprite key={segment} imgUrl={imgUrl} />;
-    } else {
-      return segment;
     }
+    return segment;
   });
+}
+
+// Formats text with tags like "{robot}" and "{goal}" into a span with
+// inline images for each tag. This allows us to define level properties
+// in Rust and then format them in the UI.
+export default function ObjectiveText(props: ObjectiveTextProps) {
+  const segments = splitText(props.text);
+  return <span>{segments}</span>;
 }

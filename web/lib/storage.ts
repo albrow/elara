@@ -33,6 +33,7 @@ export async function saveCode(script: string): Promise<void> {
   // If file picker API is not supported, use a basic prompt
   // to allow the user to specify a filename.
   if (!supported) {
+    // eslint-disable-next-line no-alert
     const desiredName = prompt("Save as:", saveOpts.fileName);
     if (desiredName) {
       saveOpts.fileName = desiredName;

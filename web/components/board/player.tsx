@@ -45,13 +45,11 @@ export default function Player(props: PlayerProps) {
         }}
       >
         <img
+          alt="rover"
           className="playerImage"
           src={props.fuzzy ? glitchyRobotImgUrl : robotImgUrl}
         />
-        <SpriteLabel
-          zIndex={PLAYER_Z_INDEX + 1}
-          value={props.fuel}
-        ></SpriteLabel>
+        <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.fuel} />
       </div>
     </Tooltip>
   );

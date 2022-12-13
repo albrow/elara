@@ -1,14 +1,13 @@
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
 import {
   Container,
   Flex,
   Text,
   Box,
-  Link,
   UnorderedList,
   ListItem,
+  Button,
 } from "@chakra-ui/react";
 
 import {
@@ -18,6 +17,7 @@ import {
   RunResult,
   FuzzyStateWithLine,
   LinePos,
+  // eslint-disable-next-line camelcase
   get_level_data,
 } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
@@ -36,19 +36,23 @@ const LEVELS: LevelData[] = get_level_data();
 
 // A handler used to get the current code from the editor.
 // Starts out unset, but will be set by the editor component.
-var getCode: () => string;
+let getCode: () => string;
 
 export default function Level() {
   const { levelNumber } = useParams();
-  if (!levelNumber) {
-    throw new Error("levelNumber is required");
-  }
-  const levelIndex = parseInt(levelNumber, 10);
-  const level = LEVELS[levelIndex];
-  const [code, setCode] = useState(level.initial_code);
+  const levelIndex = useCallback(() => {
+    if (!levelNumber) {
+      throw new Error("levelNumber is required");
+    }
+    return parseInt(levelNumber, 10);
+  }, [levelNumber]);
+
+  const [code, setCode] = useState(LEVELS[levelIndex()].initial_code);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [boardState, setBoardState] = useState(level.initial_state);
+  const [boardState, setBoardState] = useState(
+    LEVELS[levelIndex()].initial_state
+  );
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
   const [journalVisible, setJournalVisible] = useState(false);
@@ -56,9 +60,11 @@ export default function Level() {
     Object.keys(sections)[0] as SectionName
   );
 
+  const currLevel = useCallback(() => LEVELS[levelIndex()], [levelIndex]);
+
   useEffect(() => {
-    document.title = `Elara | Level ${levelIndex}: ${level.name}`;
-  }, [levelIndex]);
+    document.title = `Elara | Level ${levelIndex()}: ${currLevel().name}`;
+  }, [levelIndex, currLevel]);
 
   // Passed through to the Editor component to allow us
   // to get the current code from the editor in an efficient
@@ -67,26 +73,28 @@ export default function Level() {
     getCode = handler;
   }, []);
 
-  const resetStateButKeepCode = (levelOverride?: LevelData) => {
-    const levelToLoad = levelOverride || level;
-    setIsRunning(false);
-    setIsPaused(false);
-    if (replayer) {
-      replayer.stop();
-    }
-    setActiveLine(undefined);
-    setCodeError(undefined);
-    setBoardState(levelToLoad.initial_state);
-  };
+  const resetStateButKeepCode = useCallback(
+    (levelOverride?: LevelData) => {
+      const levelToLoad = levelOverride || currLevel();
+      setIsRunning(false);
+      setIsPaused(false);
+      if (replayer) {
+        replayer.stop();
+      }
+      setActiveLine(undefined);
+      setCodeError(undefined);
+      setBoardState(levelToLoad.initial_state);
+    },
+    [currLevel]
+  );
 
   // Reset the relevant state when the URL changes.
   const location = useLocation();
   useEffect(() => {
-    const levelIndex = parseInt(levelNumber, 10);
-    const level = LEVELS[levelIndex];
+    const level = LEVELS[levelIndex()];
     resetStateButKeepCode(level);
     setCode(level.initial_code);
-  }, [location]);
+  }, [location, levelIndex, resetStateButKeepCode]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
     setBoardState(step.state);
@@ -97,8 +105,8 @@ export default function Level() {
     }
   };
 
-  const onReplayDoneHandler = (result: RunResult) => {
-    return () => {
+  const onReplayDoneHandler = useCallback(
+    (result: RunResult) => () => {
       // There are no more steps to iterate through, display the outcome.
       switch (result.outcome) {
         case "no_objective":
@@ -120,14 +128,15 @@ export default function Level() {
           break;
       }
       resetStateButKeepCode();
-    };
-  };
+    },
+    [resetStateButKeepCode]
+  );
 
   // When the run button is clicked, run the code and start the replay.
-  const runHandler = async () => {
+  const runHandler = useCallback(async () => {
     let result: RunResult;
     try {
-      result = await game.run_player_script(getCode(), levelIndex);
+      result = await game.run_player_script(getCode(), levelIndex());
     } catch (e) {
       // If there is an error, display it in the editor.
       if (e instanceof RhaiError) {
@@ -143,9 +152,8 @@ export default function Level() {
         }
 
         return;
-      } else {
-        throw e;
       }
+      throw e;
     }
     resetStateButKeepCode();
     setBoardState(result.states[0].state);
@@ -156,46 +164,46 @@ export default function Level() {
       onReplayDoneHandler(result)
     );
     replayer.start();
-  };
+  }, [resetStateButKeepCode, onReplayDoneHandler, levelIndex]);
 
-  const stopHandler = () => {
+  const stopHandler = useCallback(() => {
     resetStateButKeepCode();
-  };
+  }, [resetStateButKeepCode]);
 
-  const pauseHandler = () => {
+  const pauseHandler = useCallback(() => {
     if (replayer) {
       replayer.pause();
       setIsPaused(true);
     }
-  };
+  }, []);
 
-  const stepForwardHandler = () => {
+  const stepForwardHandler = useCallback(() => {
     if (replayer) {
       replayer.stepForward();
     }
-  };
+  }, []);
 
-  const stepBackHandler = () => {
+  const stepBackHandler = useCallback(() => {
     if (replayer) {
       replayer.stepBackward();
     }
-  };
+  }, []);
 
-  const resumeHandler = () => {
+  const resumeHandler = useCallback(() => {
     if (replayer) {
       replayer.start();
       setIsPaused(false);
     }
-  };
+  }, []);
 
-  const saveCodeHandler = async () => {
+  const saveCodeHandler = useCallback(async () => {
     await saveCode(getCode());
-  };
+  }, []);
 
-  const loadCodeHandler = async () => {
+  const loadCodeHandler = useCallback(async () => {
     const loadedCode = await loadCode();
     setCode(loadedCode);
-  };
+  }, []);
 
   useEffect(() => {
     const keyListener = async (event: KeyboardEvent) => {
@@ -217,12 +225,13 @@ export default function Level() {
         event.preventDefault();
         return false;
       }
+      return Promise.resolve();
     };
     document.addEventListener("keydown", keyListener);
     return () => {
       document.removeEventListener("keydown", keyListener);
     };
-  });
+  }, [isRunning, runHandler, saveCodeHandler, stopHandler]);
 
   return (
     <>
@@ -234,29 +243,29 @@ export default function Level() {
       <Container maxW="container.xl" mt={6}>
         <Box>
           <Text fontSize="2xl" fontWeight="bold" mb={1}>
-            Level {levelNumber}: {level.name}
+            Level {levelNumber}: {currLevel().name}
           </Text>
-          <Box hidden={level.new_core_concepts.length == 0}>
+          <Box hidden={currLevel().new_core_concepts.length === 0}>
             <b>Key Concepts:</b>
             <UnorderedList>
-              {level.new_core_concepts.map((concept) => (
+              {currLevel().new_core_concepts.map((concept) => (
                 <ListItem key={concept} ml={2}>
-                  <Link
-                    fontWeight={"semibold"}
-                    color={"blue.500"}
+                  <Button
+                    fontWeight="semibold"
+                    color="blue.500"
                     onClick={() => {
                       setJournalSection(concept);
                       setJournalVisible(true);
                     }}
                   >
                     {concept}
-                  </Link>
+                  </Button>
                 </ListItem>
               ))}
             </UnorderedList>
           </Box>
           <p>
-            <b>Objective:</b> <ObjectiveText text={level.objective} />
+            <b>Objective:</b> <ObjectiveText text={currLevel().objective} />
           </p>
         </Box>
         <Flex direction="row" mt={4}>

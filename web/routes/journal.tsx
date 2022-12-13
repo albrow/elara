@@ -45,7 +45,7 @@ export default function Journal() {
                     variant="ghost"
                     colorScheme="blackAlpha"
                     mt={1}
-                    isActive={sectionName == linkName}
+                    isActive={sectionName === linkName}
                   >
                     {linkName}
                   </Button>

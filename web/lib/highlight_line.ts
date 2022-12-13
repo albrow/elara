@@ -15,40 +15,39 @@ const removeHighlight = StateEffect.define<{ from: number; to: number }>({
   }),
 });
 
+const highlightMark = Decoration.mark({ class: "line-running" });
+
 const highlightField = StateField.define<DecorationSet>({
   create() {
     return Decoration.none;
   },
   update(highlights, tr) {
-    highlights = highlights.map(tr.changes);
-    for (let e of tr.effects)
+    let newHighlights = highlights.map(tr.changes);
+    // eslint-disable-next-line no-restricted-syntax
+    for (const e of tr.effects)
       if (e.is(addHighlight)) {
-        highlights = highlights.update({
+        newHighlights = highlights.update({
           add: [highlightMark.range(e.value.from, e.value.to)],
         });
       } else if (e.is(removeHighlight)) {
-        highlights = highlights.update({
-          filter: (from, to) => {
-            return from === e.value.from && to === e.value.to;
-          },
+        newHighlights = highlights.update({
+          filter: (from, to) => from === e.value.from && to === e.value.to,
         });
       }
-    return highlights;
+    return newHighlights;
   },
   provide: (f) => EditorView.decorations.from(f),
 });
 
-const highlightMark = Decoration.mark({ class: "line-running" });
-
 /**
- * Highlights the given line number in the editor (and unhighlights
+ * Highlights the given line number in the editor (and un-highlights
  * any other lines).
  *
  * @param view The CodeMirror EditorView.
  * @param lineNumber The line number to highlight.
  */
 export function highlightLine(view: EditorView, lineNumber: number) {
-  let effects: StateEffect<unknown>[] = [];
+  const effects: StateEffect<unknown>[] = [];
 
   if (!view.state.field(highlightField, false))
     effects.push(StateEffect.appendConfig.of([highlightField]));
@@ -69,12 +68,12 @@ export function highlightLine(view: EditorView, lineNumber: number) {
 }
 
 /**
- * Unhighlights all lines in the editor.
+ * Un-highlights all lines in the editor.
  *
  * @param view The CodeMirror EditorView.
  */
 export function unhighlightAll(view: EditorView) {
-  let effects: StateEffect<unknown>[] = [];
+  const effects: StateEffect<unknown>[] = [];
 
   if (!view.state.field(highlightField, false))
     effects.push(StateEffect.appendConfig.of([highlightField]));

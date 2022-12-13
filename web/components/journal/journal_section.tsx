@@ -12,15 +12,15 @@ import Loops from "./sections/loops.mdx";
 import "../../styles/md_content.css";
 
 export const sections = {
-  Comments: Comments,
-  Functions: Functions,
-  Expressions: Expressions,
-  Literals: Literals,
+  Comments,
+  Functions,
+  Expressions,
+  Literals,
   "Math Expressions": MathExpressions,
-  Loops: Loops,
-  Comparisons: Comparisons,
-  Variables: Variables,
-  Arrays: Arrays,
+  Loops,
+  Comparisons,
+  Variables,
+  Arrays,
   "While Loops": WhileLoops,
   "If Statements": IfStatements,
 };

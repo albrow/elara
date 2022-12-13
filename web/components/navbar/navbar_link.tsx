@@ -8,7 +8,7 @@ interface NavbarLinkProps {
 
 export default function NavbarLink(props: NavbarLinkProps) {
   const location = useLocation();
-  let isActive = location.pathname == props.to;
+  let isActive = location.pathname === props.to;
 
   // Special case for journal links. We consider the link active if
   // we are currently viewing at a section, which is a subroute of

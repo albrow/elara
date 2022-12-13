@@ -19,6 +19,7 @@ const elaraTheme = extendTheme({
   },
 });
 
+// eslint-disable-next-line func-names
 (async function () {
   await init();
 
@@ -28,7 +29,9 @@ const elaraTheme = extendTheme({
   try {
     // @ts-ignore
     routerBaseName = process.env.PUBLIC_URL;
-  } catch {}
+  } catch {
+    // Ignore
+  }
 
   // Importing other components *after* init() means the Components themselves
   // can be synchrounous and not worry about waiting for Wasm to load.
@@ -67,7 +70,7 @@ const elaraTheme = extendTheme({
 
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-      <ChakraProvider theme={elaraTheme} resetCSS={true}>
+      <ChakraProvider theme={elaraTheme} resetCSS>
         <RouterProvider router={router} />
       </ChakraProvider>
     </React.StrictMode>

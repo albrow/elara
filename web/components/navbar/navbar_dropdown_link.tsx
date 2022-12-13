@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Box, MenuItem } from "@chakra-ui/react";
+import React from "react";
 
 interface NavbarDropdownLinkProps {
   to: string;
@@ -9,7 +10,7 @@ export default function NavbarDropdownLink(
   props: React.PropsWithChildren<NavbarDropdownLinkProps>
 ) {
   const location = useLocation();
-  let isActive = location.pathname == props.to;
+  const isActive = location.pathname === props.to;
 
   return (
     <Link to={props.to}>

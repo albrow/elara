@@ -38,8 +38,8 @@ export default function Board(props: BoardProps) {
         <table
           style={{
             cursor: "crosshair",
-            width: CANVAS_WIDTH + AXIS_WIDTH + 1 + "px",
-            height: CANVAS_HEIGHT + AXIS_HEIGHT + 1 + "px",
+            width: `${CANVAS_WIDTH + AXIS_WIDTH + 1}px`,
+            height: `${CANVAS_HEIGHT + AXIS_HEIGHT + 1}px`,
           }}
         >
           <tbody>
@@ -48,15 +48,16 @@ export default function Board(props: BoardProps) {
               style={{
                 background: "white",
                 fontSize: "var(--chakra-fontSizes-xs)",
-                height: AXIS_HEIGHT + "px",
+                height: `${AXIS_HEIGHT}px`,
               }}
             >
+              {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
               <th
                 id="axis-spacer"
-                style={{ width: AXIS_WIDTH + "px", height: AXIS_WIDTH + "px" }}
-              ></th>
+                style={{ width: `${AXIS_WIDTH}px`, height: `${AXIS_WIDTH}px` }}
+              />
               {range(WIDTH).map((x) => (
-                <th key={x} style={{ height: AXIS_HEIGHT + "px" }}>
+                <th key={x} style={{ height: `${AXIS_HEIGHT}px` }}>
                   {x}
                 </th>
               ))}
@@ -70,13 +71,13 @@ export default function Board(props: BoardProps) {
                     textAlign: "center",
                     fontWeight: "bold",
                     fontSize: "var(--chakra-fontSizes-xs)",
-                    width: AXIS_WIDTH + "px",
+                    width: `${AXIS_WIDTH}px`,
                   }}
                 >
                   {y}
                 </td>
                 {range(WIDTH).map((x) => (
-                  <Square key={"" + x + "," + y} x={x} y={y} />
+                  <Square key={`${x},${y}`} x={x} y={y} />
                 ))}
               </tr>
             ))}
@@ -87,6 +88,7 @@ export default function Board(props: BoardProps) {
         const playerOffset = posToOffset(player.pos);
         return (
           <Player
+            // eslint-disable-next-line react/no-array-index-key
             key={i}
             offset={playerOffset}
             fuel={player.fuel}
@@ -95,55 +97,55 @@ export default function Board(props: BoardProps) {
           />
         );
       })}
-      {(props.gameState.goals as FuzzyGoal[]).map((goal, i) => {
+      {(props.gameState.goals as FuzzyGoal[]).map((goal, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <Goal key={i} offset={posToOffset(goal.pos)} fuzzy={goal.fuzzy} />
+      ))}
+      {(props.gameState.fuel_spots as FuzzyFuelSpot[]).map((fuelSpot, i) => {
+        const fuelOffset = posToOffset(fuelSpot.pos);
         return (
-          <Goal key={i} offset={posToOffset(goal.pos)} fuzzy={goal.fuzzy} />
-        );
-      })}
-      {(props.gameState.fuel_spots as FuzzyFuelSpot[]).map((fuel_spot, i) => {
-        const fuelOffset = posToOffset(fuel_spot.pos);
-        if (fuel_spot.collected) {
-          return;
-        }
-        return <FuelSpot key={i} offset={fuelOffset} fuzzy={fuel_spot.fuzzy} />;
-      })}
-      {(props.gameState.enemies as FuzzyEnemy[]).map((enemy, i) => {
-        return (
-          <Enemy key={i} offset={posToOffset(enemy.pos)} fuzzy={enemy.fuzzy} />
-        );
-      })}
-      {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => {
-        return (
-          <Obstacle
+          <FuelSpot
+            collected={fuelSpot.collected}
+            // eslint-disable-next-line react/no-array-index-key
             key={i}
-            offset={posToOffset(obstacle.pos)}
-            fuzzy={obstacle.fuzzy}
+            offset={fuelOffset}
+            fuzzy={fuelSpot.fuzzy}
           />
         );
       })}
+      {(props.gameState.enemies as FuzzyEnemy[]).map((enemy, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <Enemy key={i} offset={posToOffset(enemy.pos)} fuzzy={enemy.fuzzy} />
+      ))}
+      {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => (
+        <Obstacle
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          offset={posToOffset(obstacle.pos)}
+          fuzzy={obstacle.fuzzy}
+        />
+      ))}
       {(props.gameState.password_gates as FuzzyPasswordGate[]).map(
-        (gate, i) => {
-          return (
-            <Gate
-              key={i}
-              offset={posToOffset(gate.pos)}
-              open={gate.open}
-              fuzzy={gate.fuzzy}
-            />
-          );
-        }
+        (gate, i) => (
+          <Gate
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
+            offset={posToOffset(gate.pos)}
+            open={gate.open}
+            // fuzzy={gate.fuzzy}
+          />
+        )
       )}
       {(props.gameState.data_terminals as FuzzyDataTerminal[]).map(
-        (gate, i) => {
-          return (
-            <DataTerminal
-              key={i}
-              offset={posToOffset(gate.pos)}
-              reading={gate.reading}
-              fuzzy={gate.fuzzy}
-            />
-          );
-        }
+        (gate, i) => (
+          <DataTerminal
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
+            offset={posToOffset(gate.pos)}
+            reading={gate.reading}
+            // fuzzy={gate.fuzzy}
+          />
+        )
       )}
     </>
   );

@@ -39,13 +39,12 @@ export default function ControlBar(props: ControlBarProps) {
         <Box>
           {!props.isRunning && (
             <Button size="sm" colorScheme="green" onClick={props.runHandler}>
-              <MdPlayArrow size={"1.3em"} style={{ marginRight: "0.1rem" }} />{" "}
-              Run
+              <MdPlayArrow size="1.3em" style={{ marginRight: "0.1rem" }} /> Run
             </Button>
           )}
           {props.isRunning && (
             <Button size="sm" colorScheme="red" onClick={props.stopHandler}>
-              <MdStop size={"1.3em"} style={{ marginRight: "0.1rem" }} /> Stop
+              <MdStop size="1.3em" style={{ marginRight: "0.1rem" }} /> Stop
             </Button>
           )}
         </Box>
@@ -57,7 +56,7 @@ export default function ControlBar(props: ControlBarProps) {
               ml={1}
               onClick={props.stepBackHandler}
             >
-              <MdSkipPrevious size={"1.3em"} />
+              <MdSkipPrevious size="1.3em" />
             </Button>
           )}
           {props.isRunning && !props.isPaused && (
@@ -67,7 +66,7 @@ export default function ControlBar(props: ControlBarProps) {
               ml={1}
               onClick={props.pauseHandler}
             >
-              <MdPause size={"1.3em"} />
+              <MdPause size="1.3em" />
             </Button>
           )}
           {props.isRunning && props.isPaused && (
@@ -77,7 +76,7 @@ export default function ControlBar(props: ControlBarProps) {
               ml={1}
               onClick={props.resumeHandler}
             >
-              <MdPlayArrow size={"1.3em"} />
+              <MdPlayArrow size="1.3em" />
             </Button>
           )}
           {props.isRunning && (
@@ -87,7 +86,7 @@ export default function ControlBar(props: ControlBarProps) {
               ml={1}
               onClick={props.stepForwardHandler}
             >
-              <MdSkipNext size={"1.3em"} />
+              <MdSkipNext size="1.3em" />
             </Button>
           )}
         </Box>
@@ -101,7 +100,7 @@ export default function ControlBar(props: ControlBarProps) {
               p={1}
               px={2}
             >
-              <MdMenu size={"1.3em"} />
+              <MdMenu size="1.3em" />
             </MenuButton>
             <MenuList
               background="gray.700"

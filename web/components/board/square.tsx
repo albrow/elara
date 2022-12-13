@@ -9,7 +9,7 @@ export interface SquareProps {
 }
 
 export default function Square(props: SquareProps) {
-  let [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <td

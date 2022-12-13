@@ -11,6 +11,7 @@ interface EnemyProps {
 export default function Enemy(props: EnemyProps) {
   return (
     <img
+      alt="bug"
       className="bug sprite"
       src={props.fuzzy ? glitchyBugImgUrl : bugImgUrl}
       style={{

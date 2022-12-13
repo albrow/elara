@@ -12,6 +12,7 @@ export default function Goal(props: GoalProps) {
   return (
     <img
       className="flag sprite"
+      alt="goal"
       src={props.fuzzy ? glitchyFlagImgUrl : flagImgUrl}
       style={{
         width: `${TILE_SIZE - 1}px`,

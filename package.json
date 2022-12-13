@@ -10,16 +10,28 @@
     "test:rust": "cd ./elara-lib && cargo test",
     "dev": "vite",
     "build": "npm run build:wasm && tsc --noEmit && vite build",
-    "test": "npm run test:rust && cd ./elara-lib && wasm-pack test --chrome --headless -- --features=wasm"
+    "test": "npm run test:rust && cd ./elara-lib && wasm-pack test --chrome --headless -- --features=wasm",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
   },
   "devDependencies": {
     "@types/mdx": "^2.0.3",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
     "@vitejs/plugin-react": "^2.1.0",
     "autoprefixer": "^10.4.12",
+    "eslint": "^8.29.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "gh-pages": "^4.0.0",
+    "prettier": "^2.8.1",
     "rimraf": "^3.0.0",
     "typescript": "^4.8.2",
     "vite": "^3.1.7",
@@ -42,5 +54,87 @@
     "react-icons": "^4.6.0",
     "react-router-dom": "^6.4.2",
     "remark-gfm": "^3.0.1"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "airbnb",
+      "plugin:react-hooks/recommended",
+      "prettier"
+    ],
+    "env": {
+      "browser": true
+    },
+    "plugins": [
+      "react",
+      "@typescript-eslint",
+      "unused-imports"
+    ],
+    "ignorePatterns": [
+      "node_modules/",
+      "web/dist/",
+      "elara-lib/"
+    ],
+    "rules": {
+      "import/default": "error",
+      "import/extensions": "off",
+      "import/first": "off",
+      "import/named": "error",
+      "import/no-cycle": "off",
+      "import/no-extraneous-dependencies": [
+        "off"
+      ],
+      "import/no-unresolved": "off",
+      "import/no-relative-packages": "off",
+      "import/order": [
+        "warn",
+        {
+          "newlines-between": "ignore",
+          "groups": [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index"
+          ]
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "react/sort-comp": [
+        "warn",
+        {
+          "order": [
+            "type-annotations",
+            "static-methods",
+            "lifecycle",
+            "everything-else",
+            "render"
+          ]
+        }
+      ],
+      "react/state-in-constructor": "off",
+      "react/static-property-placement": [
+        "off"
+      ],
+      "semi": [
+        "warn",
+        "always"
+      ],
+      "unused-imports/no-unused-imports": "warn",
+      "react/jsx-filename-extension": [
+        1,
+        {
+          "extensions": [
+            ".jsx",
+            ".tsx"
+          ]
+        }
+      ],
+      "react/react-in-jsx-scope": "off",
+      "react/require-default-props": "off",
+      "react/destructuring-assignment": "off",
+      "react-hooks/exhaustive-deps": "error"
+    }
   }
 }

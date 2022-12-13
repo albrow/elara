@@ -12,6 +12,7 @@ export default function Obstacle(props: ObstacleProps) {
   return (
     <img
       className="rock sprite"
+      alt="rock"
       src={props.fuzzy ? glitchyRockImgUrl : rockImgUrl}
       style={{
         width: `${TILE_SIZE - 1}px`,

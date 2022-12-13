@@ -2,69 +2,76 @@ import { FuzzyStateWithLine } from "../../elara-lib/pkg/elara_lib";
 
 const DEFAULT_GAME_SPEED = 1; // steps per second
 
+function msPerStep(speed: number): number {
+  return 1000 / speed;
+}
+
 export class Replayer {
-  private _states: FuzzyStateWithLine[] = [];
-  private _speed = DEFAULT_GAME_SPEED;
-  private _timer_id: number | null = null;
-  private _index: number = 0;
-  private _onStep: (state: FuzzyStateWithLine) => void = () => {};
-  private _onDone: () => void = () => {};
+  private states: FuzzyStateWithLine[] = [];
+
+  private speed = DEFAULT_GAME_SPEED;
+
+  private timer_id: number | null = null;
+
+  private index: number = 0;
+
+  // eslint-disable-next-line class-methods-use-this
+  private onStep: (state: FuzzyStateWithLine) => void = () => {};
+
+  // eslint-disable-next-line class-methods-use-this
+  private onDone: () => void = () => {};
 
   constructor(
     states: FuzzyStateWithLine[],
     onStep: (state: FuzzyStateWithLine) => void,
     onDone: () => void
   ) {
-    this._states = states;
-    this._onStep = onStep;
-    this._onDone = onDone;
+    this.states = states;
+    this.onStep = onStep;
+    this.onDone = onDone;
   }
 
   start() {
-    if (this._timer_id) {
+    if (this.timer_id) {
       return;
     }
-    this._timer_id = window.setInterval(() => {
+    this.timer_id = window.setInterval(() => {
       this.stepForward();
-    }, ms_per_step(this._speed));
+    }, msPerStep(this.speed));
   }
 
   stepForward() {
-    if (this._index >= this._states.length - 1) {
+    if (this.index >= this.states.length - 1) {
       this.stop();
-      this._onDone();
+      this.onDone();
       return;
     }
-    this._index += 1;
-    this._onStep(this._states[this._index]);
+    this.index += 1;
+    this.onStep(this.states[this.index]);
   }
 
   stepBackward() {
-    if (this._index <= 0) {
+    if (this.index <= 0) {
       return;
     }
-    this._index -= 1;
-    this._onStep(this._states[this._index]);
+    this.index -= 1;
+    this.onStep(this.states[this.index]);
   }
 
   // Stops the replayer, but does not reset the index.
   pause() {
-    if (this._timer_id) {
-      window.clearInterval(this._timer_id);
-      this._timer_id = null;
+    if (this.timer_id) {
+      window.clearInterval(this.timer_id);
+      this.timer_id = null;
     }
   }
 
   // Stops the replayer and resets the index to 0.
   stop() {
-    if (this._timer_id) {
-      window.clearInterval(this._timer_id);
-      this._timer_id = null;
+    if (this.timer_id) {
+      window.clearInterval(this.timer_id);
+      this.timer_id = null;
     }
-    this._index = 0;
+    this.index = 0;
   }
-}
-
-function ms_per_step(speed: number): number {
-  return 1000 / speed;
 }
