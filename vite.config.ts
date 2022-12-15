@@ -24,7 +24,7 @@ export default defineConfig(async () => {
     },
     // Set base="/elara/" as a workaround for hosting on GitHub Pages.
     // See: https://dev.to/shashannkbawa/deploying-vite-app-to-github-pages-3ane
-    base: "/elara/",
+    // base: "/elara/",
     root: "web",
     plugins: [
       wasmPack("./elara-lib"),
