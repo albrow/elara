@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
-import { createHashRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "@fontsource/nunito/400.css";
 import "@fontsource/nunito/500.css";
@@ -38,7 +38,7 @@ const elaraTheme = extendTheme({
   const Root = (await import("./routes/root")).default;
   const Level = (await import("./routes/level")).default;
 
-  const router = createHashRouter(
+  const router = createBrowserRouter(
     [
       {
         path: "/",
