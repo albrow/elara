@@ -34,21 +34,9 @@ jobs:
         uses: actions/upload-pages-artifact@v1.0.4
         with:
           path: web/dist
-      # - run: git config user.name "GitHub Actions"
-      # - run: git config user.email "()"
-      # - run: git fetch origin publish
-      # - run: git add ./web/dist --force
-      # - run: git commit -m "(Automatic build)"
-      # - run: git push origin main:publish --force-with-lease
-
-  # Deploys to github pages
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+      - run: git config user.name "GitHub Actions"
+      - run: git config user.email "()"
+      - run: git fetch origin publish
+      - run: git add ./web/dist --force
+      - run: git commit -m "(Automatic build)"
+      - run: git push origin main:publish --force-with-lease
