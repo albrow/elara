@@ -1,17 +1,19 @@
-mod buzzing_sound;
 mod comparisons;
+mod enemies_part_one;
 mod expressions;
-mod first_steps;
-mod fuel_up;
+mod fuel_part_one;
 mod gate_and_terminal;
 mod gates;
+mod glitches_part_one;
+mod glitches_part_two;
 mod hello_world;
-mod loop_the_loop;
+mod loops_part_one;
 mod loops_part_two;
 mod math_expressions;
-mod more_trouble;
-mod seeing_double;
+mod movement;
 mod variables;
+
+use std::collections::HashMap;
 
 use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL};
 use crate::simulation::Actor;
@@ -33,42 +35,41 @@ pub enum Outcome {
 
 pub trait Level {
     fn name(&self) -> &'static str;
+    fn short_name(&self) -> &'static str;
     fn objective(&self) -> &'static str;
     fn initial_code(&self) -> &'static str;
     fn initial_states(&self) -> Vec<State>;
     fn actors(&self) -> Vec<Box<dyn Actor>>;
     fn check_win(&self, state: &State) -> Outcome;
-    fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec![]
-    }
     fn initial_fuzzy_state(&self) -> FuzzyState {
         FuzzyState::from(self.initial_states())
     }
 }
 
 lazy_static! {
-    pub static ref LEVELS: Vec<Box<dyn Level + Sync>> = vec![
-        Box::new(hello_world::HelloWorld {}),
-        Box::new(first_steps::FirstSteps {}),
-        Box::new(expressions::Expressions {}),
-        Box::new(math_expressions::MathExpressions {}),
-        Box::new(fuel_up::FuelUp {}),
-        Box::new(gates::Gates {}),
-        Box::new(variables::Variables {}),
-        Box::new(gate_and_terminal::GateAndTerminal {}),
-        Box::new(buzzing_sound::BuzzingSound {}),
-        Box::new(loop_the_loop::LoopTheLoop {}),
-        Box::new(loops_part_two::LoopsPartTwo {}),
-        Box::new(comparisons::Comparisons {}),
-        Box::new(seeing_double::SeeingDouble {}),
-        Box::new(more_trouble::MoreTrouble {}),
-    ];
-}
-
-// Ignore dead code warning because this is used in tests.
-#[allow(dead_code)]
-fn level_index_by_name(name: &str) -> usize {
-    LEVELS.iter().position(|l| l.name() == name).unwrap()
+    #[derive(Debug, Clone, Copy)]
+    pub static ref LEVELS: HashMap<&'static str, Box<dyn Level + Sync>> = {
+        let mut m: HashMap<&'static str, Box<dyn Level + Sync>> = HashMap::new();
+        m.insert(hello_world::HelloWorld {}.short_name(), Box::new(hello_world::HelloWorld {}));
+        m.insert(movement::Movement {}.short_name(), Box::new(movement::Movement {}));
+        m.insert(expressions::Expressions {}.short_name(), Box::new(expressions::Expressions {}));
+        m.insert(math_expressions::MathExpressions {}.short_name(),
+            Box::new(math_expressions::MathExpressions {}),
+        );
+        m.insert(fuel_part_one::FuelPartOne {}.short_name(), Box::new(fuel_part_one::FuelPartOne {}));
+        m.insert(gates::Gates {}.short_name(), Box::new(gates::Gates {}));
+        m.insert(variables::Variables {}.short_name(), Box::new(variables::Variables {}));
+        m.insert(gate_and_terminal::GateAndTerminal {}.short_name(),
+            Box::new(gate_and_terminal::GateAndTerminal {}),
+        );
+        m.insert(enemies_part_one::EnemiesPartOne {}.short_name(), Box::new(enemies_part_one::EnemiesPartOne {}));
+        m.insert(loops_part_one::LoopsPartOne {}.short_name(), Box::new(loops_part_one::LoopsPartOne {}));
+        m.insert(loops_part_two::LoopsPartTwo {}.short_name(), Box::new(loops_part_two::LoopsPartTwo {}));
+        m.insert(comparisons::Comparisons {}.short_name(), Box::new(comparisons::Comparisons {}));
+        m.insert(glitches_part_one::GlitchesPartOne {}.short_name(), Box::new(glitches_part_one::GlitchesPartOne {}));
+        m.insert(glitches_part_two::GlitchesPartTwo {}.short_name(), Box::new(glitches_part_two::GlitchesPartTwo {}));
+        m
+    };
 }
 
 fn is_destroyed_by_enemy(state: &State) -> bool {

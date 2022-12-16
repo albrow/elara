@@ -1,4 +1,4 @@
-use js_sys::Array;
+use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
 use crate::levels;
@@ -86,34 +86,35 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
 #[derive(Clone, PartialEq, Debug)]
 pub struct LevelData {
     pub name: String,
+    pub short_name: String,
     pub objective: String,
     pub initial_state: FuzzyState,
     pub initial_code: String,
-    pub new_core_concepts: Array, // Array<String>
 }
 
 impl LevelData {
     pub fn from(level: &dyn levels::Level) -> Self {
-        let concepts = Array::new_with_length(level.new_core_concepts().len() as u32);
-        for (i, concept) in level.new_core_concepts().iter().enumerate() {
-            concepts.set(i as u32, (*concept).into());
-        }
         Self {
             name: level.name().to_string(),
+            short_name: level.short_name().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
             initial_state: FuzzyState::from(level.initial_fuzzy_state()),
-            new_core_concepts: concepts,
         }
     }
 }
 
-pub fn to_level_data_array(levels: &[Box<dyn levels::Level + Sync>]) -> Array {
-    let arr = Array::new_with_length(levels.len() as u32);
-    for (i, level) in levels.iter().enumerate() {
-        arr.set(i as u32, JsValue::from(LevelData::from(level.as_ref())));
+pub fn to_level_data_obj(levels: levels::LEVELS) -> Object {
+    let obj = Object::new();
+    for (name, level) in levels.iter() {
+        js_sys::Reflect::set(
+            &obj,
+            &JsValue::from(name.to_string()),
+            &JsValue::from(LevelData::from(level.as_ref())),
+        )
+        .unwrap();
     }
-    arr
+    obj
 }
 
 #[wasm_bindgen(getter_with_clone)]

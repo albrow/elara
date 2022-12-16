@@ -1,7 +1,5 @@
 use std::fmt;
 
-use lazy_static::__Deref;
-
 use crate::{
     constants::MAX_FUEL,
     levels::{Level, Outcome, LEVELS},
@@ -25,7 +23,9 @@ impl Simulation {
             state_idx: 0,
             states: vec![],
             player_actor: player_actor,
-            level: LEVELS[0].deref(),
+            // Start with the first level by default. Will be overwritten by
+            // load_level.
+            level: LEVELS.values().next().unwrap().as_ref(),
             last_outcome: Outcome::Continue,
         };
         sim

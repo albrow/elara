@@ -3,11 +3,14 @@ use crate::simulation::Actor;
 use crate::simulation::{Goal, Player, Pos, State};
 
 #[derive(Copy, Clone)]
-pub struct MoreTrouble {}
+pub struct GlitchesPartTwo {}
 
-impl Level for MoreTrouble {
+impl Level for GlitchesPartTwo {
     fn name(&self) -> &'static str {
         "Even More Trouble"
+    }
+    fn short_name(&self) -> &'static str {
+        "glitches_part_two"
     }
     fn objective(&self) -> &'static str {
         "Determine your position, then move the rover ({robot}) to the goal ({goal})."
@@ -151,27 +154,24 @@ while get_pos()[0] > goal[0] {
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
-    fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["While Loops"]
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::constants::ERR_OUT_OF_FUEL;
-    use crate::levels::{level_index_by_name, Outcome, LEVELS};
+    use crate::levels::Outcome;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(MoreTrouble {}.name());
+        const LEVEL: &'static dyn Level = &GlitchesPartTwo {};
 
         // Running the initial code should result in Outcome::Failure due to
         // being destroyed by a bug.
-        let script = LEVELS[level_index].initial_code();
+        let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -191,7 +191,7 @@ mod tests {
                 move_up(1);
             }"#;
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -201,7 +201,7 @@ mod tests {
             move_up(1);
         }";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -212,7 +212,7 @@ mod tests {
             move_down(1);
         }";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,

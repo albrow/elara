@@ -10,11 +10,9 @@ import {
 import { MdExpandMore } from "react-icons/md";
 
 // eslint-disable-next-line camelcase
-import { get_level_data, LevelData } from "../../../elara-lib/pkg/elara_lib";
+import { LEVELS } from "../../lib/scenes";
 import NavbarLink from "./navbar_link";
 import NavbarDropdownLink from "./navbar_dropdown_link";
-
-const LEVELS: LevelData[] = get_level_data();
 
 export default function Navbar() {
   return (

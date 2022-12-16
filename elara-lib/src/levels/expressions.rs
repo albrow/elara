@@ -8,6 +8,9 @@ impl Level for Expressions {
     fn name(&self) -> &'static str {
         "Express Yourself"
     }
+    fn short_name(&self) -> &'static str {
+        "expressions"
+    }
     fn objective(&self) -> &'static str {
         "Call the \"say\" function with different types of expressions."
     }
@@ -40,26 +43,22 @@ say(false);
     fn check_win(&self, state: &State) -> Outcome {
         no_objective_check_win(state)
     }
-    fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Expressions", "Literals"]
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::levels::LEVELS;
-    use crate::levels::{level_index_by_name, Outcome};
+    use crate::levels::Outcome;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(Expressions {}.name());
+        const LEVEL: &'static dyn Level = &Expressions {};
 
         // Running the initial code should result in Outcome::NoObjective.
-        let script = LEVELS[level_index].initial_code();
+        let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::NoObjective);
     }

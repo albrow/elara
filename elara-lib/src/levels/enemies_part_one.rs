@@ -4,11 +4,14 @@ use crate::constants::{HEIGHT, WIDTH};
 use crate::simulation::{Actor, Enemy, FuelSpot, Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
-pub struct BuzzingSound {}
+pub struct EnemiesPartOne {}
 
-impl Level for BuzzingSound {
+impl Level for EnemiesPartOne {
     fn name(&self) -> &'static str {
         "What's that Buzzing Sound?"
+    }
+    fn short_name(&self) -> &'static str {
+        "enemies_part_one"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal}), but watch out for bugs ({bug})!"
@@ -102,18 +105,18 @@ move_down(5);
 mod tests {
     use super::*;
     use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL};
-    use crate::levels::{level_index_by_name, Outcome, LEVELS};
+    use crate::levels::Outcome;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(BuzzingSound {}.name());
+        const LEVEL: &'static dyn Level = &EnemiesPartOne {};
 
         // Running the initial code should result in Outcome::Failure due to
         // being destroyed by a bug.
-        let script = LEVELS[level_index].initial_code();
+        let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -128,7 +131,7 @@ mod tests {
             move_down(5);
             move_right(9);";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -137,7 +140,7 @@ mod tests {
             move_down(5);
             move_right(9);";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,

@@ -2,11 +2,14 @@ use super::{std_check_win, Level, Outcome};
 use crate::simulation::{Actor, Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
-pub struct FirstSteps {}
+pub struct Movement {}
 
-impl Level for FirstSteps {
+impl Level for Movement {
     fn name(&self) -> &'static str {
         "First Steps"
+    }
+    fn short_name(&self) -> &'static str {
+        "movement"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
@@ -45,35 +48,30 @@ move_down(2);
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
-    fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Functions"]
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::constants::ERR_OUT_OF_FUEL;
-    use crate::levels::level_index_by_name;
     use crate::levels::Outcome;
-    use crate::levels::LEVELS;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(FirstSteps {}.name());
+        const LEVEL: &'static dyn Level = &Movement {};
 
         // Running the initial code should result in Outcome::Continue.
-        let script = LEVELS[level_index].initial_code();
+        let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
         // Running this code should result in Outcome::Success.
         let script = "move_right(3); move_down(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.states.len(), 7);
@@ -87,7 +85,7 @@ mod tests {
             move_right(3);
             move_down(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -99,14 +97,14 @@ mod tests {
         // the player should stop moving right after hitting the obstacle at (4, 0).
         let script = "move_right(5); move_down(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
         // Now try moving too far down.
         let script = "move_down(5); move_right(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -121,7 +119,7 @@ mod tests {
                 move_down(1);
             }";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         // In this case, we don't reach the objective so we expect ERR_OUT_OF_FUEL.
@@ -132,7 +130,7 @@ mod tests {
             move_right(3);
             move_down(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,

@@ -8,6 +8,9 @@ impl Level for LoopsPartTwo {
     fn name(&self) -> &'static str {
         "All By Yourself"
     }
+    fn short_name(&self) -> &'static str {
+        "loops_part_two"
+    }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal}) using a loop."
     }
@@ -64,26 +67,23 @@ impl Level for LoopsPartTwo {
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
-    fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Loops"]
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::levels::{level_index_by_name, Outcome, LEVELS};
+    use crate::levels::Outcome;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(LoopsPartTwo {}.name());
+        const LEVEL: &'static dyn Level = &LoopsPartTwo {};
 
         // Running the initial code should result in Outcome::Continue because
         // the rover does not move at all.
-        let script = LEVELS[level_index].initial_code();
+        let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -93,7 +93,7 @@ mod tests {
     move_down(1);
 }";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
     }

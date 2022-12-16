@@ -8,6 +8,9 @@ impl Level for GateAndTerminal {
     fn name(&self) -> &'static str {
         "Forgotten Password"
     }
+    fn short_name(&self) -> &'static str {
+        "gate_and_terminal"
+    }
     fn objective(&self) -> &'static str {
         "Get the password from the data terminal ({terminal}), unlock the gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
     }
@@ -55,28 +58,23 @@ let password = read_data();
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
-    fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Functions", "Variables"]
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::constants::ERR_NO_DATA_TERMINAL;
-    use crate::levels::level_index_by_name;
     use crate::levels::Outcome;
-    use crate::levels::LEVELS;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(GateAndTerminal {}.name());
+        const LEVEL: &'static dyn Level = &GateAndTerminal {};
 
         // Running the initial code should result in Outcome::Continue.
-        let script = LEVELS[level_index].initial_code();
+        let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -91,7 +89,7 @@ mod tests {
             move_down(3);
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         // Regression check for a bug where read_data was not correctly
@@ -104,7 +102,7 @@ mod tests {
         let script = r#"
             let password = read_data();
         "#;
-        let result = game.run_player_script_internal(script.to_string(), level_index);
+        let result = game.run_player_script_internal(script.to_string(), LEVEL);
         assert!(result.is_err());
         assert!(result
             .err()

@@ -3,9 +3,9 @@ use crate::simulation::Actor;
 use crate::simulation::{Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
-pub struct SeeingDouble {}
+pub struct GlitchesPartOne {}
 
-impl SeeingDouble {
+impl GlitchesPartOne {
     // Note: We make obstacles a method so we can re-use the same set of
     // obstacles for each possible state.
     fn obstacles(&self) -> Vec<Obstacle> {
@@ -39,9 +39,12 @@ impl SeeingDouble {
     }
 }
 
-impl Level for SeeingDouble {
+impl Level for GlitchesPartOne {
     fn name(&self) -> &'static str {
         "Seeing Double"
+    }
+    fn short_name(&self) -> &'static str {
+        "glitches_part_one"
     }
     fn objective(&self) -> &'static str {
         "Determine your position, then move the rover ({robot}) to the goal ({goal})."
@@ -97,27 +100,24 @@ if pos[0] == 0 {
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
-    fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Variables", "Arrays", "If Statements"]
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::constants::ERR_OUT_OF_FUEL;
-    use crate::levels::{level_index_by_name, Outcome, LEVELS};
+    use crate::levels::Outcome;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(SeeingDouble {}.name());
+        const LEVEL: &'static dyn Level = &GlitchesPartOne {};
 
         // Running the initial code should result in Outcome::Failure due to
         // being destroyed by a bug.
-        let script = LEVELS[level_index].initial_code();
+        let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -130,14 +130,14 @@ mod tests {
                 move_left(5);
             }";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
         // Hard-coding the movement direction should always result in failure.
         let script = "move_right(5);";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -145,7 +145,7 @@ mod tests {
         );
         let script = "move_left(5);";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -161,7 +161,7 @@ mod tests {
                 // Do nothing.
             }";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
         let script = r"let pos = get_pos();
@@ -171,7 +171,7 @@ mod tests {
                 move_left(5);
             }";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
     }

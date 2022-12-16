@@ -21,7 +21,7 @@ use std::sync::mpsc;
 mod script_runner;
 use script_runner::{ScriptResult, ScriptRunner};
 mod levels;
-use levels::{Outcome, LEVELS};
+use levels::{Level, Outcome, LEVELS};
 mod js_types;
 
 #[wasm_bindgen]
@@ -31,7 +31,6 @@ mod js_types;
 pub struct Game {
     simulation: Rc<RefCell<Simulation>>,
     script_runner: ScriptRunner,
-    level_index: usize,
     player_action_rx: Rc<RefCell<mpsc::Receiver<Action>>>,
     // player_action_tx: Rc<RefCell<mpsc::Sender<Action>>>,
 }
@@ -61,7 +60,6 @@ impl Game {
         // Simulation must be wrapped in Rc<RefCell> in order to be
         // used in the script_runner. This is due to a constraint
         // imposed by the Rhai Engine for registered functions.
-        let level_index = 0;
         let simulation = Rc::new(RefCell::new(Simulation::new(Box::new(player_actor))));
 
         // Set up the script runner, which holds references to the
@@ -71,19 +69,19 @@ impl Game {
         Game {
             simulation,
             script_runner,
-            level_index,
             player_action_rx,
             // player_action_tx,
         }
     }
 
-    pub async fn run_player_script(
+    pub fn run_player_script(
         &mut self,
         script: String,
-        level_index: usize,
+        level_name: &str,
     ) -> Result<js_types::RunResult, JsValue> {
         // Run the script and convert the results to the corresponding JS Types.
-        let result = self.run_player_script_internal(script, level_index);
+        let level = LEVELS.get(level_name).unwrap();
+        let result = self.run_player_script_internal(script, level.as_ref());
         match result {
             Ok(result) => Ok(js_types::to_js_run_result(&result)),
             Err(err) => {
@@ -100,12 +98,11 @@ impl Game {
     fn run_player_script_internal(
         &mut self,
         script: String,
-        level_index: usize,
+        level: &'static dyn Level,
     ) -> Result<ScriptResult, Box<EvalAltResult>> {
         // Run the simulation multiple times, once for each possible initial
         // state. Return the first result that fails (if any), otherwise return
         // a random successful result.
-        let level = LEVELS[level_index].as_ref();
         let mut last_success: Option<ScriptResult> = None;
 
         // Shuffle the seeds to keep up the illusion that the game behavior is
@@ -116,10 +113,7 @@ impl Game {
 
         for i in seeds {
             // Reset the simulation and load the level.
-            self.level_index = level_index;
-            self.simulation
-                .borrow_mut()
-                .load_level(LEVELS[level_index].as_ref(), i);
+            self.simulation.borrow_mut().load_level(level, i);
             // Drain the channel.
             while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
             // Run the script.
@@ -137,6 +131,6 @@ impl Game {
 }
 
 #[wasm_bindgen]
-pub fn get_level_data() -> js_sys::Array {
-    js_types::to_level_data_array(LEVELS.as_ref())
+pub fn get_level_data() -> js_sys::Object {
+    js_types::to_level_data_obj(LEVELS.clone())
 }

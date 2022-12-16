@@ -2,11 +2,14 @@ use super::{std_check_win, Level, Outcome};
 use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
-pub struct LoopTheLoop {}
+pub struct LoopsPartOne {}
 
-impl Level for LoopTheLoop {
+impl Level for LoopsPartOne {
     fn name(&self) -> &'static str {
         "Loop the Loop"
+    }
+    fn short_name(&self) -> &'static str {
+        "loops_part_one"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal}) using a loop."
@@ -69,27 +72,24 @@ loop {
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
-    fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec!["Loops"]
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::constants::ERR_OUT_OF_FUEL;
-    use crate::levels::{level_index_by_name, Outcome, LEVELS};
+    use crate::levels::Outcome;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(LoopTheLoop {}.name());
+        const LEVEL: &'static dyn Level = &LoopsPartOne {};
 
         // Running the initial code should result in Outcome::Failure due to
         // running out of fuel.
-        let script = LEVELS[level_index].initial_code();
+        let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -102,7 +102,7 @@ mod tests {
             move_up(1);
         }";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
     }

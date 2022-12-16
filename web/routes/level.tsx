@@ -1,14 +1,6 @@
 import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import {
-  Container,
-  Flex,
-  Text,
-  Box,
-  UnorderedList,
-  ListItem,
-  Button,
-} from "@chakra-ui/react";
+import { Container, Flex, Text, Box } from "@chakra-ui/react";
 
 import {
   Game,
@@ -17,22 +9,17 @@ import {
   RunResult,
   FuzzyStateWithLine,
   LinePos,
-  // eslint-disable-next-line camelcase
-  get_level_data,
 } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { CodeError } from "../components/editor/editor";
 import { saveCode, loadCode } from "../lib/storage";
-import { sections, SectionName } from "../components/journal/journal_section";
-import JournalModal from "../components/journal/journal_modal";
 import { Replayer } from "../lib/replayer";
 import ControlBar from "../components/control_bar";
 import ObjectiveText from "../components/objective_text";
+import { LEVELS } from "../lib/scenes";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
-
-const LEVELS: LevelData[] = get_level_data();
 
 // A handler used to get the current code from the editor.
 // Starts out unset, but will be set by the editor component.
@@ -40,31 +27,33 @@ let getCode: () => string;
 
 export default function Level() {
   const { levelNumber } = useParams();
-  const levelIndex = useCallback(() => {
+  const currLevel = useCallback(() => {
     if (!levelNumber) {
       throw new Error("levelNumber is required");
     }
-    return parseInt(levelNumber, 10);
+    const levelIndex = parseInt(levelNumber, 10);
+    const level = LEVELS[levelIndex];
+    if (!level) {
+      throw new Error(`Level ${levelIndex} not found`);
+    }
+    return level;
   }, [levelNumber]);
 
-  const [code, setCode] = useState(LEVELS[levelIndex()].initial_code);
+  const [code, setCode] = useState(currLevel().initial_code);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [boardState, setBoardState] = useState(
-    LEVELS[levelIndex()].initial_state
-  );
+  const [boardState, setBoardState] = useState(currLevel().initial_state);
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
-  const [journalVisible, setJournalVisible] = useState(false);
-  const [journalSection, setJournalSection] = useState(
-    Object.keys(sections)[0] as SectionName
-  );
-
-  const currLevel = useCallback(() => LEVELS[levelIndex()], [levelIndex]);
+  // const [journalVisible, setJournalVisible] = useState(false);
+  // const [journalSection, setJournalSection] = useState(
+  //   Object.keys(sections)[0] as SectionName
+  // );
 
   useEffect(() => {
-    document.title = `Elara | Level ${levelIndex()}: ${currLevel().name}`;
-  }, [levelIndex, currLevel]);
+    // document.title = `Elara | Level ${levelIndex()}: ${currLevel().name}`;
+    document.title = `Elara | Level | ${currLevel().name}`;
+  }, [currLevel]);
 
   // Passed through to the Editor component to allow us
   // to get the current code from the editor in an efficient
@@ -91,10 +80,9 @@ export default function Level() {
   // Reset the relevant state when the URL changes.
   const location = useLocation();
   useEffect(() => {
-    const level = LEVELS[levelIndex()];
-    resetStateButKeepCode(level);
-    setCode(level.initial_code);
-  }, [location, levelIndex, resetStateButKeepCode]);
+    resetStateButKeepCode(currLevel());
+    setCode(currLevel().initial_code);
+  }, [location, currLevel, resetStateButKeepCode]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
     setBoardState(step.state);
@@ -136,7 +124,7 @@ export default function Level() {
   const runHandler = useCallback(async () => {
     let result: RunResult;
     try {
-      result = await game.run_player_script(getCode(), levelIndex());
+      result = await game.run_player_script(getCode(), currLevel().short_name);
     } catch (e) {
       // If there is an error, display it in the editor.
       if (e instanceof RhaiError) {
@@ -164,7 +152,7 @@ export default function Level() {
       onReplayDoneHandler(result)
     );
     replayer.start();
-  }, [resetStateButKeepCode, onReplayDoneHandler, levelIndex]);
+  }, [resetStateButKeepCode, onReplayDoneHandler, currLevel]);
 
   const stopHandler = useCallback(() => {
     resetStateButKeepCode();
@@ -235,35 +223,16 @@ export default function Level() {
 
   return (
     <>
-      <JournalModal
+      {/* <JournalModal
         visible={journalVisible}
         section={journalSection}
         setVisible={setJournalVisible}
-      />
+      /> */}
       <Container maxW="container.xl" mt={6}>
         <Box>
           <Text fontSize="2xl" fontWeight="bold" mb={1}>
-            Level {levelNumber}: {currLevel().name}
+            Level: {currLevel().name}
           </Text>
-          <Box hidden={currLevel().new_core_concepts.length === 0}>
-            <b>Key Concepts:</b>
-            <UnorderedList>
-              {currLevel().new_core_concepts.map((concept) => (
-                <ListItem key={concept} ml={2}>
-                  <Button
-                    fontWeight="semibold"
-                    color="blue.500"
-                    onClick={() => {
-                      setJournalSection(concept);
-                      setJournalVisible(true);
-                    }}
-                  >
-                    {concept}
-                  </Button>
-                </ListItem>
-              ))}
-            </UnorderedList>
-          </Box>
           <p>
             <b>Objective:</b> <ObjectiveText text={currLevel().objective} />
           </p>

@@ -8,6 +8,9 @@ impl Level for Gates {
     fn name(&self) -> &'static str {
         "Let Me In"
     }
+    fn short_name(&self) -> &'static str {
+        "gates"
+    }
     fn objective(&self) -> &'static str {
         "Open the locked gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
     }
@@ -43,35 +46,30 @@ move_right(2);
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
-    fn new_core_concepts(&self) -> Vec<&'static str> {
-        vec![]
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::constants::ERR_OUT_OF_FUEL;
-    use crate::levels::level_index_by_name;
     use crate::levels::Outcome;
-    use crate::levels::LEVELS;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        let level_index = level_index_by_name(Gates {}.name());
+        const LEVEL: &'static dyn Level = &Gates {};
 
         // Running the initial code should result in Outcome::Continue.
-        let script = LEVELS[level_index].initial_code();
+        let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
         // Running this code should result in Outcome::Success.
         let script = r#"move_right(2); say("lovelace"); move_right(5);"#;
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -79,7 +77,7 @@ mod tests {
         // result in running out of fuel.
         let script = "loop { move_right(1); }";
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -89,7 +87,7 @@ mod tests {
         // Saying the wrong password should not open the gate.
         let script = r#"move_right(2); say("wrong password"); move_right(5);"#;
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -97,7 +95,7 @@ mod tests {
         // open it.
         let script = r#"say("lovelace"); move_right(2); move_right(5);"#;
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -105,7 +103,7 @@ mod tests {
         // can't reach the goal.
         let script = r#"move_right(2); say("lovelace"); say("lovelace"); move_right(5);"#;
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -113,7 +111,7 @@ mod tests {
         let script =
             r#"move_right(2); say("lovelace"); say("lovelace"); say("lovelace"); move_right(5);"#;
         let result = game
-            .run_player_script_internal(script.to_string(), level_index)
+            .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
     }
