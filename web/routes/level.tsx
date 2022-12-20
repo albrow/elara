@@ -51,9 +51,9 @@ export default function Level() {
   // );
 
   useEffect(() => {
-    // document.title = `Elara | Level ${levelIndex()}: ${currLevel().name}`;
-    document.title = `Elara | Level | ${currLevel().name}`;
-  }, [currLevel]);
+    document.title = `Elara | Level ${levelNumber}: ${currLevel().name}`;
+    // document.title = `Elara | Level | ${currLevel().name}`;
+  }, [levelNumber, currLevel]);
 
   // Passed through to the Editor component to allow us
   // to get the current code from the editor in an efficient
@@ -231,7 +231,7 @@ export default function Level() {
       <Container maxW="container.xl" mt={6}>
         <Box>
           <Text fontSize="2xl" fontWeight="bold" mb={1}>
-            Level: {currLevel().name}
+            Level {levelNumber}: {currLevel().name}
           </Text>
           <p>
             <b>Objective:</b> <ObjectiveText text={currLevel().objective} />
