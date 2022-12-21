@@ -1,6 +1,9 @@
 // Shared constants go here. Other constants should be
 // defined in their respective components.
 
+export const NAVBAR_HEIGHT = 56; // In pixels
+
+// Constants related to the game board and game logic.
 export const WIDTH = 12;
 export const HEIGHT = 8;
 export const TILE_SIZE = 50;

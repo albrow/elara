@@ -9,6 +9,8 @@ import {
 } from "@chakra-ui/react";
 import { MdExpandMore } from "react-icons/md";
 
+import { NAVBAR_HEIGHT } from "../../lib/constants";
+
 // eslint-disable-next-line camelcase
 import { LEVELS } from "../../lib/scenes";
 import NavbarLink from "./navbar_link";
@@ -16,8 +18,8 @@ import NavbarDropdownLink from "./navbar_dropdown_link";
 
 export default function Navbar() {
   return (
-    <Box bg="gray.800" p={2} textColor="white">
-      <Container maxW="container.xl" height="40px">
+    <Box bg="gray.800" textColor="white">
+      <Container maxW="container.xl" p={2} height={`${NAVBAR_HEIGHT}px`}>
         <Flex height="100%" align="center">
           <NavbarLink to="/home" name="Home" />
           <NavbarLink to="/journal" name="Journal" />

@@ -11,6 +11,7 @@ import "@fontsource/nunito/900.css";
 import init from "../elara-lib/pkg";
 import Home from "./routes/home";
 import Journal from "./routes/journal";
+import DialogOverBg from "./routes/dialog_over_bg";
 
 const elaraTheme = extendTheme({
   fonts: {
@@ -40,6 +41,10 @@ const elaraTheme = extendTheme({
         {
           path: "/level/:levelNumber",
           element: <Level />,
+        },
+        {
+          path: "/dialog/:treeName",
+          element: <DialogOverBg />,
         },
         {
           path: "/journal",
