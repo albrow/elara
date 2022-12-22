@@ -1,13 +1,15 @@
 import { Container, Button, Box, Image, Flex } from "@chakra-ui/react";
 import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
-import { DialogChoice, DIALOG_TREES } from "../lib/dialog_tree";
+import { v4 as uuidv4 } from "uuid";
+import { DialogChoice, TREES, NODES, CHOICES } from "../lib/dialog_tree";
 
 import npcRihtImgUrl from "../images/npc_right.png";
 import { NAVBAR_HEIGHT } from "../lib/constants";
 import ChatMessage from "../components/dialog/chat_message";
 
 type MsgData = {
+  id: string;
   text: string;
   isPlayer: boolean;
 };
@@ -20,7 +22,7 @@ export default function DialogOverBg() {
     if (!treeName) {
       throw new Error("treeName is required");
     }
-    const tree = DIALOG_TREES[treeName];
+    const tree = TREES[treeName];
     if (!tree) {
       throw new Error(`DialogTree "${treeName}" not found`);
     }
@@ -30,21 +32,35 @@ export default function DialogOverBg() {
     document.title = `Elara | ${currTree().name}`;
   }, [location, currTree]);
 
-  const [node, setNode] = useState(currTree().start);
+  const [node, setNode] = useState(NODES[currTree().startId]);
   const [chatHistory, setChatHistory] = useState<MsgData[]>([]);
 
   const choiceClickHandler = useCallback(
     (choice: DialogChoice) => {
-      if (choice.next == null) {
+      if (choice.nextId == null) {
         // TODO(albrow): Move on to the next scene.
         alert("Dialog ended. Should move to next scene.");
       } else {
-        setChatHistory([
-          ...chatHistory,
-          { text: choice.text, isPlayer: true },
-          { text: node.text, isPlayer: false },
-        ]);
-        setNode(choice.next);
+        let newChats = [
+          { text: choice.text, isPlayer: true, id: uuidv4() },
+          { text: node.text, isPlayer: false, id: uuidv4() },
+        ];
+        let nextNode = NODES[choice.nextId];
+        while (nextNode.choiceIds.length === 0) {
+          // No choices. Continue immediately to the next node.
+          if (nextNode.nextId == null) {
+            throw new Error(
+              "nextId should not be null if there are no choices."
+            );
+          }
+          newChats = [
+            { text: nextNode.text, isPlayer: false, id: uuidv4() },
+            ...newChats,
+          ];
+          nextNode = NODES[nextNode.nextId];
+        }
+        setChatHistory([...newChats, ...chatHistory]);
+        setNode(nextNode);
       }
     },
     [chatHistory, node]
@@ -80,20 +96,23 @@ export default function DialogOverBg() {
           >
             <Flex direction="row" alignContent="right" justifyContent="right">
               <Box>
-                {node.choices.map((choice) => (
-                  <Button
-                    key={choice.text}
-                    onClick={() => choiceClickHandler(choice)}
-                  >
-                    {choice.text}
-                  </Button>
-                ))}
+                {node.choiceIds.map((choiceId) => {
+                  const choice = CHOICES[choiceId as keyof typeof CHOICES];
+                  return (
+                    <Button
+                      key={choice.text}
+                      onClick={() => choiceClickHandler(choice)}
+                    >
+                      {choice.text}
+                    </Button>
+                  );
+                })}
               </Box>
             </Flex>
             <ChatMessage text={node.text} fromPlayer={false} />
             {chatHistory.map((msg) => (
               <ChatMessage
-                key={msg.text}
+                key={msg.id}
                 text={msg.text}
                 fromPlayer={msg.isPlayer}
               />
