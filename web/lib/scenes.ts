@@ -9,7 +9,7 @@ const levelData: Map<string, LevelData> = new Map(
 );
 
 export const LEVELS = [
-  levelData.get("hello_world")!,
+  // levelData.get("hello_world")!,
   levelData.get("movement")!,
   levelData.get("expressions")!,
   levelData.get("math_expressions")!,
@@ -24,3 +24,32 @@ export const LEVELS = [
   levelData.get("glitches_part_one")!,
   levelData.get("glitches_part_two")!,
 ];
+
+export type SceneType = "level" | "dialogue" | "journal";
+
+export interface Scene {
+  type: SceneType;
+  name: string;
+  route: string;
+}
+
+export const SCENES: Scene[] = [
+  {
+    type: "dialogue",
+    name: "Introduction",
+    route: "/dialog/intro",
+  },
+  {
+    type: "level",
+    name: `Level 0: ${LEVELS[0].name}`,
+    route: "/level/0",
+  },
+  {
+    type: "journal",
+    name: "Journal: Functions",
+    route: "/journal/concepts/Functions",
+  },
+];
+
+export const getSceneIndexFromRoute = (route: string): number | undefined =>
+  SCENES.findIndex((scene) => scene.route === route);
