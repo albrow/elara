@@ -20,8 +20,11 @@ export interface CodeError {
   message: string;
 }
 
+export type EditorType = "level" | "example";
+
 interface EditorProps {
   code: string;
+  type: EditorType;
   editable: boolean;
   setGetCodeHandler: (handler: () => string) => void;
   activeLine?: LinePos;
@@ -64,8 +67,11 @@ function codeErrorToDiagnostic(view: EditorView, e: CodeError): Diagnostic {
 export default function Editor(props: EditorProps) {
   const editor = useRef<HTMLDivElement | null>(null);
 
+  const height = props.type === "level" ? "377px" : undefined;
+  const sizeClass = props.type === "level" ? "level-sized" : undefined;
+
   const { setContainer, view } = useCodeMirror({
-    height: "377px",
+    height,
     editable: props.editable,
     readOnly: !props.editable,
     container: editor.current,
@@ -113,7 +119,7 @@ export default function Editor(props: EditorProps) {
   }, [props.codeError, view]);
 
   return (
-    <Box id="editor-wrapper">
+    <Box id="editor-wrapper" className={sizeClass}>
       <div ref={editor} />
     </Box>
   );

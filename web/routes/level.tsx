@@ -45,10 +45,6 @@ export default function Level() {
   const [boardState, setBoardState] = useState(currLevel().initial_state);
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
-  // const [journalVisible, setJournalVisible] = useState(false);
-  // const [journalSection, setJournalSection] = useState(
-  //   Object.keys(sections)[0] as SectionName
-  // );
 
   useEffect(() => {
     document.title = `Elara | Level ${levelNumber}: ${currLevel().name}`;
@@ -254,6 +250,7 @@ export default function Level() {
             <Box w="608px">
               <Editor
                 code={code}
+                type="level"
                 editable={!isRunning}
                 setGetCodeHandler={setGetCodeHandler}
                 activeLine={activeLine}

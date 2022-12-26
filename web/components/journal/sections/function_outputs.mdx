@@ -1,0 +1,21 @@
+import RunnableExample from "../runnable_example";
+
+### Function Outputs
+
+Some functions may have an output, also called a "return value". If a
+function has an output, it just means that it spits out a value whenever
+it is called. The output of a function can be used the same way as
+any other value.
+
+For example, the `random` function outputs (or "returns") a random
+number between 1 and 100. We can use the output of the `random` function
+in the same way as any other number. E.g., we can use it as the _input_ to
+the `say` function:
+
+<RunnableExample
+  code={`say(random());
+`}
+/>
+
+Not all functions have an output. For example, the `move_right` function
+does not output anything.

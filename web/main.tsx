@@ -10,7 +10,6 @@ import "@fontsource/nunito/900.css";
 
 import init from "../elara-lib/pkg";
 import Home from "./routes/home";
-import Journal from "./routes/journal";
 import DialogOverBg from "./routes/dialog_over_bg";
 
 const elaraTheme = extendTheme({
@@ -28,6 +27,7 @@ const elaraTheme = extendTheme({
   // can be synchrounous and not worry about waiting for Wasm to load.
   const Root = (await import("./routes/root")).default;
   const Level = (await import("./routes/level")).default;
+  const Journal = (await import("./routes/journal")).default;
 
   const router = createBrowserRouter([
     {

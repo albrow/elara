@@ -28,8 +28,8 @@ interface ControlBarProps {
   pauseHandler: () => void;
   resumeHandler: () => void;
   stepForwardHandler: () => void;
-  saveCodeHandler: () => void;
-  loadCodeHandler: () => void;
+  saveCodeHandler?: () => void;
+  loadCodeHandler?: () => void;
 }
 
 export default function ControlBar(props: ControlBarProps) {
@@ -91,7 +91,7 @@ export default function ControlBar(props: ControlBarProps) {
           )}
         </Box>
         <Spacer />
-        <Box>
+        <Box hidden={!props.saveCodeHandler && !props.loadCodeHandler}>
           <Menu placement="bottom-end">
             <MenuButton
               rounded="md"
