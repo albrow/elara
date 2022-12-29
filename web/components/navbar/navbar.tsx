@@ -15,7 +15,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import { NAVBAR_HEIGHT } from "../../lib/constants";
 // eslint-disable-next-line camelcase
-import { getSceneIndexFromRoute, SCENES } from "../../lib/scenes";
+import { getNextSceneFromRoute, SCENES } from "../../lib/scenes";
 import NavbarLink from "./navbar_link";
 import NavbarDropdownLink from "./navbar_dropdown_link";
 
@@ -24,16 +24,11 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   const navigateToNextScene = useCallback(() => {
-    const currIndex = getSceneIndexFromRoute(location.pathname);
-    if (currIndex == null) {
+    const nextScene = getNextSceneFromRoute(location.pathname);
+    if (nextScene == null) {
       throw new Error("Invalid route");
     }
-    if (currIndex === SCENES.length - 1) {
-      // We're already on the last scene, so don't do anything.
-    } else {
-      const nextScene = SCENES[currIndex + 1];
-      navigate(nextScene.route);
-    }
+    navigate(nextScene.route);
   }, [location, navigate]);
 
   return (

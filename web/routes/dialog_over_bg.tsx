@@ -1,12 +1,13 @@
 import { Container, Button, Box, Image, Flex } from "@chakra-ui/react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { DialogChoice, TREES, NODES, CHOICES } from "../lib/dialog_tree";
 
-import npcRihtImgUrl from "../images/npc_right.png";
+import npcRightImgUrl from "../images/npc_right.png";
 import { NAVBAR_HEIGHT } from "../lib/constants";
 import ChatMessage from "../components/dialog/chat_message";
+import { getNextSceneFromRoute } from "../lib/scenes";
 
 type MsgData = {
   id: string;
@@ -17,6 +18,15 @@ type MsgData = {
 export default function DialogOverBg() {
   const location = useLocation();
   const { treeName } = useParams();
+  const navigate = useNavigate();
+
+  const navigateToNextScene = useCallback(() => {
+    const nextScene = getNextSceneFromRoute(location.pathname);
+    if (nextScene == null) {
+      throw new Error("Invalid route");
+    }
+    navigate(nextScene.route);
+  }, [location, navigate]);
 
   const currTree = useCallback(() => {
     if (!treeName) {
@@ -38,8 +48,7 @@ export default function DialogOverBg() {
   const choiceClickHandler = useCallback(
     (choice: DialogChoice) => {
       if (choice.nextId == null) {
-        // TODO(albrow): Move on to the next scene.
-        alert("Dialog ended. Should move to next scene.");
+        navigateToNextScene();
       } else {
         let newChats = [
           { text: choice.text, isPlayer: true, id: uuidv4() },
@@ -63,7 +72,7 @@ export default function DialogOverBg() {
         setNode(nextNode);
       }
     },
-    [chatHistory, node]
+    [chatHistory, navigateToNextScene, node.text]
   );
 
   return (
@@ -75,7 +84,7 @@ export default function DialogOverBg() {
       <Flex direction="row" height="100%">
         <Box id="img-column" marginTop="auto">
           <Image
-            src={npcRihtImgUrl}
+            src={npcRightImgUrl}
             alt="profile"
             width={128}
             display="inline"

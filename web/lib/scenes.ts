@@ -78,3 +78,14 @@ export const SCENES: Scene[] = [
 
 export const getSceneIndexFromRoute = (route: string): number | undefined =>
   SCENES.findIndex((scene) => scene.route === route);
+
+export const getNextSceneFromRoute = (route: string): Scene | undefined => {
+  const index = getSceneIndexFromRoute(route);
+  if (index === undefined) {
+    return undefined;
+  }
+  if (index === SCENES.length - 1) {
+    return undefined;
+  }
+  return SCENES[index + 1];
+};
