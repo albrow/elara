@@ -1,3 +1,5 @@
+import RunnableExample from "../runnable_example";
+
 ### Comments
 
 Every line that starts with two slashes `//` is called a
@@ -5,18 +7,19 @@ Every line that starts with two slashes `//` is called a
 just little notes to help you understand the code. Feel free
 to add your own comments too!
 
-#### Examples
+Here's an example of a basic comment:
 
-A basic comment:
+<RunnableExample
+  code={`// This is a comment.
+// You can have any number of comments in your code.
+`}
+/>
 
-```rhai
-// This is a comment.
-```
+{/* TODO(albrow): Consider tweaking this wording. */}
+In this next example, the `say` function is part of a comment. That means
+the code in that line will not run and the rover will not say anything:
 
-Here, the `say` function is preceded by two slashes. That means
-it is "commented out" and will not run (i.e. the rover will not
-say anything):
+<RunnableExample code={`// say("hello");`} />
 
-```rhai
-// say("hello");
-```
+Try removing the two slashes before the `say` function above and
+see what happens.

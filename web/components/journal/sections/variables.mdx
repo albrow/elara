@@ -1,43 +1,52 @@
+import RunnableExample from "../runnable_example";
+
 ### Variables
 
-Any value can be assigned to a variable, which you can reference later on.
-You can think of variables as "containers" that you can put values into.
-You can declare a new variable with the `let` keyword.
+{/* Note: Students might be confused by the word "value" here, but according to my mom, they will know about "expressions". They also know the word "constant" and use it to refer to a number value (in programming what is called a "literal"). */}
 
-Here's an example of creating a new variable named `x` and assigning the value
-`42` to it:
+A variable can be assigned any value. You can think of variables as "containers"
+that you can put values into and then reference later. You can use a variable
+the same way that you would use its underlying value.
 
-```rhai
-let x = 42;
-```
+To create a new variable, use the `let` keyword. In the example below, we
+assign the value `"hello"` to a variable called `greeting`. Then we use
+`greeting` as the input to the `say` function.
 
-You can use a variable the same way that you would use the underlying value.
-For example, you can pass a variable to the `say` function:
-
-```rhai
+<RunnableExample
+  code={`// Create a new variable named "greeting" with a value of "hello".
 let greeting = "hello";
+
+// Use the variable "greeting" as the input to the "say" function.
 say(greeting);
-```
+`}
+/>
 
 After a variable is created, you can change the value it holds by using the
-`=` operator again. You don't need to use the `let` keyword when changing the
+`=` operator again.
+
+ℹ️ **Tip:** You don't need to use the `let` keyword when changing the
 value of an existing variable.
 
-```rhai
+<RunnableExample
+  code={`// First create a new variable named "number" with a value of 5.
 let number = 5;
 say(number);
+
+// Now change the value of "number" to 10.
 number = 10;
 say(number);
-```
+`}
+/>
 
 If a function has an output, you can assign the output to a variable. Here's
 an example of assigning the output of the `random` function to a variable called
 `random_number`.
 
-```rhai
-let random_number = random();
+<RunnableExample
+  code={`let random_number = random();
 say(random_number);
-```
+`}
+/>
 
 ℹ️ **Tip:** If you are ever unsure about the value a variable holds, you can use
 the `say` function to have the rover say the value for you.

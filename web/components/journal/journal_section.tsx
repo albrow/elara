@@ -1,4 +1,5 @@
 import Functions from "./sections/functions.mdx";
+import FunctionOutputs from "./sections/function_outputs.mdx";
 import Comments from "./sections/comments.mdx";
 import Expressions from "./sections/expressions.mdx";
 import WhileLoops from "./sections/while_loops.mdx";
@@ -12,17 +13,18 @@ import Loops from "./sections/loops.mdx";
 import "../../styles/md_content.css";
 
 export const sections = {
-  Comments,
-  Functions,
-  Expressions,
-  Literals,
-  "Math Expressions": MathExpressions,
-  Loops,
-  Comparisons,
-  Variables,
-  Arrays,
-  "While Loops": WhileLoops,
-  "If Statements": IfStatements,
+  comments: Comments,
+  functions: Functions,
+  function_outputs: FunctionOutputs,
+  expressions: Expressions,
+  literals: Literals,
+  math_expressions: MathExpressions,
+  loops: Loops,
+  comparisons: Comparisons,
+  variables: Variables,
+  arrays: Arrays,
+  while_loops: WhileLoops,
+  if_statements: IfStatements,
 };
 
 export type SectionName = keyof typeof sections;

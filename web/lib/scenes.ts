@@ -9,18 +9,13 @@ const levelData: Map<string, LevelData> = new Map(
 );
 
 export const LEVELS = [
-  // levelData.get("hello_world")!,
   levelData.get("movement")!,
-  levelData.get("expressions")!,
-  levelData.get("math_expressions")!,
   levelData.get("fuel_part_one")!,
   levelData.get("gates")!,
-  levelData.get("variables")!,
   levelData.get("gate_and_terminal")!,
   levelData.get("enemies_part_one")!,
   levelData.get("loops_part_one")!,
   levelData.get("loops_part_two")!,
-  levelData.get("comparisons")!,
   levelData.get("glitches_part_one")!,
   levelData.get("glitches_part_two")!,
 ];
@@ -47,7 +42,37 @@ export const SCENES: Scene[] = [
   {
     type: "journal",
     name: "Journal: Functions",
-    route: "/journal/concepts/Functions",
+    route: "/journal/concepts/functions",
+  },
+  {
+    type: "journal",
+    name: "Journal: Comments",
+    route: "/journal/concepts/comments",
+  },
+  {
+    type: "level",
+    name: `Level 1: ${LEVELS[1].name}`,
+    route: "/level/1",
+  },
+  {
+    type: "level",
+    name: `Level 2: ${LEVELS[2].name}`,
+    route: "/level/2",
+  },
+  {
+    type: "journal",
+    name: "Journal: Function Outputs",
+    route: "/journal/concepts/function_outputs",
+  },
+  {
+    type: "journal",
+    name: "Journal: Variables",
+    route: "/journal/concepts/variables",
+  },
+  {
+    type: "level",
+    name: `Level 3: ${LEVELS[3].name}`,
+    route: "/level/3",
   },
 ];
 

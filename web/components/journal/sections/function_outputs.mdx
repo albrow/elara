@@ -7,15 +7,18 @@ function has an output, it just means that it spits out a value whenever
 it is called. The output of a function can be used the same way as
 any other value.
 
-For example, the `random` function outputs (or "returns") a random
-number between 1 and 100. We can use the output of the `random` function
-in the same way as any other number. E.g., we can use it as the _input_ to
-the `say` function:
+For example, the `random` function outputs a random number between 1 and 100.
+We can use the output of the `random` function in the same way as any
+other number. Below, we use it as the _input_ to the `say` function. This
+will cause the rover to say a random number.
 
 <RunnableExample
   code={`say(random());
 `}
 />
 
-Not all functions have an output. For example, the `move_right` function
+ℹ️ **Tip:** When a function does not have any inputs, you still need to include the
+parentheses (just don't put anything inside them).
+
+ℹ️ **Tip:** Not all functions have an output. For example, the `move_right` function
 does not output anything.
