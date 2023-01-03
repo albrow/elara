@@ -11,6 +11,7 @@ import {
   LinePos,
 } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
+import LevelEndModal from "../components/level_end_modal";
 import Editor, { CodeError } from "../components/editor/editor";
 import { saveCode, loadCode } from "../lib/storage";
 import { Replayer } from "../lib/replayer";
@@ -46,9 +47,13 @@ export default function Level() {
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalKind, setModalKind] = useState<"success" | "failure">("success");
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+
   useEffect(() => {
     document.title = `Elara | Level ${levelNumber}: ${currLevel().name}`;
-    // document.title = `Elara | Level | ${currLevel().name}`;
   }, [levelNumber, currLevel]);
 
   // Passed through to the Editor component to allow us
@@ -94,21 +99,35 @@ export default function Level() {
       // There are no more steps to iterate through, display the outcome.
       switch (result.outcome) {
         case "no_objective":
-          alert(
+          setModalKind("success");
+          setModalTitle("Great Job!");
+          setModalMessage(
             "Great! Keep playing around with the code as much as you like! Whenever you are " +
               "ready, you can move on to the next level."
           );
+          setModalVisible(true);
           break;
         case "success":
-          alert("You win!");
+          setModalKind("success");
+          setModalTitle("Great Job!");
+          setModalMessage(
+            "You completed the objective! You can keep playing if you want or move on to the next level."
+          );
+          setModalVisible(true);
           break;
         case "continue":
-          alert(
-            "Your code ran without any errors but you didn't finish the objective. Try again!"
+          setModalKind("failure");
+          setModalTitle("Keep Going!");
+          setModalMessage(
+            "You didn't quite complete the objective, but you're on the right track!"
           );
+          setModalVisible(true);
           break;
         default:
-          alert(result.outcome);
+          setModalKind("failure");
+          setModalTitle("Uh Oh!");
+          setModalMessage(result.outcome);
+          setModalVisible(true);
           break;
       }
       resetStateButKeepCode();
@@ -132,9 +151,11 @@ export default function Level() {
             message: e.message,
           });
         } else {
-          alert(e.message);
+          setModalKind("failure");
+          setModalTitle("Uh Oh!");
+          setModalMessage(e.message);
+          setModalVisible(true);
         }
-
         return;
       }
       throw e;
@@ -219,11 +240,13 @@ export default function Level() {
 
   return (
     <>
-      {/* <JournalModal
-        visible={journalVisible}
-        section={journalSection}
-        setVisible={setJournalVisible}
-      /> */}
+      <LevelEndModal
+        visible={modalVisible}
+        setVisible={setModalVisible}
+        title={modalTitle}
+        message={modalMessage}
+        kind={modalKind}
+      />
       <Container maxW="container.xl" mt={6}>
         <Box>
           <Text fontSize="2xl" fontWeight="bold" mb={1}>
