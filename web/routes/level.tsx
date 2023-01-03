@@ -74,6 +74,7 @@ export default function Level() {
       setActiveLine(undefined);
       setCodeError(undefined);
       setBoardState(levelToLoad.initial_state);
+      setModalVisible(false);
     },
     [currLevel]
   );
@@ -130,9 +131,8 @@ export default function Level() {
           setModalVisible(true);
           break;
       }
-      resetStateButKeepCode();
     },
-    [resetStateButKeepCode]
+    []
   );
 
   // When the run button is clicked, run the code and start the replay.
@@ -246,6 +246,7 @@ export default function Level() {
         title={modalTitle}
         message={modalMessage}
         kind={modalKind}
+        onClose={resetStateButKeepCode}
       />
       <Container maxW="container.xl" mt={6}>
         <Box>
