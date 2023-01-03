@@ -31,6 +31,16 @@ export default function Navbar() {
     navigate(nextScene.route);
   }, [location, navigate]);
 
+  const isLastScene = useCallback(() => {
+    const nextScene = getNextSceneFromRoute(location.pathname);
+    return nextScene == null;
+  }, [location.pathname]);
+
+  const isHome = useCallback(
+    () => location.pathname === "/home",
+    [location.pathname]
+  );
+
   return (
     <Box bg="gray.800" textColor="white">
       <Container maxW="container.xl" p={2} height={`${NAVBAR_HEIGHT}px`}>
@@ -69,9 +79,9 @@ export default function Navbar() {
             </MenuList>
           </Menu>
           <Spacer />
-          {location.pathname !== SCENES[SCENES.length - 1].route && (
+          {!isLastScene() && (
             <Button colorScheme="whiteAlpha" onClick={navigateToNextScene}>
-              Next
+              {isHome() ? "Start" : "Next"}
               <MdArrowForward size="1.3em" style={{ marginLeft: "0.2rem" }} />
             </Button>
           )}

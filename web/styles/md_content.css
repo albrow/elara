@@ -79,3 +79,9 @@
   border: solid 1px var(--chakra-colors-gray-300);
   padding: 0.4rem 1rem;
 }
+
+.md-content hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: solid 2px var(--chakra-colors-gray-300);
+}
