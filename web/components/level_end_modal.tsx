@@ -90,7 +90,9 @@ export default function LevelEndModal(props: LevelEndModalProps) {
               {props.title}
             </Text>
             <Text fontSize={18} lineHeight="1.4em" mt={6}>
-              {props.message}
+              {isLastScene()
+                ? "You've completed all the levels!"
+                : props.message}
             </Text>
             {props.kind === "success" && (
               <Flex justifyContent="center">

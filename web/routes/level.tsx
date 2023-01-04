@@ -66,6 +66,7 @@ export default function Level() {
   const resetStateButKeepCode = useCallback(
     (levelOverride?: LevelData) => {
       const levelToLoad = levelOverride || currLevel();
+      setModalVisible(false);
       setIsRunning(false);
       setIsPaused(false);
       if (replayer) {
@@ -74,7 +75,6 @@ export default function Level() {
       setActiveLine(undefined);
       setCodeError(undefined);
       setBoardState(levelToLoad.initial_state);
-      setModalVisible(false);
     },
     [currLevel]
   );
@@ -112,7 +112,7 @@ export default function Level() {
           setModalKind("success");
           setModalTitle("Great Job!");
           setModalMessage(
-            "You completed the objective! You can keep playing if you want or move on to the next level."
+            "You completed the objective! You can replay this level if you want or move on to the next one."
           );
           setModalVisible(true);
           break;
