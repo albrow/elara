@@ -14,7 +14,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["vitest/importMeta"]
   },
   "include": ["web/**/*.ts", "web/**/*.d.ts", "web/**/*.tsx", "web/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]

@@ -31,5 +31,10 @@ export default defineConfig(async () => {
       react(),
       mdx.default({ remarkPlugins: [remarkGfm.default as any] }),
     ],
+    // Disable/remove in-source tests for production builds.
+    // See: https://vitest.dev/guide/in-source.html#production-build
+    define: {
+      "import.meta.vitest": "undefined",
+    },
   };
 });

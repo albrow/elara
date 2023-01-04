@@ -8,12 +8,15 @@
     "build:wasm": "wasm-pack build ./elara-lib --target web --release -- --features=wasm",
     "watch:wasm": "cd ./elara-lib && cargo watch -i .gitignore -i \"pkg/*\" -s \"wasm-pack build --target web --dev -- --features=wasm\"",
     "test:rust": "cd ./elara-lib && cargo test",
+    "test:rust-wasm": "cd ./elara-lib && wasm-pack test --chrome --headless -- --features=wasm",
+    "test:js": "vitest run",
     "dev": "vite",
     "build": "npm run build:wasm && tsc --noEmit && vite build",
-    "test": "npm run test:rust && cd ./elara-lib && wasm-pack test --chrome --headless -- --features=wasm",
+    "test": "npm run test:rust && npm run test:rust-wasm && npm run test:js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
   },
   "devDependencies": {
+    "@testing-library/react": "^13.4.0",
     "@types/mdx": "^2.0.3",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
@@ -32,11 +35,13 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "gh-pages": "^4.0.0",
+    "jsdom": "^20.0.3",
     "prettier": "^2.8.1",
     "rimraf": "^3.0.0",
     "typescript": "^4.8.2",
     "vite": "^3.1.7",
-    "vite-plugin-wasm-pack": "^0.1.12"
+    "vite-plugin-wasm-pack": "^0.1.12",
+    "vitest": "^0.26.3"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.1",
