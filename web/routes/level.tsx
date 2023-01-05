@@ -18,6 +18,11 @@ import { Replayer } from "../lib/replayer";
 import ControlBar from "../components/control_bar";
 import ObjectiveText from "../components/objective_text";
 import { LEVELS } from "../lib/scenes";
+import {
+  updateLevelCode,
+  useSaveData,
+  markLevelCompleted,
+} from "../lib/save_data";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
@@ -40,7 +45,16 @@ export default function Level() {
     return level;
   }, [levelNumber]);
 
-  const [code, setCode] = useState(currLevel().initial_code);
+  const [saveData, setSaveData] = useSaveData();
+
+  const initialCode = useCallback(
+    () =>
+      saveData.levelStates[currLevel().short_name]?.code ||
+      currLevel().initial_code,
+    [currLevel, saveData]
+  );
+
+  const [code, setCode] = useState(initialCode());
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [boardState, setBoardState] = useState(currLevel().initial_state);
@@ -83,8 +97,8 @@ export default function Level() {
   const location = useLocation();
   useEffect(() => {
     resetStateButKeepCode(currLevel());
-    setCode(currLevel().initial_code);
-  }, [location, currLevel, resetStateButKeepCode]);
+    setCode(initialCode());
+  }, [location, currLevel, resetStateButKeepCode, initialCode]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
     setBoardState(step.state);
@@ -100,6 +114,7 @@ export default function Level() {
       // There are no more steps to iterate through, display the outcome.
       switch (result.outcome) {
         case "no_objective":
+          // Set modal parameters and show the modal.
           setModalKind("success");
           setModalTitle("Great Job!");
           setModalMessage(
@@ -107,6 +122,15 @@ export default function Level() {
               "ready, you can move on to the next level."
           );
           setModalVisible(true);
+
+          // Update the level completed status.
+          // eslint-disable-next-line no-case-declarations
+          let newSaveData = markLevelCompleted(
+            saveData,
+            currLevel().short_name
+          );
+          setSaveData(newSaveData);
+
           break;
         case "success":
           setModalKind("success");
@@ -115,6 +139,12 @@ export default function Level() {
             "You completed the objective! You can replay this level if you want or move on to the next one."
           );
           setModalVisible(true);
+
+          // Update the level completed status.
+          // eslint-disable-next-line no-case-declarations
+          newSaveData = markLevelCompleted(saveData, currLevel().short_name);
+          setSaveData(newSaveData);
+
           break;
         case "continue":
           setModalKind("failure");
@@ -132,11 +162,19 @@ export default function Level() {
           break;
       }
     },
-    []
+    [currLevel, saveData, setSaveData]
   );
 
   // When the run button is clicked, run the code and start the replay.
   const runHandler = useCallback(async () => {
+    // Store the latest code in the save data.
+    const newSaveData = updateLevelCode(
+      saveData,
+      currLevel().short_name,
+      getCode()
+    );
+    setSaveData(newSaveData);
+
     let result: RunResult;
     try {
       result = await game.run_player_script(getCode(), currLevel().short_name);
@@ -169,7 +207,13 @@ export default function Level() {
       onReplayDoneHandler(result)
     );
     replayer.start();
-  }, [resetStateButKeepCode, onReplayDoneHandler, currLevel]);
+  }, [
+    saveData,
+    currLevel,
+    setSaveData,
+    resetStateButKeepCode,
+    onReplayDoneHandler,
+  ]);
 
   const stopHandler = useCallback(() => {
     resetStateButKeepCode();
