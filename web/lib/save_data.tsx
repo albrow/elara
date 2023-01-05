@@ -87,7 +87,9 @@ export function useSaveData(): readonly [
 ] {
   const [saveData, setSaveData] = useState<SaveData>(load());
   useEffect(() => {
-    save(saveData);
+    // Use setTimeout to write to local storage asynchronously.
+    // This way we don't block the main thread.
+    setTimeout(() => save(saveData), 0);
   }, [saveData]);
   return [saveData, setSaveData] as const;
 }

@@ -17,6 +17,7 @@ import {
   MdMenu,
   MdUploadFile,
   MdSave,
+  MdReplay,
 } from "react-icons/md";
 
 interface ControlBarProps {
@@ -30,6 +31,7 @@ interface ControlBarProps {
   stepForwardHandler: () => void;
   saveCodeHandler?: () => void;
   loadCodeHandler?: () => void;
+  resetCodeHandler?: () => void;
 }
 
 export default function ControlBar(props: ControlBarProps) {
@@ -38,9 +40,21 @@ export default function ControlBar(props: ControlBarProps) {
       <Flex direction="row">
         <Box>
           {!props.isRunning && (
-            <Button size="sm" colorScheme="green" onClick={props.runHandler}>
-              <MdPlayArrow size="1.3em" style={{ marginRight: "0.1rem" }} /> Run
-            </Button>
+            <>
+              <Button size="sm" colorScheme="green" onClick={props.runHandler}>
+                <MdPlayArrow size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
+                Run
+              </Button>
+              <Button
+                ml={2}
+                size="sm"
+                colorScheme="whiteAlpha"
+                onClick={props.resetCodeHandler}
+              >
+                <MdReplay size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
+                Reset
+              </Button>
+            </>
           )}
           {props.isRunning && (
             <Button size="sm" colorScheme="red" onClick={props.stopHandler}>

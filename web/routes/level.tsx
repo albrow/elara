@@ -1,5 +1,5 @@
-import { useParams, useLocation } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
 
 import {
@@ -19,9 +19,9 @@ import ControlBar from "../components/control_bar";
 import ObjectiveText from "../components/objective_text";
 import { LEVELS } from "../lib/scenes";
 import {
+  markLevelCompleted,
   updateLevelCode,
   useSaveData,
-  markLevelCompleted,
 } from "../lib/save_data";
 
 const game = Game.new();
@@ -51,10 +51,10 @@ export default function Level() {
     () =>
       saveData.levelStates[currLevel().short_name]?.code ||
       currLevel().initial_code,
-    [currLevel, saveData]
+    [currLevel, saveData.levelStates]
   );
 
-  const [code, setCode] = useState(initialCode());
+  const [code, setCode] = useState(initialCode);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [boardState, setBoardState] = useState(currLevel().initial_state);
@@ -95,9 +95,13 @@ export default function Level() {
 
   // Reset the relevant state when the URL changes.
   const location = useLocation();
+  const lastLocation = useRef(location.pathname);
   useEffect(() => {
-    resetStateButKeepCode(currLevel());
-    setCode(initialCode());
+    if (lastLocation.current !== location.pathname) {
+      lastLocation.current = location.pathname;
+      resetStateButKeepCode(currLevel());
+      setCode(initialCode());
+    }
   }, [location, currLevel, resetStateButKeepCode, initialCode]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
@@ -109,9 +113,11 @@ export default function Level() {
     }
   };
 
+  // Called when the replay is done (i.e. the user has either completed or failed the
+  // objective).
   const onReplayDoneHandler = useCallback(
     (result: RunResult) => () => {
-      // There are no more steps to iterate through, display the outcome.
+      let isCompleted = false;
       switch (result.outcome) {
         case "no_objective":
           // Set modal parameters and show the modal.
@@ -122,15 +128,7 @@ export default function Level() {
               "ready, you can move on to the next level."
           );
           setModalVisible(true);
-
-          // Update the level completed status.
-          // eslint-disable-next-line no-case-declarations
-          let newSaveData = markLevelCompleted(
-            saveData,
-            currLevel().short_name
-          );
-          setSaveData(newSaveData);
-
+          isCompleted = true;
           break;
         case "success":
           setModalKind("success");
@@ -139,11 +137,7 @@ export default function Level() {
             "You completed the objective! You can replay this level if you want or move on to the next one."
           );
           setModalVisible(true);
-
-          // Update the level completed status.
-          // eslint-disable-next-line no-case-declarations
-          newSaveData = markLevelCompleted(saveData, currLevel().short_name);
-          setSaveData(newSaveData);
+          isCompleted = true;
 
           break;
         case "continue":
@@ -161,23 +155,34 @@ export default function Level() {
           setModalVisible(true);
           break;
       }
+
+      if (isCompleted) {
+        // Update the level completed status.
+        const newSaveData = markLevelCompleted(
+          saveData,
+          currLevel().short_name
+        );
+        setSaveData(newSaveData);
+      }
     },
     [currLevel, saveData, setSaveData]
   );
 
   // When the run button is clicked, run the code and start the replay.
-  const runHandler = useCallback(async () => {
+  const runHandler = useCallback(() => {
+    const currCode = getCode();
+
     // Store the latest code in the save data.
     const newSaveData = updateLevelCode(
       saveData,
       currLevel().short_name,
-      getCode()
+      currCode
     );
     setSaveData(newSaveData);
 
     let result: RunResult;
     try {
-      result = await game.run_player_script(getCode(), currLevel().short_name);
+      result = game.run_player_script(currCode, currLevel().short_name);
     } catch (e) {
       // If there is an error, display it in the editor.
       if (e instanceof RhaiError) {
@@ -198,6 +203,8 @@ export default function Level() {
       }
       throw e;
     }
+
+    // Reset the board state and start the replay.
     resetStateButKeepCode();
     setBoardState(result.states[0].state);
     setIsRunning(true);
@@ -254,6 +261,19 @@ export default function Level() {
     setCode(loadedCode);
   }, []);
 
+  // Reset the code to its initial state for the current
+  // level (regardless of what has been saved in the save
+  // data).
+  const resetCodeHandler = useCallback(() => {
+    setCode(currLevel().initial_code);
+    const newSaveData = updateLevelCode(
+      saveData,
+      currLevel().short_name,
+      currLevel().initial_code
+    );
+    setSaveData(newSaveData);
+  }, [currLevel, saveData, setSaveData]);
+
   useEffect(() => {
     const keyListener = async (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "s") {
@@ -264,7 +284,7 @@ export default function Level() {
       }
       // Run the script on Shift + Enter
       if (event.shiftKey && event.key === "Enter" && !isRunning) {
-        await runHandler();
+        runHandler();
         event.preventDefault();
         return false;
       }
@@ -314,6 +334,7 @@ export default function Level() {
               resumeHandler={resumeHandler}
               saveCodeHandler={saveCodeHandler}
               loadCodeHandler={loadCodeHandler}
+              resetCodeHandler={resetCodeHandler}
             />
             <Box w="608px">
               <Editor
