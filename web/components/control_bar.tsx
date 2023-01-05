@@ -128,7 +128,7 @@ export default function ControlBar(props: ControlBarProps) {
                 onClick={props.saveCodeHandler}
               >
                 <MdSave style={{ marginRight: "0.3rem" }} />
-                Save
+                Download
               </MenuItem>
               <MenuItem
                 background="gray.700"
@@ -137,7 +137,7 @@ export default function ControlBar(props: ControlBarProps) {
                 onClick={props.loadCodeHandler}
               >
                 <MdUploadFile style={{ marginRight: "0.3rem" }} />
-                Load
+                Upload
               </MenuItem>
             </MenuList>
           </Menu>

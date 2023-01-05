@@ -13,7 +13,7 @@ import {
 import Board from "../components/board/board";
 import LevelEndModal from "../components/level_end_modal";
 import Editor, { CodeError } from "../components/editor/editor";
-import { saveCode, loadCode } from "../lib/storage";
+import { saveCode, loadCode } from "../lib/file_system";
 import { Replayer } from "../lib/replayer";
 import ControlBar from "../components/control_bar";
 import ObjectiveText from "../components/objective_text";
