@@ -30,7 +30,6 @@ interface LevelEndModalProps {
 
 const SUCCESS_GIFS = [
   "https://media.giphy.com/media/1zi3fJI4GcldIhyjP7/giphy.gif",
-  "https://media.giphy.com/media/l0MYxef0mpdcnQnvi/giphy.gif",
   "https://media.giphy.com/media/vViFKLAOQdDlS/giphy.gif",
   "https://media.giphy.com/media/Q81NcsY6YxK7jxnr4v/giphy.gif",
   "https://media.giphy.com/media/5tgVJmQBd2vBIm7l6B/giphy.gif",
@@ -40,6 +39,13 @@ const SUCCESS_GIFS = [
   "https://media.giphy.com/media/HLoJUnVVvyJkcGgxsv/giphy.gif",
   "https://media.giphy.com/media/xCgeEazpis53cUqoZY/giphy.gif",
   "https://media.giphy.com/media/slOhiKAVFgwr6/giphy.gif",
+  "https://media.giphy.com/media/3oKGzqGBF7OFccgrn2/giphy.gif",
+  "https://media.giphy.com/media/26uffIRfNMzrTCvok/giphy.gif",
+  "https://media.giphy.com/media/3XFwB5TrJ5L6rXqXEj/giphy.gif",
+  "https://media.giphy.com/media/L1QCVBfYWwxjRV6NJ1/giphy.gif",
+  "https://media.giphy.com/media/H1NIKdfygAAMruqArl/giphy.gif",
+  "https://media.giphy.com/media/bw9sc2HXiK5ES9mJU4/giphy.gif",
+  "https://media.giphy.com/media/YbHdkn9XLfqQE/giphy.gif",
 ];
 
 function getRandomSuccessGif(): string {
@@ -96,7 +102,7 @@ export default function LevelEndModal(props: LevelEndModalProps) {
             </Text>
             {props.kind === "success" && (
               <Flex justifyContent="center">
-                <Image src={getRandomSuccessGif()} mt={6} />
+                <Image src={getRandomSuccessGif()} mt={6} maxH="42vh" />
               </Flex>
             )}
             <Flex mt={10} mb={3} justifyContent="right" w="100%">
