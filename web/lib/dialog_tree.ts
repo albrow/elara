@@ -42,7 +42,7 @@ export interface DialogTrees {
 
 export const NODES: { [key in NodeIds]: DialogNode } = {
   intro: {
-    text: "Welcome to Elara! My name is Marz. How was your journey here?",
+    text: "Welcome to Elara! My name is <insert NPC name here>. How was your journey here?",
     choiceIds: ["journey_negative", "journey_positive"],
   },
   journey_neg_response: {
