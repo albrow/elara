@@ -45,15 +45,17 @@ export default function ControlBar(props: ControlBarProps) {
                 <MdPlayArrow size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
                 Run
               </Button>
-              <Button
-                ml={2}
-                size="sm"
-                colorScheme="whiteAlpha"
-                onClick={props.resetCodeHandler}
-              >
-                <MdReplay size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
-                Reset
-              </Button>
+              {props.resetCodeHandler && (
+                <Button
+                  ml={2}
+                  size="sm"
+                  colorScheme="whiteAlpha"
+                  onClick={props.resetCodeHandler}
+                >
+                  <MdReplay size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
+                  Reset
+                </Button>
+              )}
             </>
           )}
           {props.isRunning && (

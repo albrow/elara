@@ -164,6 +164,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
           stepForwardHandler={stepForwardHandler}
           stepBackHandler={stepBackHandler}
           resumeHandler={resumeHandler}
+          // TODO(albrow): Implment resetCodeHandler for RunnableExample.
         />
         <Box>
           <Editor
