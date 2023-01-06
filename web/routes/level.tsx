@@ -24,6 +24,7 @@ import {
   updateLevelCode,
   useSaveData,
 } from "../contexts/save_data";
+import { getLevelEndProps } from "../lib/level_end_messages";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
@@ -118,46 +119,15 @@ export default function Level() {
   // objective).
   const onReplayDoneHandler = useCallback(
     (result: RunResult, pendingSaveData: SaveData) => () => {
-      let isCompleted = false;
-      switch (result.outcome) {
-        case "no_objective":
-          // Set modal parameters and show the modal.
-          setModalKind("success");
-          setModalTitle("Great Job!");
-          setModalMessage(
-            "Great! Keep playing around with the code as much as you like! Whenever you are " +
-              "ready, you can move on to the next level."
-          );
-          setModalVisible(true);
-          isCompleted = true;
-          break;
-        case "success":
-          setModalKind("success");
-          setModalTitle("Great Job!");
-          setModalMessage(
-            "You completed the objective! You can replay this level if you want or move on to the next one."
-          );
-          setModalVisible(true);
-          isCompleted = true;
+      const endResult = getLevelEndProps(result);
 
-          break;
-        case "continue":
-          setModalKind("failure");
-          setModalTitle("Keep Going!");
-          setModalMessage(
-            "You didn't quite complete the objective, but you're on the right track!"
-          );
-          setModalVisible(true);
-          break;
-        default:
-          setModalKind("failure");
-          setModalTitle("Uh Oh!");
-          setModalMessage(result.outcome);
-          setModalVisible(true);
-          break;
-      }
+      // Show the modal.
+      setModalKind(endResult.modalKind);
+      setModalTitle(endResult.modalTitle);
+      setModalMessage(endResult.modalMessage);
+      setModalVisible(true);
 
-      if (isCompleted) {
+      if (endResult.isCompleted) {
         // Update the level completed status.
         const newSaveData = markLevelCompleted(
           pendingSaveData,

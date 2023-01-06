@@ -97,7 +97,7 @@ export default function LevelEndModal(props: LevelEndModalProps) {
             </Text>
             <Text fontSize={18} lineHeight="1.4em" mt={6}>
               {isLastScene()
-                ? "You've completed all the levels!"
+                ? "You've completed all the levels! Check back again later for additional levels and content."
                 : props.message}
             </Text>
             {props.kind === "success" && (
