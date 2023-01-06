@@ -79,6 +79,30 @@ export default function Level() {
     getCode = handler;
   }, []);
 
+  const forceUpdateCode = useCallback(
+    (newCode: string) => {
+      // Note(albrow): Due to the fact that we don't
+      // update `code` on every keystroke (for performance reasons),
+      // React's view of the world might be outdated. That is,
+      // the value of `code` might be different from the true underlying
+      // value inside the CodeMirror editor.
+      //
+      // To workaround this, we need to first force React to re-render
+      // the editor by first updating the current value of `code` to the
+      // true underlying value (i.e., what is returned by `getCode`).
+      if (code !== getCode()) {
+        setCode(getCode());
+        // Then we use setTimeout to make React update the component on the
+        // next tick.
+        setTimeout(() => setCode(newCode), 0);
+      } else {
+        // If we are already in sync, we don't need to use the workaround.
+        setCode(newCode);
+      }
+    },
+    [code, setCode]
+  );
+
   const resetStateButKeepCode = useCallback(
     (levelOverride?: LevelData) => {
       const levelToLoad = levelOverride || currLevel();
@@ -102,9 +126,15 @@ export default function Level() {
     if (lastLocation.current !== location.pathname) {
       lastLocation.current = location.pathname;
       resetStateButKeepCode(currLevel());
-      setCode(initialCode());
+      forceUpdateCode(initialCode());
     }
-  }, [location, currLevel, resetStateButKeepCode, initialCode]);
+  }, [
+    location,
+    currLevel,
+    resetStateButKeepCode,
+    initialCode,
+    forceUpdateCode,
+  ]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
     setBoardState(step.state);
@@ -229,21 +259,21 @@ export default function Level() {
 
   const loadCodeHandler = useCallback(async () => {
     const loadedCode = await loadCode();
-    setCode(loadedCode);
-  }, []);
+    forceUpdateCode(loadedCode);
+  }, [forceUpdateCode]);
 
   // Reset the code to its initial state for the current
   // level (regardless of what has been saved in the save
   // data).
   const resetCodeHandler = useCallback(() => {
-    setCode(currLevel().initial_code);
+    forceUpdateCode(currLevel().initial_code);
     const newSaveData = updateLevelCode(
       saveData,
       currLevel().short_name,
       currLevel().initial_code
     );
     setSaveData(newSaveData);
-  }, [currLevel, saveData, setSaveData]);
+  }, [currLevel, saveData, setSaveData, forceUpdateCode]);
 
   useEffect(() => {
     const keyListener = async (event: KeyboardEvent) => {

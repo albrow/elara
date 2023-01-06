@@ -79,7 +79,7 @@ export default function SceneLink(props: SceneLinkProps) {
           >
             {!isUnlocked() && (
               <MdLock
-                size="1.0rem"
+                size="1.0em"
                 style={{
                   paddingTop: "0.2rem",
                   marginRight: "0.3rem",
