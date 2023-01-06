@@ -1,6 +1,13 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { renderHook } from "@testing-library/react";
-import { act } from "react-dom/test-utils";
+import {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 export const VERSION = 1;
 const LOCAL_STORAGE_KEY = "elara.save";
@@ -78,20 +85,38 @@ export function updateLevelCode(
   return newSaveData;
 }
 
+export const SaveDataContext = createContext<
+  readonly [SaveData, Dispatch<SetStateAction<SaveData>>]
+>([
+  load(),
+  () => {
+    throw new Error("useSaveData must be used within a SaveDataContext");
+  },
+] as const);
+
 // A custom hook for loading and saving save data from localStorage.
 // Can be used in any component where the save data needs to be referenced
-// or updated.
-export function useSaveData(): readonly [
-  SaveData,
-  Dispatch<SetStateAction<SaveData>>
-] {
+// or updated. Under the hood, this uses a context so that updates to the
+// save data will trigger a re-render of all components that use this hook.
+export const useSaveData = () => useContext(SaveDataContext);
+
+export function SaveDataProvider(props: PropsWithChildren<{}>) {
   const [saveData, setSaveData] = useState<SaveData>(load());
   useEffect(() => {
     // Use setTimeout to write to local storage asynchronously.
     // This way we don't block the main thread.
     setTimeout(() => save(saveData), 0);
   }, [saveData]);
-  return [saveData, setSaveData] as const;
+  const providerValue = useMemo(
+    () => [saveData, setSaveData] as const,
+    [saveData, setSaveData]
+  );
+
+  return (
+    <SaveDataContext.Provider value={providerValue}>
+      {props.children}
+    </SaveDataContext.Provider>
+  );
 }
 
 if (import.meta.vitest) {
@@ -170,98 +195,55 @@ if (import.meta.vitest) {
       });
     });
 
-    describe("useSaveData", () => {
-      // Note(albrow): We use renderHook from @testing-library/react to test
-      // custom hooks. Hooks look like plain functions but cannot be tested directly
-      // See https://kentcdodds.com/blog/how-to-test-custom-react-hooks for more
-      // information.
-      it("returns the default data if no data is saved", () => {
-        // "result" is a reference that represents the current state of
-        // the hook. It has the following properties:
-        //
-        //   - result.current[0] = saveData
-        //   - result.current[1] = setSaveData
-        //
-        const { result } = renderHook(() => useSaveData());
-
-        expect(result.current[0]).toStrictEqual({
-          version: VERSION,
-          levelStates: {},
-        });
-      });
-
-      it("loads data from localStorage if it exists", () => {
-        window.localStorage.setItem(
-          LOCAL_STORAGE_KEY,
-          JSON.stringify({
-            version: VERSION,
-            levelStates: {
-              "First Steps": {
-                completed: true,
-                code: `say("hello");`,
-              },
-            },
-          })
-        );
-
-        const { result } = renderHook(() => useSaveData());
-
-        expect(result.current[0]).toStrictEqual({
+    describe("save", () => {
+      it("saves the given save data to localStorage", () => {
+        const saveData = {
           version: VERSION,
           levelStates: {
             "First Steps": {
-              completed: true,
-              code: `say("hello");`,
-            },
-          },
-        });
-      });
-
-      it("ignores data with a different version", () => {
-        window.localStorage.setItem(
-          LOCAL_STORAGE_KEY,
-          JSON.stringify({
-            version: VERSION + 1,
-            levelStates: {
-              "First Steps": {
-                completed: true,
-                code: `say("hello");`,
-              },
-            },
-          })
-        );
-
-        const { result } = renderHook(() => useSaveData());
-
-        expect(result.current[0]).toStrictEqual({
-          version: VERSION,
-          levelStates: {},
-        });
-      });
-
-      it("saves and loads data correctly", () => {
-        const { result } = renderHook(() => useSaveData());
-
-        const newSaveData = {
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: true,
+              completed: false,
               code: `say("hello");`,
             },
             "Fuel Up": {
-              completed: true,
+              completed: false,
               code: `move_right(5);`,
             },
           },
         };
+        save(saveData);
+        expect(
+          JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY)!)
+        ).toStrictEqual(saveData);
+      });
+    });
 
-        act(() => {
-          const setSaveData = result.current[1];
-          setSaveData(newSaveData);
+    describe("load", () => {
+      it("returns the default save data if there is no save data in localStorage", () => {
+        expect(load()).toStrictEqual({
+          version: VERSION,
+          levelStates: {},
         });
+      });
 
-        expect(result.current[0]).toStrictEqual(newSaveData);
+      it("loads the save data from localStorage", () => {
+        const saveData = {
+          version: VERSION,
+          levelStates: {
+            "First Steps": {
+              completed: false,
+              code: `say("hello");`,
+            },
+            "Fuel Up": {
+              completed: false,
+              code: `move_right(5);`,
+            },
+          },
+        };
+        window.localStorage.setItem(
+          LOCAL_STORAGE_KEY,
+          JSON.stringify(saveData)
+        );
+        expect(load()).toStrictEqual(saveData);
       });
     });
   });

@@ -26,6 +26,7 @@ export interface Scene {
   type: SceneType;
   name: string;
   route: string;
+  level?: LevelData;
 }
 
 export const SCENES: Scene[] = [
@@ -38,6 +39,7 @@ export const SCENES: Scene[] = [
     type: "level",
     name: `Level 0: ${LEVELS[0].name}`,
     route: "/level/0",
+    level: LEVELS[0],
   },
   {
     type: "journal",
@@ -53,11 +55,13 @@ export const SCENES: Scene[] = [
     type: "level",
     name: `Level 1: ${LEVELS[1].name}`,
     route: "/level/1",
+    level: LEVELS[1],
   },
   {
     type: "level",
     name: `Level 2: ${LEVELS[2].name}`,
     route: "/level/2",
+    level: LEVELS[2],
   },
   {
     type: "journal",
@@ -73,11 +77,15 @@ export const SCENES: Scene[] = [
     type: "level",
     name: `Level 3: ${LEVELS[3].name}`,
     route: "/level/3",
+    level: LEVELS[3],
   },
 ];
 
 export const getSceneIndexFromRoute = (route: string): number | undefined =>
   SCENES.findIndex((scene) => scene.route === route);
+
+export const getSceneFromRoute = (route: string): Scene | undefined =>
+  SCENES.find((scene) => scene.route === route);
 
 export const getNextSceneFromRoute = (route: string): Scene | undefined => {
   const index = getSceneIndexFromRoute(route);

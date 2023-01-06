@@ -20,9 +20,10 @@ import ObjectiveText from "../components/objective_text";
 import { LEVELS } from "../lib/scenes";
 import {
   markLevelCompleted,
+  SaveData,
   updateLevelCode,
   useSaveData,
-} from "../lib/save_data";
+} from "../contexts/save_data";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
@@ -116,7 +117,7 @@ export default function Level() {
   // Called when the replay is done (i.e. the user has either completed or failed the
   // objective).
   const onReplayDoneHandler = useCallback(
-    (result: RunResult) => () => {
+    (result: RunResult, pendingSaveData: SaveData) => () => {
       let isCompleted = false;
       switch (result.outcome) {
         case "no_objective":
@@ -159,13 +160,13 @@ export default function Level() {
       if (isCompleted) {
         // Update the level completed status.
         const newSaveData = markLevelCompleted(
-          saveData,
+          pendingSaveData,
           currLevel().short_name
         );
         setSaveData(newSaveData);
       }
     },
-    [currLevel, saveData, setSaveData]
+    [currLevel, setSaveData]
   );
 
   // When the run button is clicked, run the code and start the replay.
@@ -211,7 +212,7 @@ export default function Level() {
     replayer = new Replayer(
       result.states,
       onStepHandler,
-      onReplayDoneHandler(result)
+      onReplayDoneHandler(result, newSaveData)
     );
     replayer.start();
   }, [
