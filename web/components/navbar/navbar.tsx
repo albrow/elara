@@ -5,7 +5,6 @@ import {
   Menu,
   MenuButton,
   MenuList,
-  Text,
   Spacer,
   Button,
 } from "@chakra-ui/react";
@@ -21,7 +20,7 @@ import {
 } from "../../lib/scenes";
 import { useSaveData } from "../../contexts/save_data";
 import NavbarLink from "./navbar_link";
-import NavbarDropdownLink from "./navbar_dropdown_link";
+import SceneLink from "./scene_link";
 
 export default function Navbar() {
   const location = useLocation();
@@ -91,11 +90,7 @@ export default function Navbar() {
               shadow="dark-lg"
             >
               {SCENES.map((scene) => (
-                <NavbarDropdownLink to={scene.route} key={scene.route}>
-                  <Text as="span" ml={1}>
-                    {scene.name}
-                  </Text>
-                </NavbarDropdownLink>
+                <SceneLink scene={scene} key={scene.route} />
               ))}
             </MenuList>
           </Menu>
