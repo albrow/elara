@@ -56,7 +56,8 @@ export default function Level() {
     [currLevel, saveData.levelStates]
   );
 
-  const [code, setCode] = useState(initialCode);
+  // Note(albrow): Don't call unsafeSetCode directly, use forceUpdateCode instead.
+  const [code, unsafeSetCode] = useState(initialCode);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [boardState, setBoardState] = useState(currLevel().initial_state);
@@ -91,16 +92,16 @@ export default function Level() {
       // the editor by first updating the current value of `code` to the
       // true underlying value (i.e., what is returned by `getCode`).
       if (code !== getCode()) {
-        setCode(getCode());
+        unsafeSetCode(getCode());
         // Then we use setTimeout to make React update the component on the
         // next tick.
-        setTimeout(() => setCode(newCode), 0);
+        setTimeout(() => unsafeSetCode(newCode), 0);
       } else {
         // If we are already in sync, we don't need to use the workaround.
-        setCode(newCode);
+        unsafeSetCode(newCode);
       }
     },
-    [code, setCode]
+    [code, unsafeSetCode]
   );
 
   const resetStateButKeepCode = useCallback(
