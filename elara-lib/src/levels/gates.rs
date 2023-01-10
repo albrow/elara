@@ -15,11 +15,11 @@ impl Level for Gates {
         "Open the locked gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Looks like a locked gate is blocking the way! To open the
-// gate, move the rover next to it, then say the password using
-// the "say" function. The password for this gate is "lovelace".
+        r#"move_right(2);
 
-move_right(2);
+// Reminder: the password for this gate is "lovelace".
+//
+// Add some code below to open the gate using the "say" function...
 "#
     }
     fn initial_states(&self) -> Vec<State> {

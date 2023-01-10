@@ -145,6 +145,7 @@ export default function Level() {
       lastLocation.current = location.pathname;
       resetStateButKeepCode(currLevel());
       forceUpdateCode(initialCode());
+      setDialogVisible(getDialogTree() !== null);
     }
   }, [
     location,
@@ -152,6 +153,7 @@ export default function Level() {
     resetStateButKeepCode,
     initialCode,
     forceUpdateCode,
+    getDialogTree,
   ]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {

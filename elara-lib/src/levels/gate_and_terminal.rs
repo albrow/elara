@@ -15,10 +15,7 @@ impl Level for GateAndTerminal {
         "Get the password from the data terminal ({terminal}), unlock the gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// There's another locked gate, but this time I don't
-// remember the password. You'll need to read it from
-// the nearby data terminal.
-move_down(1);
+        r#"move_down(1);
 move_left(1);
 
 // The "read_data" function outputs the data from a
