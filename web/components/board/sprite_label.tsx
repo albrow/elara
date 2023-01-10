@@ -8,15 +8,18 @@ export interface SpriteLabelProps {
 export default function SpriteLabel(props: SpriteLabelProps) {
   return (
     <Box
-      color="white"
+      color="orange.300"
       fontWeight="extrabold"
       position="relative"
-      top={-4}
+      top={-5}
       right={0}
-      fontSize="xs"
-      style={{ zIndex: props.zIndex }}
+      fontSize="s"
       w="fit-content"
       textShadow="0px 0px 3px black"
+      zIndex={props.zIndex}
+      style={{
+        WebkitTextStroke: "0.5px black",
+      }}
     >
       {props.value}
     </Box>
