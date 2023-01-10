@@ -4,26 +4,14 @@
 // unique ids which they also use to reference each other. This allows us to create
 // branching, possibly recursive dialog trees.
 
-import {
-  IntroNodeIds,
-  IntroChoiceIds,
-  INTRO_NODES,
-  INTRO_CHOICES,
-  INTRO_TREES,
-} from "./intro";
-
-import {
-  LevelMovementNodeIds,
-  LevelMovementChoiceIds,
-  LEVEL_MOVEMENT_NODES,
-  LEVEL_MOVEMENT_CHOICES,
-  LEVEL_MOVEMENT_TREES,
-} from "./level_movement";
+import * as Intro from "./intro";
+import * as Movement from "./level_movement";
+import * as FuelPartOne from "./level_fuel_part_one";
 
 // NodeIds and ChoiceIds must be unique and declared ahead of time. This ensures
 // that the compiler will catch any incorrect or missing references.
-type NodeIds = IntroNodeIds | LevelMovementNodeIds;
-type ChoiceIds = IntroChoiceIds | LevelMovementChoiceIds;
+type NodeIds = Intro.NodeIds | Movement.NodeIds | FuelPartOne.NodeIds;
+type ChoiceIds = Intro.ChoiceIds | Movement.ChoiceIds | FuelPartOne.ChoiceIds;
 
 export interface DialogNode {
   text: string;
@@ -53,16 +41,19 @@ export interface DialogTrees {
 }
 
 export const NODES: { [key in NodeIds]: DialogNode } = {
-  ...INTRO_NODES,
-  ...LEVEL_MOVEMENT_NODES,
+  ...Intro.NODES,
+  ...Movement.NODES,
+  ...FuelPartOne.NODES,
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
-  ...INTRO_CHOICES,
-  ...LEVEL_MOVEMENT_CHOICES,
+  ...Intro.CHOICES,
+  ...Movement.CHOICES,
+  ...FuelPartOne.CHOICES,
 };
 
 export const TREES: DialogTrees = {
-  ...INTRO_TREES,
-  ...LEVEL_MOVEMENT_TREES,
+  ...Intro.TREES,
+  ...Movement.TREES,
+  ...FuelPartOne.TREES,
 };

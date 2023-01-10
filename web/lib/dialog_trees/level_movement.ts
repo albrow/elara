@@ -1,13 +1,13 @@
 import { DialogChoice, DialogNode, DialogTrees } from ".";
 
-export type LevelMovementNodeIds =
+export type NodeIds =
   | "level_movement_start"
   | "explain_code_editor"
   | "explain_board"
   | "explain_objective"
   | "explain_control_bar"
   | "explanation_end";
-export type LevelMovementChoiceIds =
+export type ChoiceIds =
   | "level_movement_end"
   | "level_movement_end_early"
   | "level_movement_end_late"
@@ -18,8 +18,8 @@ export type LevelMovementChoiceIds =
   | "ack_objective"
   | "ack_control_bar";
 
-export const LEVEL_MOVEMENT_NODES: {
-  [key in LevelMovementNodeIds]: DialogNode;
+export const NODES: {
+  [key in NodeIds]: DialogNode;
 } = {
   level_movement_start: {
     text: `Do you want to learn the basics of how to write and run your code?`,
@@ -47,8 +47,8 @@ export const LEVEL_MOVEMENT_NODES: {
   },
 };
 
-export const LEVEL_MOVEMENT_CHOICES: {
-  [key in LevelMovementChoiceIds]: DialogChoice;
+export const CHOICES: {
+  [key in ChoiceIds]: DialogChoice;
 } = {
   level_movement_end_early: {
     text: "No thanks! I know what I'm doing.",
@@ -85,7 +85,7 @@ export const LEVEL_MOVEMENT_CHOICES: {
   },
 };
 
-export const LEVEL_MOVEMENT_TREES: DialogTrees = {
+export const TREES: DialogTrees = {
   level_movement: {
     name: "Movement",
     startId: "level_movement_start",

@@ -27,8 +27,24 @@ export default function DialogTree(props: DialogTreeProps) {
     return tree;
   }, [props.treeName]);
 
-  const [node, setNode] = useState(NODES[currTree().startId]);
-  const [chatHistory, setChatHistory] = useState<MsgData[]>([]);
+  // Special initialization logic to account for the fact that there
+  // can be more than one NPC message in a row.
+  let initialNode = NODES[currTree().startId];
+  let initialMessages: MsgData[] = [];
+  while (initialNode.choiceIds.length === 0) {
+    // No choices. Continue immediately to the next node.
+    if (initialNode.nextId == null) {
+      throw new Error("nextId should not be null if there are no choices.");
+    }
+    initialMessages = [
+      { text: initialNode.text, isPlayer: false, id: uuidv4() },
+      ...initialMessages,
+    ];
+    initialNode = NODES[initialNode.nextId];
+  }
+
+  const [node, setNode] = useState(initialNode);
+  const [chatHistory, setChatHistory] = useState<MsgData[]>(initialMessages);
 
   const choiceClickHandler = useCallback(
     (choice: DialogChoice) => {

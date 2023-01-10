@@ -15,8 +15,7 @@ impl Level for FuelPartOne {
         "First move the rover ({robot}) to collect the fuel ({fuel}), then move to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// If you try moving straight to the goal, you'll run out of fuel
-// first. Try collecting some fuel before moving to the goal.
+        r#"// Try collecting some fuel before moving to the goal.
 
 move_down(4);
 move_right(4);

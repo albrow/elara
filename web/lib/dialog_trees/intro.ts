@@ -1,20 +1,20 @@
 import { DialogChoice, DialogNode, DialogTrees } from ".";
 
-export type IntroNodeIds =
+export type NodeIds =
   | "intro"
   | "journey_neg_response"
   | "journey_pos_response"
   | "who_i_am"
   | "where_i_am"
   | "offer_intro_end";
-export type IntroChoiceIds =
+export type ChoiceIds =
   | "journey_negative"
   | "journey_positive"
   | "where_are_you"
   | "who_are_you"
   | "intro_end";
 
-export const INTRO_NODES: { [key in IntroNodeIds]: DialogNode } = {
+export const NODES: { [key in NodeIds]: DialogNode } = {
   intro: {
     text: "Welcome to Elara! My name is <insert NPC name here>. How was your journey here?",
     choiceIds: ["journey_negative", "journey_positive"],
@@ -43,7 +43,7 @@ export const INTRO_NODES: { [key in IntroNodeIds]: DialogNode } = {
   },
 };
 
-export const INTRO_CHOICES: { [key in IntroChoiceIds]: DialogChoice } = {
+export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   journey_negative: {
     text: "Still feeling a little space-lagged.",
     nextId: "journey_neg_response",
@@ -65,7 +65,7 @@ export const INTRO_CHOICES: { [key in IntroChoiceIds]: DialogChoice } = {
   },
 };
 
-export const INTRO_TREES: DialogTrees = {
+export const TREES: DialogTrees = {
   intro: {
     name: "Intro",
     startId: "intro",
