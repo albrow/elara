@@ -1,3 +1,7 @@
+import { Button } from "@chakra-ui/react";
+import { MdArrowForward } from "react-icons/md";
+import { Link } from "react-router-dom";
+
 ## Welcome to Elara
 
 Elara is a game that teaches you how to program. It is named after one of the
@@ -11,9 +15,20 @@ and your feedback can help us get there 😀
 
 Right now, we are focusing on testing the core mechanics of the game, which
 includes writing code to control a rover and solve various puzzles. Click the
-"Start" button above to get started!
+"Start" button to start playing!
+
+{/* NOTE(albrow): Will need to change this link manually if the first scene changes. */}
+
+<Link to="/dialog/intro">
+  <Button colorScheme="green">
+    <span>Start</span>
+    <MdArrowForward size="1.3em" style={{ marginLeft: "0.2rem" }} />
+  </Button>
+</Link>
 
 ---
+
+### About
 
 Elara uses a full-featured scripting language called
 [Rhai](https://rhai.rs/book/ref/index.html), chosen because it is easy to learn,
@@ -24,3 +39,7 @@ Rhai docs and play around a bit. The current levels are fairly simple, but
 future updates will include more complex levels designed to teach you about
 variables, control flow, user-defined functions, and other common programming
 language features.
+
+The source code for Elara is [available on GitHub](https://github.com/albrow/elara).
+If you already know a little bit about programming and find a bug somewhere, feel free
+to open an issue.
