@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-export const VERSION = 1;
+export const VERSION = 2;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 export interface LevelState {
@@ -26,12 +26,15 @@ export interface SaveData {
   version: number;
   // A mapping of scene names to their corresponding state.
   levelStates: Record<string, LevelState>;
+  // Tracks which dialog trees the user has already seen.
+  seenDialogTrees: string[];
 }
 
 function deepCopy(saveData: SaveData): SaveData {
   return {
     version: saveData.version,
     levelStates: { ...saveData.levelStates },
+    seenDialogTrees: [...saveData.seenDialogTrees],
   };
 }
 
@@ -54,8 +57,9 @@ export function load(): SaveData {
     console.warn("Save data version mismatch");
   }
   return {
-    version: 1,
+    version: VERSION,
     levelStates: {},
+    seenDialogTrees: [],
   };
 }
 
@@ -82,6 +86,14 @@ export function updateLevelCode(
     completed: saveData.levelStates[levelName]?.completed || false,
     code,
   };
+  return newSaveData;
+}
+
+export function markDialogSeen(saveData: SaveData, treeName: string): SaveData {
+  const newSaveData = deepCopy(saveData);
+  if (!newSaveData.seenDialogTrees.includes(treeName)) {
+    newSaveData.seenDialogTrees.push(treeName);
+  }
   return newSaveData;
 }
 
@@ -141,6 +153,7 @@ if (import.meta.vitest) {
               code: `move_right(5);`,
             },
           },
+          seenDialogTrees: ["movement"],
         };
         const newSaveData = markLevelCompleted(saveData, "First Steps");
         expect(newSaveData).toStrictEqual({
@@ -155,6 +168,7 @@ if (import.meta.vitest) {
               code: `move_right(5);`,
             },
           },
+          seenDialogTrees: ["movement"],
         });
       });
     });
@@ -173,6 +187,7 @@ if (import.meta.vitest) {
               code: `move_right(5);`,
             },
           },
+          seenDialogTrees: ["movement"],
         };
         const newSaveData = updateLevelCode(
           saveData,
@@ -191,6 +206,41 @@ if (import.meta.vitest) {
               code: `say("updated");`,
             },
           },
+          seenDialogTrees: ["movement"],
+        });
+      });
+    });
+
+    describe("markDialogSeen", () => {
+      it("adds the given dialog tree to the list of seen trees", () => {
+        const saveData = {
+          version: VERSION,
+          levelStates: {
+            "First Steps": {
+              completed: false,
+              code: `say("hello");`,
+            },
+            "Fuel Up": {
+              completed: true,
+              code: `move_right(5);`,
+            },
+          },
+          seenDialogTrees: ["movement"],
+        };
+        const newSaveData = markDialogSeen(saveData, "fuel_part_one");
+        expect(newSaveData).toStrictEqual({
+          version: VERSION,
+          levelStates: {
+            "First Steps": {
+              completed: false,
+              code: `say("hello");`,
+            },
+            "Fuel Up": {
+              completed: true,
+              code: `move_right(5);`,
+            },
+          },
+          seenDialogTrees: ["movement", "fuel_part_one"],
         });
       });
     });
@@ -209,6 +259,7 @@ if (import.meta.vitest) {
               code: `move_right(5);`,
             },
           },
+          seenDialogTrees: ["movement"],
         };
         save(saveData);
         expect(
@@ -222,6 +273,7 @@ if (import.meta.vitest) {
         expect(load()).toStrictEqual({
           version: VERSION,
           levelStates: {},
+          seenDialogTrees: [],
         });
       });
 
@@ -238,6 +290,7 @@ if (import.meta.vitest) {
               code: `move_right(5);`,
             },
           },
+          seenDialogTrees: ["movement"],
         };
         window.localStorage.setItem(
           LOCAL_STORAGE_KEY,

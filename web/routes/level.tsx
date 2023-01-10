@@ -73,11 +73,16 @@ export default function Level() {
 
   const getDialogTree = useCallback(() => {
     const treeName = `level_${currLevel().short_name}`;
-    if (treeName in TREES) {
-      return treeName;
+    if (!(treeName in TREES)) {
+      // There is no dialog tree for this level.
+      return null;
     }
-    return null;
-  }, [currLevel]);
+    if (saveData.seenDialogTrees.includes(treeName)) {
+      // The player has already seen this dialog tree.
+      return null;
+    }
+    return treeName;
+  }, [currLevel, saveData.seenDialogTrees]);
 
   const [dialogVisible, setDialogVisible] = useState(getDialogTree() !== null);
 

@@ -7,6 +7,7 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import React, { useCallback } from "react";
+import { markDialogSeen, useSaveData } from "../../contexts/save_data";
 
 import { DIALOG_MODAL_Z_INDEX } from "../../lib/constants";
 import DialogTree from "./dialog_tree";
@@ -21,12 +22,19 @@ interface DialogModalProps {
 }
 
 export default function DialogModal(props: DialogModalProps) {
+  const [saveData, setSaveData] = useSaveData();
+
   const handleClose = useCallback(() => {
+    if (props.treeName != null) {
+      const newSaveData = markDialogSeen(saveData, props.treeName);
+      setSaveData(newSaveData);
+    }
+
     props.setVisible(false);
     if (props.onClose) {
       props.onClose();
     }
-  }, [props]);
+  }, [props, saveData, setSaveData]);
 
   return (
     <Box hidden={!props.visible} zIndex={DIALOG_MODAL_Z_INDEX}>
