@@ -1,6 +1,5 @@
 import { FuzzyStateWithLine } from "../../elara-lib/pkg/elara_lib";
-
-const DEFAULT_GAME_SPEED = 1; // steps per second
+import { DEFAULT_GAME_SPEED } from "./constants";
 
 function msPerStep(speed: number): number {
   return 1000 / speed;

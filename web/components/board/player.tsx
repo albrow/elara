@@ -5,6 +5,7 @@ import {
   TILE_SIZE,
   PLAYER_Z_INDEX,
   PLAYER_MESSAGE_Z_INDEX,
+  CSS_ANIM_DURATION,
 } from "../../lib/constants";
 import robotImgUrl from "../../images/robot.png";
 import glitchyRobotImgUrl from "../../images/robot_glitchy.gif";
@@ -42,6 +43,7 @@ export default function Player(props: PlayerProps) {
           zIndex: PLAYER_Z_INDEX,
           left: props.offset.left,
           top: props.offset.top,
+          transition: `left ${CSS_ANIM_DURATION}s, top ${CSS_ANIM_DURATION}s`,
         }}
       >
         <img

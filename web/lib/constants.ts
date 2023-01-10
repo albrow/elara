@@ -11,6 +11,10 @@ export const CANVAS_WIDTH = (TILE_SIZE + 1) * WIDTH + 1;
 export const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
 export const DEFAULT_FUEL_GAIN = 10;
 
+// Game speed and animations.
+export const DEFAULT_GAME_SPEED = 1; // steps per second
+export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
+
 // Z-indexes are all defined here so we can make sure
 // elements are in the correct order.
 export const LEVEL_END_MODAL_Z_INDEX = 1200;
