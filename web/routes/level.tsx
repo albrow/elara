@@ -25,6 +25,8 @@ import {
   useSaveData,
 } from "../contexts/save_data";
 import { getLevelEndProps } from "../lib/level_end_messages";
+import DialogModal from "../components/dialog/dialog_modal";
+import { TREES } from "../lib/dialog_trees";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
@@ -68,6 +70,16 @@ export default function Level() {
   const [modalKind, setModalKind] = useState<"success" | "failure">("success");
   const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
+
+  const getDialogTree = useCallback(() => {
+    const treeName = `level_${currLevel().short_name}`;
+    if (treeName in TREES) {
+      return treeName;
+    }
+    return null;
+  }, [currLevel]);
+
+  const [dialogVisible, setDialogVisible] = useState(getDialogTree() !== null);
 
   useEffect(() => {
     document.title = `Elara | Level ${levelNumber}: ${currLevel().name}`;
@@ -313,6 +325,11 @@ export default function Level() {
         message={modalMessage}
         kind={modalKind}
         onClose={resetStateButKeepCode}
+      />
+      <DialogModal
+        visible={dialogVisible}
+        setVisible={setDialogVisible}
+        treeName={getDialogTree()}
       />
       <Container maxW="container.xl" mt={6}>
         <Box>

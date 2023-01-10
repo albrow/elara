@@ -15,6 +15,7 @@ export const DEFAULT_FUEL_GAIN = 10;
 // elements are in the correct order.
 export const LEVEL_END_MODAL_Z_INDEX = 1200;
 export const JOURNAL_MODAL_Z_INDEX = 1200;
+export const DIALOG_MODAL_Z_INDEX = 1150;
 export const TOOL_TIP_Z_INDEX = 1100;
 export const AXIS_LABEL_Z_INDEX = 1000;
 export const PLAYER_MESSAGE_Z_INDEX = 400;

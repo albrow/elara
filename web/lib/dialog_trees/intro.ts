@@ -1,46 +1,20 @@
-// This file contains the dialog trees used for various conversations in the game.
-// The dialog trees are defined as a set of nodes (i.e. what the NPC says) and
-// choices (i.e. what the player can say in response). Nodes and choices each have
-// unique ids which they also use to reference each other. This allows us to create
-// branching, possibly recursive dialog trees.
+import { DialogChoice, DialogNode, DialogTrees } from ".";
 
-// NodeIds and ChoiceIds must be unique and declared ahead of time. This ensures
-// that the compiler will catch any incorrect or missing references.
-type NodeIds =
+export type IntroNodeIds =
   | "intro"
   | "journey_neg_response"
   | "journey_pos_response"
   | "who_i_am"
   | "where_i_am"
   | "offer_intro_end";
-type ChoiceIds =
+export type IntroChoiceIds =
   | "journey_negative"
   | "journey_positive"
   | "where_are_you"
   | "who_are_you"
   | "intro_end";
 
-export interface DialogNode {
-  text: string;
-  choiceIds: Array<ChoiceIds>;
-  nextId?: NodeIds;
-}
-
-export interface DialogChoice {
-  text: string;
-  nextId?: NodeIds;
-}
-
-export interface DialogTree {
-  name: string;
-  startId: NodeIds;
-}
-
-export interface DialogTrees {
-  [key: string]: DialogTree;
-}
-
-export const NODES: { [key in NodeIds]: DialogNode } = {
+export const INTRO_NODES: { [key in IntroNodeIds]: DialogNode } = {
   intro: {
     text: "Welcome to Elara! My name is <insert NPC name here>. How was your journey here?",
     choiceIds: ["journey_negative", "journey_positive"],
@@ -69,7 +43,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   },
 };
 
-export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
+export const INTRO_CHOICES: { [key in IntroChoiceIds]: DialogChoice } = {
   journey_negative: {
     text: "Still feeling a little space-lagged.",
     nextId: "journey_neg_response",
@@ -91,7 +65,7 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   },
 };
 
-export const TREES: DialogTrees = {
+export const INTRO_TREES: DialogTrees = {
   intro: {
     name: "Intro",
     startId: "intro",
