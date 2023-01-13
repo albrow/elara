@@ -11,6 +11,7 @@ mod loops_part_one;
 mod loops_part_two;
 mod math_expressions;
 mod movement;
+mod sandbox;
 mod variables;
 
 use std::collections::HashMap;
@@ -68,6 +69,8 @@ lazy_static! {
         m.insert(comparisons::Comparisons {}.short_name(), Box::new(comparisons::Comparisons {}));
         m.insert(glitches_part_one::GlitchesPartOne {}.short_name(), Box::new(glitches_part_one::GlitchesPartOne {}));
         m.insert(glitches_part_two::GlitchesPartTwo {}.short_name(), Box::new(glitches_part_two::GlitchesPartTwo {}));
+        m.insert(sandbox::Sandbox{}.short_name(), Box::new(sandbox::Sandbox{}));
+
         m
     };
 }

@@ -8,6 +8,9 @@ const levelData: Map<string, LevelData> = new Map(
   Object.entries(get_level_data() as any)
 );
 
+// A special level used for runnable examples.
+export const SANDBOX_LEVEL = levelData.get("sandbox")!;
+
 export const LEVELS = [
   levelData.get("movement")!,
   levelData.get("fuel_part_one")!,

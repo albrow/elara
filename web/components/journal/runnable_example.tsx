@@ -1,11 +1,9 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useState, useCallback, useRef } from "react";
 
-import { LEVELS } from "../../lib/scenes";
-import { Offset } from "../../lib/utils";
+import { SANDBOX_LEVEL } from "../../lib/scenes";
 import Editor, { CodeError } from "../editor/editor";
 import ControlBar from "../control_bar";
-import Player from "../board/player";
 import { Replayer } from "../../lib/replayer";
 import {
   Game,
@@ -13,27 +11,27 @@ import {
   LinePos,
   RunResult,
   RhaiError,
-  // eslint-disable-next-line camelcase
-  new_pos,
 } from "../../../elara-lib/pkg/elara_lib";
+import MiniBoard from "./mini_board";
 
 export interface RunnableExampleProps {
   code: string;
 }
 
 export default function RunnableExample(props: RunnableExampleProps) {
-  const fixedPlayerOffset: Offset = {
-    pos: new_pos(),
-    top: "0px",
-    left: "0px",
-  };
-
   const game = Game.new();
-  const initialState = LEVELS[0].initial_state;
+  const initialState = SANDBOX_LEVEL.initial_state;
+
+  // If the initial code is short, add some extra lines
+  // to make the editor look better.
+  let initialCode = props.code;
+  while (initialCode.split("\n").length < 4) {
+    initialCode += "\n";
+  }
 
   // A handler used to get the current code from the editor.
   // Starts out unset, but will be set by the editor component.
-  const getCode = useRef(() => props.code);
+  const getCode = useRef(() => initialCode);
   const [replayer, setReplayer] = useState<Replayer | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -91,7 +89,10 @@ export default function RunnableExample(props: RunnableExampleProps) {
   const runHandler = useCallback(async () => {
     let result: RunResult;
     try {
-      result = await game.run_player_script(getCode.current(), "hello_world");
+      result = await game.run_player_script(
+        getCode.current(),
+        SANDBOX_LEVEL.short_name
+      );
     } catch (e) {
       // If there is an error, display it in the editor.
       if (e instanceof RhaiError) {
@@ -153,8 +154,8 @@ export default function RunnableExample(props: RunnableExampleProps) {
   }, [replayer]);
 
   return (
-    <Flex width="100%" direction="row" mb="50px" mt="25px">
-      <Box flex="1.0 1.0">
+    <Flex width="100%" direction="row" mb="50px" mt="25px" mx="auto">
+      <Box flex="1.0 1.0" maxWidth="720px" minWidth="540px">
         <ControlBar
           isRunning={isRunning}
           isPaused={isPaused}
@@ -168,7 +169,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
         />
         <Box>
           <Editor
-            code={props.code}
+            code={initialCode}
             editable
             setGetCodeHandler={setGetCodeHandler}
             type="example"
@@ -177,25 +178,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
           />
         </Box>
       </Box>
-      <Box
-        id="fake-board"
-        minH="80px"
-        width={410}
-        p={4}
-        ml={3}
-        bg="gray.300"
-        border="1px"
-        borderColor="gray.800"
-      >
-        <Box position="relative">
-          <Player
-            offset={fixedPlayerOffset}
-            fuel={10}
-            fuzzy={false}
-            message={boardState.players[0].message}
-          />
-        </Box>
-      </Box>
+      <MiniBoard state={boardState} />
     </Flex>
   );
 }

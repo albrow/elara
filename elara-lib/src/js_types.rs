@@ -4,6 +4,7 @@ use wasm_bindgen::prelude::*;
 use crate::levels;
 use crate::levels::Outcome;
 use crate::script_runner;
+use crate::simulation::PlayerAnimState;
 
 #[wasm_bindgen(getter_with_clone)]
 pub struct RhaiError {
@@ -145,6 +146,13 @@ impl FuzzyState {
     pub fn from(state: levels::FuzzyState) -> Self {
         let players = Array::new_with_length(state.players.len() as u32);
         for (i, fuzzy_player) in state.players.iter().enumerate() {
+            let anim_state = match fuzzy_player.obj.anim_state {
+                PlayerAnimState::Idle => "idle",
+                PlayerAnimState::MoveRight => "move_right",
+                PlayerAnimState::MoveLeft => "move_left",
+                PlayerAnimState::MoveUp => "move_up",
+                PlayerAnimState::MoveDown => "move_down",
+            };
             let player = &fuzzy_player.obj;
             players.set(
                 i as u32,
@@ -155,6 +163,7 @@ impl FuzzyState {
                     },
                     fuel: player.fuel as i32,
                     message: player.message.clone(),
+                    anim_state: anim_state.to_string(),
                     fuzzy: fuzzy_player.fuzzy,
                 }),
             );
@@ -273,6 +282,7 @@ pub struct FuzzyPlayer {
     pub pos: Pos,
     pub fuel: i32,
     pub message: String,
+    pub anim_state: String, // PlayerAnimState
     pub fuzzy: bool,
 }
 
