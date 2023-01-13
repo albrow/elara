@@ -166,11 +166,24 @@ impl fmt::Debug for State {
     }
 }
 
+/// The animation state of the player sprite. This is used in
+/// in the UI to give more clarity to the player about what is
+/// happening.
+#[derive(Clone, PartialEq, Debug)]
+pub enum PlayerAnimState {
+    Idle,
+    MoveRight,
+    MoveLeft,
+    MoveUp,
+    MoveDown,
+}
+
 #[derive(Clone, PartialEq, Debug)]
 pub struct Player {
     pub pos: Pos,
     pub fuel: u32,
     pub message: String,
+    pub anim_state: PlayerAnimState,
 }
 
 impl Player {
@@ -179,6 +192,7 @@ impl Player {
             pos: Pos::new(x, y),
             fuel: fuel,
             message: String::new(),
+            anim_state: PlayerAnimState::Idle,
         }
     }
 }

@@ -3,7 +3,7 @@ use std::rc::Rc;
 use std::sync::mpsc;
 
 use crate::constants::FUEL_SPOT_AMOUNT;
-use crate::simulation::{get_adjacent_terminal, Actor, Pos, State};
+use crate::simulation::{get_adjacent_terminal, Actor, PlayerAnimState, Pos, State};
 
 pub enum Action {
     Wait,
@@ -59,8 +59,11 @@ impl Actor for PlayerChannelActor {
 
                 // Moving in any direction costs one fuel.
                 state.player.fuel -= 1;
-
-                state.player.pos = self.get_new_player_pos(&state, direction);
+                // Update the position and animation state. Note that the player may not
+                // be able to actually move if there are obstacles in the way.
+                let (new_pos, new_anim_state) = self.get_new_player_pos(&state, direction);
+                state.player.pos = new_pos;
+                state.player.anim_state = new_anim_state;
             }
             Ok(Action::Say(message)) => {
                 // If we're next to a password gate and we said the password, toggle the gate.
@@ -98,7 +101,7 @@ impl Actor for PlayerChannelActor {
 }
 
 impl PlayerChannelActor {
-    fn get_new_player_pos(&self, state: &State, direction: Direction) -> Pos {
+    fn get_new_player_pos(&self, state: &State, direction: Direction) -> (Pos, PlayerAnimState) {
         let desired_pos = match direction {
             Direction::Up => Pos::new(state.player.pos.x, safe_decrement(state.player.pos.y)),
             Direction::Down => Pos::new(state.player.pos.x, state.player.pos.y + 1),
@@ -109,9 +112,17 @@ impl PlayerChannelActor {
             || is_outside_bounds(&self.bounds, &desired_pos)
             || is_closed_gate_at(state, &desired_pos)
         {
-            state.player.pos.clone()
+            // TODO(albrow): Use a different animation state to indicate that the player
+            // is trying to move but can't.
+            (state.player.pos.clone(), PlayerAnimState::Idle)
         } else {
-            desired_pos
+            let anim_state = match direction {
+                Direction::Up => PlayerAnimState::MoveUp,
+                Direction::Down => PlayerAnimState::MoveDown,
+                Direction::Left => PlayerAnimState::MoveLeft,
+                Direction::Right => PlayerAnimState::MoveRight,
+            };
+            (desired_pos, anim_state)
         }
     }
 }
@@ -249,8 +260,75 @@ mod test {
     use super::*;
     use crate::{
         constants::MAX_FUEL,
-        simulation::{Goal, Obstacle, PasswordGate, Player, Pos, State},
+        simulation::{Goal, Obstacle, PasswordGate, Player, PlayerAnimState, Pos, State},
     };
+
+    #[test]
+    fn basic_movement() {
+        let bounds = Bounds {
+            max_x: 10,
+            max_y: 10,
+        };
+        let (tx, rx) = mpsc::channel();
+        let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
+        let state = State {
+            player: Player::new(1, 1, MAX_FUEL),
+            fuel_spots: vec![],
+            obstacles: vec![],
+            enemies: vec![],
+            goal: None,
+            password_gates: vec![],
+            data_terminals: vec![],
+        };
+
+        tx.send(Action::Move(Direction::Right)).unwrap();
+        let new_state = actor.apply(state.clone());
+        assert_eq!(
+            new_state.player,
+            Player {
+                pos: Pos::new(2, 1),
+                fuel: state.player.fuel - 1,
+                message: String::from(""),
+                anim_state: PlayerAnimState::MoveRight,
+            }
+        );
+
+        tx.send(Action::Move(Direction::Left)).unwrap();
+        let new_state = actor.apply(state.clone());
+        assert_eq!(
+            new_state.player,
+            Player {
+                pos: Pos::new(0, 1),
+                fuel: state.player.fuel - 1,
+                message: String::from(""),
+                anim_state: PlayerAnimState::MoveLeft,
+            }
+        );
+
+        tx.send(Action::Move(Direction::Up)).unwrap();
+        let new_state = actor.apply(state.clone());
+        assert_eq!(
+            new_state.player,
+            Player {
+                pos: Pos::new(1, 0),
+                fuel: state.player.fuel - 1,
+                message: String::from(""),
+                anim_state: PlayerAnimState::MoveUp,
+            }
+        );
+
+        tx.send(Action::Move(Direction::Down)).unwrap();
+        let new_state = actor.apply(state.clone());
+        assert_eq!(
+            new_state.player,
+            Player {
+                pos: Pos::new(1, 2),
+                fuel: state.player.fuel - 1,
+                message: String::from(""),
+                anim_state: PlayerAnimState::MoveDown,
+            }
+        );
+    }
 
     #[test]
     fn get_new_player_pos() {
@@ -274,19 +352,19 @@ mod test {
         // Simple case where no obstacles are in the way and we are not
         // outside the bounds.
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Up),
+            actor.get_new_player_pos(&state, Direction::Up).0,
             Pos::new(1, 0)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Down),
+            actor.get_new_player_pos(&state, Direction::Down).0,
             Pos::new(1, 2)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Left),
+            actor.get_new_player_pos(&state, Direction::Left).0,
             Pos::new(0, 1)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Right),
+            actor.get_new_player_pos(&state, Direction::Right).0,
             Pos::new(2, 1)
         );
     }
@@ -310,20 +388,20 @@ mod test {
         // We can't move outside the bounds.
         state.player.pos = Pos::new(0, 0);
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Up),
+            actor.get_new_player_pos(&state, Direction::Up).0,
             Pos::new(0, 0)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Left),
+            actor.get_new_player_pos(&state, Direction::Left).0,
             Pos::new(0, 0)
         );
         state.player.pos = Pos::new(2, 2);
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Down),
+            actor.get_new_player_pos(&state, Direction::Down).0,
             Pos::new(2, 2)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Right),
+            actor.get_new_player_pos(&state, Direction::Right).0,
             Pos::new(2, 2)
         );
     }
@@ -358,19 +436,19 @@ mod test {
 
         // We can't move past obstacles.
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Up),
+            actor.get_new_player_pos(&state, Direction::Up).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Left),
+            actor.get_new_player_pos(&state, Direction::Left).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Down),
+            actor.get_new_player_pos(&state, Direction::Down).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Right),
+            actor.get_new_player_pos(&state, Direction::Right).0,
             Pos::new(1, 1)
         );
     }
@@ -405,19 +483,19 @@ mod test {
 
         // We can't move past closed gates.
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Up),
+            actor.get_new_player_pos(&state, Direction::Up).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Left),
+            actor.get_new_player_pos(&state, Direction::Left).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Down),
+            actor.get_new_player_pos(&state, Direction::Down).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Right),
+            actor.get_new_player_pos(&state, Direction::Right).0,
             Pos::new(1, 1)
         );
     }
@@ -450,21 +528,21 @@ mod test {
             data_terminals: vec![],
         };
 
-        // We *can* move past closed gates.
+        // We *can* move past open gates.
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Up),
+            actor.get_new_player_pos(&state, Direction::Up).0,
             Pos::new(1, 0)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Down),
+            actor.get_new_player_pos(&state, Direction::Down).0,
             Pos::new(1, 2)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Left),
+            actor.get_new_player_pos(&state, Direction::Left).0,
             Pos::new(0, 1)
         );
         assert_eq!(
-            actor.get_new_player_pos(&state, Direction::Right),
+            actor.get_new_player_pos(&state, Direction::Right).0,
             Pos::new(2, 1)
         );
     }
