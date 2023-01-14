@@ -1,5 +1,6 @@
 import { Tooltip, PlacementWithLogical } from "@chakra-ui/react";
 
+import { useCallback } from "react";
 import { Offset } from "../../lib/utils";
 import {
   TILE_SIZE,
@@ -16,6 +17,7 @@ interface PlayerProps {
   offset: Offset;
   fuel: number;
   message: string;
+  animState: string;
   fuzzy: boolean;
 }
 
@@ -24,6 +26,13 @@ function speechBubblePlacement(pos: Pos): PlacementWithLogical {
 }
 
 export default function Player(props: PlayerProps) {
+  const getCssTransition = useCallback(() => {
+    if (props.animState === "idle") {
+      return "none";
+    }
+    return `left ${CSS_ANIM_DURATION}s, top ${CSS_ANIM_DURATION}s`;
+  }, [props.animState]);
+
   return (
     <Tooltip
       hasArrow
@@ -43,7 +52,7 @@ export default function Player(props: PlayerProps) {
           zIndex: PLAYER_Z_INDEX,
           left: props.offset.left,
           top: props.offset.top,
-          transition: `left ${CSS_ANIM_DURATION}s, top ${CSS_ANIM_DURATION}s`,
+          transition: getCssTransition(),
         }}
       >
         <img

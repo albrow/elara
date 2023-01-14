@@ -18,6 +18,7 @@ import {
 } from "../../lib/constants";
 import { posToOffset, range } from "../../lib/utils";
 import "./board.css";
+import lunarSurfaceBgUrl from "../../images/lunar_surface_bg.png";
 import DataTerminal from "./data_terminal";
 import Enemy from "./enemy";
 import FuelSpot from "./fuel_spot";
@@ -34,7 +35,10 @@ interface BoardProps {
 export default function Board(props: BoardProps) {
   return (
     <>
-      <div id="board">
+      <div
+        id="board"
+        style={{ backgroundImage: `url("${lunarSurfaceBgUrl}")` }}
+      >
         <table
           style={{
             cursor: "crosshair",
@@ -94,6 +98,7 @@ export default function Board(props: BoardProps) {
             fuel={player.fuel}
             message={player.message}
             fuzzy={player.fuzzy}
+            animState={player.anim_state}
           />
         );
       })}

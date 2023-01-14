@@ -44,11 +44,11 @@ mod tests {
         let mut game = crate::Game::new();
         const LEVEL: &'static dyn Level = &Sandbox {};
 
-        // Running the initial code should result in Outcome::NoObjective.
+        // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
-        assert_eq!(result.outcome, Outcome::NoObjective);
+        assert_eq!(result.outcome, Outcome::Continue);
     }
 }
