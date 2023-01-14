@@ -1,6 +1,7 @@
 use std::fmt;
 
 use crate::{
+    actors::PlayerChannelActor,
     constants::MAX_FUEL,
     levels::{Level, Outcome, LEVELS},
 };
@@ -12,13 +13,13 @@ pub trait Actor {
 pub struct Simulation {
     state_idx: usize,
     states: Vec<State>,
-    player_actor: Box<dyn Actor>,
+    player_actor: PlayerChannelActor,
     level: &'static dyn Level,
     last_outcome: Outcome,
 }
 
 impl Simulation {
-    pub fn new(player_actor: Box<dyn Actor>) -> Simulation {
+    pub fn new(player_actor: PlayerChannelActor) -> Simulation {
         let sim = Simulation {
             state_idx: 0,
             states: vec![],
@@ -40,6 +41,7 @@ impl Simulation {
     pub fn load_level(&mut self, level: &'static dyn Level, seed: usize) {
         self.level = level;
         self.state_idx = 0;
+        self.player_actor.set_bounds(level.bounds());
         self.states.clear();
         self.states.push(self.level.initial_states()[seed].clone());
         self.last_outcome = Outcome::Continue;
@@ -189,7 +191,7 @@ pub struct Player {
 impl Player {
     pub fn new(x: u32, y: u32, fuel: u32) -> Player {
         Player {
-            pos: Pos::new(x, y),
+            pos: Pos::new(x as i32, y as i32),
             fuel: fuel,
             message: String::new(),
             anim_state: PlayerAnimState::Idle,
@@ -206,7 +208,10 @@ pub struct FuelSpot {
 impl FuelSpot {
     pub fn new(x: u32, y: u32) -> FuelSpot {
         FuelSpot {
-            pos: Pos { x, y },
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
             collected: false,
         }
     }
@@ -230,7 +235,12 @@ pub struct Obstacle {
 
 impl Obstacle {
     pub fn new(x: u32, y: u32) -> Obstacle {
-        Obstacle { pos: Pos { x, y } }
+        Obstacle {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+        }
     }
 }
 
@@ -244,7 +254,10 @@ pub struct PasswordGate {
 impl PasswordGate {
     pub fn new(x: u32, y: u32, password: String, open: bool) -> PasswordGate {
         PasswordGate {
-            pos: Pos { x, y },
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
             open,
             password,
         }
@@ -261,7 +274,10 @@ pub struct DataTerminal {
 impl DataTerminal {
     pub fn new(x: u32, y: u32, data: String) -> DataTerminal {
         DataTerminal {
-            pos: Pos { x, y },
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
             data,
             reading: false,
         }
@@ -270,12 +286,12 @@ impl DataTerminal {
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct Pos {
-    pub x: u32,
-    pub y: u32,
+    pub x: i32,
+    pub y: i32,
 }
 
 impl Pos {
-    pub fn new(x: u32, y: u32) -> Pos {
+    pub fn new(x: i32, y: i32) -> Pos {
         Pos { x, y }
     }
 

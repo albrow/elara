@@ -1,5 +1,8 @@
 use super::{no_objective_check_win, Level, Outcome};
-use crate::simulation::{Actor, State};
+use crate::{
+    constants::MAX_FUEL,
+    simulation::{Actor, State},
+};
 
 #[derive(Copy, Clone)]
 /// Sandbox is a special level which does not have an explicit objective. It can
@@ -32,12 +35,22 @@ impl Level for Sandbox {
     fn check_win(&self, state: &State) -> Outcome {
         no_objective_check_win(state)
     }
+    fn bounds(&self) -> crate::actors::Bounds {
+        // For the sandbox level, we allow the player to move in any direction
+        // until they run out of fuel.
+        crate::actors::Bounds {
+            min_x: -(MAX_FUEL as i32),
+            max_x: MAX_FUEL as i32,
+            min_y: -(MAX_FUEL as i32),
+            max_y: MAX_FUEL as i32,
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::levels::Outcome;
+    use crate::{constants::ERR_OUT_OF_FUEL, levels::Outcome};
 
     #[test]
     fn level() {
@@ -50,5 +63,53 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
+    }
+
+    #[test]
+    fn increased_bounds() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &Sandbox {};
+
+        // Sandbox level has greatly increased bounds, even allowing player position
+        // to be negative.
+        let script = "move_up(50);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        );
+        assert_eq!(result.states.last().unwrap().player.pos.y, -50);
+
+        let script = "move_down(50);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        );
+        assert_eq!(result.states.last().unwrap().player.pos.y, 50);
+
+        let script = "move_left(50);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        );
+        assert_eq!(result.states.last().unwrap().player.pos.x, -50);
+
+        let script = "move_right(50);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        );
+        assert_eq!(result.states.last().unwrap().player.pos.x, 50);
     }
 }

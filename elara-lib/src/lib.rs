@@ -52,15 +52,17 @@ impl Game {
 
         // Set up the player actor and add it to the Simulation.
         let bounds = Bounds {
-            max_x: WIDTH - 1,
-            max_y: HEIGHT - 1,
+            min_x: 0,
+            max_x: (WIDTH - 1) as i32,
+            min_y: 0,
+            max_y: (HEIGHT - 1) as i32,
         };
         let player_actor = actors::PlayerChannelActor::new(player_action_rx.clone(), bounds);
 
         // Simulation must be wrapped in Rc<RefCell> in order to be
         // used in the script_runner. This is due to a constraint
         // imposed by the Rhai Engine for registered functions.
-        let simulation = Rc::new(RefCell::new(Simulation::new(Box::new(player_actor))));
+        let simulation = Rc::new(RefCell::new(Simulation::new(player_actor)));
 
         // Set up the script runner, which holds references to the
         // player_tx channel and the simulation and glues them together.

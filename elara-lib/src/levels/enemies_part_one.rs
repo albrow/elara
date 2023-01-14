@@ -91,8 +91,10 @@ move_down(5);
         vec![Box::new(EnemyBugActor::new(
             0,
             Bounds {
-                max_x: WIDTH - 1,
-                max_y: HEIGHT - 1,
+                min_x: 0,
+                max_x: (WIDTH - 1) as i32,
+                min_y: 0,
+                max_y: (HEIGHT - 1) as i32,
             },
         ))]
     }

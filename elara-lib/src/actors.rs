@@ -13,8 +13,10 @@ pub enum Action {
 }
 
 pub struct Bounds {
-    pub max_x: u32,
-    pub max_y: u32,
+    pub min_x: i32,
+    pub max_x: i32,
+    pub min_y: i32,
+    pub max_y: i32,
 }
 
 pub enum Direction {
@@ -32,6 +34,10 @@ pub struct PlayerChannelActor {
 impl PlayerChannelActor {
     pub fn new(rx: Rc<RefCell<mpsc::Receiver<Action>>>, bounds: Bounds) -> PlayerChannelActor {
         PlayerChannelActor { rx, bounds }
+    }
+
+    pub fn set_bounds(&mut self, bounds: Bounds) {
+        self.bounds = bounds;
     }
 }
 
@@ -103,9 +109,9 @@ impl Actor for PlayerChannelActor {
 impl PlayerChannelActor {
     fn get_new_player_pos(&self, state: &State, direction: Direction) -> (Pos, PlayerAnimState) {
         let desired_pos = match direction {
-            Direction::Up => Pos::new(state.player.pos.x, safe_decrement(state.player.pos.y)),
+            Direction::Up => Pos::new(state.player.pos.x, state.player.pos.y - 1),
             Direction::Down => Pos::new(state.player.pos.x, state.player.pos.y + 1),
-            Direction::Left => Pos::new(safe_decrement(state.player.pos.x), state.player.pos.y),
+            Direction::Left => Pos::new(state.player.pos.x - 1, state.player.pos.y),
             Direction::Right => Pos::new(state.player.pos.x + 1, state.player.pos.y),
         };
         if is_obstacle_at(state, &desired_pos)
@@ -145,7 +151,7 @@ impl EnemyBugActor {
         if player_pos.x > enemy_pos.x {
             Pos::new(enemy_pos.x + 1, enemy_pos.y)
         } else if player_pos.x < enemy_pos.x {
-            Pos::new(safe_decrement(enemy_pos.x), enemy_pos.y)
+            Pos::new(enemy_pos.x - 1, enemy_pos.y)
         } else {
             enemy_pos.clone()
         }
@@ -155,7 +161,7 @@ impl EnemyBugActor {
         if player_pos.y > enemy_pos.y {
             Pos::new(enemy_pos.x, enemy_pos.y + 1)
         } else if player_pos.y < enemy_pos.y {
-            Pos::new(enemy_pos.x, safe_decrement(enemy_pos.y))
+            Pos::new(enemy_pos.x, enemy_pos.y - 1)
         } else {
             enemy_pos.clone()
         }
@@ -197,15 +203,6 @@ impl Actor for EnemyBugActor {
     }
 }
 
-/// Decrements x unless the result would be negative, in which case it returns 0.
-fn safe_decrement(x: u32) -> u32 {
-    if x == 0 {
-        0
-    } else {
-        x - 1
-    }
-}
-
 fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
     for obstacle in &state.obstacles {
         if obstacle.pos == *pos {
@@ -232,7 +229,7 @@ fn is_closed_gate_at(state: &State, pos: &Pos) -> bool {
 }
 
 fn is_outside_bounds(bounds: &Bounds, pos: &Pos) -> bool {
-    pos.x > bounds.max_x || pos.y > bounds.max_y
+    pos.x > bounds.max_x || pos.y > bounds.max_y || pos.x < bounds.min_x || pos.y < bounds.min_y
 }
 
 /// Returns the index of the password gate adjacent to the given position.
@@ -266,7 +263,9 @@ mod test {
     #[test]
     fn basic_movement() {
         let bounds = Bounds {
+            min_x: 0,
             max_x: 10,
+            min_y: 0,
             max_y: 10,
         };
         let (tx, rx) = mpsc::channel();
@@ -333,7 +332,9 @@ mod test {
     #[test]
     fn get_new_player_pos() {
         let bounds = Bounds {
+            min_x: 0,
             max_x: 10,
+            min_y: 0,
             max_y: 10,
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
@@ -371,7 +372,12 @@ mod test {
 
     #[test]
     fn get_new_player_pos_with_bounds() {
-        let bounds = Bounds { max_x: 2, max_y: 2 };
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 2,
+            min_y: 0,
+            max_y: 2,
+        };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
             player: Player::new(1, 1, MAX_FUEL),
@@ -409,7 +415,9 @@ mod test {
     #[test]
     fn get_new_player_pos_with_obstacles() {
         let bounds = Bounds {
+            min_x: 0,
             max_x: 10,
+            min_y: 0,
             max_y: 10,
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
@@ -456,7 +464,9 @@ mod test {
     #[test]
     fn get_new_player_pos_with_closed_gates() {
         let bounds = Bounds {
+            min_x: 0,
             max_x: 10,
+            min_y: 0,
             max_y: 10,
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
@@ -503,7 +513,9 @@ mod test {
     #[test]
     fn get_new_player_pos_with_open_gates() {
         let bounds = Bounds {
+            min_x: 0,
             max_x: 10,
+            min_y: 0,
             max_y: 10,
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);

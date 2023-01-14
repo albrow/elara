@@ -16,7 +16,8 @@ mod variables;
 
 use std::collections::HashMap;
 
-use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL};
+use crate::actors::Bounds;
+use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
 use crate::simulation::Actor;
 use crate::simulation::{
     DataTerminal, Enemy, FuelSpot, Goal, Obstacle, PasswordGate, Player, State,
@@ -44,6 +45,14 @@ pub trait Level {
     fn check_win(&self, state: &State) -> Outcome;
     fn initial_fuzzy_state(&self) -> FuzzyState {
         FuzzyState::from(self.initial_states())
+    }
+    fn bounds(&self) -> Bounds {
+        Bounds {
+            min_x: 0,
+            max_x: (WIDTH - 1) as i32,
+            min_y: 0,
+            max_y: (HEIGHT - 1) as i32,
+        }
     }
 }
 
