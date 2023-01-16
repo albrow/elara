@@ -1,18 +1,13 @@
-mod comparisons;
 mod enemies_part_one;
-mod expressions;
 mod fuel_part_one;
 mod gate_and_terminal;
 mod gates;
 mod glitches_part_one;
 mod glitches_part_two;
-mod hello_world;
 mod loops_part_one;
 mod loops_part_two;
-mod math_expressions;
 mod movement;
 mod sandbox;
-mod variables;
 
 use std::collections::HashMap;
 
@@ -60,22 +55,15 @@ lazy_static! {
     #[derive(Debug, Clone, Copy)]
     pub static ref LEVELS: HashMap<&'static str, Box<dyn Level + Sync>> = {
         let mut m: HashMap<&'static str, Box<dyn Level + Sync>> = HashMap::new();
-        m.insert(hello_world::HelloWorld {}.short_name(), Box::new(hello_world::HelloWorld {}));
         m.insert(movement::Movement {}.short_name(), Box::new(movement::Movement {}));
-        m.insert(expressions::Expressions {}.short_name(), Box::new(expressions::Expressions {}));
-        m.insert(math_expressions::MathExpressions {}.short_name(),
-            Box::new(math_expressions::MathExpressions {}),
-        );
         m.insert(fuel_part_one::FuelPartOne {}.short_name(), Box::new(fuel_part_one::FuelPartOne {}));
         m.insert(gates::Gates {}.short_name(), Box::new(gates::Gates {}));
-        m.insert(variables::Variables {}.short_name(), Box::new(variables::Variables {}));
         m.insert(gate_and_terminal::GateAndTerminal {}.short_name(),
             Box::new(gate_and_terminal::GateAndTerminal {}),
         );
         m.insert(enemies_part_one::EnemiesPartOne {}.short_name(), Box::new(enemies_part_one::EnemiesPartOne {}));
         m.insert(loops_part_one::LoopsPartOne {}.short_name(), Box::new(loops_part_one::LoopsPartOne {}));
         m.insert(loops_part_two::LoopsPartTwo {}.short_name(), Box::new(loops_part_two::LoopsPartTwo {}));
-        m.insert(comparisons::Comparisons {}.short_name(), Box::new(comparisons::Comparisons {}));
         m.insert(glitches_part_one::GlitchesPartOne {}.short_name(), Box::new(glitches_part_one::GlitchesPartOne {}));
         m.insert(glitches_part_two::GlitchesPartTwo {}.short_name(), Box::new(glitches_part_two::GlitchesPartTwo {}));
         m.insert(sandbox::Sandbox{}.short_name(), Box::new(sandbox::Sandbox{}));
