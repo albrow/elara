@@ -28,12 +28,16 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
     choiceIds: ["where_are_you", "who_are_you"],
   },
   where_i_am: {
-    text: "I'm calling in from Moonbase Bravo, on the southern hemisphere of Elara. It's a small base but I'm happy to call it home, and you can't beat the view!",
+    text:
+      "I'm calling in from Moonbase Bravo, on the southern hemisphere of Elara. " +
+      "It's a small base but I'm happy to call it home, and you can't beat the view!",
     choiceIds: [],
     nextId: "offer_intro_end",
   },
   who_i_am: {
-    text: "Well, you already know my name. I'm an engineer here at Ganymede Robotics. I'm also responsible for training new interns, which includes you!",
+    text:
+      "Well, you already know my name. I'm an engineer here at Ganymede Robotics. " +
+      "I'm also responsible for training new interns, which includes you!",
     choiceIds: [],
     nextId: "offer_intro_end",
   },

@@ -2,9 +2,11 @@ import { Button } from "@chakra-ui/react";
 import { MdArrowForward } from "react-icons/md";
 import { Link } from "react-router-dom";
 
+import { SCENES } from "../lib/scenes";
+
 ## Welcome to Elara
 
-Elara is a game that teaches you how to program. It is named after one of the
+Elara is a game that teaches you how to code. It is named after one of the
 [moons of Jupiter](<https://en.wikipedia.org/wiki/Elara_(moon)>), where the bulk
 of the game will take place.
 
@@ -17,9 +19,7 @@ Right now, we are focusing on testing the core mechanics of the game, which
 includes writing code to control a rover and solve various puzzles. Click the
 "Start" button to start playing!
 
-{/* NOTE(albrow): Will need to change this link manually if the first scene changes. */}
-
-<Link to="/dialog/intro">
+<Link to={SCENES[0].route}>
   <Button colorScheme="green">
     <span>Start</span>
     <MdArrowForward size="1.3em" style={{ marginLeft: "0.2rem" }} />

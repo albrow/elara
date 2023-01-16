@@ -7,7 +7,9 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   explain_gates: {
-    text: `Looks like a locked gate is blocking the way! To open the gate, move the rover next to it, then say the password using the "say" function.`,
+    text:
+      `Looks like a locked gate is blocking the way! To open the gate, ` +
+      `move G.R.O.V.E.R. next to it, then say the password using the "say" function.`,
     choiceIds: ["request_password"],
   },
   provide_password: {

@@ -25,7 +25,7 @@ export const NODES: {
     nextId: "explain_data_terminals_3",
   },
   explain_data_terminals_3: {
-    text: `To read from a data terminal, move the rover next to it and use the "read_data" function.`,
+    text: `To read from a data terminal, move G.R.O.V.E.R. next to it and use the "read_data" function.`,
     choiceIds: ["ack_data_terminals"],
   },
 };

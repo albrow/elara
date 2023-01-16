@@ -26,19 +26,28 @@ export const NODES: {
     choiceIds: ["request_explain_ui", "level_movement_end_early"],
   },
   explain_code_editor: {
-    text: `The code editor is on the left side of your screen. When you are ready to run your code, press the "Run" button.`,
+    text:
+      `The code editor is on the left side of your screen. When you are ready to run your ` +
+      `code, press the "Run" button.`,
     choiceIds: ["ack_code_editor", "level_movement_end"],
   },
   explain_board: {
-    text: "On the right side of your screen is a live video feed. You should see G.R.O.V.E.R. there now. When you run your code, G.R.O.V.E.R will move around and perform various actions.",
+    text:
+      "On the right side of your screen is a live video feed. You should see G.R.O.V.E.R. " +
+      "there now. When you run your code, G.R.O.V.E.R will move around and perform various actions.",
     choiceIds: ["ack_board", "level_movement_end"],
   },
   explain_objective: {
-    text: "Near the top of your screen, you'll see the current objective. Usually you need to move G.R.O.V.E.R. to a certain location, but sometimes you need to do something else.",
+    text:
+      "Near the top of your screen, you'll see the current objective. Usually you need to " +
+      "move G.R.O.V.E.R. to a certain location, but sometimes you need to do something else.",
     choiceIds: ["ack_objective", "level_movement_end"],
   },
   explain_control_bar: {
-    text: `After pressing the "Run" button, you can pause, step forward, or step backward through the code. If you ever get confused about what your code is doing, pausing and going one step at a time can be a great way to wrap your head around it!`,
+    text:
+      `After pressing the "Run" button, you can pause, step forward, or step backward ` +
+      `through the code. If you ever get confused about what your code is doing, pausing ` +
+      `and going one step at a time can be a great way to wrap your head around it!`,
     choiceIds: ["ack_control_bar", "level_movement_end"],
   },
   explanation_end: {
@@ -61,7 +70,7 @@ export const CHOICES: {
     nextId: "explain_code_editor",
   },
   ack_code_editor: {
-    text: "Got it. What else?",
+    text: "Gotcha.",
     nextId: "explain_board",
   },
   ack_board: {
