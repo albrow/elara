@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-export const VERSION = 2;
+export const VERSION = 3;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 export interface LevelState {

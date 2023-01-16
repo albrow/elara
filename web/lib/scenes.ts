@@ -13,6 +13,7 @@ export const SANDBOX_LEVEL = levelData.get("sandbox")!;
 
 export const LEVELS = [
   levelData.get("movement")!,
+  levelData.get("movement_part_two")!,
   levelData.get("fuel_part_one")!,
   levelData.get("gates")!,
   levelData.get("gate_and_terminal")!,
@@ -45,6 +46,12 @@ export const SCENES: Scene[] = [
     level: LEVELS[0],
   },
   {
+    type: "level",
+    name: `Level 1: ${LEVELS[1].name}`,
+    route: "/level/1",
+    level: LEVELS[1],
+  },
+  {
     type: "journal",
     name: "Journal: Functions",
     route: "/journal/concepts/functions",
@@ -56,15 +63,15 @@ export const SCENES: Scene[] = [
   },
   {
     type: "level",
-    name: `Level 1: ${LEVELS[1].name}`,
-    route: "/level/1",
-    level: LEVELS[1],
-  },
-  {
-    type: "level",
     name: `Level 2: ${LEVELS[2].name}`,
     route: "/level/2",
     level: LEVELS[2],
+  },
+  {
+    type: "level",
+    name: `Level 3: ${LEVELS[3].name}`,
+    route: "/level/3",
+    level: LEVELS[3],
   },
   {
     type: "journal",
@@ -78,9 +85,9 @@ export const SCENES: Scene[] = [
   },
   {
     type: "level",
-    name: `Level 3: ${LEVELS[3].name}`,
-    route: "/level/3",
-    level: LEVELS[3],
+    name: `Level 4: ${LEVELS[4].name}`,
+    route: "/level/4",
+    level: LEVELS[4],
   },
 ];
 

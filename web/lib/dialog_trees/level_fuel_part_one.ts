@@ -15,7 +15,7 @@ export const NODES: {
   },
   explain_fuel_2: {
     text:
-      "If you run out of fuel, you will fail the objective. You can" +
+      "If you run out of fuel, you will fail the objective. You can " +
       "pick up additional fuel by simply moving into a space that contains it.",
     choiceIds: ["ack_fuel"],
   },

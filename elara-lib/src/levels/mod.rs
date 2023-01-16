@@ -7,6 +7,7 @@ mod glitches_part_two;
 mod loops_part_one;
 mod loops_part_two;
 mod movement;
+mod movement_part_two;
 mod sandbox;
 
 use std::collections::HashMap;
@@ -56,6 +57,7 @@ lazy_static! {
     pub static ref LEVELS: HashMap<&'static str, Box<dyn Level + Sync>> = {
         let mut m: HashMap<&'static str, Box<dyn Level + Sync>> = HashMap::new();
         m.insert(movement::Movement {}.short_name(), Box::new(movement::Movement {}));
+        m.insert(movement_part_two::MovementPartTwo {}.short_name(), Box::new(movement_part_two::MovementPartTwo {}));
         m.insert(fuel_part_one::FuelPartOne {}.short_name(), Box::new(fuel_part_one::FuelPartOne {}));
         m.insert(gates::Gates {}.short_name(), Box::new(gates::Gates {}));
         m.insert(gate_and_terminal::GateAndTerminal {}.short_name(),
