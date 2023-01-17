@@ -36,6 +36,8 @@
   background: transparent !important;
 }
 
+/* .line-running is the class added by our Editor component
+to indicate which line of code is currently running */
 .line-running {
   position: relative;
   background-color: var(--chakra-colors-blue-100);
@@ -65,4 +67,16 @@
 .cm-tooltip.cm-tooltip-hover {
   background-color: var(--chakra-colors-gray-200);
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* .cm-hoverable is the class added by our highlightHoverable
+plugin for any text which supports documentation-on-hover */
+.cm-hoverable {
+  color: var(--chakra-colors-purple-600);
+  transition: font-weight: 0s;
+}
+
+.cm-hoverable:hover {
+  font-weight: 700;
+  transition: font-weight 1.0s;
 }

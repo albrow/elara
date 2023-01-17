@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { hoverTooltip, Tooltip } from "@codemirror/view";
+import { syntaxTree } from "@codemirror/language";
 import { MDXProps } from "mdx/types";
 import { createRoot } from "react-dom/client";
 
@@ -11,7 +12,21 @@ import Say from "./pages/say.mdx";
 import Random from "./pages/random.mdx";
 import ReadData from "./pages/read_data.mdx";
 
-const docPages: { [key: string]: (props: MDXProps) => JSX.Element } = {
+export const hoverWords = [
+  "move_up",
+  "move_down",
+  "move_left",
+  "move_right",
+  "say",
+  "random",
+  "read_data",
+] as const;
+
+export type HoverWord = typeof hoverWords[number];
+
+const docPages: {
+  [key in HoverWord]: (props: MDXProps) => JSX.Element;
+} = {
   move_up: MoveUp,
   move_down: MoveDown,
   move_left: MoveLeft,
@@ -29,10 +44,15 @@ export const hoverDocs = hoverTooltip((view, pos, side): Tooltip | null => {
   while (end < to && /\w/.test(text[end - from])) end += 1;
   if ((start === pos && side < 0) || (end === pos && side > 0)) return null;
 
+  // Disable autocomplete if we're inside a comment.
+  const nodeBefore = syntaxTree(view.state).resolveInner(start, -1);
+  if (nodeBefore.name === "BlockComment" || nodeBefore.name === "LineComment")
+    return null;
+
   // word is the text of the word currently under the cursor.
   const word = text.slice(start - from, end - from);
   if (!(word in docPages)) return null;
-  const Page = docPages[word];
+  const Page = docPages[word as HoverWord];
 
   return {
     pos: start,

@@ -11,6 +11,7 @@ import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
 import { LinePos } from "../../../elara-lib/pkg";
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
+import { highlightHoverable } from "../../lib/highlight_hoverable";
 import { hoverDocs } from "./hover_docs";
 
 const extensions = [
@@ -18,6 +19,7 @@ const extensions = [
   keymap.of([indentWithTab]),
   rhaiSupport(),
   hoverDocs,
+  highlightHoverable,
 ];
 
 export interface CodeError {

@@ -1,5 +1,6 @@
 import { parser } from "@lezer/javascript";
 import {
+  syntaxTree,
   LRLanguage,
   LanguageSupport,
   delimitedIndent,
@@ -95,7 +96,11 @@ function completeBuiltinFunction(context: CompletionContext) {
   // Basic sanity checking to enable/disable autocomplete.
   if (word == null) return null;
   if (word.from === word.to && !context.explicit) return null;
-  // TODO(albrow): Don't show completions inside comments.
+
+  // Disable autocomplete if we're inside a comment.
+  const nodeBefore = syntaxTree(context.state).resolveInner(context.pos, -1);
+  if (nodeBefore.name === "BlockComment" || nodeBefore.name === "LineComment")
+    return null;
 
   return {
     from: word.from,
@@ -105,10 +110,6 @@ function completeBuiltinFunction(context: CompletionContext) {
 
 // Support very barebones indentation and syntax highlighting for
 // Rhai, using JavaScript as a base to build on.
-//
-// TODO(albrow): Highlight built-in functions? Would help make it
-//    more clear what can be hovered over for documentation.
-//
 export const rhaiLanguage = LRLanguage.define({
   languageData: {
     name: "rhai",
