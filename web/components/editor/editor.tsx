@@ -52,7 +52,12 @@ const myTheme = createTheme({
     gutterForeground: "var(--chakra-colors-gray-500)",
     gutterBorder: "var(--chakra-colors-gray-300)",
   },
-  styles: [{ tag: t.comment, color: "var(--chakra-colors-green-600)" }],
+  styles: [
+    {
+      tag: t.comment,
+      class: "cm-comment",
+    },
+  ],
 });
 
 function codeErrorToDiagnostic(view: EditorView, e: CodeError): Diagnostic {
