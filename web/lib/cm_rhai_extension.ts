@@ -105,6 +105,10 @@ function completeBuiltinFunction(context: CompletionContext) {
 
 // Support very barebones indentation and syntax highlighting for
 // Rhai, using JavaScript as a base to build on.
+//
+// TODO(albrow): Highlight built-in functions? Would help make it
+//    more clear what can be hovered over for documentation.
+//
 export const rhaiLanguage = LRLanguage.define({
   languageData: {
     name: "rhai",
