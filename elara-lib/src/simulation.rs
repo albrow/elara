@@ -222,9 +222,30 @@ pub struct Goal {
     pub pos: Pos,
 }
 
+/// The animation state of the enemy sprite.
+#[derive(Clone, PartialEq, Debug)]
+pub enum EnemyAnimState {
+    Idle,
+    Moving,
+    // TODO(albrow): Add more states for attacking, etc.
+}
+
 #[derive(Clone, PartialEq, Debug)]
 pub struct Enemy {
     pub pos: Pos,
+    pub anim_state: EnemyAnimState,
+}
+
+impl Enemy {
+    pub fn new(x: u32, y: u32) -> Enemy {
+        Enemy {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            anim_state: EnemyAnimState::Idle,
+        }
+    }
 }
 
 #[derive(Clone, PartialEq, Debug)]

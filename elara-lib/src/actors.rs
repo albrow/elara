@@ -3,7 +3,9 @@ use std::rc::Rc;
 use std::sync::mpsc;
 
 use crate::constants::FUEL_SPOT_AMOUNT;
-use crate::simulation::{get_adjacent_terminal, Actor, PlayerAnimState, Pos, State};
+use crate::simulation::{
+    get_adjacent_terminal, Actor, EnemyAnimState, PlayerAnimState, Pos, State,
+};
 
 pub enum Action {
     Wait,
@@ -172,6 +174,9 @@ impl Actor for EnemyBugActor {
     fn apply(&mut self, state: State) -> State {
         let mut state = state.clone();
 
+        // Default to Idle state.
+        state.enemies[self.index].anim_state = EnemyAnimState::Idle;
+
         let player_pos = &state.player.pos;
         let enemy_pos = &state.enemies[self.index].pos;
 
@@ -195,6 +200,7 @@ impl Actor for EnemyBugActor {
                 && !is_closed_gate_at(&state, &pos)
             {
                 state.enemies[self.index].pos = pos;
+                state.enemies[self.index].anim_state = EnemyAnimState::Moving;
                 break;
             }
         }
@@ -558,4 +564,6 @@ mod test {
             Pos::new(2, 1)
         );
     }
+
+    // TODO(albrow): Add tests for EnemyBugActor.
 }

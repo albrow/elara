@@ -40,9 +40,7 @@ move_down(5);
         state.goal = Some(Goal {
             pos: Pos { x: 9, y: 5 },
         });
-        state.enemies = vec![Enemy {
-            pos: Pos { x: 9, y: 7 },
-        }];
+        state.enemies = vec![Enemy::new(9, 6)];
         state.obstacles = vec![
             Obstacle::new(8, 1),
             Obstacle::new(8, 2),

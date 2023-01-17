@@ -89,6 +89,12 @@ export const SCENES: Scene[] = [
     route: "/level/4",
     level: LEVELS[4],
   },
+  {
+    type: "level",
+    name: `Level 5: ${LEVELS[5].name}`,
+    route: "/level/5",
+    level: LEVELS[5],
+  },
 ];
 
 export const getSceneIndexFromRoute = (route: string): number | undefined =>

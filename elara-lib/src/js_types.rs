@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 use crate::levels;
 use crate::levels::Outcome;
 use crate::script_runner;
-use crate::simulation::PlayerAnimState;
+use crate::simulation::{EnemyAnimState, PlayerAnimState};
 
 #[wasm_bindgen(getter_with_clone)]
 pub struct RhaiError {
@@ -203,6 +203,10 @@ impl FuzzyState {
         let enemies = Array::new_with_length(state.enemies.len() as u32);
         for (i, fuzzy_enemy) in state.enemies.iter().enumerate() {
             let enemy = &fuzzy_enemy.obj;
+            let anim_state = match enemy.anim_state {
+                EnemyAnimState::Idle => "idle",
+                EnemyAnimState::Moving => "moving",
+            };
             enemies.set(
                 i as u32,
                 JsValue::from(FuzzyEnemy {
@@ -210,6 +214,7 @@ impl FuzzyState {
                         x: enemy.pos.x as i32,
                         y: enemy.pos.y as i32,
                     },
+                    anim_state: anim_state.to_string(),
                     fuzzy: fuzzy_enemy.fuzzy,
                 }),
             );
@@ -301,10 +306,11 @@ pub struct FuzzyFuelSpot {
     pub fuzzy: bool,
 }
 
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyEnemy {
     pub pos: Pos,
+    pub anim_state: String, // EnemyAnimState
     pub fuzzy: bool,
 }
 
