@@ -10,70 +10,85 @@ import {
 import { CompletionContext, Completion } from "@codemirror/autocomplete";
 import { EditorView } from "codemirror";
 
-// Functions which take a number of steps as an argument.
-const moveFuncNames = ["move_up", "move_down", "move_left", "move_right"];
-const moveFuncOptions = moveFuncNames.map((name) => ({
-  label: name,
-  type: "function",
-  // Add the function name and let user input the number of steps.
+interface PartialFuncOption {
+  label: string;
+  info: string;
   apply: (
     view: EditorView,
     completion: Completion,
     from: number,
     to: number
-  ) => {
-    view.dispatch({
-      changes: { from, to, insert: `${completion.label}()` },
-      selection: { anchor: from + completion.label.length + 1 },
-    });
-  },
-  detail: "fn",
-  info: "(steps: number)",
-}));
+  ) => void;
+}
 
-// Functions which take no arguments.
-const nullaryFuncNames = ["random", "read_data"];
-const nullaryFuncOptions = nullaryFuncNames.map((name) => ({
-  label: name,
-  type: "function",
-  // Add the function name and put the cursor at the end of the parentheses.
-  apply: (
-    view: EditorView,
-    completion: Completion,
-    from: number,
-    to: number
-  ) => {
-    // Note: the `random` function takes no arguments.
-    view.dispatch({
-      changes: { from, to, insert: `${completion.label}()` },
-      selection: { anchor: from + completion.label.length + 2 },
-    });
-  },
-  detail: "fn",
-}));
+// Implementation of Completion.apply for a function which takes no arguments.
+function applyFuncWithoutArgs(
+  view: EditorView,
+  completion: Completion,
+  from: number,
+  to: number
+) {
+  view.dispatch({
+    changes: { from, to, insert: `${completion.label}()` },
+    selection: { anchor: from + completion.label.length + 2 },
+  });
+}
 
-const builtinFuncOptions = [
-  ...moveFuncOptions,
-  ...nullaryFuncOptions,
+// Implementation of Completion.apply for a function which takes at least one argument.
+function applyFuncWithArgs(
+  view: EditorView,
+  completion: Completion,
+  from: number,
+  to: number
+) {
+  view.dispatch({
+    changes: { from, to, insert: `${completion.label}()` },
+    selection: { anchor: from + completion.label.length + 1 },
+  });
+}
+
+const builtInFuncs: PartialFuncOption[] = [
+  {
+    label: "move_up",
+    info: "Move up by a number of steps.",
+    apply: applyFuncWithArgs,
+  },
+  {
+    label: "move_down",
+    info: "Move down by a number of steps.",
+    apply: applyFuncWithArgs,
+  },
+  {
+    label: "move_left",
+    info: "Move left by a number of steps.",
+    apply: applyFuncWithArgs,
+  },
+  {
+    label: "move_right",
+    info: "Move right by a number of steps.",
+    apply: applyFuncWithArgs,
+  },
+  {
+    label: "random",
+    info: "Generate a random number between 1 and 100.",
+    apply: applyFuncWithoutArgs,
+  },
+  {
+    label: "read_data",
+    info: "Read data from a nearby data terminal.",
+    apply: applyFuncWithoutArgs,
+  },
   {
     label: "say",
-    type: "function",
-    // Add the function name and let user input message.
-    apply: (
-      view: EditorView,
-      completion: Completion,
-      from: number,
-      to: number
-    ) => {
-      view.dispatch({
-        changes: { from, to, insert: `${completion.label}()` },
-        selection: { anchor: from + completion.label.length + 1 },
-      });
-    },
-    detail: "fn",
-    info: "(message: string)",
+    info: "Cause G.R.O.V.E.R. to say something",
+    apply: applyFuncWithArgs,
   },
 ];
+
+const builtinFuncOptions = builtInFuncs.map((func) => ({
+  ...func,
+  type: "function",
+}));
 
 function completeBuiltinFunction(context: CompletionContext) {
   const word = context.matchBefore(/\w*/);

@@ -61,3 +61,8 @@
   height: 2px;
   background-color: var(--chakra-colors-blue-400);
 }
+
+.cm-tooltip.cm-tooltip-hover {
+  background-color: var(--chakra-colors-gray-200);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}

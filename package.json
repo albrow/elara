@@ -147,7 +147,8 @@
         {
           "varsIgnorePattern": "^_"
         }
-      ]
+      ],
+      "no-undef": "off"
     }
   }
 }

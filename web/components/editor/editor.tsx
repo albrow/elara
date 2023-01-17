@@ -11,8 +11,14 @@ import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
 import { LinePos } from "../../../elara-lib/pkg";
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
+import { hoverDocs } from "./hover_docs";
 
-const extensions = [lintGutter(), keymap.of([indentWithTab]), rhaiSupport()];
+const extensions = [
+  lintGutter(),
+  keymap.of([indentWithTab]),
+  rhaiSupport(),
+  hoverDocs,
+];
 
 export interface CodeError {
   line: number;
@@ -36,13 +42,13 @@ const myTheme = createTheme({
   settings: {
     background: "#ffffff",
     foreground: "#000000",
-    caret: "#374151",
-    selection: "#9ca3af77",
-    selectionMatch: "#9ca3af77",
-    lineHighlight: "#00000000",
-    gutterBackground: "#e5e7ebdd",
-    gutterForeground: "#9ca3af",
-    gutterBorder: "#d1d5db",
+    caret: "var(--chakra-colors-gray-700)",
+    selection: "var(--chakra-colors-gray-300)",
+    selectionMatch: "var(--chakra-colors-green-200)",
+    lineHighlight: "transparent",
+    gutterBackground: "var(--chakra-colors-gray-200)",
+    gutterForeground: "var(--chakra-colors-gray-500)",
+    gutterBorder: "var(--chakra-colors-gray-300)",
   },
   styles: [{ tag: t.comment, color: "var(--chakra-colors-green-600)" }],
 });

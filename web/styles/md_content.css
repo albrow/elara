@@ -1,7 +1,8 @@
 .md-content h1,
 .md-content h2,
 .md-content h3,
-.md-content h4 {
+.md-content h4,
+.md-content h5 {
   margin: 0.8rem 0 0.3rem;
   font-weight: 700;
   line-height: 1.42;
@@ -84,4 +85,57 @@
   margin: 2rem 0;
   border: none;
   border-top: solid 2px var(--chakra-colors-gray-300);
+}
+
+.md-content ul {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.md-content.hover-doc h1,
+.md-content.hover-doc h2,
+.md-content.hover-doc h3,
+.md-content.hover-doc h4,
+.md-content.hover-doc h5 {
+  margin: 0.5rem 0 0.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.md-content.hover-doc h1 {
+  font-size: 1.5rem;
+}
+
+.md-content.hover-doc h2 {
+  font-size: 1.3rem;
+}
+
+.md-content.hover-doc h3 {
+  font-size: 1.1rem;
+}
+
+.md-content.hover-doc h4 {
+  font-size: 1rem;
+}
+
+.md-content.hover-doc h5 {
+  font-size: 0.9rem;
+}
+
+.md-content.hover-doc h6 {
+  font-size: 0.8rem;
+}
+
+.md-content.hover-doc p {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.md-content.hover-doc code {
+  background: var(--chakra-colors-gray-300);
+  border: solid 1px var(--chakra-colors-gray-400);
+  padding: 0.1rem 0.4rem;
+  font-size: 0.8rem;
+  font-family: monospace;
 }
