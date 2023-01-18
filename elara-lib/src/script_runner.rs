@@ -11,6 +11,7 @@ use std::sync::mpsc;
 use std::vec;
 
 use crate::actors::{Action, Direction};
+use crate::better_errors::{convert_err, BetterError};
 use crate::constants::{ERR_NO_DATA_TERMINAL, ERR_SIMULATION_END};
 use crate::levels::Outcome;
 use crate::simulation::{get_adjacent_terminal, Pos, Simulation, State};
@@ -47,10 +48,13 @@ impl ScriptRunner {
         }
     }
 
-    pub fn run(&mut self, script: &str) -> Result<ScriptResult, Box<EvalAltResult>> {
+    pub fn run(&mut self, script: &str) -> Result<ScriptResult, BetterError> {
         // First use a custom check for semicolons at the end of each line
         // (except for blocks or inside comments).
-        check_semicolons(script)?;
+        match check_semicolons(script) {
+            Ok(()) => {}
+            Err(err) => return Err(convert_err(err)),
+        }
 
         // Create and configure the Rhai engine.
         let mut engine = Engine::new();
@@ -70,22 +74,11 @@ impl ScriptRunner {
         // engine.
         let engine = engine;
 
-        // Try compiling the AST first and check for lexer/parser errors.
-        let ast = match engine.compile(script) {
-            Err(parse_err) => {
-                return Err(Box::new(EvalAltResult::ErrorParsing(
-                    *parse_err.0,
-                    parse_err.1,
-                )));
-            }
-            Ok(ast) => ast,
-        };
-
         // If the AST looks good, try running the script.
         //
         // TODO(albrow): Manually overwrite certain common error messages to make
         // them more user-friendly.
-        match engine.run_ast(&ast) {
+        match engine.run(script) {
             Err(err) => {
                 match *err {
                     EvalAltResult::ErrorRuntime(_, _)
@@ -96,7 +89,7 @@ impl ScriptRunner {
                     }
                     _ => {
                         // For all other kinds of errors, we return the error.
-                        return Err(err);
+                        return Err(convert_err(err));
                     }
                 }
             }

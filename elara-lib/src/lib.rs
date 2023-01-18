@@ -6,23 +6,25 @@ mod log;
 #[macro_use]
 extern crate lazy_static;
 
-use rand::seq::SliceRandom;
-use rhai::EvalAltResult;
-use wasm_bindgen::prelude::*;
-mod simulation;
-use simulation::Simulation;
 mod actors;
-use actors::{Action, Bounds};
+mod better_errors;
 mod constants;
+mod js_types;
+mod levels;
+mod script_runner;
+mod simulation;
+
+use actors::{Action, Bounds};
+use better_errors::BetterError;
 use constants::{HEIGHT, WIDTH};
+use levels::{Level, Outcome, LEVELS};
+use rand::seq::SliceRandom;
+use script_runner::{ScriptResult, ScriptRunner};
+use simulation::Simulation;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
-mod script_runner;
-use script_runner::{ScriptResult, ScriptRunner};
-mod levels;
-use levels::{Level, Outcome, LEVELS};
-mod js_types;
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 /// Game is the main entry point for the game. It is responsible for
@@ -87,9 +89,9 @@ impl Game {
         match result {
             Ok(result) => Ok(js_types::to_js_run_result(&result)),
             Err(err) => {
-                let message = err.to_string();
-                let col = err.position().position().unwrap_or(0);
-                let line = err.position().line().unwrap_or(0);
+                let message = err.message;
+                let line = err.line.unwrap_or(0);
+                let col = err.col.unwrap_or(0);
                 Err(JsValue::from(js_types::RhaiError { message, line, col }))
             }
         }
@@ -101,7 +103,7 @@ impl Game {
         &mut self,
         script: String,
         level: &'static dyn Level,
-    ) -> Result<ScriptResult, Box<EvalAltResult>> {
+    ) -> Result<ScriptResult, BetterError> {
         // Run the simulation multiple times, once for each possible initial
         // state. Return the first result that fails (if any), otherwise return
         // a random successful result.
