@@ -18,11 +18,11 @@ impl Level for GateAndTerminal {
         r#"move_down(1);
 move_left(1);
 
-// The "read_data" function outputs the data from a
+// The read_data function outputs the data from a
 // nearby data terminal. In this case, you can use
 // it to get the password, then store it in a variable
-// called "password".
-let password = read_data();
+// called the_password.
+let the_password = read_data();
 
 // Add some code below to move to the gate,
 // unlock it, and then move to the goal...
@@ -79,10 +79,18 @@ mod tests {
         let script = r#"
             move_down(1);
             move_left(1);
-            let password = read_data();
+            
+            // The read_data function outputs the data from a
+            // nearby data terminal. In this case, you can use
+            // it to get the password, then store it in a variable
+            // called the_password.
+            let the_password = read_data();
+            
+            // Add some code below to move to the gate,
+            // unlock it, and then move to the goal...
             move_right(1);
             move_down(1);
-            say(password);
+            say(the_password);
             move_down(3);
         "#;
         let result = game

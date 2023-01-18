@@ -19,7 +19,7 @@ impl Level for Gates {
 
 // Reminder: the password for this gate is "lovelace".
 //
-// Add some code below to open the gate using the "say" function...
+// Add some code below to open the gate using the say function...
 "#
     }
     fn initial_states(&self) -> Vec<State> {

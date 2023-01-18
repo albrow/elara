@@ -15,11 +15,12 @@ Here's an example of a basic comment:
 `}
 />
 
-{/* TODO(albrow): Consider tweaking this wording. */}
-In this next example, the `say` function is part of a comment. That means
-the code in that line will not run and the rover will not say anything:
+Comments might contain something that _looks_ like code, but if
+it's inside a comment, it won't do anything. For example, this
+code will not actually say "hello", because the function call is
+inside a comment:
 
 <RunnableExample code={`// say("hello");`} />
 
-Try removing the two slashes before the `say` function above and
-see what happens.
+ℹ️ **Tip**: Try removing the two slashes before the `say` function above
+and see what happens.

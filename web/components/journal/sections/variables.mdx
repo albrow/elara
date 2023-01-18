@@ -8,13 +8,16 @@ the variable in other places in your code.
 
 To create a new variable, use the `let` keyword. In the example below, we
 assign the value `"hello"` to a variable called `greeting`. Then we use
-`greeting` as the input to the `say` function.
+`greeting` as the input to the `say` function. Try changing `"hello"` to
+something else and see what happens.
+
+ℹ️ **Tip:** Don't use quotes around the variable name.
 
 <RunnableExample
-  code={`// Create a new variable named "greeting" with a value of "hello".
+  code={`// Create a new variable named greeting with a value of "hello".
 let greeting = "hello";
 
-// Use the variable "greeting" as the input to the "say" function.
+// Use the variable greeting as the input to the say function.
 say(greeting);
 `}
 />
@@ -26,25 +29,29 @@ After a variable is created, you can change the value it holds by using the
 value of an existing variable.
 
 <RunnableExample
-  code={`// First create a new variable named "number" with a value of 5.
-let number = 5;
-say(number);
+  code={`// First create a new variable named my_number with a value of 5.
+let my_number = 5;
+say(my_number);
 
-// Now change the value of "number" to 10.
-number = 10;
-say(number);
+// Now change the value of my_number to 10.
+my_number = 10;
+say(my_number);
 `}
 />
 
-If a function has an output, you can assign the output to a variable. Here's
-an example of assigning the output of the `random` function to a variable called
+If a function has an output, you can assign the output to a variable. The
+example below assigns the output of the `random` function to a variable called
 `random_number`.
 
 <RunnableExample
-  code={`let random_number = random();
+  code={`// The random function outputs a random number, which we assign to a
+// variable called random_number.
+let random_number = random();
+
+// Now we can use the variable as the input to the say function.
 say(random_number);
 `}
 />
 
-ℹ️ **Tip:** If you are ever unsure about the value a variable holds, you can use
-the `say` function to have the rover say the value for you.
+ℹ️ **Tip:** Going forward, if you are ever unsure about the value a variable
+holds, you can use the `say` function to have G.R.O.V.E.R. say the value for you.

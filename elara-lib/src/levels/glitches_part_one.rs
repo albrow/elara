@@ -55,7 +55,7 @@ impl Level for GlitchesPartOne {
 // second value represents your y position.
 let pos = get_pos();
 
-// Use an "if" statement to move in a different direction depending
+// Use an "if statement" to move in a different direction depending
 // on your position.
 if pos[0] == 0 {
   // The code inside the curly brace will only run if the
