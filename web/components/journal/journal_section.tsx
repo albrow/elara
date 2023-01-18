@@ -10,6 +10,7 @@ import MathExpressions from "./sections/math_expressions.mdx";
 import Comparisons from "./sections/comparisons.mdx";
 import IfStatements from "./sections/if_statements.mdx";
 import Loops from "./sections/loops.mdx";
+import Strings from "./sections/strings.mdx";
 import "../../styles/md_content.css";
 
 export const sections = {
@@ -25,6 +26,7 @@ export const sections = {
   arrays: Arrays,
   while_loops: WhileLoops,
   if_statements: IfStatements,
+  strings: Strings,
 };
 
 export type SectionName = keyof typeof sections;

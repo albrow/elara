@@ -68,6 +68,11 @@ export const SCENES: Scene[] = [
     level: LEVELS[2],
   },
   {
+    type: "journal",
+    name: "Journal: Strings",
+    route: "/journal/concepts/strings",
+  },
+  {
     type: "level",
     name: `Level 3: ${LEVELS[3].name}`,
     route: "/level/3",
