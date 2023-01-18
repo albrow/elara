@@ -79,6 +79,15 @@ for hoverables inside of comments. */
   font-weight: 500;
 }
 
+/* Override string styles. */
+.cm-string {
+  color: var(--chakra-colors-orange-700);
+}
+
+.cm-string:hover {
+  font-weight: 500;
+}
+
 /* .cm-hoverable is the class added by our highlightHoverable
 plugin for any text which supports documentation-on-hover */
 .cm-hoverable {

@@ -57,6 +57,10 @@ const myTheme = createTheme({
       tag: t.comment,
       class: "cm-comment",
     },
+    {
+      tag: t.string,
+      class: "cm-string",
+    },
   ],
 });
 

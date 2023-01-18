@@ -99,7 +99,12 @@ function completeBuiltinFunction(context: CompletionContext) {
 
   // Disable autocomplete if we're inside a comment.
   const nodeBefore = syntaxTree(context.state).resolveInner(context.pos, -1);
-  if (nodeBefore.name === "BlockComment" || nodeBefore.name === "LineComment")
+  if (
+    nodeBefore.name === "BlockComment" ||
+    nodeBefore.name === "LineComment" ||
+    nodeBefore.name === "TemplateString" ||
+    nodeBefore.name === "String"
+  )
     return null;
 
   return {

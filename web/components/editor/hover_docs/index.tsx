@@ -46,8 +46,14 @@ export const hoverDocs = hoverTooltip((view, pos, side): Tooltip | null => {
 
   // Disable autocomplete if we're inside a comment.
   const nodeBefore = syntaxTree(view.state).resolveInner(start, -1);
-  if (nodeBefore.name === "BlockComment" || nodeBefore.name === "LineComment")
+  if (
+    nodeBefore.name === "BlockComment" ||
+    nodeBefore.name === "LineComment" ||
+    nodeBefore.name === "TemplateString" ||
+    nodeBefore.name === "String"
+  ) {
     return null;
+  }
 
   // word is the text of the word currently under the cursor.
   const word = text.slice(start - from, end - from);
