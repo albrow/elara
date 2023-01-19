@@ -64,13 +64,13 @@ pub fn convert_err(err: Box<EvalAltResult>) -> BetterError {
             if let Some(builtin_fn) = BUILTIN_FUNCTIONS.get(fn_name.as_str()) {
                 return match builtin_fn.arg_types.len() {
                     0 => BetterError {
-                        message: format!("Error: {} does not expect any inputs.", builtin_fn.name),
+                        message: format!("Error: {} should not have any inputs.", builtin_fn.name),
                         line: pos.line(),
                         col: pos.position(),
                     },
                     1 => BetterError {
                         message: format!(
-                            "Error: {} expects one {} as an input.",
+                            "Error: {} should have one {} as an input.",
                             builtin_fn.name, builtin_fn.arg_types[0]
                         ),
                         line: pos.line(),
@@ -78,7 +78,7 @@ pub fn convert_err(err: Box<EvalAltResult>) -> BetterError {
                     },
                     _ => BetterError {
                         message: format!(
-                            "Error: Wrong inputs for {}. Expected ({}).",
+                            "Error: Wrong inputs for {}. Should be ({}).",
                             builtin_fn.name,
                             builtin_fn.arg_types.join(", ")
                         ),
