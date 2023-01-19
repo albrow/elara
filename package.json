@@ -7,7 +7,7 @@
   "scripts": {
     "build:wasm": "wasm-pack build ./elara-lib --target web --release -- --features=wasm",
     "watch:wasm": "cd ./elara-lib && cargo watch -i .gitignore -i \"pkg/*\" -s \"wasm-pack build --target web --dev -- --features=wasm\"",
-    "test:rust": "cd ./elara-lib && cargo test",
+    "test:rust": "cd ./elara-lib && cargo test -- --test-threads=1",
     "test:rust-wasm": "cd ./elara-lib && wasm-pack test --chrome --headless -- --features=wasm",
     "test:js": "vitest run",
     "dev": "vite",

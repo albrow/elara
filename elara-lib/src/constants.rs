@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 /// Width and height of the grid.
 pub static WIDTH: u32 = 12;
 pub static HEIGHT: u32 = 8;
@@ -18,3 +20,80 @@ pub static ERR_DESTROYED_BY_BUG: &str = "A bug has damaged the rover beyond repa
 pub static ERR_SIMULATION_END: &str = "SIMULATION_END";
 /// Returned from read_data if you call it when not adjacent to a data terminal.
 pub static ERR_NO_DATA_TERMINAL: &str = "read_data only works if you are next to a data terminal.";
+
+pub struct BuiltinFunction {
+    pub name: &'static str,
+    pub arg_types: &'static [&'static str],
+}
+
+lazy_static! {
+    pub static ref BUILTIN_FUNCTIONS: HashMap<&'static str, BuiltinFunction> = {
+        let mut m: HashMap<&'static str, BuiltinFunction> = HashMap::new();
+
+        m.insert(
+            "move_down",
+            BuiltinFunction {
+                name: "move_down",
+                arg_types: &["number"],
+            },
+        );
+        m.insert(
+            "move_up",
+            BuiltinFunction {
+                name: "move_up",
+                arg_types: &["number"],
+            },
+        );
+        m.insert(
+            "move_left",
+            BuiltinFunction {
+                name: "move_left",
+                arg_types: &["number"],
+            },
+        );
+        m.insert(
+            "move_right",
+            BuiltinFunction {
+                name: "move_right",
+                arg_types: &["number"],
+            },
+        );
+        m.insert(
+            "say",
+            BuiltinFunction {
+                name: "say",
+                arg_types: &["string"],
+            },
+        );
+        m.insert(
+            "random",
+            BuiltinFunction {
+                name: "random",
+                arg_types: &[],
+            },
+        );
+        m.insert(
+            "get_pos",
+            BuiltinFunction {
+                name: "get_pos",
+                arg_types: &[],
+            },
+        );
+        m.insert(
+            "read_data",
+            BuiltinFunction {
+                name: "read_data",
+                arg_types: &[],
+            },
+        );
+        m.insert(
+            "wait",
+            BuiltinFunction {
+                name: "wait",
+                arg_types: &["number"],
+            },
+        );
+
+        m
+    };
+}

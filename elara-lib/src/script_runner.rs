@@ -223,6 +223,11 @@ impl ScriptRunner {
         // player_action_tx). This is a workaround due to the fact that the Rhai engine
         // does not allow for mutable non-static references in handlers. See
         // https://rhai.rs/book/patterns/control.html for more context.
+        //
+        //
+        // Note(albrow): If you add new functions here, don't forget to add them to
+        // BUILTIN_FUNCTIONS in constants.rs.
+        //
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("wait", move |duration: i64| {
