@@ -30,16 +30,17 @@ export default function DialogTree(props: DialogTreeProps) {
   // Special initialization logic to account for the fact that there
   // can be more than one NPC message in a row.
   let initialNode = NODES[currTree().startId];
-  let initialMessages: MsgData[] = [];
+  const initialMessages: MsgData[] = [];
   while (initialNode.choiceIds.length === 0) {
     // No choices. Continue immediately to the next node.
     if (initialNode.nextId == null) {
       throw new Error("nextId should not be null if there are no choices.");
     }
-    initialMessages = [
-      { text: initialNode.text, isPlayer: false, id: uuidv4() },
-      ...initialMessages,
-    ];
+    initialMessages.push({
+      text: initialNode.text,
+      isPlayer: false,
+      id: uuidv4(),
+    });
     initialNode = NODES[initialNode.nextId];
   }
 
@@ -51,9 +52,9 @@ export default function DialogTree(props: DialogTreeProps) {
       if (choice.nextId == null) {
         props.onEnd();
       } else {
-        let newChats = [
-          { text: choice.text, isPlayer: true, id: uuidv4() },
+        const newChats = [
           { text: node.text, isPlayer: false, id: uuidv4() },
+          { text: choice.text, isPlayer: true, id: uuidv4() },
         ];
         let nextNode = NODES[choice.nextId];
         while (nextNode.choiceIds.length === 0) {
@@ -63,15 +64,19 @@ export default function DialogTree(props: DialogTreeProps) {
               "nextId should not be null if there are no choices."
             );
           }
-          newChats = [
-            { text: nextNode.text, isPlayer: false, id: uuidv4() },
-            ...newChats,
-          ];
+          newChats.push({ text: nextNode.text, isPlayer: false, id: uuidv4() });
           nextNode = NODES[nextNode.nextId];
         }
-        setChatHistory([...newChats, ...chatHistory]);
+        setChatHistory([...chatHistory, ...newChats]);
         setNode(nextNode);
       }
+      // Always scroll to the bottom of the chat history.
+      // We need to use setTimeout to make this happen *after* the DOM has updated.
+      setTimeout(() => {
+        document
+          .querySelector("#dialog-bottom")
+          ?.scrollIntoView({ behavior: "smooth" });
+      }, 0);
     },
     [chatHistory, node.text, props]
   );
@@ -94,11 +99,19 @@ export default function DialogTree(props: DialogTreeProps) {
         maxH="50%"
       >
         <Flex
-          direction="column-reverse"
+          direction="column"
           marginTop="auto"
           alignContent="bottom"
           justifyContent="bottom"
         >
+          {chatHistory.map((msg) => (
+            <ChatMessage
+              key={msg.id}
+              text={msg.text}
+              fromPlayer={msg.isPlayer}
+            />
+          ))}
+          <ChatMessage text={node.text} fromPlayer={false} />
           <Flex direction="row" alignContent="right" justifyContent="right">
             <Box>
               {node.choiceIds.map((choiceId) => {
@@ -115,14 +128,9 @@ export default function DialogTree(props: DialogTreeProps) {
               })}
             </Box>
           </Flex>
-          <ChatMessage text={node.text} fromPlayer={false} />
-          {chatHistory.map((msg) => (
-            <ChatMessage
-              key={msg.id}
-              text={msg.text}
-              fromPlayer={msg.isPlayer}
-            />
-          ))}
+          {/* A dummy div used for automatically scrolling to the bottom whenever new messages
+      are added */}
+          <div id="dialog-bottom" />
         </Flex>
       </Box>
     </Flex>
