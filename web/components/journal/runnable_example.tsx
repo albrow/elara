@@ -155,7 +155,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
 
   return (
     <Flex width="100%" direction="row" mb="50px" mt="25px" mx="auto">
-      <Box flex="1.0 1.0" maxWidth="720px" minWidth="540px">
+      <Box flex="1.0 1.0" maxWidth="760px" minWidth="540px">
         <ControlBar
           isRunning={isRunning}
           isPaused={isPaused}

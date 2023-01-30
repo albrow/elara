@@ -69,7 +69,7 @@ export default function MiniBoard(props: MiniBoardProps) {
     <Box
       id="mini-board"
       minH="110px"
-      width={410}
+      width={440}
       p={4}
       ml={3}
       bgImage={`url("${lunarSurfaceBgUrl}")`}

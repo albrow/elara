@@ -58,7 +58,7 @@ export default function Navbar() {
       const levelName = currScene.level?.short_name;
       return saveData.levelStates[levelName as string]?.completed;
     }
-    return true;
+    return false;
   }, [isLastScene, location.pathname, saveData]);
 
   return (
