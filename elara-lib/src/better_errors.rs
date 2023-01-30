@@ -38,7 +38,7 @@ fn trim_message(message: &str) -> String {
 ///    assert_eq!(name, "move_down");
 /// ```
 fn fn_name_from_sig(fn_signature: &str) -> String {
-    let re = Regex::new(r" \(.+\)$").unwrap();
+    let re = Regex::new(r"\(.*\)").unwrap();
     re.replace(fn_signature, "").trim().to_string()
 }
 
@@ -129,5 +129,11 @@ mod tests {
                 col: Some(1),
             }
         );
+    }
+
+    #[test]
+    fn test_fn_name_from_sig() {
+        assert_eq!(fn_name_from_sig("move_down (i64, i64)"), "move_down");
+        assert_eq!(fn_name_from_sig("move_down ()"), "move_down");
     }
 }
