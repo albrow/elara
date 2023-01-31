@@ -7,51 +7,33 @@ reference later. Almost anything can be stored in a variable, and you can use
 the variable in other places in your code.
 
 To create a new variable, use the `let` keyword. In the example below, we
-assign the value `"hello"` to a variable called `greeting`. Then we use
-`greeting` as the input to the `say` function. Try changing `"hello"` to
-something else and see what happens.
+create a new variable called `x` and set it to `2`.
 
-ℹ️ **Tip:** Don't use quotes around the variable name.
+💡 **Try it:** Change `2` to a different number and see what
+happens.
 
 <RunnableExample
-  code={`// Create a new variable named greeting with a value of "hello".
-let greeting = "hello";
+  code={`// Create a new variable named x and set it to 2.
+let x = 2;
 
-// Use the variable greeting as the input to the say function.
+// Now we can use x as the input to the say function.
+say(x);
+
+// We can treat x as a number and use it in math.
+say(x + 1);
+`}
+/>
+
+A variable can hold any type of value, including strings. In the example below,
+we create a new variable called `greeting` and set it to `"Hello"`.
+
+ℹ️ **Tip:** Don't use quotes around a variable name.
+
+💡 **Try it:** Change `"Hello"` to a different string.
+
+<RunnableExample
+  code={`// Create a new variable named greeting and set it to "Hello".
+let greeting = "Hello";
 say(greeting);
 `}
 />
-
-After a variable is created, you can change the value it holds by using the
-`=` operator again.
-
-ℹ️ **Tip:** You don't need to use the `let` keyword when changing the
-value of an existing variable.
-
-<RunnableExample
-  code={`// First create a new variable named my_number with a value of 5.
-let my_number = 5;
-say(my_number);
-
-// Now change the value of my_number to 10.
-my_number = 10;
-say(my_number);
-`}
-/>
-
-If a function has an output, you can assign the output to a variable. The
-example below assigns the output of the `add` function to a variable called
-`result`.
-
-<RunnableExample
-  code={`// The add function outputs the sum of two numbers, which we assign
-// to a variable called result.
-let result = add(4, 2);
-
-// Now we can use the variable as the input to the say function.
-say(result);
-`}
-/>
-
-ℹ️ **Tip:** Going forward, if you are ever unsure about the value a variable
-holds, you can use the `say` function to have G.R.O.V.E.R. say the value for you.

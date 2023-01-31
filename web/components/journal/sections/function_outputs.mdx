@@ -3,19 +3,24 @@ import RunnableExample from "../runnable_example";
 ### Function Outputs
 
 Some functions may have an output, also called a "return value". If a
-function has an output, it just means that it spits out a value whenever
-it is called. The output of a function can be used the same way as
-any other value.
-
-For example, the `add` function takes two numbers as inputs and outputs
-the sum of those numbers. We can use the output of the `add` function in
-the same way as any other number. Below, we use it as the _input_ to the
-`say` function. This will cause the rover to say the result of 2 + 3.
-
-<RunnableExample
-  code={`say(add(2, 3));
-`}
-/>
+function has an output, it just means that it spits out a result whenever
+it is called.
 
 ℹ️ **Tip:** Not all functions have an output. For example, the `move_right` function
 does not output anything.
+
+In the code below, we'll use the `add` function, which outputs the sum of two numbers.
+We can use the output of the `add` function in the same way as any other number.
+
+💡 **Try it:** Try changing the inputs to the `add` function and see how the output also
+changes.
+
+<RunnableExample
+  code={`// The add function outputs the sum of two numbers, which we assign
+// to a variable called result.
+let result = add(2, 3);
+
+// We can use the result variable in the same way as any other number.
+say(result);
+`}
+/>

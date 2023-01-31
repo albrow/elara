@@ -80,13 +80,13 @@ export const SCENES: Scene[] = [
   },
   {
     type: "journal",
-    name: "Journal: Function Outputs",
-    route: "/journal/concepts/function_outputs",
+    name: "Journal: Variables",
+    route: "/journal/concepts/variables",
   },
   {
     type: "journal",
-    name: "Journal: Variables",
-    route: "/journal/concepts/variables",
+    name: "Journal: Function Outputs",
+    route: "/journal/concepts/function_outputs",
   },
   {
     type: "level",
