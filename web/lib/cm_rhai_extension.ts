@@ -69,11 +69,13 @@ const builtInFuncs: PartialFuncOption[] = [
     info: "Move right by a number of steps.",
     apply: applyFuncWithArgs,
   },
-  {
-    label: "random",
-    info: "Generate a random number between 1 and 100.",
-    apply: applyFuncWithoutArgs,
-  },
+  // The add function is just for teaching purposes, so we
+  // don't want to autocomplete it.
+  // {
+  //   label: "add",
+  //   info: "Add two numbers together and return the result.",
+  //   apply: applyFuncWithArgs,
+  // },
   {
     label: "read_data",
     info: "Read data from a nearby data terminal.",

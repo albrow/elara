@@ -66,17 +66,17 @@ lazy_static! {
             },
         );
         m.insert(
-            "random",
-            BuiltinFunction {
-                name: "random",
-                arg_types: &[],
-            },
-        );
-        m.insert(
             "get_pos",
             BuiltinFunction {
                 name: "get_pos",
                 arg_types: &[],
+            },
+        );
+        m.insert(
+            "add",
+            BuiltinFunction {
+                name: "add",
+                arg_types: &["number", "number"],
             },
         );
         m.insert(

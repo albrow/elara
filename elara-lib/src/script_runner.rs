@@ -1,4 +1,3 @@
-use rand::Rng;
 use rhai::debugger::DebuggerCommand;
 use rhai::{
     ASTNode, Dynamic, Engine, EvalAltResult, EvalContext, Expr, FnCallExpr, Position, Stmt,
@@ -288,11 +287,9 @@ impl ScriptRunner {
             tx.borrow().send(Action::Say(message)).unwrap();
             simulation.borrow_mut().step_forward();
         });
-        // random returns a random number between 1 and 100.
-        engine.register_fn("random", || -> i64 {
-            let mut rng = rand::thread_rng();
-            rng.gen_range(1..=100)
-        });
+        // adds two numbers together. Used for teaching about function outputs.
+        // (Normally you would use the + operator instead.)
+        engine.register_fn("add", |a: i64, b: i64| -> i64 { a + b });
         // read_data returns the data held by an adjacent data terminal.
         // If there is no data terminal adjacent to the player, it returns
         // an error.

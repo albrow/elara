@@ -7,18 +7,15 @@ function has an output, it just means that it spits out a value whenever
 it is called. The output of a function can be used the same way as
 any other value.
 
-For example, the `random` function outputs a random number between 1 and 100.
-We can use the output of the `random` function in the same way as any
-other number. Below, we use it as the _input_ to the `say` function. This
-will cause the rover to say a random number.
+For example, the `add` function takes two numbers as inputs and outputs
+the sum of those numbers. We can use the output of the `add` function in
+the same way as any other number. Below, we use it as the _input_ to the
+`say` function. This will cause the rover to say the result of 2 + 3.
 
 <RunnableExample
-  code={`say(random());
+  code={`say(add(2, 3));
 `}
 />
-
-ℹ️ **Tip:** When a function does not have any inputs, you still need to include the
-parentheses (just don't put anything inside them).
 
 ℹ️ **Tip:** Not all functions have an output. For example, the `move_right` function
 does not output anything.

@@ -9,7 +9,7 @@ import MoveDown from "./pages/move_down.mdx";
 import MoveLeft from "./pages/move_left.mdx";
 import MoveRight from "./pages/move_right.mdx";
 import Say from "./pages/say.mdx";
-import Random from "./pages/random.mdx";
+import Add from "./pages/add.mdx";
 import ReadData from "./pages/read_data.mdx";
 
 export const hoverWords = [
@@ -18,7 +18,7 @@ export const hoverWords = [
   "move_left",
   "move_right",
   "say",
-  "random",
+  "add",
   "read_data",
 ] as const;
 
@@ -32,7 +32,7 @@ const docPages: {
   move_left: MoveLeft,
   move_right: MoveRight,
   say: Say,
-  random: Random,
+  add: Add,
   read_data: ReadData,
 };
 
