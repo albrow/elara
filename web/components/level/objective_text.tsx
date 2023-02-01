@@ -1,10 +1,10 @@
-import MiniSprite from "../components/mini_sprite";
-import flagImageUrl from "../images/flag.png";
-import robotImgUrl from "../images/robot.png";
-import fuelImgUrl from "../images/fuel.png";
-import bugImgUrl from "../images/bug.png";
-import lockedImgUrl from "../images/locked.png";
-import tvImgUrl from "../images/tv.png";
+import flagImageUrl from "../../images/flag.png";
+import robotImgUrl from "../../images/robot.png";
+import fuelImgUrl from "../../images/fuel.png";
+import bugImgUrl from "../../images/bug.png";
+import lockedImgUrl from "../../images/locked.png";
+import tvImgUrl from "../../images/tv.png";
+import MiniSprite from "./mini_sprite";
 
 export interface ObjectiveTextProps {
   text: string;

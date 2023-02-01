@@ -14,8 +14,8 @@ import React, { useCallback } from "react";
 import { MdArrowForward, MdReplay } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { LEVEL_END_MODAL_Z_INDEX } from "../lib/constants";
-import { getNextSceneFromRoute, SCENES } from "../lib/scenes";
+import { LEVEL_END_MODAL_Z_INDEX } from "../../lib/constants";
+import { getNextSceneFromRoute, SCENES } from "../../lib/scenes";
 
 export type LevelOutcome = "success" | "failure" | "no_objective";
 
