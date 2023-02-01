@@ -16,7 +16,7 @@ export default function YoutubeVideo(props: YoutubeVideoProps) {
         }}
         width="852"
         height="480"
-        src={`https://www.youtube.com/embed/${props.embedId}?rel=0`}
+        src={`https://www.youtube.com/embed/${props.embedId}?rel=0&modestbranding=1&origin=https://play.elaragame.com`}
         allowFullScreen
         title="YouTube video player"
       />
