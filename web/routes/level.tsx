@@ -26,6 +26,7 @@ import {
 } from "../contexts/save_data";
 import { getLevelEndProps } from "../lib/level_end_messages";
 import DialogModal from "../components/dialog/dialog_modal";
+import ShowDialogButton from "../components/level/show_dialog_button";
 import { TREES } from "../lib/dialog_trees";
 
 const game = Game.new();
@@ -70,21 +71,24 @@ export default function Level() {
   const [modalKind, setModalKind] = useState<"success" | "failure">("success");
   const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
+  const dialogTreeName = `level_${currLevel().short_name}`;
 
   const getDialogTree = useCallback(() => {
-    const treeName = `level_${currLevel().short_name}`;
-    if (!(treeName in TREES)) {
+    if (!(dialogTreeName in TREES)) {
       // There is no dialog tree for this level.
       return null;
     }
-    if (saveData.seenDialogTrees.includes(treeName)) {
-      // The player has already seen this dialog tree.
-      return null;
-    }
-    return treeName;
-  }, [currLevel, saveData.seenDialogTrees]);
+    return dialogTreeName;
+  }, [dialogTreeName]);
 
-  const [dialogVisible, setDialogVisible] = useState(getDialogTree() !== null);
+  const shouldShowDialogTree = useCallback(
+    () =>
+      getDialogTree() !== null &&
+      !saveData.seenDialogTrees.includes(dialogTreeName),
+    [dialogTreeName, getDialogTree, saveData.seenDialogTrees]
+  );
+
+  const [dialogVisible, setDialogVisible] = useState(shouldShowDialogTree());
 
   useEffect(() => {
     document.title = `Elara | Level ${levelNumber}: ${currLevel().name}`;
@@ -145,7 +149,7 @@ export default function Level() {
       lastLocation.current = location.pathname;
       resetStateButKeepCode(currLevel());
       forceUpdateCode(initialCode());
-      setDialogVisible(getDialogTree() !== null);
+      setDialogVisible(shouldShowDialogTree());
     }
   }, [
     location,
@@ -154,6 +158,7 @@ export default function Level() {
     initialCode,
     forceUpdateCode,
     getDialogTree,
+    shouldShowDialogTree,
   ]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
@@ -377,6 +382,11 @@ export default function Level() {
             <Board gameState={boardState} />
           </Box>
         </Flex>
+        {!dialogVisible && getDialogTree() !== null && (
+          <Box mt="60px">
+            <ShowDialogButton onClick={() => setDialogVisible(true)} />
+          </Box>
+        )}
       </Container>
     </>
   );
