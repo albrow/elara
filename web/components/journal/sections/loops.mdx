@@ -18,6 +18,15 @@ then left 1 space, over and over again until it runs out of fuel.
 }`}
 />
 
-⚠️ **Warning:** Be careful! Elara has safeguards in place to prevent
-infinite loops. If a possible infinite loop is detected, you will
-see an error message.
+Elara has safeguards in place to prevent infinite loops. If a possible
+infinite loop is detected, you will see an error message. Below is an
+example of an infinite loop. In this case, the loop runs forever because
+the rover never uses any fuel (e.g. by moving).
+
+💡 **Try it**: Run the code to see what happens. You should see an error.
+
+<RunnableExample
+  code={`loop {
+  say("This loop will never end!");
+}`}
+/>
