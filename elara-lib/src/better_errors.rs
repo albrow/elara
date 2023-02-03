@@ -44,6 +44,13 @@ fn fn_name_from_sig(fn_signature: &str) -> String {
 
 pub fn convert_err(err: Box<EvalAltResult>) -> BetterError {
     match *err {
+        EvalAltResult::ErrorTooManyOperations(ref pos) => {
+            return BetterError {
+                message: String::from("Error: Possible infinite loop detected."),
+                line: pos.line(),
+                col: pos.position(),
+            };
+        }
         EvalAltResult::ErrorParsing(
             rhai::ParseErrorType::MissingToken(ref token, ref desc),
             ref pos,
@@ -91,7 +98,7 @@ pub fn convert_err(err: Box<EvalAltResult>) -> BetterError {
         _ => {}
     }
 
-    // log!("Error: {}", err);
+    log!("Error: {}", err);
     let message = trim_message(err.to_string().as_str()).to_string();
     let line = err.position().line();
     let col = err.position().position();
