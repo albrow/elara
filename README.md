@@ -1,6 +1,6 @@
 # Elara
 
-Elara is a a work-in-progress game which teaches you programming in a fun an interactive way :)
+Elara is a work-in-progress game which teaches you programming in a fun an interactive way :)
 
 ## Project structure
 
