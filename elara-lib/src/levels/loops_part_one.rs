@@ -15,11 +15,7 @@ impl Level for LoopsPartOne {
         "Move the rover ({robot}) to the goal ({goal}) using a loop."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Instead of writing the same code over and over, you can
-// use a "loop". When using a loop, all the code inside the
-// two curly brackets "{" and "}" will be repeated.
-
-loop {
+        r#"loop {
   move_right(1);
   // Try changing the line of code below so that the
   // rover moves in the right direction:

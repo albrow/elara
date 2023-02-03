@@ -100,6 +100,23 @@ export const SCENES: Scene[] = [
     route: "/level/5",
     level: LEVELS[5],
   },
+  {
+    type: "journal",
+    name: "Journal: Loops",
+    route: "/journal/concepts/loops",
+  },
+  {
+    type: "level",
+    name: `Level 6: ${LEVELS[6].name}`,
+    route: "/level/6",
+    level: LEVELS[6],
+  },
+  {
+    type: "level",
+    name: `Level 7: ${LEVELS[7].name}`,
+    route: "/level/7",
+    level: LEVELS[7],
+  },
 ];
 
 export const getSceneIndexFromRoute = (route: string): number | undefined =>
