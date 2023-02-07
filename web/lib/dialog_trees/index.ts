@@ -9,6 +9,7 @@ import * as Movement from "./level_movement";
 import * as FuelPartOne from "./level_fuel_part_one";
 import * as Gates from "./level_gates";
 import * as GateAndTerminal from "./level_gate_and_terminal";
+import * as Variables from "./journal_variables";
 
 // NodeIds and ChoiceIds must be unique and declared ahead of time. This ensures
 // that the compiler will catch any incorrect or missing references.
@@ -17,13 +18,15 @@ type NodeIds =
   | Movement.NodeIds
   | FuelPartOne.NodeIds
   | Gates.NodeIds
-  | GateAndTerminal.NodeIds;
+  | GateAndTerminal.NodeIds
+  | Variables.NodeIds;
 type ChoiceIds =
   | Intro.ChoiceIds
   | Movement.ChoiceIds
   | FuelPartOne.ChoiceIds
   | Gates.ChoiceIds
-  | GateAndTerminal.ChoiceIds;
+  | GateAndTerminal.ChoiceIds
+  | Variables.ChoiceIds;
 
 export interface DialogNode {
   text: string;
@@ -58,6 +61,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   ...FuelPartOne.NODES,
   ...Gates.NODES,
   ...GateAndTerminal.NODES,
+  ...Variables.NODES,
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
@@ -66,6 +70,7 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...FuelPartOne.CHOICES,
   ...Gates.CHOICES,
   ...GateAndTerminal.CHOICES,
+  ...Variables.CHOICES,
 };
 
 export const TREES: DialogTrees = {
@@ -74,4 +79,5 @@ export const TREES: DialogTrees = {
   ...FuelPartOne.TREES,
   ...Gates.TREES,
   ...GateAndTerminal.TREES,
+  ...Variables.TREES,
 };
