@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 import { SANDBOX_LEVEL } from "../../lib/scenes";
 import Editor, { CodeError } from "../editor/editor";
@@ -56,6 +56,16 @@ export default function RunnableExample(props: RunnableExampleProps) {
     setCodeError(undefined);
     setBoardState(initialState);
   }, [initialState, replayer]);
+
+  useEffect(
+    () => () => {
+      // When the component is unmounted, stop the replayer.
+      if (replayer) {
+        replayer.stop();
+      }
+    },
+    [replayer]
+  );
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
     setBoardState(step.state);

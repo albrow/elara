@@ -73,6 +73,16 @@ export default function Level() {
   const [modalMessage, setModalMessage] = useState("");
   const dialogTreeName = `level_${currLevel().short_name}`;
 
+  useEffect(
+    () => () => {
+      // When the component is unmounted, stop the replayer.
+      if (replayer) {
+        replayer.stop();
+      }
+    },
+    []
+  );
+
   const getDialogTree = useCallback(() => {
     if (!(dialogTreeName in TREES)) {
       // There is no dialog tree for this level.
