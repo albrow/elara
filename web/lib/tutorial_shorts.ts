@@ -22,12 +22,12 @@ export const SHORTS: { [key: string]: TutorialShort } = {
   },
   how_to_see_errors: {
     title: "Error messages",
-    text: "Sometimes your code may have an error. Don't worry, even the best coders get errors sometimes! If you hover over the red dot, you can see more information about the error.",
+    text: "Even the best coders get errors sometimes! If you hover over the red dot, you can see more information about the error.",
     imageUrl: howToSeeErrorsUrl,
   },
   where_to_find_objectives: {
     title: "Objectives",
-    text: "You can find the objective of the level in the top left corner of the screen. Usually you will need to move the rover to the goal, but sometimes you may need to do something else.",
+    text: "You can find the current objective near the top of the screen. Usually you will need to move the rover to the goal, but sometimes you may need to do something else.",
     imageUrl: whereToFindObjectivesUrl,
   },
 };

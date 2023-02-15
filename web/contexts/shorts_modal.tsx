@@ -112,7 +112,10 @@ export function ShortsModalProvider(props: PropsWithChildren<{}>) {
           <ModalContent
             minW="container.md"
             zIndex={TUTORIAL_MODAL_Z_INDEX + 1}
-            top="48px"
+            top={{
+              base: "0px",
+              "2xl": "24px",
+            }}
             py="24px"
             px="12px"
             position="fixed"
@@ -122,12 +125,18 @@ export function ShortsModalProvider(props: PropsWithChildren<{}>) {
                 {currShort().title}
               </Text>
               <Text fontSize="lg">{currShort().text}</Text>
-              <Image
-                w="800px"
-                my="18px"
-                src={currShort().imageUrl}
-                alt={currShort().title}
-              />
+              <Box
+                border="1px solid gray"
+                my="20px"
+                mx="auto"
+                width="fit-content"
+              >
+                <Image
+                  maxH="300px"
+                  src={currShort().imageUrl}
+                  alt={currShort().title}
+                />
+              </Box>
             </ModalBody>
             <Box w="100%">
               <Stack
