@@ -29,6 +29,7 @@ import DialogModal from "../components/dialog/dialog_modal";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import { TREES } from "../lib/dialog_trees";
 import { useShortsModal } from "../contexts/shorts_modal";
+import { CODE_AUTOSAVE_INTERVAL } from "../lib/constants";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
@@ -173,15 +174,45 @@ export default function Level() {
     getDialogTree,
     shouldShowDialogTree,
     showShortsModal,
+    saveData,
+    setSaveData,
   ]);
 
   useEffect(() => {
     // Check if we need to show tutorial shorts modal.
     const scene = getSceneFromRoute(location.pathname);
     if (scene?.tutorialShorts) {
+      // Note this may be overriden by the ShortsModalContext if the user
+      // has already seen these particular tutorials.
       showShortsModal(scene.tutorialShorts);
     }
   }, [location, showShortsModal]);
+
+  // Automatically save the code to localStorage periodically.
+  // For performance reasons, we can't save the code on every
+  // keystroke, so this is the next best thing.
+  const ticker = useRef<NodeJS.Timeout | undefined>(undefined);
+  useEffect(() => {
+    if (ticker.current) {
+      clearInterval(ticker.current);
+    }
+    ticker.current = setInterval(() => {
+      if (isRunning || isPaused) {
+        // Don't save the code if the user is currently running or paused.
+        return;
+      }
+      const newSaveData = updateLevelCode(
+        saveData,
+        currLevel().short_name,
+        getCode()
+      );
+      setSaveData(newSaveData);
+    }, CODE_AUTOSAVE_INTERVAL);
+    return () => {
+      // Clear the interval when the component is unmounted.
+      clearInterval(ticker.current);
+    };
+  }, [currLevel, isPaused, isRunning, saveData, setSaveData]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
     setBoardState(step.state);

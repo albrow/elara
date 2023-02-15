@@ -2,6 +2,7 @@
 // defined in their respective components.
 
 export const NAVBAR_HEIGHT = 56; // In pixels
+export const CODE_AUTOSAVE_INTERVAL = 2500; // In milliseconds
 
 // Constants related to the game board and game logic.
 export const WIDTH = 12;
