@@ -20,6 +20,7 @@ impl Level for EnemiesPartOne {
         r"// If you try going straight for the goal, you might run
 // into trouble. Can you find a different path?
 
+// CHANGE THE CODE BELOW
 move_left(2);
 move_down(5);
 "

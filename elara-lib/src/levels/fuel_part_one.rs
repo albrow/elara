@@ -17,6 +17,7 @@ impl Level for FuelPartOne {
     fn initial_code(&self) -> &'static str {
         r#"// Try collecting some fuel before moving to the goal.
 
+// CHANGE THE CODE BELOW
 move_down(4);
 move_right(4);
 "#

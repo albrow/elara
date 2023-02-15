@@ -18,6 +18,7 @@ impl Level for Movement {
         r#"// The code below moves the rover, but it's not going to the
 // right place. Try changing the code to see what happens.
 
+// CHANGE THE CODE BELOW
 move_right(1);
 move_down(2);
 "#

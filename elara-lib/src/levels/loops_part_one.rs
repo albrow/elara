@@ -17,8 +17,7 @@ impl Level for LoopsPartOne {
     fn initial_code(&self) -> &'static str {
         r#"loop {
   move_right(1);
-  // Try changing the line of code below so that the
-  // rover moves in the right direction:
+  // CHANGE THE CODE BELOW
   move_left(1);
 }
 "#

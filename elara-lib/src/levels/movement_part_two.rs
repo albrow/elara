@@ -18,6 +18,7 @@ impl Level for MovementPartTwo {
         r#"// G.R.O.V.E.R. can't move through obstacles (like rocks and walls).
 // Try moving around the obstacles instead!
 
+// ADD YOUR CODE BELOW
 "#
     }
     fn initial_states(&self) -> Vec<State> {

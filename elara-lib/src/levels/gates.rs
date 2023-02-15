@@ -18,8 +18,7 @@ impl Level for Gates {
         r#"move_right(2);
 
 // Reminder: the password for this gate is "lovelace".
-//
-// Add some code below to open the gate using the say function...
+// ADD YOUR CODE BELOW
 "#
     }
     fn initial_states(&self) -> Vec<State> {

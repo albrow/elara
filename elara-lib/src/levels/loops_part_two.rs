@@ -16,7 +16,9 @@ impl Level for LoopsPartTwo {
     }
     fn initial_code(&self) -> &'static str {
         r#"// Try writing a loop on your own this time.
-
+// Don't forget to use the loop keyword.
+//
+// ADD YOUR CODE BELOW
 "#
     }
     fn initial_states(&self) -> Vec<State> {
