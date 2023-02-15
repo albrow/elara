@@ -1,6 +1,7 @@
 import howToRunCodeUrl from "../images/shorts/how_to_run_code.gif";
 import howToPauseAndStepUrl from "../images/shorts/how_to_pause_and_step.gif";
 import howToSeeErrorsUrl from "../images/shorts/how_to_see_errors.gif";
+import whereToFindObjectivesUrl from "../images/shorts/where_to_find_objectives.gif";
 
 export interface TutorialShort {
   title: string;
@@ -23,6 +24,11 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     title: "Error messages",
     text: "Sometimes your code may have an error. Don't worry, even the best coders get errors sometimes! If you hover over the red dot, you can see more information about the error.",
     imageUrl: howToSeeErrorsUrl,
+  },
+  where_to_find_objectives: {
+    title: "Objectives",
+    text: "You can find the objective of the level in the top left corner of the screen. Usually you will need to move the rover to the goal, but sometimes you may need to do something else.",
+    imageUrl: whereToFindObjectivesUrl,
   },
 };
 

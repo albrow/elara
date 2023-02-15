@@ -50,6 +50,7 @@ export const SCENES: Scene[] = [
       "how_to_run_code",
       "how_to_pause_and_step",
       "how_to_see_errors",
+      "where_to_find_objectives",
     ],
   },
   {
