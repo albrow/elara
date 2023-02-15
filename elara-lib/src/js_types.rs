@@ -108,12 +108,15 @@ impl LevelData {
 pub fn to_level_data_obj(levels: levels::LEVELS) -> Object {
     let obj = Object::new();
     for (name, level) in levels.iter() {
-        js_sys::Reflect::set(
-            &obj,
-            &JsValue::from(name.to_string()),
-            &JsValue::from(LevelData::from(level.as_ref())),
-        )
-        .unwrap();
+        #[allow(unused_unsafe)]
+        unsafe {
+            js_sys::Reflect::set(
+                &obj,
+                &JsValue::from(name.to_string()),
+                &JsValue::from(LevelData::from(level.as_ref())),
+            )
+            .unwrap();
+        }
     }
     obj
 }

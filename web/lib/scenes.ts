@@ -21,8 +21,9 @@ export const LEVELS = [
   levelData.get("enemies_part_one")!,
   levelData.get("loops_part_one")!,
   levelData.get("loops_part_two")!,
-  levelData.get("glitches_part_one")!,
-  levelData.get("glitches_part_two")!,
+  // levelData.get("glitches_part_one")!,
+  // levelData.get("glitches_part_two")!,
+  levelData.get("seismic_activity")!,
 ];
 
 export type SceneType = "level" | "dialogue" | "journal";

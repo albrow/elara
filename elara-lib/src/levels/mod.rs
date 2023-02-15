@@ -9,6 +9,7 @@ mod loops_part_two;
 mod movement;
 mod movement_part_two;
 mod sandbox;
+mod seismic_activity;
 
 use std::collections::HashMap;
 
@@ -69,6 +70,7 @@ lazy_static! {
         m.insert(glitches_part_one::GlitchesPartOne {}.short_name(), Box::new(glitches_part_one::GlitchesPartOne {}));
         m.insert(glitches_part_two::GlitchesPartTwo {}.short_name(), Box::new(glitches_part_two::GlitchesPartTwo {}));
         m.insert(sandbox::Sandbox{}.short_name(), Box::new(sandbox::Sandbox{}));
+        m.insert(seismic_activity::SeismicActivity{}.short_name(), Box::new(seismic_activity::SeismicActivity{}));
 
         m
     };
@@ -181,9 +183,22 @@ impl FuzzyState {
                     fuzzy_state.goals.push(Fuzzy::new(goal, true));
                 }
             }
-
-            // TODO(albrow): Support fuzziness for fuel_spots, enemies, and
-            // obstacles.
+            // If an obstacle is present in one state but not the other, mark it as fuzzy.
+            for obstacle in fuzzy_state.obstacles.iter_mut() {
+                if !state.obstacles.contains(&obstacle.obj) && !obstacle.fuzzy {
+                    obstacle.fuzzy = true;
+                }
+            }
+            for obstacle in state.obstacles.iter() {
+                if !fuzzy_state
+                    .obstacles
+                    .contains(&Fuzzy::new(obstacle.clone(), false))
+                {
+                    fuzzy_state
+                        .obstacles
+                        .push(Fuzzy::new(obstacle.clone(), true));
+                }
+            }
         }
 
         fuzzy_state
