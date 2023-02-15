@@ -11,11 +11,18 @@ import "@fontsource/nunito/900.css";
 import init from "../elara-lib/pkg";
 import { SaveDataProvider } from "./contexts/save_data";
 import { ShortsModalProvider } from "./contexts/shorts_modal";
+import { TOOL_TIP_Z_INDEX, TUTORIAL_MODAL_Z_INDEX } from "./lib/constants";
 
 const elaraTheme = extendTheme({
   fonts: {
     heading: "Nunito, sans-serif",
     body: "Nunito, sans-serif",
+  },
+  zIndices: {
+    tooltip: TOOL_TIP_Z_INDEX,
+    // TODO(albrow): Combine modal z index constants into one.
+    modal: TUTORIAL_MODAL_Z_INDEX,
+    modalOverlay: TUTORIAL_MODAL_Z_INDEX - 2,
   },
 });
 

@@ -71,12 +71,12 @@ let safe_direction = read_data();
 say("The safe direction is: " + safe_direction);
 
 if safe_direction == "left" {
-  // If the data terminal says "left", start by moving left.
+  // If the safe direction is "left", we should go left.
   move_left(3);
   move_down(3);
   move_right(3);
 } else if safe_direction == "right" {
-  // What should we do if the data terminal says "right"?
+  // What should we do if the safe direction is "right"?
   // ADD YOUR CODE BELOW
 }"#
     }
