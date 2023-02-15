@@ -179,7 +179,6 @@ export default function Level() {
     // Check if we need to show tutorial shorts modal.
     const scene = getSceneFromRoute(location.pathname);
     if (scene?.tutorialShorts) {
-      console.log("Calling showShortsModal");
       showShortsModal(scene.tutorialShorts);
     }
   }, [location, showShortsModal]);

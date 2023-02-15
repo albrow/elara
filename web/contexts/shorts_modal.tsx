@@ -136,27 +136,30 @@ export function ShortsModalProvider(props: PropsWithChildren<{}>) {
                 justify="center"
                 align="center"
               >
-                <Button
-                  colorScheme="black"
-                  w="96px"
-                  variant="ghost"
-                  onClick={previousShort}
-                  disabled={currIndex === 0}
-                >
-                  <GrFormPreviousLink />
-                  Back
-                </Button>
-                {shortsList.map((id, i) => (
-                  <Box
-                    display="inline-block"
-                    key={id}
-                    width="8px"
-                    height="8px"
-                    borderRadius="4px"
-                    backgroundColor={i === currIndex ? "blue.500" : "gray"}
-                    margin="0 4px"
-                  />
-                ))}{" "}
+                {shortsList.length > 1 && (
+                  <Button
+                    colorScheme="black"
+                    w="96px"
+                    variant="ghost"
+                    onClick={previousShort}
+                    disabled={currIndex === 0}
+                  >
+                    <GrFormPreviousLink />
+                    Back
+                  </Button>
+                )}
+                {shortsList.length > 1 &&
+                  shortsList.map((id, i) => (
+                    <Box
+                      display="inline-block"
+                      key={id}
+                      width="8px"
+                      height="8px"
+                      borderRadius="4px"
+                      backgroundColor={i === currIndex ? "blue.500" : "gray"}
+                      margin="0 4px"
+                    />
+                  ))}{" "}
                 <Button
                   colorScheme="black"
                   variant="ghost"
