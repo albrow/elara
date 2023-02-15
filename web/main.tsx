@@ -10,6 +10,7 @@ import "@fontsource/nunito/900.css";
 
 import init from "../elara-lib/pkg";
 import { SaveDataProvider } from "./contexts/save_data";
+import { ShortsModalProvider } from "./contexts/shorts_modal";
 
 const elaraTheme = extendTheme({
   fonts: {
@@ -63,7 +64,9 @@ const elaraTheme = extendTheme({
     <React.StrictMode>
       <ChakraProvider theme={elaraTheme} resetCSS>
         <SaveDataProvider>
-          <RouterProvider router={router} />
+          <ShortsModalProvider>
+            <RouterProvider router={router} />
+          </ShortsModalProvider>
         </SaveDataProvider>
       </ChakraProvider>
     </React.StrictMode>

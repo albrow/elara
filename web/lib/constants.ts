@@ -19,6 +19,7 @@ export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
 // elements are in the correct order.
 export const LEVEL_END_MODAL_Z_INDEX = 1200;
 export const JOURNAL_MODAL_Z_INDEX = 1200;
+export const TUTORIAL_MODAL_Z_INDEX = 1200;
 export const DIALOG_MODAL_Z_INDEX = 1150;
 export const TOOL_TIP_Z_INDEX = 1100;
 export const AXIS_LABEL_Z_INDEX = 1000;

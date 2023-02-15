@@ -1,0 +1,181 @@
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+  Text,
+  Image,
+  Box,
+  Stack,
+} from "@chakra-ui/react";
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
+import { MdCheck } from "react-icons/md";
+
+import { TUTORIAL_MODAL_Z_INDEX } from "../lib/constants";
+import { SHORTS, ShortId } from "../lib/tutorial_shorts";
+import { useSaveData, markTutorialShortSeen } from "./save_data";
+
+export const ShortsModalContext = createContext<
+  readonly [(shortsList: ShortId[]) => void, () => void]
+>([
+  () => {
+    throw new Error("useShortsModal must be used within a ShortsModalContext");
+  },
+  () => {
+    throw new Error("useShortsModal must be used within a ShortsModalContext");
+  },
+] as const);
+
+// A custom hook for showing and hiding the tutorial shorts modal.
+export const useShortsModal = () => useContext(ShortsModalContext);
+
+export function ShortsModalProvider(props: PropsWithChildren<{}>) {
+  const [shortsList, setShortsList] = useState<Array<ShortId>>([]);
+  const [currIndex, setCurrIndex] = useState<number>(0);
+  const [saveData, setSaveData] = useSaveData();
+
+  const currShortId = useCallback(
+    () => shortsList[currIndex],
+    [currIndex, shortsList]
+  );
+
+  const currShort = useCallback(() => SHORTS[currShortId()], [currShortId]);
+
+  const shouldShowModal = useCallback(() => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const shortId of shortsList) {
+      if (!saveData.seenTutorialShorts.includes(shortId)) {
+        return true;
+      }
+    }
+    return false;
+  }, [saveData.seenTutorialShorts, shortsList]);
+
+  const showShortsModal = useCallback((shorts: ShortId[]) => {
+    setShortsList(shorts);
+  }, []);
+
+  const hideShortsModal = useCallback(() => {
+    setShortsList([]);
+    setCurrIndex(0);
+  }, []);
+
+  const markAllShortsAsSeen = useCallback(() => {
+    let newSaveData = { ...saveData };
+    shortsList.forEach((shortId) => {
+      newSaveData = markTutorialShortSeen(newSaveData, shortId);
+    });
+    setSaveData(newSaveData);
+  }, [saveData, setSaveData, shortsList]);
+
+  const nextShort = useCallback(() => {
+    if (currIndex === shortsList.length - 1) {
+      markAllShortsAsSeen();
+      hideShortsModal();
+      return;
+    }
+    setCurrIndex(currIndex + 1);
+  }, [currIndex, hideShortsModal, markAllShortsAsSeen, shortsList.length]);
+
+  const previousShort = useCallback(() => {
+    if (currIndex === 0) {
+      return;
+    }
+    setCurrIndex(currIndex - 1);
+  }, [currIndex]);
+
+  const providerValue = useMemo(
+    () => [showShortsModal, hideShortsModal] as const,
+    [showShortsModal, hideShortsModal]
+  );
+
+  return (
+    <ShortsModalContext.Provider value={providerValue}>
+      {shouldShowModal() && (
+        <Modal
+          isOpen
+          autoFocus={false}
+          onClose={markAllShortsAsSeen}
+          closeOnEsc={false}
+          closeOnOverlayClick={false}
+        >
+          <ModalOverlay />
+          <ModalContent
+            minW="container.md"
+            zIndex={TUTORIAL_MODAL_Z_INDEX + 1}
+            top="48px"
+            py="24px"
+            px="12px"
+            position="fixed"
+          >
+            <ModalBody>
+              <Text fontSize="2xl" fontWeight="bold">
+                {currShort().title}
+              </Text>
+              <Text fontSize="lg">{currShort().text}</Text>
+              <Image
+                w="800px"
+                my="18px"
+                src={currShort().imageUrl}
+                alt={currShort().title}
+              />
+            </ModalBody>
+            <Box w="100%">
+              <Stack
+                direction="row"
+                spacing={4}
+                justify="center"
+                align="center"
+              >
+                <Button
+                  colorScheme="black"
+                  w="96px"
+                  variant="ghost"
+                  onClick={previousShort}
+                  disabled={currIndex === 0}
+                >
+                  <GrFormPreviousLink />
+                  Back
+                </Button>
+                {shortsList.map((id, i) => (
+                  <Box
+                    display="inline-block"
+                    key={id}
+                    width="8px"
+                    height="8px"
+                    borderRadius="4px"
+                    backgroundColor={i === currIndex ? "blue.500" : "gray"}
+                    margin="0 4px"
+                  />
+                ))}{" "}
+                <Button
+                  colorScheme="black"
+                  variant="ghost"
+                  onClick={nextShort}
+                  w="96px"
+                >
+                  {currIndex === shortsList.length - 1 ? "Done" : "Next"}
+                  {currIndex === shortsList.length - 1 ? (
+                    <MdCheck />
+                  ) : (
+                    <GrFormNextLink />
+                  )}
+                </Button>
+              </Stack>
+            </Box>
+          </ModalContent>
+        </Modal>
+      )}
+      {props.children}
+    </ShortsModalContext.Provider>
+  );
+}

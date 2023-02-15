@@ -3,6 +3,7 @@ import {
   get_level_data,
   LevelData,
 } from "../../elara-lib/pkg";
+import { ShortId } from "./tutorial_shorts";
 
 const levelData: Map<string, LevelData> = new Map(
   Object.entries(get_level_data() as any)
@@ -31,6 +32,7 @@ export interface Scene {
   name: string;
   route: string;
   level?: LevelData;
+  tutorialShorts?: ShortId[];
 }
 
 export const SCENES: Scene[] = [
@@ -44,6 +46,11 @@ export const SCENES: Scene[] = [
     name: `Level 0: ${LEVELS[0].name}`,
     route: "/level/0",
     level: LEVELS[0],
+    tutorialShorts: [
+      "how_to_run_code",
+      "how_to_pause_and_step",
+      "how_to_see_errors",
+    ],
   },
   {
     type: "level",

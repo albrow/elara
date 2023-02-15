@@ -8,8 +8,9 @@ import {
   useMemo,
   useState,
 } from "react";
+import { ShortId } from "../lib/tutorial_shorts";
 
-export const VERSION = 3;
+export const VERSION = 4;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 export interface LevelState {
@@ -28,13 +29,20 @@ export interface SaveData {
   levelStates: Record<string, LevelState>;
   // Tracks which dialog trees the user has already seen.
   seenDialogTrees: string[];
+  // Tracks which tutorial shorts have been seen.
+  seenTutorialShorts: ShortId[];
 }
 
 function deepCopy(saveData: SaveData): SaveData {
   return {
     version: saveData.version,
-    levelStates: { ...saveData.levelStates },
-    seenDialogTrees: [...saveData.seenDialogTrees],
+    levelStates: { ...(saveData.levelStates ? saveData.levelStates : {}) },
+    seenDialogTrees: [
+      ...(saveData.seenDialogTrees ? saveData.seenDialogTrees : []),
+    ],
+    seenTutorialShorts: [
+      ...(saveData.seenTutorialShorts ? saveData.seenTutorialShorts : []),
+    ],
   };
 }
 
@@ -49,17 +57,25 @@ export function load(): SaveData {
     if (saveData.version === VERSION) {
       return saveData;
     }
-    // TODO(albrow): SaveData migrations. I.e., if the version of saveData
-    // is older than the current version, we should "migrate" it to match
-    // the structure of the current version if possible.
-    //
-    // For now, just log a warning and return the default save data.
+
+    // Migrate from version 3.
+    if (saveData.version === 3) {
+      const newSaveData = deepCopy(saveData);
+      newSaveData.version = VERSION;
+      newSaveData.seenTutorialShorts = [];
+      return newSaveData;
+    }
+
+    // TODO(albrow): Add more migrations.
+
+    // For older versions, just log a warning and return the default save data.
     console.warn("Save data version mismatch");
   }
   return {
     version: VERSION,
     levelStates: {},
     seenDialogTrees: [],
+    seenTutorialShorts: [],
   };
 }
 
@@ -93,6 +109,17 @@ export function markDialogSeen(saveData: SaveData, treeName: string): SaveData {
   const newSaveData = deepCopy(saveData);
   if (!newSaveData.seenDialogTrees.includes(treeName)) {
     newSaveData.seenDialogTrees.push(treeName);
+  }
+  return newSaveData;
+}
+
+export function markTutorialShortSeen(
+  saveData: SaveData,
+  shortId: ShortId
+): SaveData {
+  const newSaveData = deepCopy(saveData);
+  if (!newSaveData.seenTutorialShorts.includes(shortId)) {
+    newSaveData.seenTutorialShorts.push(shortId);
   }
   return newSaveData;
 }
@@ -154,6 +181,7 @@ if (import.meta.vitest) {
             },
           },
           seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
         };
         const newSaveData = markLevelCompleted(saveData, "First Steps");
         expect(newSaveData).toStrictEqual({
@@ -169,6 +197,7 @@ if (import.meta.vitest) {
             },
           },
           seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
         });
       });
     });
@@ -188,6 +217,7 @@ if (import.meta.vitest) {
             },
           },
           seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
         };
         const newSaveData = updateLevelCode(
           saveData,
@@ -207,6 +237,7 @@ if (import.meta.vitest) {
             },
           },
           seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
         });
       });
     });
@@ -226,6 +257,7 @@ if (import.meta.vitest) {
             },
           },
           seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
         };
         const newSaveData = markDialogSeen(saveData, "fuel_part_one");
         expect(newSaveData).toStrictEqual({
@@ -241,6 +273,46 @@ if (import.meta.vitest) {
             },
           },
           seenDialogTrees: ["movement", "fuel_part_one"],
+          seenTutorialShorts: ["how_to_run_code"],
+        });
+      });
+    });
+
+    describe("markTutorialShortSeen", () => {
+      it("adds the given short to the list of seen shorts", () => {
+        const saveData = {
+          version: VERSION,
+          levelStates: {
+            "First Steps": {
+              completed: false,
+              code: `say("hello");`,
+            },
+            "Fuel Up": {
+              completed: true,
+              code: `move_right(5);`,
+            },
+          },
+          seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
+        };
+        const newSaveData = markTutorialShortSeen(
+          saveData,
+          "how_to_see_errors"
+        );
+        expect(newSaveData).toStrictEqual({
+          version: VERSION,
+          levelStates: {
+            "First Steps": {
+              completed: false,
+              code: `say("hello");`,
+            },
+            "Fuel Up": {
+              completed: true,
+              code: `move_right(5);`,
+            },
+          },
+          seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code", "how_to_see_errors"],
         });
       });
     });
@@ -260,6 +332,7 @@ if (import.meta.vitest) {
             },
           },
           seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
         };
         save(saveData);
         expect(
@@ -274,6 +347,7 @@ if (import.meta.vitest) {
           version: VERSION,
           levelStates: {},
           seenDialogTrees: [],
+          seenTutorialShorts: [],
         });
       });
 
@@ -291,6 +365,7 @@ if (import.meta.vitest) {
             },
           },
           seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
         };
         window.localStorage.setItem(
           LOCAL_STORAGE_KEY,

@@ -17,7 +17,7 @@ import { saveCode, loadCode } from "../lib/file_system";
 import { Replayer } from "../lib/replayer";
 import ControlBar from "../components/control_bar";
 import ObjectiveText from "../components/level/objective_text";
-import { LEVELS } from "../lib/scenes";
+import { getSceneFromRoute, LEVELS } from "../lib/scenes";
 import {
   markLevelCompleted,
   SaveData,
@@ -28,6 +28,7 @@ import { getLevelEndProps } from "../lib/level_end_messages";
 import DialogModal from "../components/dialog/dialog_modal";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import { TREES } from "../lib/dialog_trees";
+import { useShortsModal } from "../contexts/shorts_modal";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
@@ -37,6 +38,7 @@ let replayer: Replayer | null = null;
 let getCode: () => string;
 
 export default function Level() {
+  const location = useLocation();
   const { levelNumber } = useParams();
   const currLevel = useCallback(() => {
     if (!levelNumber) {
@@ -66,6 +68,8 @@ export default function Level() {
   const [boardState, setBoardState] = useState(currLevel().initial_state);
   const [activeLine, setActiveLine] = useState<LinePos | undefined>(undefined);
   const [codeError, setCodeError] = useState<CodeError | undefined>(undefined);
+
+  const [showShortsModal, _] = useShortsModal();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalKind, setModalKind] = useState<"success" | "failure">("success");
@@ -152,7 +156,6 @@ export default function Level() {
   );
 
   // Reset the relevant state when the URL changes.
-  const location = useLocation();
   const lastLocation = useRef(location.pathname);
   useEffect(() => {
     if (lastLocation.current !== location.pathname) {
@@ -169,7 +172,17 @@ export default function Level() {
     forceUpdateCode,
     getDialogTree,
     shouldShowDialogTree,
+    showShortsModal,
   ]);
+
+  useEffect(() => {
+    // Check if we need to show tutorial shorts modal.
+    const scene = getSceneFromRoute(location.pathname);
+    if (scene?.tutorialShorts) {
+      console.log("Calling showShortsModal");
+      showShortsModal(scene.tutorialShorts);
+    }
+  }, [location, showShortsModal]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
     setBoardState(step.state);
