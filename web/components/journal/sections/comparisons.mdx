@@ -1,13 +1,18 @@
+import RunnableExample from "../runnable_example";
+
 ### Comparisons
 
 A "comparison expression" can be used to compare two different values.
 For example, the comparison expression `1 < 2` results in `true`, because
 1 is less than 2. The comparison expression `1 > 2` results in `false`.
 
-Comparison expressions are similar to math expressions, but:
+<RunnableExample
+  code={`// The rover will say "true" because 1 is less than 2.
+say(1 < 2);
 
-1. Instead of using a math operator like `+` or `-`, they use a comparison operator like `<` or `>`.
-2. Instead of resulting in a number, they result in a boolean value (`true` or `false`).
+// The rover will say "false" because 1 is not greater than 2.
+say(1 > 2);`}
+/>
 
 #### Comparison Operators
 
@@ -21,3 +26,29 @@ Here is the full list of comparison operators and what they mean:
 | `>=`     | Greater than or equal | `5 >= 6`  |
 | `==`     | Equal                 | `7 == 8`  |
 | `!=`     | Not equal             | `9 != 10` |
+
+ℹ️ **Tip:** A single equals sign (`=`) is used for variables. If you want to check if two values are equal, remember to use two equals signs (`==`).
+
+#### More Examples
+
+Here are some more examples of comparison expressions.
+
+💡 **Try it:** Check your understanding by changing the comparison expressions or adding your own.
+
+<RunnableExample
+  code={`say(2 <= 5);
+say(3 >= 3);
+say(4 != 4);
+
+// Comparisons aren't just for numbers. You can compare strings too.
+say("love" == "love");
+say("apples" == "oranges");`}
+/>
+
+You can also use variables inside of comparison expressions.
+
+<RunnableExample
+  code={`let x = 2;
+let y = 5;
+say(x < y);`}
+/>

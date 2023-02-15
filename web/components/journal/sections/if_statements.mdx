@@ -1,56 +1,60 @@
+import RunnableExample from "../runnable_example";
+
 ### If Statements
 
-An if statement allows you to run a block of code if some condition is true.
+An "if statement" allows you to run certain code if something is true.
 You can use an if statement to perform different actions based on different
 conditions.
 
-You begin an if statement with the `if` keyword. Everything inside the curly
-brackets `{` and `}` will be run if the condition is true. You can also optionally
-extend an `if` statement by adding the `else` keyword. The code following the `else`
-keyword will be run if the condition is _false_.
+You write an if statement with the `if` keyword, a comparison expression, and
+then some code in between two curly brackets (`{` and `}`). If the comparison
+is true, the code inside the curly brackets will be run. However if the comparison
+is false, the code inside the curly brackets will be skipped.
+
+💡 **Try it**: Try changing the value of `x` to something greater than 10.
+
+<RunnableExample
+  code={`let x = 5;
+if x < 10 {
+  // This code will only run if x is less than 10.
+  say("x is less than 10");
+}`}
+/>
+
+You can also optionally extend an `if` statement by adding the `else` keyword.
+The code after the `else` keyword will only be run if the comparison is _false_.
+
+💡 **Try it**: Try changing the value of `x`.
+
+<RunnableExample
+  code={`let x = 12;
+if x < 10 {
+  // This code will run if x is less than 10.
+  say("x is less than 10");
+} else {
+  // This code will run if x is *not* less than 10.
+  say("x is not less than 10");
+}`}
+/>
 
 There is one more version of the `if` statement, which includes the `else if` keyword.
-This allows you to check multiple different conditions in a single statement. When using
-`else if`, the conditions are checked in order. If the first condition is false, then
+This allows you to check multiple different comparisons in a single statement. When using
+`else if`, the comparisons are checked in order. If the first condition is false, then
 the second condition is checked, and so on. An optional `else` statement at the end
-will be run if none of the other conditions are true.
+will be run if none of the other comparisons are true.
 
-Just like a while loop, the conditions in an if statement are boolean
-expressions.
+💡 **Try it**: Try changing the value of `x`.
 
-#### Examples
-
-If the variable `x` is less than 10, say "x is less than 10":
-
-```rhai
-let x = 5;
-if x < 10 {
-    say("x is less than 10");
-}
-```
-
-If the variable `x` is less than 10, say "x is less than 10". Otherwise,
-say "x is not less than 10".
-
-```rhai
-let x = 12;
-if x < 10 {
-    say("x is less than 10");
-} else {
-    say("x is not less than 10");
-}
-```
-
-If the variable `x` is less than 5, move to the right. Otherwise, if `x` is less than
-10, move to the left. Finally, if all other conditions are false, move down:
-
-```rhai
-let x = 7;
+<RunnableExample
+  code={`let x = 7;
 if x < 5 {
-    move_right(1);
+  // This code will run if x is less than 5.
+  move_right(1);
 } else if x < 10 {
-    move_left(1);
+  // This code will run if x is less than 10, but *not* less than 5.
+  move_left(1);
 } else {
-    move_down(1);
-}
-```
+  // This code will run if x is not less than 5 or 10.
+  move_down(1);
+}`}
+/>

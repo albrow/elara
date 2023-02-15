@@ -126,6 +126,21 @@ export const SCENES: Scene[] = [
     route: "/level/7",
     level: LEVELS[7],
   },
+  {
+    type: "journal",
+    name: "Journal: Comparisons",
+    route: "/journal/concepts/comparisons",
+  },
+  {
+    type: "journal",
+    name: "Journal: If Statements",
+    route: "/journal/concepts/if_statements",
+  },
+  {
+    type: "level",
+    name: `Level 8: ${LEVELS[8].name}`,
+    route: "/level/8",
+  },
 ];
 
 export const getSceneIndexFromRoute = (route: string): number | undefined =>
