@@ -73,6 +73,18 @@ function codeErrorToDiagnostic(view: EditorView, e: CodeError): Diagnostic {
   // the error occurred.
   const line = view.viewportLineBlocks[e.line - 1];
 
+  if (line.length === 0) {
+    // This should never happen, but it in practice it sometimes occurs
+    // if the line only contains whitespace. If this does happen, just
+    // highlight the first character of the line.
+    return {
+      from: line.from,
+      to: line.from,
+      message: e.message,
+      severity: "error",
+    };
+  }
+
   return {
     from: line.from,
     to: line.from + line.length - 1,
