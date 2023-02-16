@@ -24,6 +24,8 @@ let the_password = read_data();
 
 // Now you just need to unlock the gate and move to the goal.
 // ADD YOUR CODE BELOW
+
+
 "#
     }
     fn initial_states(&self) -> Vec<State> {

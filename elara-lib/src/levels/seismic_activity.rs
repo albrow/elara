@@ -78,6 +78,9 @@ if safe_direction == "left" {
 } else if safe_direction == "right" {
   // What should we do if the safe direction is "right"?
   // ADD YOUR CODE BELOW
+  
+  
+  
 }"#
     }
     fn initial_states(&self) -> Vec<State> {

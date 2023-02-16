@@ -4,8 +4,11 @@ export type NodeIds =
   | "forgot_password"
   | "explain_data_terminals_1"
   | "explain_data_terminals_2"
-  | "explain_data_terminals_3";
-export type ChoiceIds = "request_gate_solution" | "ack_data_terminals";
+  | "explain_data_terminals_existing_code";
+export type ChoiceIds =
+  | "request_gate_solution"
+  | "ack_data_terminals"
+  | "ack_data_terminals_existing_code";
 
 export const NODES: {
   [key in NodeIds]: DialogNode;
@@ -20,13 +23,15 @@ export const NODES: {
     nextId: "explain_data_terminals_2",
   },
   explain_data_terminals_2: {
-    text: `Oh! I think you can retrieve the password from the nearby data terminal.`,
-    choiceIds: [],
-    nextId: "explain_data_terminals_3",
-  },
-  explain_data_terminals_3: {
-    text: `To read from a data terminal, move G.R.O.V.E.R. next to it and use the "read_data" function.`,
+    text: `Oh! I think you can retrieve the password from the nearby data terminal using the read_data function.`,
     choiceIds: ["ack_data_terminals"],
+  },
+  explain_data_terminals_existing_code: {
+    text:
+      `To help you get started I already wrote some code for you that reads the data and stores ` +
+      `it in a variable called the_password. All you need to do is use that variable to ` +
+      `unlock the gate and move to the goal.`,
+    choiceIds: ["ack_data_terminals_existing_code"],
   },
 };
 
@@ -38,7 +43,11 @@ export const CHOICES: {
     nextId: "explain_data_terminals_1",
   },
   ack_data_terminals: {
-    text: "Cool, I think I can do that.",
+    text: "I see...",
+    nextId: "explain_data_terminals_existing_code",
+  },
+  ack_data_terminals_existing_code: {
+    text: "Got it. I can do that!",
   },
 };
 
