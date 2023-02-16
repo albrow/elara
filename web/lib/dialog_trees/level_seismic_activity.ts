@@ -43,8 +43,8 @@ export const NODES: {
   },
   explain_seismic_activity_existing_code_2: {
     text:
-      `I also started the if statement for you. If safe_direction is "left", then G.R.O.V.E.R ` +
-      `will go left. You just need to add some code to handle the case when safe_direction is "right".`,
+      `I also started the if statement for you. You just need to add some code to ` +
+      `handle the case where safe_direction is "right".`,
     choiceIds: ["ack_seismic_activity_existing_code"],
   },
 };

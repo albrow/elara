@@ -62,11 +62,10 @@ impl Level for SeismicActivity {
         "Read from the data terminal ({terminal}) to figure out which way is safe. Then move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"move_down(2);
-
-// This code reads the safe direction from the data terminal
+        r#"// This code reads the safe direction from the data terminal
 // (either "left" or "right") and stores it in a variable
 // called safe_direction.
+move_down(2);
 let safe_direction = read_data();
 say("The safe direction is: " + safe_direction);
 
@@ -75,7 +74,8 @@ if safe_direction == "left" {
   move_left(3);
   move_down(3);
   move_right(3);
-} else if safe_direction == "right" {
+}
+if safe_direction == "right" {
   // What should we do if the safe direction is "right"?
   // ADD YOUR CODE BELOW
   
@@ -142,7 +142,8 @@ mod tests {
                 move_left(3);
                 move_down(3);
                 move_right(3);
-            } else if safe_direction == "right" {
+            }
+            if safe_direction == "right" {
                 move_right(3);
                 move_down(3);
                 move_left(3);
