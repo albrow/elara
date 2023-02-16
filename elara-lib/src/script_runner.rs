@@ -48,13 +48,6 @@ impl ScriptRunner {
     }
 
     pub fn run(&mut self, script: &str) -> Result<ScriptResult, BetterError> {
-        // First use a custom check for semicolons at the end of each line
-        // (except for blocks or inside comments).
-        match check_semicolons(script) {
-            Ok(()) => {}
-            Err(err) => return Err(convert_err(err)),
-        }
-
         // Create and configure the Rhai engine.
         let mut engine = Engine::new();
         set_engine_config(&mut engine);
@@ -63,6 +56,22 @@ impl ScriptRunner {
         self.register_debugger(&mut engine);
         register_custom_types(&mut engine);
         self.register_player_funcs(&mut engine);
+
+        // Try compiling the AST first and check for lexer/parser errors.
+        let ast = match engine.compile(script) {
+            Err(parse_err) => {
+                let alt_result = Box::new(EvalAltResult::ErrorParsing(*parse_err.0, parse_err.1));
+                return Err(convert_err(alt_result));
+            }
+            Ok(ast) => ast,
+        };
+
+        // Next use a custom check for semicolons at the end of each line
+        // (except for blocks or inside comments).
+        match check_semicolons(script) {
+            Ok(()) => {}
+            Err(err) => return Err(convert_err(err)),
+        }
 
         // Reset step_positions.
         self.step_positions.borrow_mut().clear();
@@ -77,7 +86,7 @@ impl ScriptRunner {
         //
         // TODO(albrow): Manually overwrite certain common error messages to make
         // them more user-friendly.
-        match engine.run(script) {
+        match engine.run_ast(&ast) {
             Err(err) => {
                 match *err {
                     EvalAltResult::ErrorRuntime(_, _)
