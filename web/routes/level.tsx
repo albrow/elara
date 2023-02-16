@@ -29,7 +29,6 @@ import DialogModal from "../components/dialog/dialog_modal";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import { TREES } from "../lib/dialog_trees";
 import { useShortsModal } from "../contexts/shorts_modal";
-import { CODE_AUTOSAVE_INTERVAL } from "../lib/constants";
 
 const game = Game.new();
 let replayer: Replayer | null = null;
@@ -188,31 +187,38 @@ export default function Level() {
     }
   }, [location, showShortsModal]);
 
-  // Automatically save the code to localStorage periodically.
-  // For performance reasons, we can't save the code on every
-  // keystroke, so this is the next best thing.
-  const ticker = useRef<NodeJS.Timeout | undefined>(undefined);
-  useEffect(() => {
-    if (ticker.current) {
-      clearInterval(ticker.current);
-    }
-    ticker.current = setInterval(() => {
-      if (isRunning || isPaused) {
-        // Don't save the code if the user is currently running or paused.
-        return;
-      }
-      const newSaveData = updateLevelCode(
-        saveData,
-        currLevel().short_name,
-        getCode()
-      );
-      setSaveData(newSaveData);
-    }, CODE_AUTOSAVE_INTERVAL);
-    return () => {
-      // Clear the interval when the component is unmounted.
-      clearInterval(ticker.current);
-    };
-  }, [currLevel, isPaused, isRunning, saveData, setSaveData]);
+  // NOTE(albrow): Periodically saving the code to localStorage seems to have an
+  // impact on performance, so disabling it for now.
+  //
+  // TODO(albrow): Find a way to reduce the performance impact or hook into
+  // the router to save the code when navigating to a new page (that's what we
+  // ultimately need).
+  //
+  // // Automatically save the code to localStorage periodically.
+  // // For performance reasons, we can't save the code on every
+  // // keystroke, so this is the next best thing.
+  // const ticker = useRef<NodeJS.Timeout | undefined>(undefined);
+  // useEffect(() => {
+  //   if (ticker.current) {
+  //     clearInterval(ticker.current);
+  //   }
+  //   ticker.current = setInterval(() => {
+  //     if (isRunning || isPaused) {
+  //       // Don't save the code if the user is currently running or paused.
+  //       return;
+  //     }
+  //     const newSaveData = updateLevelCode(
+  //       saveData,
+  //       currLevel().short_name,
+  //       getCode()
+  //     );
+  //     setSaveData(newSaveData);
+  //   }, CODE_AUTOSAVE_INTERVAL);
+  //   return () => {
+  //     // Clear the interval when the component is unmounted.
+  //     clearInterval(ticker.current);
+  //   };
+  // }, [currLevel, isPaused, isRunning, saveData, setSaveData]);
 
   const onStepHandler = (step: FuzzyStateWithLine) => {
     setBoardState(step.state);
