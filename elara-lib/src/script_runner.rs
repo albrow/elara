@@ -61,7 +61,7 @@ impl ScriptRunner {
         let ast = match engine.compile(script) {
             Err(parse_err) => {
                 let alt_result = Box::new(EvalAltResult::ErrorParsing(*parse_err.0, parse_err.1));
-                return Err(convert_err(alt_result));
+                return Err(convert_err(script.to_string(), alt_result));
             }
             Ok(ast) => ast,
         };
@@ -70,7 +70,7 @@ impl ScriptRunner {
         // (except for blocks or inside comments).
         match check_semicolons(script) {
             Ok(()) => {}
-            Err(err) => return Err(convert_err(err)),
+            Err(err) => return Err(convert_err(script.to_string(), err)),
         }
 
         // Reset step_positions.
@@ -97,7 +97,7 @@ impl ScriptRunner {
                     }
                     _ => {
                         // For all other kinds of errors, we return the error.
-                        return Err(convert_err(err));
+                        return Err(convert_err(script.to_string(), err));
                     }
                 }
             }
