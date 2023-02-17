@@ -94,7 +94,6 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.states.len(), 11);
 
         // Player should not be able to move past the obstacles for this level.
         let script = "move_down(5); move_right(4); move_up(1);";

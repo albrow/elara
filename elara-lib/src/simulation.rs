@@ -168,16 +168,22 @@ impl fmt::Debug for State {
     }
 }
 
+#[derive(Clone, PartialEq, Debug)]
+pub enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
 /// The animation state of the player sprite. This is used in
 /// in the UI to give more clarity to the player about what is
 /// happening.
 #[derive(Clone, PartialEq, Debug)]
 pub enum PlayerAnimState {
     Idle,
-    MoveRight,
-    MoveLeft,
-    MoveUp,
-    MoveDown,
+    Moving,
+    Turning,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -186,15 +192,18 @@ pub struct Player {
     pub fuel: u32,
     pub message: String,
     pub anim_state: PlayerAnimState,
+    pub facing: Direction,
 }
 
 impl Player {
+    // TODO(albrow): Accept direction as an argument.
     pub fn new(x: u32, y: u32, fuel: u32) -> Player {
         Player {
             pos: Pos::new(x as i32, y as i32),
             fuel: fuel,
             message: String::new(),
             anim_state: PlayerAnimState::Idle,
+            facing: Direction::Right,
         }
     }
 }

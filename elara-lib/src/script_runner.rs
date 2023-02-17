@@ -9,11 +9,11 @@ use std::rc::Rc;
 use std::sync::mpsc;
 use std::vec;
 
-use crate::actors::{Action, Direction};
+use crate::actors::Action;
 use crate::better_errors::{convert_err, BetterError};
 use crate::constants::{ERR_NO_DATA_TERMINAL, ERR_SIMULATION_END};
 use crate::levels::Outcome;
-use crate::simulation::{get_adjacent_terminal, Pos, Simulation, State};
+use crate::simulation::{get_adjacent_terminal, Direction, Pos, Simulation, State};
 
 /// Responsible for running user scripts and coordinating communication
 /// between the Rhai Engine and the Simulation.
@@ -164,6 +164,14 @@ impl ScriptRunner {
         );
     }
 
+    // The whole purpose of handling function calls in the debugger is to
+    // track which line of code should currently be considered "active". In
+    // practice, this is not as straightforward as it sounds. For example,
+    // for function calls like move_right() we need to evaluate the argument
+    // to determine how many steps the rover should move and detect the current
+    // direction to determine how many steps the rover should turn. This requires
+    // hooking into the current EvalContext and evaluating some custom code/custom
+    // AST at runtime.
     fn handle_debugger_function_call(
         step_positions: Rc<RefCell<Vec<Position>>>,
         context: EvalContext,
@@ -172,39 +180,81 @@ impl ScriptRunner {
     ) -> Result<DebuggerCommand, Box<EvalAltResult>> {
         match fn_call_expr.name.as_str() {
             "wait" => {
-                // For wait (and other functions like move_right, move_left),
-                // we need to parse the argument to determine how many steps
-                // this position should be considered "active".
-                let duration = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
+                // The number of steps here depends on the argument. E.g. wait(3) means
+                // that this line should be considered "active" for 3 steps.
+                let duration = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
                 for _ in 0..duration {
                     step_positions.borrow_mut().push(pos);
                 }
                 Ok(DebuggerCommand::StepInto)
             }
+            "turn_right" => {
+                step_positions.borrow_mut().push(pos);
+                Ok(DebuggerCommand::StepInto)
+            }
+            "move" => {
+                step_positions.borrow_mut().push(pos);
+                Ok(DebuggerCommand::StepInto)
+            }
             "move_right" => {
-                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
-                for _ in 0..spaces {
+                // For move_right and other move functions, the number of steps is based
+                // on: (a) the number of spaces to move, and (b) the current direction of
+                // the rover.
+                let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
+                let curr_direction = eval_curr_direction(&context).unwrap();
+                let rotation_steps = match curr_direction {
+                    Direction::Right => 0,
+                    Direction::Up => 1,
+                    Direction::Left => 2,
+                    Direction::Down => 3,
+                };
+                let total_steps = move_steps + rotation_steps;
+                for _ in 0..total_steps {
                     step_positions.borrow_mut().push(pos);
                 }
                 Ok(DebuggerCommand::StepInto)
             }
             "move_left" => {
-                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
-                for _ in 0..spaces {
+                let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
+                let curr_direction = eval_curr_direction(&context).unwrap();
+                let rotation_steps = match curr_direction {
+                    Direction::Right => 2,
+                    Direction::Up => 3,
+                    Direction::Left => 0,
+                    Direction::Down => 1,
+                };
+                let total_steps = move_steps + rotation_steps;
+                for _ in 0..total_steps {
                     step_positions.borrow_mut().push(pos);
                 }
                 Ok(DebuggerCommand::StepInto)
             }
             "move_up" => {
-                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
-                for _ in 0..spaces {
+                let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
+                let curr_direction = eval_curr_direction(&context).unwrap();
+                let rotation_steps = match curr_direction {
+                    Direction::Right => 3,
+                    Direction::Up => 0,
+                    Direction::Left => 1,
+                    Direction::Down => 2,
+                };
+                let total_steps = move_steps + rotation_steps;
+                for _ in 0..total_steps {
                     step_positions.borrow_mut().push(pos);
                 }
                 Ok(DebuggerCommand::StepInto)
             }
             "move_down" => {
-                let spaces = eval_call_args_as_int(context, fn_call_expr).unwrap_or(0);
-                for _ in 0..spaces {
+                let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
+                let curr_direction = eval_curr_direction(&context).unwrap();
+                let rotation_steps = match curr_direction {
+                    Direction::Right => 1,
+                    Direction::Up => 2,
+                    Direction::Left => 3,
+                    Direction::Down => 0,
+                };
+                let total_steps = move_steps + rotation_steps;
+                for _ in 0..total_steps {
                     step_positions.borrow_mut().push(pos);
                 }
                 Ok(DebuggerCommand::StepInto)
@@ -246,33 +296,61 @@ impl ScriptRunner {
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
+        engine.register_fn("turn_right", move || {
+            tx.borrow().send(Action::TurnRight).unwrap();
+            simulation.borrow_mut().step_forward();
+        });
+        let tx = self.player_action_tx.clone();
+        let simulation = self.simulation.clone();
+        engine.register_fn("move", move || {
+            tx.borrow().send(Action::Move).unwrap();
+            simulation.borrow_mut().step_forward();
+        });
+        let tx = self.player_action_tx.clone();
+        let simulation = self.simulation.clone();
         engine.register_fn("move_right", move |spaces: i64| {
+            while simulation.borrow().curr_state().player.facing != Direction::Right {
+                tx.borrow().send(Action::TurnRight).unwrap();
+                simulation.borrow_mut().step_forward();
+            }
             for _ in 0..spaces {
-                tx.borrow().send(Action::Move(Direction::Right)).unwrap();
+                tx.borrow().send(Action::Move).unwrap();
                 simulation.borrow_mut().step_forward();
             }
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_left", move |spaces: i64| {
+            while simulation.borrow().curr_state().player.facing != Direction::Left {
+                tx.borrow().send(Action::TurnRight).unwrap();
+                simulation.borrow_mut().step_forward();
+            }
             for _ in 0..spaces {
-                tx.borrow().send(Action::Move(Direction::Left)).unwrap();
+                tx.borrow().send(Action::Move).unwrap();
                 simulation.borrow_mut().step_forward();
             }
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_up", move |spaces: i64| {
+            while simulation.borrow().curr_state().player.facing != Direction::Up {
+                tx.borrow().send(Action::TurnRight).unwrap();
+                simulation.borrow_mut().step_forward();
+            }
             for _ in 0..spaces {
-                tx.borrow().send(Action::Move(Direction::Up)).unwrap();
+                tx.borrow().send(Action::Move).unwrap();
                 simulation.borrow_mut().step_forward();
             }
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_down", move |spaces: i64| {
+            while simulation.borrow().curr_state().player.facing != Direction::Down {
+                tx.borrow().send(Action::TurnRight).unwrap();
+                simulation.borrow_mut().step_forward();
+            }
             for _ in 0..spaces {
-                tx.borrow().send(Action::Move(Direction::Down)).unwrap();
+                tx.borrow().send(Action::Move).unwrap();
                 simulation.borrow_mut().step_forward();
             }
         });
@@ -286,6 +364,19 @@ impl ScriptRunner {
                 Dynamic::from(pos.y as i64),
             ])
             .into()
+        });
+        // get_direction returns the direction that the player is currently
+        // facing as a string.
+        let simulation = self.simulation.clone();
+        engine.register_fn("get_direction", move || -> Dynamic {
+            let direction = simulation.borrow().curr_state().player.facing;
+            let direction_str = match direction {
+                Direction::Up => "up",
+                Direction::Down => "down",
+                Direction::Left => "left",
+                Direction::Right => "right",
+            };
+            Dynamic::from(direction_str)
         });
         // say causes the rover to say (i.e. display in a speech bubble)
         // the given expression.
@@ -397,7 +488,7 @@ fn register_custom_types(engine: &mut Engine) {
 }
 
 fn eval_call_args_as_int(
-    context: EvalContext,
+    context: &EvalContext,
     fn_call_expr: &Box<FnCallExpr>,
 ) -> Result<i64, Error> {
     if fn_call_expr.args.len() != 1 {
@@ -446,6 +537,37 @@ fn eval_call_args_as_int(
         }
     };
     Ok(arg_val)
+}
+
+/// Returns the current direction that the rover is facing. Intended to be
+/// used inside the debugger.
+fn eval_curr_direction(context: &EvalContext) -> Result<Direction, Error> {
+    let mut module = rhai::Module::new();
+    for m in context.iter_namespaces() {
+        module.combine(m.to_owned());
+    }
+    // With the module constructed, we can now evaluate the get_direction()
+    // call inside the current scope.
+    let mut scope = context.scope().clone();
+    let direction_val = context
+        .engine()
+        .eval_expression_with_scope::<String>(&mut scope, "get_direction()");
+    match direction_val {
+        Ok(dir) => match dir.as_str() {
+            "up" => Ok(Direction::Up),
+            "down" => Ok(Direction::Down),
+            "left" => Ok(Direction::Left),
+            "right" => Ok(Direction::Right),
+            _ => Err(Error::new(
+                ErrorKind::Other,
+                format!("Unknown direction: {}", dir),
+            )),
+        },
+        Err(err) => Err(Error::new(
+            ErrorKind::Other,
+            format!("Error evaluating direction: {}", err),
+        )),
+    }
 }
 
 #[cfg(test)]

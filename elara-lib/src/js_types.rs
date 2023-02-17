@@ -151,10 +151,8 @@ impl FuzzyState {
         for (i, fuzzy_player) in state.players.iter().enumerate() {
             let anim_state = match fuzzy_player.obj.anim_state {
                 PlayerAnimState::Idle => "idle",
-                PlayerAnimState::MoveRight => "move_right",
-                PlayerAnimState::MoveLeft => "move_left",
-                PlayerAnimState::MoveUp => "move_up",
-                PlayerAnimState::MoveDown => "move_down",
+                PlayerAnimState::Moving => "moving",
+                PlayerAnimState::Turning => "turning",
             };
             let player = &fuzzy_player.obj;
             players.set(

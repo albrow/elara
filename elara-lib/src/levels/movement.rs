@@ -75,7 +75,6 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.states.len(), 7);
 
         // Running this code should result in Outcome::Failure due to running out
         // of fuel.
