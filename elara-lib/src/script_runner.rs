@@ -9,11 +9,11 @@ use std::rc::Rc;
 use std::sync::mpsc;
 use std::vec;
 
-use crate::actors::Action;
+use crate::actors::{Action, MoveDirection, TurnDirection};
 use crate::better_errors::{convert_err, BetterError};
 use crate::constants::{ERR_NO_DATA_TERMINAL, ERR_SIMULATION_END};
 use crate::levels::Outcome;
-use crate::simulation::{get_adjacent_terminal, Direction, Pos, Simulation, State};
+use crate::simulation::{get_adjacent_terminal, Orientation, Pos, Simulation, State};
 
 /// Responsible for running user scripts and coordinating communication
 /// between the Rhai Engine and the Simulation.
@@ -169,7 +169,7 @@ impl ScriptRunner {
     // practice, this is not as straightforward as it sounds. For example,
     // for function calls like move_right() we need to evaluate the argument
     // to determine how many steps the rover should move and detect the current
-    // direction to determine how many steps the rover should turn. This requires
+    // orientation to determine how many steps the rover should turn. This requires
     // hooking into the current EvalContext and evaluating some custom code/custom
     // AST at runtime.
     fn handle_debugger_function_call(
@@ -192,21 +192,29 @@ impl ScriptRunner {
                 step_positions.borrow_mut().push(pos);
                 Ok(DebuggerCommand::StepInto)
             }
+            "turn_left" => {
+                step_positions.borrow_mut().push(pos);
+                Ok(DebuggerCommand::StepInto)
+            }
             "move_forward" => {
+                step_positions.borrow_mut().push(pos);
+                Ok(DebuggerCommand::StepInto)
+            }
+            "move_backward" => {
                 step_positions.borrow_mut().push(pos);
                 Ok(DebuggerCommand::StepInto)
             }
             "move_right" => {
                 // For move_right and other move functions, the number of steps is based
-                // on: (a) the number of spaces to move, and (b) the current direction of
+                // on: (a) the number of spaces to move, and (b) the current orientation of
                 // the rover.
                 let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
-                let curr_direction = eval_curr_direction(&context).unwrap();
-                let rotation_steps = match curr_direction {
-                    Direction::Right => 0,
-                    Direction::Up => 1,
-                    Direction::Left => 2,
-                    Direction::Down => 3,
+                let curr_orientation = eval_curr_orientation(&context).unwrap();
+                let rotation_steps = match curr_orientation {
+                    Orientation::Right => 0,
+                    Orientation::Up => 1,
+                    Orientation::Left => 2,
+                    Orientation::Down => 1,
                 };
                 let total_steps = move_steps + rotation_steps;
                 for _ in 0..total_steps {
@@ -216,12 +224,12 @@ impl ScriptRunner {
             }
             "move_left" => {
                 let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
-                let curr_direction = eval_curr_direction(&context).unwrap();
-                let rotation_steps = match curr_direction {
-                    Direction::Right => 2,
-                    Direction::Up => 3,
-                    Direction::Left => 0,
-                    Direction::Down => 1,
+                let curr_orientation = eval_curr_orientation(&context).unwrap();
+                let rotation_steps = match curr_orientation {
+                    Orientation::Right => 2,
+                    Orientation::Up => 1,
+                    Orientation::Left => 0,
+                    Orientation::Down => 1,
                 };
                 let total_steps = move_steps + rotation_steps;
                 for _ in 0..total_steps {
@@ -231,12 +239,12 @@ impl ScriptRunner {
             }
             "move_up" => {
                 let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
-                let curr_direction = eval_curr_direction(&context).unwrap();
-                let rotation_steps = match curr_direction {
-                    Direction::Right => 3,
-                    Direction::Up => 0,
-                    Direction::Left => 1,
-                    Direction::Down => 2,
+                let curr_orientation = eval_curr_orientation(&context).unwrap();
+                let rotation_steps = match curr_orientation {
+                    Orientation::Right => 1,
+                    Orientation::Up => 0,
+                    Orientation::Left => 1,
+                    Orientation::Down => 2,
                 };
                 let total_steps = move_steps + rotation_steps;
                 for _ in 0..total_steps {
@@ -246,12 +254,12 @@ impl ScriptRunner {
             }
             "move_down" => {
                 let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
-                let curr_direction = eval_curr_direction(&context).unwrap();
-                let rotation_steps = match curr_direction {
-                    Direction::Right => 1,
-                    Direction::Up => 2,
-                    Direction::Left => 3,
-                    Direction::Down => 0,
+                let curr_orientation = eval_curr_orientation(&context).unwrap();
+                let rotation_steps = match curr_orientation {
+                    Orientation::Right => 1,
+                    Orientation::Up => 2,
+                    Orientation::Left => 1,
+                    Orientation::Down => 0,
                 };
                 let total_steps = move_steps + rotation_steps;
                 for _ in 0..total_steps {
@@ -297,64 +305,160 @@ impl ScriptRunner {
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("turn_right", move || {
-            tx.borrow().send(Action::TurnRight).unwrap();
+            tx.borrow()
+                .send(Action::Turn(TurnDirection::Right))
+                .unwrap();
+            simulation.borrow_mut().step_forward();
+        });
+        let tx = self.player_action_tx.clone();
+        let simulation = self.simulation.clone();
+        engine.register_fn("turn_left", move || {
+            tx.borrow().send(Action::Turn(TurnDirection::Left)).unwrap();
             simulation.borrow_mut().step_forward();
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_forward", move || {
-            tx.borrow().send(Action::Move).unwrap();
+            tx.borrow()
+                .send(Action::Move(MoveDirection::Forward))
+                .unwrap();
+            simulation.borrow_mut().step_forward();
+        });
+        let tx = self.player_action_tx.clone();
+        let simulation = self.simulation.clone();
+        engine.register_fn("move_backward", move || {
+            tx.borrow()
+                .send(Action::Move(MoveDirection::Backward))
+                .unwrap();
             simulation.borrow_mut().step_forward();
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_right", move |spaces: i64| {
             // move_right (and other directional move functions) work by first
-            // rotating the rover to face the correct direction, and then moving
+            // rotating the rover to correct orientation, and then moving
             // forward the given number of spaces.
-            while simulation.borrow().curr_state().player.facing != Direction::Right {
-                tx.borrow().send(Action::TurnRight).unwrap();
-                simulation.borrow_mut().step_forward();
+            let mut sim = simulation.borrow_mut();
+            match sim.curr_state().player.facing {
+                Orientation::Right => {}
+                Orientation::Up => {
+                    tx.borrow()
+                        .send(Action::Turn(TurnDirection::Right))
+                        .unwrap();
+                    sim.step_forward();
+                }
+                Orientation::Left => {
+                    for _ in 0..2 {
+                        tx.borrow()
+                            .send(Action::Turn(TurnDirection::Right))
+                            .unwrap();
+                        sim.step_forward();
+                    }
+                }
+                Orientation::Down => {
+                    tx.borrow().send(Action::Turn(TurnDirection::Left)).unwrap();
+                    sim.step_forward();
+                }
             }
             for _ in 0..spaces {
-                tx.borrow().send(Action::Move).unwrap();
-                simulation.borrow_mut().step_forward();
+                tx.borrow()
+                    .send(Action::Move(MoveDirection::Forward))
+                    .unwrap();
+                sim.step_forward();
             }
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_left", move |spaces: i64| {
-            while simulation.borrow().curr_state().player.facing != Direction::Left {
-                tx.borrow().send(Action::TurnRight).unwrap();
-                simulation.borrow_mut().step_forward();
+            let mut sim = simulation.borrow_mut();
+            match sim.curr_state().player.facing {
+                Orientation::Right => {
+                    for _ in 0..2 {
+                        tx.borrow().send(Action::Turn(TurnDirection::Left)).unwrap();
+                        sim.step_forward();
+                    }
+                }
+                Orientation::Up => {
+                    tx.borrow().send(Action::Turn(TurnDirection::Left)).unwrap();
+                    sim.step_forward();
+                }
+                Orientation::Left => {}
+                Orientation::Down => {
+                    tx.borrow()
+                        .send(Action::Turn(TurnDirection::Right))
+                        .unwrap();
+                    sim.step_forward();
+                }
             }
             for _ in 0..spaces {
-                tx.borrow().send(Action::Move).unwrap();
-                simulation.borrow_mut().step_forward();
+                tx.borrow()
+                    .send(Action::Move(MoveDirection::Forward))
+                    .unwrap();
+                sim.step_forward();
             }
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_up", move |spaces: i64| {
-            while simulation.borrow().curr_state().player.facing != Direction::Up {
-                tx.borrow().send(Action::TurnRight).unwrap();
-                simulation.borrow_mut().step_forward();
+            let mut sim = simulation.borrow_mut();
+            match sim.curr_state().player.facing {
+                Orientation::Right => {
+                    tx.borrow().send(Action::Turn(TurnDirection::Left)).unwrap();
+                    sim.step_forward();
+                }
+                Orientation::Up => {}
+                Orientation::Left => {
+                    tx.borrow()
+                        .send(Action::Turn(TurnDirection::Right))
+                        .unwrap();
+                    sim.step_forward();
+                }
+                Orientation::Down => {
+                    for _ in 0..2 {
+                        tx.borrow()
+                            .send(Action::Turn(TurnDirection::Right))
+                            .unwrap();
+                        sim.step_forward();
+                    }
+                }
             }
             for _ in 0..spaces {
-                tx.borrow().send(Action::Move).unwrap();
-                simulation.borrow_mut().step_forward();
+                tx.borrow()
+                    .send(Action::Move(MoveDirection::Forward))
+                    .unwrap();
+                sim.step_forward();
             }
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_down", move |spaces: i64| {
-            while simulation.borrow().curr_state().player.facing != Direction::Down {
-                tx.borrow().send(Action::TurnRight).unwrap();
-                simulation.borrow_mut().step_forward();
+            let mut sim = simulation.borrow_mut();
+            match sim.curr_state().player.facing {
+                Orientation::Right => {
+                    tx.borrow()
+                        .send(Action::Turn(TurnDirection::Right))
+                        .unwrap();
+                    sim.step_forward();
+                }
+                Orientation::Up => {
+                    for _ in 0..2 {
+                        tx.borrow()
+                            .send(Action::Turn(TurnDirection::Right))
+                            .unwrap();
+                        sim.step_forward();
+                    }
+                }
+                Orientation::Left => {
+                    tx.borrow().send(Action::Turn(TurnDirection::Left)).unwrap();
+                    sim.step_forward();
+                }
+                Orientation::Down => {}
             }
             for _ in 0..spaces {
-                tx.borrow().send(Action::Move).unwrap();
-                simulation.borrow_mut().step_forward();
+                tx.borrow()
+                    .send(Action::Move(MoveDirection::Forward))
+                    .unwrap();
+                sim.step_forward();
             }
         });
         // get_pos returns the current position of the player as an array
@@ -368,18 +472,18 @@ impl ScriptRunner {
             ])
             .into()
         });
-        // get_direction returns the direction that the player is currently
+        // get_orientation returns the direction that the player is currently
         // facing as a string.
         let simulation = self.simulation.clone();
-        engine.register_fn("get_direction", move || -> Dynamic {
-            let direction = simulation.borrow().curr_state().player.facing;
-            let direction_str = match direction {
-                Direction::Up => "up",
-                Direction::Down => "down",
-                Direction::Left => "left",
-                Direction::Right => "right",
+        engine.register_fn("get_orientation", move || -> Dynamic {
+            let orientation = simulation.borrow().curr_state().player.facing;
+            let orientation_str = match orientation {
+                Orientation::Up => "up",
+                Orientation::Down => "down",
+                Orientation::Left => "left",
+                Orientation::Right => "right",
             };
-            Dynamic::from(direction_str)
+            Dynamic::from(orientation_str)
         });
         // say causes the rover to say (i.e. display in a speech bubble)
         // the given expression.
@@ -544,31 +648,31 @@ fn eval_call_args_as_int(
 
 /// Returns the current direction that the rover is facing. Intended to be
 /// used inside the debugger.
-fn eval_curr_direction(context: &EvalContext) -> Result<Direction, Error> {
+fn eval_curr_orientation(context: &EvalContext) -> Result<Orientation, Error> {
     let mut module = rhai::Module::new();
     for m in context.iter_namespaces() {
         module.combine(m.to_owned());
     }
-    // With the module constructed, we can now evaluate the get_direction()
+    // With the module constructed, we can now evaluate the get_orientation()
     // call inside the current scope.
     let mut scope = context.scope().clone();
-    let direction_val = context
+    let orientation_val = context
         .engine()
-        .eval_expression_with_scope::<String>(&mut scope, "get_direction()");
-    match direction_val {
+        .eval_expression_with_scope::<String>(&mut scope, "get_orientation()");
+    match orientation_val {
         Ok(dir) => match dir.as_str() {
-            "up" => Ok(Direction::Up),
-            "down" => Ok(Direction::Down),
-            "left" => Ok(Direction::Left),
-            "right" => Ok(Direction::Right),
+            "up" => Ok(Orientation::Up),
+            "down" => Ok(Orientation::Down),
+            "left" => Ok(Orientation::Left),
+            "right" => Ok(Orientation::Right),
             _ => Err(Error::new(
                 ErrorKind::Other,
-                format!("Unknown direction: {}", dir),
+                format!("Unknown orientation: {}", dir),
             )),
         },
         Err(err) => Err(Error::new(
             ErrorKind::Other,
-            format!("Error evaluating direction: {}", err),
+            format!("Error evaluating orientation: {}", err),
         )),
     }
 }

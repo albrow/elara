@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 use crate::levels;
 use crate::levels::Outcome;
 use crate::script_runner;
-use crate::simulation::{Direction, EnemyAnimState, PlayerAnimState};
+use crate::simulation::{EnemyAnimState, Orientation, PlayerAnimState};
 
 #[wasm_bindgen(getter_with_clone)]
 pub struct RhaiError {
@@ -155,10 +155,10 @@ impl FuzzyState {
                 PlayerAnimState::Turning => "turning",
             };
             let facing = match fuzzy_player.obj.facing {
-                Direction::Up => "up",
-                Direction::Down => "down",
-                Direction::Left => "left",
-                Direction::Right => "right",
+                Orientation::Up => "up",
+                Orientation::Down => "down",
+                Orientation::Left => "left",
+                Orientation::Right => "right",
             };
             let player = &fuzzy_player.obj;
             players.set(
@@ -296,7 +296,7 @@ pub struct FuzzyPlayer {
     pub fuel: i32,
     pub message: String,
     pub anim_state: String, // PlayerAnimState
-    pub facing: String,     // Direction
+    pub facing: String,     // Orientation
     pub fuzzy: bool,
 }
 

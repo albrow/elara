@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, Direction};
+use crate::simulation::{Actor, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
@@ -71,7 +71,7 @@ if pos[0] == 0 {
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
-                player: Player::new(0, 3, 5, Direction::Right),
+                player: Player::new(0, 3, 5, Orientation::Right),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 5, y: 3 },
@@ -82,7 +82,7 @@ if pos[0] == 0 {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(10, 3, 5, Direction::Left),
+                player: Player::new(10, 3, 5, Orientation::Left),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 5, y: 3 },

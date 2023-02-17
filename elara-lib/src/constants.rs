@@ -31,6 +31,20 @@ lazy_static! {
         let mut m: HashMap<&'static str, BuiltinFunction> = HashMap::new();
 
         m.insert(
+            "turn_right",
+            BuiltinFunction {
+                name: "turn_right",
+                arg_types: &[],
+            },
+        );
+        m.insert(
+            "turn_left",
+            BuiltinFunction {
+                name: "turn_left",
+                arg_types: &[],
+            },
+        );
+        m.insert(
             "move_forward",
             BuiltinFunction {
                 name: "move_forward",
@@ -38,9 +52,9 @@ lazy_static! {
             },
         );
         m.insert(
-            "turn_right",
+            "move_backward",
             BuiltinFunction {
-                name: "turn_right",
+                name: "move_forward",
                 arg_types: &[],
             },
         );

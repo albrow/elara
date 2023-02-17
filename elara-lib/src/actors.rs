@@ -4,13 +4,25 @@ use std::sync::mpsc;
 
 use crate::constants::FUEL_SPOT_AMOUNT;
 use crate::simulation::{
-    get_adjacent_terminal, Actor, Direction, EnemyAnimState, PlayerAnimState, Pos, State,
+    get_adjacent_terminal, Actor, EnemyAnimState, Orientation, PlayerAnimState, Pos, State,
 };
+
+#[derive(PartialEq)]
+pub enum MoveDirection {
+    Forward,
+    Backward,
+}
+
+#[derive(PartialEq)]
+pub enum TurnDirection {
+    Right,
+    Left,
+}
 
 pub enum Action {
     Wait,
-    Move,
-    TurnRight,
+    Move(MoveDirection),
+    Turn(TurnDirection),
     Say(String),
     ReadData,
 }
@@ -53,16 +65,7 @@ impl Actor for PlayerChannelActor {
         let rx = self.rx.clone();
         match rx.borrow().try_recv() {
             Ok(Action::Wait) => {}
-            Ok(Action::TurnRight) => {
-                state.player.facing = match state.player.facing {
-                    Direction::Up => Direction::Right,
-                    Direction::Right => Direction::Down,
-                    Direction::Down => Direction::Left,
-                    Direction::Left => Direction::Up,
-                };
-                state.player.anim_state = PlayerAnimState::Turning;
-            }
-            Ok(Action::Move) => {
+            Ok(Action::Move(direction)) => {
                 // We can't move if we're out of fuel.
                 if state.player.fuel == 0 {
                     return state;
@@ -72,9 +75,27 @@ impl Actor for PlayerChannelActor {
                 state.player.fuel -= 1;
                 // Update the position and animation state. Note that the player may not
                 // be able to actually move if there are obstacles in the way.
-                let (new_pos, new_anim_state) = self.get_new_player_pos(&state);
+                let (new_pos, new_anim_state) = self.try_to_move(&state, direction);
                 state.player.pos = new_pos;
                 state.player.anim_state = new_anim_state;
+            }
+            Ok(Action::Turn(direction)) => {
+                state.player.anim_state = PlayerAnimState::Turning;
+                if direction == TurnDirection::Right {
+                    state.player.facing = match state.player.facing {
+                        Orientation::Up => Orientation::Right,
+                        Orientation::Right => Orientation::Down,
+                        Orientation::Down => Orientation::Left,
+                        Orientation::Left => Orientation::Up,
+                    };
+                } else {
+                    state.player.facing = match state.player.facing {
+                        Orientation::Up => Orientation::Left,
+                        Orientation::Right => Orientation::Up,
+                        Orientation::Down => Orientation::Right,
+                        Orientation::Left => Orientation::Down,
+                    };
+                }
             }
             Ok(Action::Say(message)) => {
                 // If we're next to a password gate and we said the password, toggle the gate.
@@ -112,12 +133,18 @@ impl Actor for PlayerChannelActor {
 }
 
 impl PlayerChannelActor {
-    fn get_new_player_pos(&self, state: &State) -> (Pos, PlayerAnimState) {
+    /// First checks if we can move in the desired direction, and if so, returns the
+    /// new position. Otherwise, returns the current position.
+    fn try_to_move(&self, state: &State, direction: MoveDirection) -> (Pos, PlayerAnimState) {
+        let delta = match direction {
+            MoveDirection::Forward => 1,
+            MoveDirection::Backward => -1,
+        };
         let desired_pos = match state.player.facing {
-            Direction::Up => Pos::new(state.player.pos.x, state.player.pos.y - 1),
-            Direction::Down => Pos::new(state.player.pos.x, state.player.pos.y + 1),
-            Direction::Left => Pos::new(state.player.pos.x - 1, state.player.pos.y),
-            Direction::Right => Pos::new(state.player.pos.x + 1, state.player.pos.y),
+            Orientation::Up => Pos::new(state.player.pos.x, state.player.pos.y - delta),
+            Orientation::Down => Pos::new(state.player.pos.x, state.player.pos.y + delta),
+            Orientation::Left => Pos::new(state.player.pos.x - delta, state.player.pos.y),
+            Orientation::Right => Pos::new(state.player.pos.x + delta, state.player.pos.y),
         };
         if is_obstacle_at(state, &desired_pos)
             || is_outside_bounds(&self.bounds, &desired_pos)
@@ -274,7 +301,7 @@ mod test {
         let (tx, rx) = mpsc::channel();
         let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
+            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
@@ -283,7 +310,7 @@ mod test {
             data_terminals: vec![],
         };
 
-        tx.send(Action::Move).unwrap();
+        tx.send(Action::Move(MoveDirection::Forward)).unwrap();
         let new_state = actor.apply(state.clone());
         assert_eq!(
             new_state.player,
@@ -292,12 +319,12 @@ mod test {
                 fuel: state.player.fuel - 1,
                 message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
-                facing: Direction::Right,
+                facing: Orientation::Right,
             }
         );
         state = new_state;
 
-        tx.send(Action::TurnRight).unwrap();
+        tx.send(Action::Turn(TurnDirection::Right)).unwrap();
         let new_state = actor.apply(state.clone());
         assert_eq!(
             new_state.player,
@@ -306,12 +333,12 @@ mod test {
                 fuel: state.player.fuel,
                 message: String::from(""),
                 anim_state: PlayerAnimState::Turning,
-                facing: Direction::Down,
+                facing: Orientation::Down,
             }
         );
         state = new_state;
 
-        tx.send(Action::Move).unwrap();
+        tx.send(Action::Move(MoveDirection::Forward)).unwrap();
         let new_state = actor.apply(state.clone());
         assert_eq!(
             new_state.player,
@@ -320,7 +347,7 @@ mod test {
                 fuel: state.player.fuel - 1,
                 message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
-                facing: Direction::Down,
+                facing: Orientation::Down,
             }
         );
     }
@@ -335,27 +362,53 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
+            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
-            goal: Some(Goal {
-                pos: Pos::new(3, 3),
-            }),
+            goal: None,
             password_gates: vec![],
             data_terminals: vec![],
         };
 
         // Simple case where no obstacles are in the way and we are not
         // outside the bounds.
-        state.player.facing = Direction::Up;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 0));
-        state.player.facing = Direction::Down;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 2));
-        state.player.facing = Direction::Left;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(0, 1));
-        state.player.facing = Direction::Right;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(2, 1));
+        state.player.facing = Orientation::Up;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 0)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 2)
+        );
+        state.player.facing = Orientation::Down;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 2)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 0)
+        );
+        state.player.facing = Orientation::Left;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(0, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(2, 1)
+        );
+        state.player.facing = Orientation::Right;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(2, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(0, 1)
+        );
     }
 
     #[test]
@@ -368,28 +421,58 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
+            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
-            goal: Some(Goal {
-                pos: Pos::new(3, 3),
-            }),
+            goal: None,
             password_gates: vec![],
             data_terminals: vec![],
         };
 
         // We can't move outside the bounds.
         state.player.pos = Pos::new(0, 0);
-        state.player.facing = Direction::Up;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(0, 0));
-        state.player.facing = Direction::Left;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(0, 0));
+        state.player.facing = Orientation::Up;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(0, 0)
+        );
+        state.player.facing = Orientation::Down;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(0, 0)
+        );
+        state.player.facing = Orientation::Left;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(0, 0)
+        );
+        state.player.facing = Orientation::Right;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(0, 0)
+        );
         state.player.pos = Pos::new(2, 2);
-        state.player.facing = Direction::Down;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(2, 2));
-        state.player.facing = Direction::Right;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(2, 2));
+        state.player.facing = Orientation::Down;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(2, 2)
+        );
+        state.player.facing = Orientation::Up;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(2, 2)
+        );
+        state.player.facing = Orientation::Right;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(2, 2)
+        );
+        state.player.facing = Orientation::Left;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(2, 2)
+        );
     }
 
     #[test]
@@ -402,7 +485,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
+            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
             fuel_spots: vec![],
             obstacles: vec![
                 Obstacle::new(0, 0),
@@ -415,22 +498,48 @@ mod test {
                 Obstacle::new(0, 1),
             ],
             enemies: vec![],
-            goal: Some(Goal {
-                pos: Pos::new(3, 3),
-            }),
+            goal: None,
             password_gates: vec![],
             data_terminals: vec![],
         };
 
         // We can't move past obstacles.
-        state.player.facing = Direction::Up;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 1));
-        state.player.facing = Direction::Left;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 1));
-        state.player.facing = Direction::Down;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 1));
-        state.player.facing = Direction::Right;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 1));
+        state.player.facing = Orientation::Up;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 1)
+        );
+        state.player.facing = Orientation::Left;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 1)
+        );
+        state.player.facing = Orientation::Down;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 1)
+        );
+        state.player.facing = Orientation::Right;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 1)
+        );
     }
 
     #[test]
@@ -443,7 +552,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
+            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
@@ -464,14 +573,42 @@ mod test {
         };
 
         // We can't move past closed gates.
-        state.player.facing = Direction::Up;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 1));
-        state.player.facing = Direction::Left;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 1));
-        state.player.facing = Direction::Down;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 1));
-        state.player.facing = Direction::Right;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 1));
+        state.player.facing = Orientation::Up;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 1)
+        );
+        state.player.facing = Orientation::Left;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 1)
+        );
+        state.player.facing = Orientation::Down;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 1)
+        );
+        state.player.facing = Orientation::Right;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 1)
+        );
     }
 
     #[test]
@@ -484,7 +621,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
+            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
@@ -505,14 +642,42 @@ mod test {
         };
 
         // We *can* move past open gates.
-        state.player.facing = Direction::Up;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 0));
-        state.player.facing = Direction::Down;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(1, 2));
-        state.player.facing = Direction::Left;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(0, 1));
-        state.player.facing = Direction::Right;
-        assert_eq!(actor.get_new_player_pos(&state).0, Pos::new(2, 1));
+        state.player.facing = Orientation::Up;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 0)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 2)
+        );
+        state.player.facing = Orientation::Down;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 2)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 0)
+        );
+        state.player.facing = Orientation::Left;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(0, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(2, 1)
+        );
+        state.player.facing = Orientation::Right;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(2, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(0, 1)
+        );
     }
 
     // TODO(albrow): Add tests for EnemyBugActor.

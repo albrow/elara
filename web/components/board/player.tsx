@@ -46,7 +46,7 @@ export default function Player(props: PlayerProps) {
       case "right":
         return groverRightUrl;
       default:
-        throw new Error(`Facing unknown direction: + ${props.facing}`);
+        throw new Error(`Unknown orientation: + ${props.facing}`);
     }
   }, [props.facing]);
 

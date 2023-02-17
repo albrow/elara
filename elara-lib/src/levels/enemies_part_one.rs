@@ -1,7 +1,7 @@
 use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EnemyBugActor};
 use crate::constants::{HEIGHT, WIDTH};
-use crate::simulation::{Actor, Direction, Enemy, FuelSpot, Goal, Obstacle, Player, Pos, State};
+use crate::simulation::{Actor, Enemy, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State};
 
 #[derive(Copy, Clone)]
 pub struct EnemiesPartOne {}
@@ -27,7 +27,7 @@ move_down(5);
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(11, 0, 8, Direction::Right);
+        state.player = Player::new(11, 0, 8, Orientation::Right);
         state.fuel_spots = vec![
             FuelSpot {
                 pos: Pos { x: 4, y: 1 },

@@ -141,7 +141,7 @@ pub struct State {
 impl State {
     pub fn new() -> State {
         State {
-            player: Player::new(0, 0, MAX_FUEL, Direction::Right),
+            player: Player::new(0, 0, MAX_FUEL, Orientation::Right),
             fuel_spots: vec![],
             goal: None,
             enemies: vec![],
@@ -169,7 +169,7 @@ impl fmt::Debug for State {
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub enum Direction {
+pub enum Orientation {
     Up,
     Down,
     Left,
@@ -192,11 +192,11 @@ pub struct Player {
     pub fuel: u32,
     pub message: String,
     pub anim_state: PlayerAnimState,
-    pub facing: Direction,
+    pub facing: Orientation,
 }
 
 impl Player {
-    pub fn new(x: u32, y: u32, fuel: u32, facing: Direction) -> Player {
+    pub fn new(x: u32, y: u32, fuel: u32, facing: Orientation) -> Player {
         Player {
             pos: Pos::new(x as i32, y as i32),
             fuel: fuel,
