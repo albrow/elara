@@ -50,6 +50,26 @@ function applyFuncWithArgs(
 
 const builtInFuncs: PartialFuncOption[] = [
   {
+    label: "turn_right",
+    info: "Turn right (i.e. clockwise) by 90 degrees.",
+    apply: applyFuncWithoutArgs,
+  },
+  {
+    label: "turn_left",
+    info: "Turn left (i.e. counter-clockwise) by 90 degrees.",
+    apply: applyFuncWithoutArgs,
+  },
+  {
+    label: "move_forward",
+    info: "Move forward one space.",
+    apply: applyFuncWithoutArgs,
+  },
+  {
+    label: "move_backward",
+    info: "Move backward one space.",
+    apply: applyFuncWithoutArgs,
+  },
+  {
     label: "move_up",
     info: "Move up by a number of steps.",
     apply: applyFuncWithArgs,

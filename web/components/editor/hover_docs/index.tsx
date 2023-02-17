@@ -4,6 +4,10 @@ import { syntaxTree } from "@codemirror/language";
 import { MDXProps } from "mdx/types";
 import { createRoot } from "react-dom/client";
 
+import TurnRight from "./pages/turn_right.mdx";
+import TurnLeft from "./pages/turn_left.mdx";
+import MoveForward from "./pages/move_forward.mdx";
+import MoveBackward from "./pages/move_backward.mdx";
 import MoveUp from "./pages/move_up.mdx";
 import MoveDown from "./pages/move_down.mdx";
 import MoveLeft from "./pages/move_left.mdx";
@@ -13,6 +17,10 @@ import Add from "./pages/add.mdx";
 import ReadData from "./pages/read_data.mdx";
 
 export const hoverWords = [
+  "turn_right",
+  "turn_left",
+  "move_forward",
+  "move_backward",
   "move_up",
   "move_down",
   "move_left",
@@ -27,6 +35,10 @@ export type HoverWord = typeof hoverWords[number];
 const docPages: {
   [key in HoverWord]: (props: MDXProps) => JSX.Element;
 } = {
+  turn_right: TurnRight,
+  turn_left: TurnLeft,
+  move_forward: MoveForward,
+  move_backward: MoveBackward,
   move_up: MoveUp,
   move_down: MoveDown,
   move_left: MoveLeft,
