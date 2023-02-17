@@ -1,5 +1,5 @@
 import flagImageUrl from "../../images/flag.png";
-import robotImgUrl from "../../images/robot.png";
+import groverDownUrl from "../../images/grover_down.png";
 import fuelImgUrl from "../../images/fuel.png";
 import bugImgUrl from "../../images/bug.png";
 import lockedImgUrl from "../../images/locked.png";
@@ -11,7 +11,7 @@ export interface ObjectiveTextProps {
 }
 
 const imgUrlMappping = {
-  "{robot}": robotImgUrl,
+  "{robot}": groverDownUrl,
   "{goal}": flagImageUrl,
   "{fuel}": fuelImgUrl,
   "{bug}": bugImgUrl,

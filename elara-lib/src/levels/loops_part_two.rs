@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Player, Pos, State};
+use crate::simulation::{Actor, Direction, FuelSpot, Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
 pub struct LoopsPartTwo {}
@@ -23,7 +23,7 @@ impl Level for LoopsPartTwo {
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(0, 0, 10);
+        state.player = Player::new(0, 0, 10, Direction::Right);
         state.fuel_spots = vec![FuelSpot::new(7, 3)];
         state.goal = Some(Goal {
             pos: Pos::new(10, 5),

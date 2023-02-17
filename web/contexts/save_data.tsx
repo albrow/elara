@@ -10,7 +10,7 @@ import {
 } from "react";
 import { ShortId } from "../lib/tutorial_shorts";
 
-export const VERSION = 4;
+export const VERSION = 5;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 export interface LevelState {

@@ -8,8 +8,10 @@ import {
   PLAYER_MESSAGE_Z_INDEX,
   CSS_ANIM_DURATION,
 } from "../../lib/constants";
-import robotImgUrl from "../../images/robot.png";
-import glitchyRobotImgUrl from "../../images/robot_glitchy.gif";
+import groverUpUrl from "../../images/grover_up.png";
+import groverDownUrl from "../../images/grover_down.png";
+import groverLeftUrl from "../../images/grover_left.png";
+import groverRightUrl from "../../images/grover_right.png";
 import { Pos } from "../../../elara-lib/pkg/elara_lib";
 import SpriteLabel from "./sprite_label";
 
@@ -18,7 +20,7 @@ interface PlayerProps {
   fuel: number;
   message: string;
   animState: string;
-  fuzzy: boolean;
+  facing: string;
 }
 
 function speechBubblePlacement(pos: Pos): PlacementWithLogical {
@@ -32,6 +34,21 @@ export default function Player(props: PlayerProps) {
     }
     return `left ${CSS_ANIM_DURATION}s, top ${CSS_ANIM_DURATION}s`;
   }, [props.animState]);
+
+  const getRobotImgUrl = useCallback(() => {
+    switch (props.facing) {
+      case "up":
+        return groverUpUrl;
+      case "down":
+        return groverDownUrl;
+      case "left":
+        return groverLeftUrl;
+      case "right":
+        return groverRightUrl;
+      default:
+        throw new Error(`Facing unknown direction: + ${props.facing}`);
+    }
+  }, [props.facing]);
 
   return (
     <Tooltip
@@ -55,11 +72,7 @@ export default function Player(props: PlayerProps) {
           transition: getCssTransition(),
         }}
       >
-        <img
-          alt="rover"
-          className="playerImage"
-          src={props.fuzzy ? glitchyRobotImgUrl : robotImgUrl}
-        />
+        <img alt="rover" className="playerImage" src={getRobotImgUrl()} />
         <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.fuel} />
       </div>
     </Tooltip>

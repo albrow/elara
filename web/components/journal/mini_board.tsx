@@ -1,5 +1,4 @@
 import { Box } from "@chakra-ui/react";
-import { MdNorth, MdSouth, MdWest, MdEast } from "react-icons/md";
 
 import { useCallback } from "react";
 import Player from "../board/player";
@@ -20,37 +19,6 @@ export default function MiniBoard(props: MiniBoardProps) {
     top: "10px",
     left: "10px",
   };
-
-  const directionalArrow = useCallback((animState: string) => {
-    switch (animState) {
-      case "move_up":
-        return (
-          <Box position="absolute" top="-9px" left="26px">
-            <MdNorth />
-          </Box>
-        );
-      case "move_down":
-        return (
-          <Box position="absolute" top="59px" left="26px">
-            <MdSouth />
-          </Box>
-        );
-      case "move_right":
-        return (
-          <Box position="absolute" top="26px" left="59px">
-            <MdEast />
-          </Box>
-        );
-      case "move_left":
-        return (
-          <Box position="absolute" top="26px" left="-9px">
-            <MdWest />
-          </Box>
-        );
-      default:
-        return null;
-    }
-  }, []);
 
   const getBgOffset = useCallback(() => {
     const player = props.state.players[0];
@@ -82,11 +50,10 @@ export default function MiniBoard(props: MiniBoardProps) {
         <Player
           offset={fixedPlayerOffset}
           fuel={props.state.players[0].fuel}
-          fuzzy={false}
           message={props.state.players[0].message}
           animState={props.state.players[0].anim_state}
+          facing={props.state.players[0].facing}
         />
-        {directionalArrow(props.state.players[0].anim_state)}
       </Box>
     </Box>
   );

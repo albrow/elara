@@ -274,7 +274,7 @@ mod test {
         let (tx, rx) = mpsc::channel();
         let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL),
+            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
@@ -335,7 +335,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL),
+            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
@@ -368,7 +368,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL),
+            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
@@ -402,7 +402,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL),
+            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
             fuel_spots: vec![],
             obstacles: vec![
                 Obstacle::new(0, 0),
@@ -443,7 +443,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL),
+            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],
@@ -484,7 +484,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL),
+            player: Player::new(1, 1, MAX_FUEL, Direction::Right),
             fuel_spots: vec![],
             obstacles: vec![],
             enemies: vec![],

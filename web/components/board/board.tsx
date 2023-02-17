@@ -97,8 +97,9 @@ export default function Board(props: BoardProps) {
             offset={playerOffset}
             fuel={player.fuel}
             message={player.message}
-            fuzzy={player.fuzzy}
+            // fuzzy={player.fuzzy}
             animState={player.anim_state}
+            facing={player.facing}
           />
         );
       })}

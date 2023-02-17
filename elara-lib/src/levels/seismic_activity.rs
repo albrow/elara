@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, DataTerminal};
+use crate::simulation::{Actor, DataTerminal, Direction};
 use crate::simulation::{Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
@@ -86,7 +86,7 @@ if safe_direction == "right" {
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
-                player: Player::new(5, 0, 12),
+                player: Player::new(5, 0, 12, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 5, y: 5 },
@@ -97,7 +97,7 @@ if safe_direction == "right" {
                 data_terminals: vec![DataTerminal::new(5, 3, String::from("left"))],
             },
             State {
-                player: Player::new(5, 0, 12),
+                player: Player::new(5, 0, 12, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 5, y: 5 },

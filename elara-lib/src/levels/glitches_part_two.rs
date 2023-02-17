@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::Actor;
+use crate::simulation::{Actor, Direction};
 use crate::simulation::{Goal, Player, Pos, State};
 
 #[derive(Copy, Clone)]
@@ -37,7 +37,7 @@ while get_pos()[0] > goal[0] {
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
-                player: Player::new(0, 0, 10),
+                player: Player::new(0, 0, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -48,7 +48,7 @@ while get_pos()[0] > goal[0] {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(4, 0, 10),
+                player: Player::new(4, 0, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -59,7 +59,7 @@ while get_pos()[0] > goal[0] {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(8, 0, 10),
+                player: Player::new(8, 0, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -70,7 +70,7 @@ while get_pos()[0] > goal[0] {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(0, 3, 10),
+                player: Player::new(0, 3, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -81,7 +81,7 @@ while get_pos()[0] > goal[0] {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(0, 7, 10),
+                player: Player::new(0, 7, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -92,7 +92,7 @@ while get_pos()[0] > goal[0] {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(11, 0, 10),
+                player: Player::new(11, 0, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -103,7 +103,7 @@ while get_pos()[0] > goal[0] {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(11, 4, 10),
+                player: Player::new(11, 4, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -114,7 +114,7 @@ while get_pos()[0] > goal[0] {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(11, 7, 10),
+                player: Player::new(11, 7, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -125,7 +125,7 @@ while get_pos()[0] > goal[0] {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(7, 7, 10),
+                player: Player::new(7, 7, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },
@@ -136,7 +136,7 @@ while get_pos()[0] > goal[0] {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(3, 7, 10),
+                player: Player::new(3, 7, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 6, y: 3 },

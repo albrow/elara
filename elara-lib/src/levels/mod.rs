@@ -246,14 +246,14 @@ impl<T> Fuzzy<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::simulation::Pos;
+    use crate::simulation::{Direction, Pos};
 
     #[test]
     fn to_fuzzy_state() {
         // Given one possible initial state, the fuzzy state should be identical,
         // with all objects marked as non-fuzzy.
         let states = vec![State {
-            player: Player::new(0, 0, 10),
+            player: Player::new(0, 0, 10, Direction::Down),
             fuel_spots: vec![],
             goal: Some(Goal {
                 pos: Pos::new(1, 1),
@@ -264,7 +264,7 @@ mod tests {
             data_terminals: vec![],
         }];
         let expected = FuzzyState {
-            players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],
+            players: vec![Fuzzy::new(Player::new(0, 0, 10, Direction::Down), false)],
             fuel_spots: vec![],
             goals: vec![Fuzzy::new(
                 Goal {
@@ -283,7 +283,7 @@ mod tests {
         // Given two possible player positions, both should be marked as fuzzy.
         let states = vec![
             State {
-                player: Player::new(0, 0, 10),
+                player: Player::new(0, 0, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos::new(2, 2),
@@ -294,7 +294,7 @@ mod tests {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(1, 1, 10),
+                player: Player::new(1, 1, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos::new(2, 2),
@@ -307,8 +307,8 @@ mod tests {
         ];
         let expected = FuzzyState {
             players: vec![
-                Fuzzy::new(Player::new(0, 0, 10), true),
-                Fuzzy::new(Player::new(1, 1, 10), true),
+                Fuzzy::new(Player::new(0, 0, 10, Direction::Down), true),
+                Fuzzy::new(Player::new(1, 1, 10, Direction::Down), true),
             ],
             fuel_spots: vec![],
             goals: vec![Fuzzy::new(
@@ -328,7 +328,7 @@ mod tests {
         // Given two possible goal positions, both should be marked as fuzzy.
         let states = vec![
             State {
-                player: Player::new(0, 0, 10),
+                player: Player::new(0, 0, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos::new(2, 2),
@@ -339,7 +339,7 @@ mod tests {
                 data_terminals: vec![],
             },
             State {
-                player: Player::new(0, 0, 10),
+                player: Player::new(0, 0, 10, Direction::Down),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos::new(3, 3),
@@ -351,7 +351,7 @@ mod tests {
             },
         ];
         let expected = FuzzyState {
-            players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],
+            players: vec![Fuzzy::new(Player::new(0, 0, 10, Direction::Down), false)],
             fuel_spots: vec![],
             goals: vec![
                 Fuzzy::new(
@@ -377,7 +377,7 @@ mod tests {
 
         // If goal is None, FuzzyState.goals should be an empty vector.
         let states = vec![State {
-            player: Player::new(0, 0, 10),
+            player: Player::new(0, 0, 10, Direction::Down),
             fuel_spots: vec![],
             goal: None,
             enemies: vec![],
@@ -386,7 +386,7 @@ mod tests {
             data_terminals: vec![],
         }];
         let expected = FuzzyState {
-            players: vec![Fuzzy::new(Player::new(0, 0, 10), false)],
+            players: vec![Fuzzy::new(Player::new(0, 0, 10, Direction::Down), false)],
             fuel_spots: vec![],
             goals: vec![],
             enemies: vec![],

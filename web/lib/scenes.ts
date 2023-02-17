@@ -18,7 +18,7 @@ export const LEVELS = [
   levelData.get("fuel_part_one")!,
   levelData.get("gates")!,
   levelData.get("gate_and_terminal")!,
-  levelData.get("enemies_part_one")!,
+  // levelData.get("enemies_part_one")!,
   levelData.get("loops_part_one")!,
   levelData.get("loops_part_two")!,
   // levelData.get("glitches_part_one")!,
@@ -104,27 +104,21 @@ export const SCENES: Scene[] = [
     level: LEVELS[4],
   },
   {
-    type: "level",
-    name: `Level 5: ${LEVELS[5].name}`,
-    route: "/level/5",
-    level: LEVELS[5],
-  },
-  {
     type: "journal",
     name: "Journal: Loops",
     route: "/journal/concepts/loops",
   },
   {
     type: "level",
-    name: `Level 6: ${LEVELS[6].name}`,
-    route: "/level/6",
-    level: LEVELS[6],
+    name: `Level 5: ${LEVELS[5].name}`,
+    route: "/level/5",
+    level: LEVELS[5],
   },
   {
     type: "level",
-    name: `Level 7: ${LEVELS[7].name}`,
-    route: "/level/7",
-    level: LEVELS[7],
+    name: `Level 6: ${LEVELS[6].name}`,
+    route: "/level/6",
+    level: LEVELS[6],
   },
   {
     type: "journal",
@@ -138,8 +132,8 @@ export const SCENES: Scene[] = [
   },
   {
     type: "level",
-    name: `Level 8: ${LEVELS[8].name}`,
-    route: "/level/8",
+    name: `Level 7: ${LEVELS[7].name}`,
+    route: "/level/7",
   },
 ];
 

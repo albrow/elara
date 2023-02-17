@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Player, Pos, State};
+use crate::simulation::{Actor, Direction, FuelSpot, Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
 pub struct FuelPartOne {}
@@ -24,7 +24,7 @@ move_right(4);
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(0, 0, 5);
+        state.player = Player::new(0, 0, 5, Direction::Down);
         state.fuel_spots = vec![FuelSpot {
             pos: Pos { x: 0, y: 5 },
             collected: false,

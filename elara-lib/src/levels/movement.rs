@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, Goal, Obstacle, Player, Pos, State};
+use crate::simulation::{Actor, Direction, Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
 pub struct Movement {}
@@ -25,7 +25,7 @@ move_down(2);
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(0, 0, 10);
+        state.player = Player::new(0, 0, 10, Direction::Right);
         state.goal = Some(Goal {
             pos: Pos { x: 3, y: 3 },
         });

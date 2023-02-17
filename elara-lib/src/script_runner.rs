@@ -192,7 +192,7 @@ impl ScriptRunner {
                 step_positions.borrow_mut().push(pos);
                 Ok(DebuggerCommand::StepInto)
             }
-            "move" => {
+            "move_forward" => {
                 step_positions.borrow_mut().push(pos);
                 Ok(DebuggerCommand::StepInto)
             }
@@ -302,13 +302,16 @@ impl ScriptRunner {
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
-        engine.register_fn("move", move || {
+        engine.register_fn("move_forward", move || {
             tx.borrow().send(Action::Move).unwrap();
             simulation.borrow_mut().step_forward();
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
         engine.register_fn("move_right", move |spaces: i64| {
+            // move_right (and other directional move functions) work by first
+            // rotating the rover to face the correct direction, and then moving
+            // forward the given number of spaces.
             while simulation.borrow().curr_state().player.facing != Direction::Right {
                 tx.borrow().send(Action::TurnRight).unwrap();
                 simulation.borrow_mut().step_forward();

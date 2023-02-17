@@ -141,7 +141,7 @@ pub struct State {
 impl State {
     pub fn new() -> State {
         State {
-            player: Player::new(0, 0, MAX_FUEL),
+            player: Player::new(0, 0, MAX_FUEL, Direction::Right),
             fuel_spots: vec![],
             goal: None,
             enemies: vec![],
@@ -196,14 +196,13 @@ pub struct Player {
 }
 
 impl Player {
-    // TODO(albrow): Accept direction as an argument.
-    pub fn new(x: u32, y: u32, fuel: u32) -> Player {
+    pub fn new(x: u32, y: u32, fuel: u32, facing: Direction) -> Player {
         Player {
             pos: Pos::new(x as i32, y as i32),
             fuel: fuel,
             message: String::new(),
             anim_state: PlayerAnimState::Idle,
-            facing: Direction::Right,
+            facing: facing,
         }
     }
 }
