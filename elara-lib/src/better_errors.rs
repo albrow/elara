@@ -42,7 +42,37 @@ fn fn_name_from_sig(fn_signature: &str) -> String {
     re.replace(fn_signature, "").trim().to_string()
 }
 
+/// Searches previous lines in the script to see if there is a better
+/// place to put a missing semicolon error.
+pub fn search_prev_lines(script: &str, start_line: usize) -> usize {
+    let mut line = start_line;
+    while line >= 2 {
+        let prev_line = script.lines().nth(line - 2).unwrap();
+        if prev_line.trim().is_empty()
+            || prev_line.contains("//")
+            || prev_line.trim().ends_with("}")
+            || prev_line.trim().ends_with("{")
+        {
+            // If the previous line is empty, is a comment, or is the start/end
+            // of a block, keep searching backwards.
+            line = line - 1;
+            continue;
+        }
+        if !prev_line.ends_with(';') {
+            // If we found a line that looks like it should end with a semicolon but
+            // it doesn't, move the error message to that line.
+            return line - 1;
+        }
+        // Otherwise, just use the original line.
+        return start_line;
+    }
+
+    // Otherwise, just use the original line.
+    return start_line;
+}
+
 pub fn convert_err(script: String, err: Box<EvalAltResult>) -> BetterError {
+    // log!("{:?}", err);
     match *err {
         EvalAltResult::ErrorTooManyOperations(ref pos) => {
             return BetterError {
@@ -66,17 +96,16 @@ pub fn convert_err(script: String, err: Box<EvalAltResult>) -> BetterError {
                 // Sometimes Rhai will give a missing semicolon error on the next line instead of
                 // the line where the semicolon is actually missing. Check for this and then change
                 // the line number if needed.
-                let mut line = pos.line().unwrap();
+                let orig_line = pos.line().unwrap();
                 let mut message = String::from(
                     "Syntax Error: Missing semicolon ';' after function call or other statement.",
                 );
-                if line > 1 && !script.lines().nth(line - 2).unwrap().ends_with(';') {
-                    // If the previous line is missing a semicolon, then the error should actually
-                    // be there.
-                    line = line - 1;
-                    // Also change the error message to be more specific.
+                let line = search_prev_lines(script.as_str(), orig_line);
+                if line != orig_line {
+                    // If we found a better line to put the error message on, we should
+                    // also change the message for the sake of clarity.
                     message = String::from("Syntax Error: Missing semicolon ';' at end of line.");
-                };
+                }
 
                 return BetterError {
                     message: message,
@@ -215,6 +244,112 @@ mod tests {
                 ),
                 line: Some(3),
                 col: Some(26),
+            }
+        );
+
+        // This is another case where we should *not* change the line of the error message.
+        // The preceding line is a comment, which is not required to end in a semicolon.
+        let script = String::from(
+            r"move_down(1);
+            move_up(1);
+            move_left(1);
+            // This is a comment.
+            move_right(1)",
+        );
+        let err = EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::MissingToken(
+                String::from(";"),
+                String::from("to terminate this statement"),
+            ),
+            rhai::Position::new(5, 13),
+        );
+        let err = convert_err(script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(
+                    "Syntax Error: Missing semicolon ';' after function call or other statement."
+                ),
+                line: Some(5),
+                col: Some(13),
+            }
+        );
+
+        // The preceding line is the start of a block, which is *not* required to end in
+        // a semicolon.
+        let script = String::from(
+            r"if true {
+                move_right(1)
+            }",
+        );
+        let err = EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::MissingToken(
+                String::from(";"),
+                String::from("to terminate this statement"),
+            ),
+            rhai::Position::new(2, 15),
+        );
+        let err = convert_err(script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(
+                    "Syntax Error: Missing semicolon ';' after function call or other statement."
+                ),
+                line: Some(2),
+                col: Some(15),
+            }
+        );
+
+        // The preceding line is the end of a block, which is *not* required to end in
+        // a semicolon.
+        let script = String::from(
+            r"if true {
+            }
+            move_right(1)",
+        );
+        let err = EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::MissingToken(
+                String::from(";"),
+                String::from("to terminate this statement"),
+            ),
+            rhai::Position::new(3, 15),
+        );
+        let err = convert_err(script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(
+                    "Syntax Error: Missing semicolon ';' after function call or other statement."
+                ),
+                line: Some(3),
+                col: Some(15),
+            }
+        );
+
+        // Test scanning backwards more than one line.
+        let script = String::from(
+            r"move_down(1)
+
+            // This is a comment
+            if true {
+              move_right(1);
+            }",
+        );
+        let err = EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::MissingToken(
+                String::from(";"),
+                String::from("to terminate this statement"),
+            ),
+            rhai::Position::new(4, 1),
+        );
+        let err = convert_err(script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from("Syntax Error: Missing semicolon ';' at end of line."),
+                line: Some(1),
+                col: Some(1),
             }
         );
     }
