@@ -48,14 +48,14 @@ lazy_static! {
             "move_forward",
             BuiltinFunction {
                 name: "move_forward",
-                arg_types: &[],
+                arg_types: &["number"],
             },
         );
         m.insert(
             "move_backward",
             BuiltinFunction {
-                name: "move_forward",
-                arg_types: &[],
+                name: "move_backward",
+                arg_types: &["number"],
             },
         );
         m.insert(

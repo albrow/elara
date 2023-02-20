@@ -188,26 +188,23 @@ impl ScriptRunner {
                 }
                 Ok(DebuggerCommand::StepInto)
             }
-            "turn_right" => {
+            "turn_right" | "turn_left" => {
                 step_positions.borrow_mut().push(pos);
                 Ok(DebuggerCommand::StepInto)
             }
-            "turn_left" => {
-                step_positions.borrow_mut().push(pos);
-                Ok(DebuggerCommand::StepInto)
-            }
-            "move_forward" => {
-                step_positions.borrow_mut().push(pos);
-                Ok(DebuggerCommand::StepInto)
-            }
-            "move_backward" => {
-                step_positions.borrow_mut().push(pos);
+            "move_forward" | "move_backward" => {
+                // For move_forward and move_backward, the number of steps is just based
+                // on the argument.
+                let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
+                for _ in 0..move_steps {
+                    step_positions.borrow_mut().push(pos);
+                }
                 Ok(DebuggerCommand::StepInto)
             }
             "move_right" => {
-                // For move_right and other move functions, the number of steps is based
-                // on: (a) the number of spaces to move, and (b) the current orientation of
-                // the rover.
+                // For move_right and other directional move functions, the number of steps
+                // is based on: (a) the number of spaces to move, and (b) the current
+                // orientation of the rover.
                 let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
                 let curr_orientation = eval_curr_orientation(&context).unwrap();
                 let rotation_steps = match curr_orientation {
@@ -318,19 +315,25 @@ impl ScriptRunner {
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
-        engine.register_fn("move_forward", move || {
-            tx.borrow()
-                .send(Action::Move(MoveDirection::Forward))
-                .unwrap();
-            simulation.borrow_mut().step_forward();
+        engine.register_fn("move_forward", move |spaces: i64| {
+            // For move_forward and move_backward, the number of steps is
+            // directly determined by the argument.
+            for _ in 0..spaces {
+                tx.borrow()
+                    .send(Action::Move(MoveDirection::Forward))
+                    .unwrap();
+                simulation.borrow_mut().step_forward();
+            }
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();
-        engine.register_fn("move_backward", move || {
-            tx.borrow()
-                .send(Action::Move(MoveDirection::Backward))
-                .unwrap();
-            simulation.borrow_mut().step_forward();
+        engine.register_fn("move_backward", move |spaces: i64| {
+            for _ in 0..spaces {
+                tx.borrow()
+                    .send(Action::Move(MoveDirection::Backward))
+                    .unwrap();
+                simulation.borrow_mut().step_forward();
+            }
         });
         let tx = self.player_action_tx.clone();
         let simulation = self.simulation.clone();

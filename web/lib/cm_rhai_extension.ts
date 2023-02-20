@@ -61,32 +61,32 @@ const builtInFuncs: PartialFuncOption[] = [
   },
   {
     label: "move_forward",
-    info: "Move forward one space.",
-    apply: applyFuncWithoutArgs,
+    info: "Move forward by a number of spaces.",
+    apply: applyFuncWithArgs,
   },
   {
     label: "move_backward",
-    info: "Move backward one space.",
-    apply: applyFuncWithoutArgs,
+    info: "Move backward by a number of spaces.",
+    apply: applyFuncWithArgs,
   },
   {
     label: "move_up",
-    info: "Move up by a number of steps.",
+    info: "Move up by a number of spaces.",
     apply: applyFuncWithArgs,
   },
   {
     label: "move_down",
-    info: "Move down by a number of steps.",
+    info: "Move down by a number of spaces.",
     apply: applyFuncWithArgs,
   },
   {
     label: "move_left",
-    info: "Move left by a number of steps.",
+    info: "Move left by a number of spaces.",
     apply: applyFuncWithArgs,
   },
   {
     label: "move_right",
-    info: "Move right by a number of steps.",
+    info: "Move right by a number of spaces.",
     apply: applyFuncWithArgs,
   },
   // The add function is just for teaching purposes, so we
