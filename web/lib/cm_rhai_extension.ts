@@ -64,31 +64,31 @@ const builtInFuncs: PartialFuncOption[] = [
     info: "Move forward by a number of spaces.",
     apply: applyFuncWithArgs,
   },
-  {
-    label: "move_backward",
-    info: "Move backward by a number of spaces.",
-    apply: applyFuncWithArgs,
-  },
-  {
-    label: "move_up",
-    info: "Move up by a number of spaces.",
-    apply: applyFuncWithArgs,
-  },
-  {
-    label: "move_down",
-    info: "Move down by a number of spaces.",
-    apply: applyFuncWithArgs,
-  },
-  {
-    label: "move_left",
-    info: "Move left by a number of spaces.",
-    apply: applyFuncWithArgs,
-  },
-  {
-    label: "move_right",
-    info: "Move right by a number of spaces.",
-    apply: applyFuncWithArgs,
-  },
+  // {
+  //   label: "move_backward",
+  //   info: "Move backward by a number of spaces.",
+  //   apply: applyFuncWithArgs,
+  // },
+  // {
+  //   label: "move_up",
+  //   info: "Move up by a number of spaces.",
+  //   apply: applyFuncWithArgs,
+  // },
+  // {
+  //   label: "move_down",
+  //   info: "Move down by a number of spaces.",
+  //   apply: applyFuncWithArgs,
+  // },
+  // {
+  //   label: "move_left",
+  //   info: "Move left by a number of spaces.",
+  //   apply: applyFuncWithArgs,
+  // },
+  // {
+  //   label: "move_right",
+  //   info: "Move right by a number of spaces.",
+  //   apply: applyFuncWithArgs,
+  // },
   // The add function is just for teaching purposes, so we
   // don't want to autocomplete it.
   // {
