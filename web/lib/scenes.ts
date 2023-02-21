@@ -12,20 +12,6 @@ const levelData: Map<string, LevelData> = new Map(
 // A special level used for runnable examples.
 export const SANDBOX_LEVEL = levelData.get("sandbox")!;
 
-export const LEVELS = [
-  levelData.get("movement")!,
-  levelData.get("movement_part_two")!,
-  levelData.get("fuel_part_one")!,
-  levelData.get("gates")!,
-  levelData.get("gate_and_terminal")!,
-  // levelData.get("enemies_part_one")!,
-  levelData.get("loops_part_one")!,
-  levelData.get("loops_part_two")!,
-  // levelData.get("glitches_part_one")!,
-  // levelData.get("glitches_part_two")!,
-  levelData.get("seismic_activity")!,
-];
-
 export type SceneType = "level" | "dialogue" | "journal";
 
 export interface Scene {
@@ -36,6 +22,19 @@ export interface Scene {
   tutorialShorts?: ShortId[];
 }
 
+function sceneFromLevelName(shortName: string): Scene {
+  const level = levelData.get(shortName);
+  if (!level) {
+    throw new Error(`No level with short name ${shortName}`);
+  }
+  return {
+    type: "level",
+    name: `Level: ${level.name}`,
+    route: `/level/${shortName}`,
+    level,
+  };
+}
+
 export const SCENES: Scene[] = [
   {
     type: "dialogue",
@@ -43,10 +42,7 @@ export const SCENES: Scene[] = [
     route: "/dialog/intro",
   },
   {
-    type: "level",
-    name: `Level 0: ${LEVELS[0].name}`,
-    route: "/level/0",
-    level: LEVELS[0],
+    ...sceneFromLevelName("movement"),
     tutorialShorts: [
       "how_to_run_code",
       "where_to_find_objectives",
@@ -65,17 +61,11 @@ export const SCENES: Scene[] = [
     route: "/journal/concepts/comments",
   },
   {
-    type: "level",
-    name: `Level 1: ${LEVELS[1].name}`,
-    route: "/level/1",
-    level: LEVELS[1],
+    ...sceneFromLevelName("movement_part_two"),
     tutorialShorts: ["how_to_navigate_scenes"],
   },
   {
-    type: "level",
-    name: `Level 2: ${LEVELS[2].name}`,
-    route: "/level/2",
-    level: LEVELS[2],
+    ...sceneFromLevelName("fuel_part_one"),
     tutorialShorts: ["moving_takes_fuel", "how_to_get_more_fuel"],
   },
   {
@@ -83,12 +73,7 @@ export const SCENES: Scene[] = [
     name: "Journal: Strings",
     route: "/journal/concepts/strings",
   },
-  {
-    type: "level",
-    name: `Level 3: ${LEVELS[3].name}`,
-    route: "/level/3",
-    level: LEVELS[3],
-  },
+  sceneFromLevelName("gates"),
   {
     type: "journal",
     name: "Journal: Variables",
@@ -100,10 +85,7 @@ export const SCENES: Scene[] = [
     route: "/journal/concepts/function_outputs",
   },
   {
-    type: "level",
-    name: `Level 4: ${LEVELS[4].name}`,
-    route: "/level/4",
-    level: LEVELS[4],
+    ...sceneFromLevelName("gate_and_terminal"),
     tutorialShorts: ["how_to_use_data_terminals"],
   },
   {
@@ -111,18 +93,8 @@ export const SCENES: Scene[] = [
     name: "Journal: Loops",
     route: "/journal/concepts/loops",
   },
-  {
-    type: "level",
-    name: `Level 5: ${LEVELS[5].name}`,
-    route: "/level/5",
-    level: LEVELS[5],
-  },
-  {
-    type: "level",
-    name: `Level 6: ${LEVELS[6].name}`,
-    route: "/level/6",
-    level: LEVELS[6],
-  },
+  sceneFromLevelName("loops_part_one"),
+  sceneFromLevelName("loops_part_two"),
   {
     type: "journal",
     name: "Journal: Comparisons",
@@ -133,15 +105,16 @@ export const SCENES: Scene[] = [
     name: "Journal: If Statements",
     route: "/journal/concepts/if_statements",
   },
-  {
-    type: "level",
-    name: `Level 7: ${LEVELS[7].name}`,
-    route: "/level/7",
-  },
+  sceneFromLevelName("seismic_activity"),
 ];
+
+const LEVELS_ONLY = SCENES.filter((s) => s.type === "level");
 
 export const getSceneIndexFromRoute = (route: string): number | undefined =>
   SCENES.findIndex((scene) => scene.route === route);
+
+export const getLevelIndexFromScene = (scene: Scene): number | undefined =>
+  LEVELS_ONLY.indexOf(scene);
 
 export const getSceneFromRoute = (route: string): Scene | undefined =>
   SCENES.find((scene) => scene.route === route);

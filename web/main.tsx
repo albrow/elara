@@ -48,7 +48,7 @@ const elaraTheme = extendTheme({
           element: <Home />,
         },
         {
-          path: "/level/:levelNumber",
+          path: "/level/:levelId",
           element: <Level />,
         },
         {

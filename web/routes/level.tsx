@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
 
@@ -17,7 +17,7 @@ import { saveCode, loadCode } from "../lib/file_system";
 import { Replayer } from "../lib/replayer";
 import ControlBar from "../components/control_bar";
 import ObjectiveText from "../components/level/objective_text";
-import { getSceneFromRoute, LEVELS } from "../lib/scenes";
+import { getLevelIndexFromScene, getSceneFromRoute } from "../lib/scenes";
 import {
   markLevelCompleted,
   SaveData,
@@ -39,20 +39,14 @@ let getCode: () => string;
 
 export default function Level() {
   const location = useLocation();
-  const { levelNumber } = useParams();
-  const currLevel = useCallback(() => {
-    if (!levelNumber) {
-      throw new Error("levelNumber is required");
-    }
-    const levelIndex = parseInt(levelNumber, 10);
-    const level = LEVELS[levelIndex];
-    if (!level) {
-      throw new Error(`Level ${levelIndex} not found`);
-    }
-    return level;
-  }, [levelNumber]);
-
   const [saveData, setSaveData] = useSaveData();
+
+  const currScene = getSceneFromRoute(location.pathname);
+  if (!currScene || !currScene.level) {
+    throw new Error("cannot determine level");
+  }
+  const currLevel = useCallback(() => currScene.level!, [currScene]);
+  const levelIndex = getLevelIndexFromScene(currScene);
 
   const initialCode = useCallback(
     () =>
@@ -105,8 +99,8 @@ export default function Level() {
   const [dialogVisible, setDialogVisible] = useState(shouldShowDialogTree());
 
   useEffect(() => {
-    document.title = `Elara | Level ${levelNumber}: ${currLevel().name}`;
-  }, [levelNumber, currLevel]);
+    document.title = `Elara | Level ${levelIndex}: ${currLevel().name}`;
+  }, [levelIndex, currLevel]);
 
   // Passed through to the Editor component to allow us
   // to get the current code from the editor in an efficient
@@ -405,7 +399,7 @@ export default function Level() {
       <Container maxW="container.xl" mt={6}>
         <Box>
           <Text fontSize="2xl" fontWeight="bold" mb={1}>
-            Level {levelNumber}: {currLevel().name}
+            Level {levelIndex}: {currLevel().name}
           </Text>
           <p>
             <b>Objective:</b> <ObjectiveText text={currLevel().objective} />
