@@ -4,7 +4,12 @@ import { useCallback } from "react";
 
 import { MdLock } from "react-icons/md";
 import { LevelState, useSaveData } from "../../contexts/save_data";
-import { getSceneFromRoute, Scene, SCENES } from "../../lib/scenes";
+import {
+  getLevelIndexFromScene,
+  getSceneFromRoute,
+  Scene,
+  SCENES,
+} from "../../lib/scenes";
 import DisablableLink from "./disablable_link";
 
 interface SceneLinkProps {
@@ -63,6 +68,16 @@ export default function SceneLink(props: SceneLinkProps) {
     return style;
   }, [isActive, isUnlocked]);
 
+  const getSceneName = useCallback(() => {
+    // If the scene is a level, then we want to include the level
+    // index in the link text.
+    if (props.scene.type === "level") {
+      const levelIndex = getLevelIndexFromScene(props.scene);
+      return `Level ${levelIndex}: ${props.scene.level?.name}`;
+    }
+    return props.scene.name;
+  }, [props.scene]);
+
   return (
     <DisablableLink to={props.scene.route} disabled={!isUnlocked()}>
       <MenuItem
@@ -87,7 +102,7 @@ export default function SceneLink(props: SceneLinkProps) {
                 }}
               />
             )}
-            {props.scene.name}
+            {getSceneName()}
           </Text>
         </Box>
       </MenuItem>
