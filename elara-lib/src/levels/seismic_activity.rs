@@ -22,19 +22,19 @@ impl SeismicActivity {
             Obstacle::new(3, 3),
             Obstacle::new(3, 4),
             Obstacle::new(3, 6),
-            Obstacle::new(4, 0),
             Obstacle::new(4, 1),
             Obstacle::new(4, 3),
             Obstacle::new(4, 3),
             Obstacle::new(4, 4),
             Obstacle::new(4, 6),
-            Obstacle::new(5, 4),
-            Obstacle::new(5, 6),
-            Obstacle::new(6, 0),
+            Obstacle::new(4, 7),
+            Obstacle::new(5, 1),
+            Obstacle::new(5, 3),
             Obstacle::new(6, 1),
             Obstacle::new(6, 3),
             Obstacle::new(6, 4),
             Obstacle::new(6, 6),
+            Obstacle::new(6, 7),
             Obstacle::new(7, 1),
             Obstacle::new(7, 3),
             Obstacle::new(7, 4),
@@ -65,15 +65,18 @@ impl Level for SeismicActivity {
         r#"// This code reads the safe direction from the data terminal
 // (either "left" or "right") and stores it in a variable
 // called safe_direction.
-move_down(2);
+move_forward(2);
 let safe_direction = read_data();
 say("The safe direction is: " + safe_direction);
 
 if safe_direction == "left" {
   // If the safe direction is "left", we should go left.
-  move_left(3);
-  move_down(3);
-  move_right(3);
+  turn_left();
+  move_forward(3);
+  turn_right();
+  move_forward(3);
+  turn_right();
+  move_forward(3);
 }
 if safe_direction == "right" {
   // What should we do if the safe direction is "right"?
@@ -86,26 +89,26 @@ if safe_direction == "right" {
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
-                player: Player::new(5, 0, 12, Orientation::Down),
+                player: Player::new(5, 7, 12, Orientation::Up),
                 fuel_spots: vec![],
                 goal: Some(Goal {
-                    pos: Pos { x: 5, y: 5 },
+                    pos: Pos { x: 5, y: 2 },
                 }),
                 enemies: vec![],
                 obstacles: [self.obstacles().clone(), vec![Obstacle::new(7, 2)]].concat(),
                 password_gates: vec![],
-                data_terminals: vec![DataTerminal::new(5, 3, String::from("left"))],
+                data_terminals: vec![DataTerminal::new(5, 4, String::from("left"))],
             },
             State {
-                player: Player::new(5, 0, 12, Orientation::Down),
+                player: Player::new(5, 7, 12, Orientation::Up),
                 fuel_spots: vec![],
                 goal: Some(Goal {
-                    pos: Pos { x: 5, y: 5 },
+                    pos: Pos { x: 5, y: 2 },
                 }),
                 enemies: vec![],
                 obstacles: [self.obstacles().clone(), vec![Obstacle::new(3, 2)]].concat(),
                 password_gates: vec![],
-                data_terminals: vec![DataTerminal::new(5, 3, String::from("right"))],
+                data_terminals: vec![DataTerminal::new(5, 4, String::from("right"))],
             },
         ]
     }
@@ -136,17 +139,29 @@ mod tests {
 
         // Running this code should result in Outcome::Success because we
         // are accounting for both possible directions.
-        let script = r#"move_down(2);
+        let script = r#"
+            move_forward(2);
             let safe_direction = read_data();
+            say("The safe direction is: " + safe_direction);
+            
             if safe_direction == "left" {
-                move_left(3);
-                move_down(3);
-                move_right(3);
+                // If the safe direction is "left", we should go left.
+                turn_left();
+                move_forward(3);
+                turn_right();
+                move_forward(3);
+                turn_right();
+                move_forward(3);
             }
             if safe_direction == "right" {
-                move_right(3);
-                move_down(3);
-                move_left(3);
+                // What should we do if the safe direction is "right"?
+                // ADD YOUR CODE BELOW
+                turn_right();
+                move_forward(3);
+                turn_left();
+                move_forward(3);
+                turn_left();
+                move_forward(3);
             }"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
@@ -156,17 +171,17 @@ mod tests {
         // Hard-coding the movement direction should always result in failure.
         // In this specific case, it should be Outcome::Continue because we didn't
         // run out of fuel, but we didn't reach the goal either.
-        let script = r"move_down(2);
+        let script = r"move_up(2);
             move_left(3);
-            move_down(3);
+            move_up(3);
             move_right(3);";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
-        let script = r"move_down(2);
+        let script = r"move_up(2);
             move_right(3);
-            move_down(3);
+            move_up(3);
             move_left(3);";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
@@ -175,22 +190,22 @@ mod tests {
 
         // Only accounting for one branch of the if statement should
         // also result in failure.
-        let script = r#"move_down(2);
+        let script = r#"move_up(2);
             let safe_direction = read_data();
             if safe_direction == "left" {
                 move_left(3);
-                move_down(3);
+                move_up(3);
                 move_right(3);
             }"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
-        let script = r#"move_down(2);
+        let script = r#"move_up(2);
             let safe_direction = read_data();
             if safe_direction == "right" {
                 move_right(3);
-                move_down(3);
+                move_up(3);
                 move_left(3);
             }"#;
         let result = game

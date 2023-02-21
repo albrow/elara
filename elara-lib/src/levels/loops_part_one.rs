@@ -16,9 +16,11 @@ impl Level for LoopsPartOne {
     }
     fn initial_code(&self) -> &'static str {
         r#"loop {
-  move_right(1);
+  move_forward(1);
+  turn_left();
+  move_forward(1);
   // CHANGE THE CODE BELOW
-  move_left(1);
+  turn_left();
 }
 "#
     }
@@ -90,6 +92,18 @@ mod tests {
             result.outcome,
             Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
         );
+
+        // Running this code should result in Outcome::Success.
+        let script = r"loop {
+            move_forward(1);
+            turn_left();
+            move_forward(1);
+            turn_right();
+          }";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
 
         // Running this code should result in Outcome::Success.
         let script = r"loop {

@@ -90,10 +90,24 @@ mod tests {
         assert_eq!(result.outcome, Outcome::Continue);
 
         // Running this code should result in Outcome::Success.
-        let script = r"loop {
-    move_right(2);
-    move_down(1);
-}";
+        let script = r"
+            loop {
+                move_forward(2);
+                turn_right();
+                move_forward(1);
+                turn_left();
+            }";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
+        // Running this code should result in Outcome::Success.
+        let script = r"
+            loop {
+                move_right(2);
+                move_down(1);
+            }";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();

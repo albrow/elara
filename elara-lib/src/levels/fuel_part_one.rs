@@ -18,8 +18,9 @@ impl Level for FuelPartOne {
         r#"// Try collecting some fuel before moving to the goal.
 
 // CHANGE THE CODE BELOW
-move_down(4);
-move_right(4);
+move_forward(4);
+turn_left();
+move_forward(4);
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -87,6 +88,18 @@ mod tests {
             result.outcome,
             Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
         );
+
+        // Running this code should result in Outcome::Success.
+        let script = r"move_forward(5);
+            turn_left();
+            turn_left();
+            move_forward(1);
+            turn_right();
+            move_forward(4);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
 
         // Running this code should result in Outcome::Success.
         let script = "move_down(5); move_up(1); move_right(4);";

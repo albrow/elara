@@ -15,7 +15,7 @@ impl Level for Gates {
         "Open the locked gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"move_right(2);
+        r#"move_forward(2);
 
 // Reminder: the password for this gate is "lovelace".
 // ADD YOUR CODE BELOW
@@ -64,6 +64,13 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
+
+        // Running this code should result in Outcome::Success.
+        let script = r#"move_forward(2); say("lovelace"); move_forward(5);"#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
 
         // Running this code should result in Outcome::Success.
         let script = r#"move_right(2); say("lovelace"); move_right(5);"#;

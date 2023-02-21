@@ -10,24 +10,33 @@ Functions can have inputs (also called "arguments") that affect
 their behavior. Different functions may have different types of
 inputs.
 
-Here's an example of calling the `say` function with the
-input `"Hello, world!"`.
-
 ℹ️ **Tip**: All of the code examples here are editable! You can
 change the code and run it again to see the results.
+
+Here's an example of calling the `move_forward` function with
+the input `4`:
+
+<RunnableExample
+  code={`move_forward(4);
+`}
+/>
+
+Here's an example of calling the `say` function with the
+input `"Hello, world!"`.
 
 <RunnableExample
   code={`say("Hello, world!");
 `}
 />
 
-Here's an example of calling the `move_right` function with
-the input `5`:
+Some functions don't need any inputs, but you still need to include the
+parentheses when calling them. Here's an example of calling the `turn_right`
+function:
 
 <RunnableExample
-  code={`move_right(5);
+  code={`turn_right();
+turn_right();
+turn_right();
+turn_right();
 `}
 />
-
-ℹ️ **Tip:** When a function does not have any inputs, you still need to include the
-parentheses (just don't put anything inside them).

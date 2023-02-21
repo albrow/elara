@@ -19,8 +19,9 @@ impl Level for Movement {
 // right place. Try changing the code to see what happens.
 
 // CHANGE THE CODE BELOW
-move_right(1);
-move_down(2);
+move_forward(3);
+turn_right();
+move_forward(1);
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -68,6 +69,13 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
+
+        // Running this code should result in Outcome::Success.
+        let script = "move_forward(3); turn_right(); move_forward(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
 
         // Running this code should result in Outcome::Success.
         let script = "move_right(3); move_down(3);";
