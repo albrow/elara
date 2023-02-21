@@ -4,7 +4,6 @@ import {
   ModalContent,
   ModalBody,
   Box,
-  ModalCloseButton,
 } from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import { markDialogSeen, useSaveData } from "../../contexts/save_data";
@@ -55,7 +54,6 @@ export default function DialogModal(props: DialogModalProps) {
           position="fixed"
           maxH="50vh"
         >
-          <ModalCloseButton />
           <ModalBody>
             {props.treeName && (
               <DialogTree treeName={props.treeName} onEnd={handleClose} />
