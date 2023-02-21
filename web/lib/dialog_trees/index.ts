@@ -5,8 +5,6 @@
 // branching, possibly recursive dialog trees.
 
 import * as Intro from "./intro";
-import * as Movement from "./level_movement";
-import * as FuelPartOne from "./level_fuel_part_one";
 import * as Gates from "./level_gates";
 import * as GateAndTerminal from "./level_gate_and_terminal";
 import * as Variables from "./journal_variables";
@@ -16,16 +14,12 @@ import * as SeismicActivity from "./level_seismic_activity";
 // that the compiler will catch any incorrect or missing references.
 type NodeIds =
   | Intro.NodeIds
-  | Movement.NodeIds
-  | FuelPartOne.NodeIds
   | Gates.NodeIds
   | GateAndTerminal.NodeIds
   | Variables.NodeIds
   | SeismicActivity.NodeIds;
 type ChoiceIds =
   | Intro.ChoiceIds
-  | Movement.ChoiceIds
-  | FuelPartOne.ChoiceIds
   | Gates.ChoiceIds
   | GateAndTerminal.ChoiceIds
   | Variables.ChoiceIds
@@ -60,8 +54,6 @@ export interface DialogTrees {
 
 export const NODES: { [key in NodeIds]: DialogNode } = {
   ...Intro.NODES,
-  ...Movement.NODES,
-  ...FuelPartOne.NODES,
   ...Gates.NODES,
   ...GateAndTerminal.NODES,
   ...Variables.NODES,
@@ -70,8 +62,6 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...Intro.CHOICES,
-  ...Movement.CHOICES,
-  ...FuelPartOne.CHOICES,
   ...Gates.CHOICES,
   ...GateAndTerminal.CHOICES,
   ...Variables.CHOICES,
@@ -80,8 +70,6 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
 
 export const TREES: DialogTrees = {
   ...Intro.TREES,
-  // ...Movement.TREES,
-  // ...FuelPartOne.TREES,
   ...Gates.TREES,
   ...GateAndTerminal.TREES,
   ...Variables.TREES,
