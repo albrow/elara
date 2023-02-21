@@ -12,7 +12,7 @@ const levelData: Map<string, LevelData> = new Map(
 // A special level used for runnable examples.
 export const SANDBOX_LEVEL = levelData.get("sandbox")!;
 
-export type SceneType = "level" | "dialogue" | "journal";
+export type SceneType = "level" | "dialog" | "journal";
 
 export interface Scene {
   type: SceneType;
@@ -37,7 +37,7 @@ function sceneFromLevelName(shortName: string): Scene {
 
 export const SCENES: Scene[] = [
   {
-    type: "dialogue",
+    type: "dialog",
     name: "Introduction",
     route: "/dialog/intro",
   },
