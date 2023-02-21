@@ -81,7 +81,7 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
 export const TREES: DialogTrees = {
   ...Intro.TREES,
   // ...Movement.TREES,
-  ...FuelPartOne.TREES,
+  // ...FuelPartOne.TREES,
   ...Gates.TREES,
   ...GateAndTerminal.TREES,
   ...Variables.TREES,

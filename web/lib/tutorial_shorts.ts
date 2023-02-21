@@ -2,6 +2,10 @@ import howToRunCodeUrl from "../images/shorts/how_to_run_code.gif";
 import howToPauseAndStepUrl from "../images/shorts/how_to_pause_and_step.gif";
 import howToSeeErrorsUrl from "../images/shorts/how_to_see_errors.gif";
 import whereToFindObjectivesUrl from "../images/shorts/where_to_find_objectives.gif";
+import howToNavigateScenesUrl from "../images/shorts/how_to_navigate_scenes.gif";
+import movingTakesFuelUrl from "../images/shorts/moving_takes_fuel.gif";
+import howToGetMoreFuelUrl from "../images/shorts/how_to_get_more_fuel.gif";
+import howToUseDataTerminalsUrl from "../images/shorts/how_to_use_data_terminals.gif";
 
 export interface TutorialShort {
   title: string;
@@ -29,6 +33,26 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     title: "Objectives",
     text: "You can find the current objective near the top of the screen. Usually you will need to move the rover to the goal, but sometimes you may need to do something else.",
     imageUrl: whereToFindObjectivesUrl,
+  },
+  how_to_navigate_scenes: {
+    title: "Going back to a previous page",
+    text: 'You can use the "Scenes" dropdown near the top of the screen to go back to a previous page at any time.',
+    imageUrl: howToNavigateScenesUrl,
+  },
+  moving_takes_fuel: {
+    title: "Moving uses fuel",
+    text: "The little orange number shows the rover's current amount of fuel. Moving the rover uses one fuel per space.",
+    imageUrl: movingTakesFuelUrl,
+  },
+  how_to_get_more_fuel: {
+    title: "How to get more fuel",
+    text: "If you run out of fuel, you won't be able to complete the objective. You can get more fuel by simply moving into a space that contains it.",
+    imageUrl: howToGetMoreFuelUrl,
+  },
+  how_to_use_data_terminals: {
+    title: "Reading data from terminals",
+    text: "Data terminals can hold lots of different kinds of information. You can read data from a terminal by moving the rover next to it and then using the read_data function.",
+    imageUrl: howToUseDataTerminalsUrl,
   },
 };
 

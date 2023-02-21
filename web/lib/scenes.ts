@@ -69,12 +69,14 @@ export const SCENES: Scene[] = [
     name: `Level 1: ${LEVELS[1].name}`,
     route: "/level/1",
     level: LEVELS[1],
+    tutorialShorts: ["how_to_navigate_scenes"],
   },
   {
     type: "level",
     name: `Level 2: ${LEVELS[2].name}`,
     route: "/level/2",
     level: LEVELS[2],
+    tutorialShorts: ["moving_takes_fuel", "how_to_get_more_fuel"],
   },
   {
     type: "journal",
@@ -102,6 +104,7 @@ export const SCENES: Scene[] = [
     name: `Level 4: ${LEVELS[4].name}`,
     route: "/level/4",
     level: LEVELS[4],
+    tutorialShorts: ["how_to_use_data_terminals"],
   },
   {
     type: "journal",
