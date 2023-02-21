@@ -23,7 +23,7 @@ export const NODES: {
     nextId: "explain_data_terminals_2",
   },
   explain_data_terminals_2: {
-    text: `Oh! I think you can retrieve the password from the nearby data terminal using the read_data function.`,
+    text: `Oh! I think you can retrieve the password from the nearby data terminal.`,
     choiceIds: ["ack_data_terminals"],
   },
   explain_data_terminals_existing_code: {

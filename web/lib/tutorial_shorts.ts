@@ -40,7 +40,7 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     imageUrl: howToNavigateScenesUrl,
   },
   moving_takes_fuel: {
-    title: "Moving uses fuel",
+    title: "Fuel",
     text: "The little orange number shows the rover's current amount of fuel. Moving the rover uses one fuel per space.",
     imageUrl: movingTakesFuelUrl,
   },
