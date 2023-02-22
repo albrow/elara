@@ -10,7 +10,7 @@ import {
 } from "react";
 import { ShortId } from "../lib/tutorial_shorts";
 
-export const VERSION = 5;
+export const VERSION = 6;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 export interface LevelState {
@@ -58,11 +58,13 @@ export function load(): SaveData {
       return saveData;
     }
 
-    // Migrate from version 3.
-    if (saveData.version === 3) {
+    // Migrate from version 5 to 6.
+    if (saveData.version === 5) {
       const newSaveData = deepCopy(saveData);
-      newSaveData.version = VERSION;
-      newSaveData.seenTutorialShorts = [];
+      newSaveData.version = 6;
+      // The structure of the level changed from version 5 to 6, so the
+      // old code won't work anymore.
+      delete newSaveData.levelStates.gate_and_terminal;
       return newSaveData;
     }
 

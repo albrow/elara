@@ -18,23 +18,14 @@ impl Level for GateAndTerminal {
     }
     fn initial_code(&self) -> &'static str {
         r#"move_forward(1);
-turn_right();
-move_forward(1);
 
-// This code reads the data from the data terminal and
-// stores it in a variable called the_password.
+// This code reads the password from the data terminal and
+// stores it in a variable called the_password. (You don't
+// need to change this part).
 let the_password = read_data();
-
-// This code moves the rover next to the gate.
-turn_left();
-turn_left();
-move_forward(1);
-turn_right();
-move_forward(1);
 
 // Now you just need to unlock the gate and move to the goal.
 // ADD YOUR CODE BELOW
-
 
 "#
     }
@@ -45,18 +36,16 @@ move_forward(1);
             pos: Pos { x: 5, y: 5 },
         });
         state.obstacles = vec![
-            Obstacle::new(3, 0),
-            Obstacle::new(3, 2),
-            Obstacle::new(3, 3),
+            Obstacle::new(4, 0),
+            Obstacle::new(4, 2),
             Obstacle::new(4, 3),
             Obstacle::new(6, 3),
-            Obstacle::new(7, 3),
-            Obstacle::new(7, 0),
-            Obstacle::new(7, 1),
-            Obstacle::new(7, 2),
+            Obstacle::new(6, 0),
+            Obstacle::new(6, 1),
+            Obstacle::new(6, 2),
         ];
         state.password_gates = vec![PasswordGate::new(5, 3, "turing".to_string(), false)];
-        state.data_terminals = vec![DataTerminal::new(3, 1, "turing".to_string())];
+        state.data_terminals = vec![DataTerminal::new(4, 1, "turing".to_string())];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
@@ -88,35 +77,10 @@ mod tests {
         // Running this code should result in Outcome::Success.
         let script = r#"
             move_forward(1);
-            turn_right();
-            move_forward(1);
             let the_password = read_data();
-            turn_left();
-            turn_left();
-            move_forward(1);
-            turn_right();
             move_forward(1);
             say(the_password);
             move_forward(3);
-        "#;
-        let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
-            .unwrap();
-        assert_eq!(result.outcome, Outcome::Success);
-        // Regression check for a bug where read_data was not correctly
-        // adding a position to result.positions, resulting in a length
-        // mismatch.
-        assert_eq!(result.states.len(), result.positions.len());
-
-        // Running this code should result in Outcome::Success.
-        let script = r#"
-            move_down(1);
-            move_left(1);
-            let the_password = read_data();
-            move_right(1);
-            move_down(1);
-            say(the_password);
-            move_down(3);
         "#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
