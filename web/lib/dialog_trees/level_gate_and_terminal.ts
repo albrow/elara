@@ -4,11 +4,13 @@ export type NodeIds =
   | "forgot_password"
   | "explain_data_terminals_1"
   | "explain_data_terminals_2"
-  | "explain_data_terminals_existing_code";
+  | "explain_data_terminals_existing_code_1"
+  | "explain_data_terminals_existing_code_2";
 export type ChoiceIds =
   | "request_gate_solution"
   | "ack_data_terminals"
-  | "ack_data_terminals_existing_code";
+  | "ack_data_terminals_existing_code_1"
+  | "ack_data_terminals_existing_code_2";
 
 export const NODES: {
   [key in NodeIds]: DialogNode;
@@ -26,12 +28,15 @@ export const NODES: {
     text: `Oh! I think you can retrieve the password from the nearby data terminal.`,
     choiceIds: ["ack_data_terminals"],
   },
-  explain_data_terminals_existing_code: {
+  explain_data_terminals_existing_code_1: {
     text:
       `To help you get started I already wrote some code for you that reads the data and stores ` +
-      `it in a variable called the_password. All you need to do is use that variable to ` +
-      `unlock the gate and move to the goal.`,
-    choiceIds: ["ack_data_terminals_existing_code"],
+      `it in a variable called the_password.`,
+    choiceIds: ["ack_data_terminals_existing_code_1"],
+  },
+  explain_data_terminals_existing_code_2: {
+    text: "All you need to do is use that variable to unlock the gate and move to the goal.",
+    choiceIds: ["ack_data_terminals_existing_code_2"],
   },
 };
 
@@ -44,9 +49,13 @@ export const CHOICES: {
   },
   ack_data_terminals: {
     text: "I see...",
-    nextId: "explain_data_terminals_existing_code",
+    nextId: "explain_data_terminals_existing_code_1",
   },
-  ack_data_terminals_existing_code: {
+  ack_data_terminals_existing_code_1: {
+    text: "What's left for me to do?",
+    nextId: "explain_data_terminals_existing_code_2",
+  },
+  ack_data_terminals_existing_code_2: {
     text: "Got it. I can do that!",
   },
 };
