@@ -120,6 +120,7 @@ export default function DialogTree(props: DialogTreeProps) {
                   <Button
                     ml="1px"
                     key={choice.text}
+                    fontSize="1.1rem"
                     onClick={() => choiceClickHandler(choice)}
                   >
                     {choice.text}

@@ -22,7 +22,9 @@ export default function ChatMessage(props: ChatMessageProps) {
         mr={props.fromPlayer ? 0 : "100px"}
         ml={props.fromPlayer ? "100px" : 0}
       >
-        <Text fontWeight="bold">{props.text}</Text>
+        <Text fontWeight="bold" fontSize="1.1rem">
+          {props.text}
+        </Text>
       </Box>
     </Flex>
   );
