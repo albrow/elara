@@ -52,12 +52,12 @@ export const SCENES: Scene[] = [
   },
   {
     type: "journal",
-    name: "Journal: Functions",
+    name: "Functions",
     route: "/journal/concepts/functions",
   },
   {
     type: "journal",
-    name: "Journal: Comments",
+    name: "Comments",
     route: "/journal/concepts/comments",
   },
   {
@@ -70,12 +70,12 @@ export const SCENES: Scene[] = [
   },
   {
     type: "journal",
-    name: "Journal: Strings",
+    name: "Strings",
     route: "/journal/concepts/strings",
   },
   {
     type: "journal",
-    name: "Journal: Loops",
+    name: "Loops",
     route: "/journal/concepts/loops",
   },
   sceneFromLevelName("loops_part_one"),
@@ -83,12 +83,12 @@ export const SCENES: Scene[] = [
   sceneFromLevelName("gates"),
   {
     type: "journal",
-    name: "Journal: Variables",
+    name: "Variables",
     route: "/journal/concepts/variables",
   },
   {
     type: "journal",
-    name: "Journal: Function Outputs",
+    name: "Function Outputs",
     route: "/journal/concepts/function_outputs",
   },
   {
@@ -100,24 +100,25 @@ export const SCENES: Scene[] = [
   },
   {
     type: "journal",
-    name: "Journal: Comparisons",
+    name: "Comparisons",
     route: "/journal/concepts/comparisons",
   },
   {
     type: "journal",
-    name: "Journal: If Statements",
+    name: "If Statements",
     route: "/journal/concepts/if_statements",
   },
   sceneFromLevelName("seismic_activity"),
 ];
 
-const LEVELS_ONLY = SCENES.filter((s) => s.type === "level");
+export const LEVELS = SCENES.filter((s) => s.type === "level");
+export const JOURNAL_PAGES = SCENES.filter((s) => s.type === "journal");
 
 export const getSceneIndexFromRoute = (route: string): number | undefined =>
   SCENES.findIndex((scene) => scene.route === route);
 
 export const getLevelIndexFromScene = (scene: Scene): number | undefined =>
-  LEVELS_ONLY.indexOf(scene);
+  LEVELS.indexOf(scene);
 
 export const getSceneFromRoute = (route: string): Scene | undefined =>
   SCENES.find((scene) => scene.route === route);
