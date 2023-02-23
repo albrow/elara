@@ -24,6 +24,9 @@ interface LevelEndModalProps {
   title?: string;
   message?: string;
   kind: "success" | "failure";
+  // TODO(albrow): Remove this eslint-disable comment once we start using
+  // stats in the modal.
+  // eslint-disable-next-line react/no-unused-prop-types
   stats?: ScriptStats;
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
