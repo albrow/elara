@@ -46,9 +46,31 @@ pub struct Pos {
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
+pub struct ScriptStats {
+    // Length of the script in bytes.
+    pub code_len: i32,
+    // Amount of fuel used by the rover.
+    pub fuel_used: i32,
+    // Amount of time (i.e. number of steps) taken to execute the script.
+    pub time_taken: i32,
+}
+
+impl From<&script_runner::ScriptStats> for ScriptStats {
+    fn from(stats: &script_runner::ScriptStats) -> Self {
+        Self {
+            code_len: stats.code_len as i32,
+            fuel_used: stats.fuel_used as i32,
+            time_taken: stats.time_taken as i32,
+        }
+    }
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct RunResult {
     pub states: Array,   // Array<StateWithPos>
     pub outcome: String, // "success" | "continue" | "other failure message"
+    pub stats: ScriptStats,
 }
 
 /// Converts script_runner::ScriptResult to a format that is wasm_bindgen
@@ -80,6 +102,7 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
             Outcome::Continue => String::from("continue"),
             Outcome::NoObjective => String::from("no_objective"),
         },
+        stats: ScriptStats::from(&result.stats),
     }
 }
 

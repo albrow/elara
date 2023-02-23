@@ -9,6 +9,7 @@ import {
   RunResult,
   FuzzyStateWithLine,
   LinePos,
+  ScriptStats,
 } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import LevelEndModal from "../components/level/level_end_modal";
@@ -69,6 +70,7 @@ export default function Level() {
   const [modalKind, setModalKind] = useState<"success" | "failure">("success");
   const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
+  const [modalStats, setModalStats] = useState<ScriptStats | undefined>();
   const dialogTreeName = `level_${currLevel().short_name}`;
 
   useEffect(
@@ -233,6 +235,7 @@ export default function Level() {
       setModalKind(endResult.modalKind);
       setModalTitle(endResult.modalTitle);
       setModalMessage(endResult.modalMessage);
+      setModalStats(result.stats);
       setModalVisible(true);
 
       if (endResult.isCompleted) {
@@ -282,6 +285,10 @@ export default function Level() {
       }
       throw e;
     }
+
+    console.log(`code length: ${result.stats.code_len}`);
+    console.log(`fuel used: ${result.stats.fuel_used}`);
+    console.log(`time taken: ${result.stats.time_taken}`);
 
     // Reset the board state and start the replay.
     resetStateButKeepCode();
@@ -389,6 +396,7 @@ export default function Level() {
         title={modalTitle}
         message={modalMessage}
         kind={modalKind}
+        stats={modalStats}
         onClose={resetStateButKeepCode}
       />
       <DialogModal

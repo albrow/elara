@@ -14,6 +14,7 @@ import React, { useCallback } from "react";
 import { MdArrowForward, MdReplay } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import type { ScriptStats } from "../../../elara-lib/pkg";
 import { LEVEL_END_MODAL_Z_INDEX } from "../../lib/constants";
 import { getNextSceneFromRoute, SCENES } from "../../lib/scenes";
 
@@ -23,6 +24,7 @@ interface LevelEndModalProps {
   title?: string;
   message?: string;
   kind: "success" | "failure";
+  stats?: ScriptStats;
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   onClose?: () => void;
@@ -100,6 +102,39 @@ export default function LevelEndModal(props: LevelEndModalProps) {
                 ? "You've completed all the levels! Check back again later for additional levels and content."
                 : props.message}
             </Text>
+            {/* TODO(albrow): Uncomment this after fixing fuel calculation */}
+            {/* {props.stats && (
+              <Flex w="70%" mx="auto" justifyContent="space-between">
+                <Badge colorScheme="purple" px="9px" py="3px" fontSize="sm">
+                  <Flex direction="row" mt="0.12rem">
+                    <MdOutlineTimer
+                      size="1.2em"
+                      style={{ marginRight: "0.1rem", marginTop: "0.1rem" }}
+                    />
+                    {`Time: ${props.stats.time_taken} steps`}
+                  </Flex>
+                </Badge>
+
+                <Badge colorScheme="green" px="9px" py="3px" fontSize="sm">
+                  <Flex direction="row" mt="0.12rem">
+                    <MdLocalGasStation
+                      size="1.2em"
+                      style={{ marginRight: "0.1rem", marginTop: "0.1rem" }}
+                    />
+                    {`Fuel Used: ${props.stats.fuel_used}`}
+                  </Flex>
+                </Badge>
+                <Badge colorScheme="blue" px="9px" py="3px" fontSize="sm">
+                  <Flex direction="row" mt="0.12rem">
+                    <MdOutlineTextSnippet
+                      size="1.2em"
+                      style={{ marginRight: "0.1rem", marginTop: "0.1rem" }}
+                    />
+                    {`Code Length: ${props.stats.code_len}`}
+                  </Flex>
+                </Badge>
+              </Flex>
+            )} */}
             {props.kind === "success" && (
               <Flex justifyContent="center">
                 <Image src={getRandomSuccessGif()} mt={6} maxH="42vh" />
