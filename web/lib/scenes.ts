@@ -73,6 +73,13 @@ export const SCENES: Scene[] = [
     name: "Journal: Strings",
     route: "/journal/concepts/strings",
   },
+  {
+    type: "journal",
+    name: "Journal: Loops",
+    route: "/journal/concepts/loops",
+  },
+  sceneFromLevelName("loops_part_one"),
+  sceneFromLevelName("loops_part_two"),
   sceneFromLevelName("gates"),
   {
     type: "journal",
@@ -88,13 +95,6 @@ export const SCENES: Scene[] = [
     ...sceneFromLevelName("gate_and_terminal"),
     tutorialShorts: ["how_to_use_data_terminals"],
   },
-  {
-    type: "journal",
-    name: "Journal: Loops",
-    route: "/journal/concepts/loops",
-  },
-  sceneFromLevelName("loops_part_one"),
-  sceneFromLevelName("loops_part_two"),
   {
     type: "journal",
     name: "Journal: Comparisons",
