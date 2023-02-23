@@ -1,5 +1,5 @@
 import { Box, Menu, MenuButton, MenuList } from "@chakra-ui/react";
-import { useCallback } from "react";
+import { useMemo } from "react";
 import { MdExpandMore } from "react-icons/md";
 import { LevelState, useSaveData } from "../../contexts/save_data";
 
@@ -52,7 +52,7 @@ function getLockedSceneIndexes(
 export default function NavbarDropdown(props: NavbarDropdownProps) {
   const [saveData, _] = useSaveData();
 
-  const lockedSceneIndexes = useCallback(() => {
+  const lockedSceneIndexes = useMemo(() => {
     const result = getLockedSceneIndexes(props.scenes, saveData.levelStates);
     return result;
   }, [props.scenes, saveData.levelStates]);
@@ -81,7 +81,7 @@ export default function NavbarDropdown(props: NavbarDropdownProps) {
           <SceneLink
             scene={scene}
             key={scene.route}
-            isLocked={lockedSceneIndexes()[index]}
+            isLocked={lockedSceneIndexes[index]}
           />
         ))}
       </MenuList>
