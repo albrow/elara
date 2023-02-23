@@ -62,7 +62,7 @@ export const CHOICES: {
 
 export const TREES: DialogTrees = {
   level_gate_and_terminal: {
-    name: "Fuel",
+    name: "I Forgot the Password",
     startId: "forgot_password",
   },
 };

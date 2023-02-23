@@ -96,6 +96,9 @@ export const SCENES: Scene[] = [
     tutorialShorts: ["how_to_use_data_terminals"],
   },
   {
+    ...sceneFromLevelName("gate_and_terminal_part_two"),
+  },
+  {
     type: "journal",
     name: "Journal: Comparisons",
     route: "/journal/concepts/comparisons",

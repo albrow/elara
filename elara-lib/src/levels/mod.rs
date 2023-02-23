@@ -1,6 +1,7 @@
 mod enemies_part_one;
 mod fuel_part_one;
 mod gate_and_terminal;
+mod gate_and_terminal_two;
 mod gates;
 mod glitches_part_one;
 mod glitches_part_two;
@@ -63,6 +64,9 @@ lazy_static! {
         m.insert(gates::Gates {}.short_name(), Box::new(gates::Gates {}));
         m.insert(gate_and_terminal::GateAndTerminal {}.short_name(),
             Box::new(gate_and_terminal::GateAndTerminal {}),
+        );
+        m.insert(gate_and_terminal_two::GateAndTerminalPartTwo {}.short_name(),
+            Box::new(gate_and_terminal_two::GateAndTerminalPartTwo {}),
         );
         m.insert(enemies_part_one::EnemiesPartOne {}.short_name(), Box::new(enemies_part_one::EnemiesPartOne {}));
         m.insert(loops_part_one::LoopsPartOne {}.short_name(), Box::new(loops_part_one::LoopsPartOne {}));
