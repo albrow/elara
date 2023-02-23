@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { MdExpandMore } from "react-icons/md";
 import { LevelState, useSaveData } from "../../contexts/save_data";
 
-import { Scene, SCENES } from "../../lib/scenes";
+import { LEVELS, Scene, SCENES } from "../../lib/scenes";
 import SceneLink from "./scene_link";
 
 export interface NavbarDropdownProps {
@@ -87,4 +87,17 @@ export default function NavbarDropdown(props: NavbarDropdownProps) {
       </MenuList>
     </Menu>
   );
+}
+
+if (import.meta.vitest) {
+  const { test, assert } = import.meta.vitest;
+
+  test("getLatestUncompletedLevelIndex", () => {
+    const levelStates: Record<string, LevelState> = {};
+    levelStates[LEVELS[0].level!.short_name] = { completed: true, code: "" };
+    levelStates[LEVELS[1].level!.short_name] = { completed: false, code: "" };
+    levelStates[LEVELS[2].level!.short_name] = { completed: false, code: "" };
+    const expectedIndex = SCENES.indexOf(LEVELS[1]);
+    assert.equal(getLatestUncompletedLevelIndex(levelStates), expectedIndex);
+  });
 }
