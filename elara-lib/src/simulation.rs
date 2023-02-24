@@ -193,6 +193,7 @@ pub struct Player {
     pub message: String,
     pub anim_state: PlayerAnimState,
     pub facing: Orientation,
+    pub total_fuel_used: u32,
 }
 
 impl Player {
@@ -203,6 +204,7 @@ impl Player {
             message: String::new(),
             anim_state: PlayerAnimState::Idle,
             facing: facing,
+            total_fuel_used: 0,
         }
     }
 }

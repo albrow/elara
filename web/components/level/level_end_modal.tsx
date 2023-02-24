@@ -9,9 +9,16 @@ import {
   Text,
   Flex,
   Image,
+  Badge,
 } from "@chakra-ui/react";
 import React, { useCallback } from "react";
-import { MdArrowForward, MdReplay } from "react-icons/md";
+import {
+  MdArrowForward,
+  MdLocalGasStation,
+  MdOutlineTextSnippet,
+  MdOutlineTimer,
+  MdReplay,
+} from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import type { ScriptStats } from "../../../elara-lib/pkg";
@@ -24,9 +31,6 @@ interface LevelEndModalProps {
   title?: string;
   message?: string;
   kind: "success" | "failure";
-  // TODO(albrow): Remove this eslint-disable comment once we start using
-  // stats in the modal.
-  // eslint-disable-next-line react/no-unused-prop-types
   stats?: ScriptStats;
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -105,9 +109,8 @@ export default function LevelEndModal(props: LevelEndModalProps) {
                 ? "You've completed all the levels! Check back again later for additional levels and content."
                 : props.message}
             </Text>
-            {/* TODO(albrow): Uncomment this after fixing fuel calculation */}
-            {/* {props.stats && (
-              <Flex w="70%" mx="auto" justifyContent="space-between">
+            {props.stats && props.kind === "success" && (
+              <Flex w="65%" mx="auto" mt="8px" justifyContent="space-between">
                 <Badge colorScheme="purple" px="9px" py="3px" fontSize="sm">
                   <Flex direction="row" mt="0.12rem">
                     <MdOutlineTimer
@@ -137,10 +140,10 @@ export default function LevelEndModal(props: LevelEndModalProps) {
                   </Flex>
                 </Badge>
               </Flex>
-            )} */}
+            )}
             {props.kind === "success" && (
               <Flex justifyContent="center">
-                <Image src={getRandomSuccessGif()} mt={6} maxH="42vh" />
+                <Image src={getRandomSuccessGif()} mt={6} maxH="36vh" />
               </Flex>
             )}
             <Flex mt={10} mb={3} justifyContent="right" w="100%">

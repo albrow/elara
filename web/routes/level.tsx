@@ -286,10 +286,6 @@ export default function Level() {
       throw e;
     }
 
-    console.log(`code length: ${result.stats.code_len}`);
-    console.log(`fuel used: ${result.stats.fuel_used}`);
-    console.log(`time taken: ${result.stats.time_taken}`);
-
     // Reset the board state and start the replay.
     resetStateButKeepCode();
     setBoardState(result.states[0].state);

@@ -537,12 +537,8 @@ pub struct ScriptStats {
     pub time_taken: u32,
 }
 
-// TODO(albrow): Fix bug in fuel calculation. (It's not correct if the rover
-// picks up more fuel while executing the script.)
 fn compute_stats(script: &str, states: &Vec<State>) -> ScriptStats {
-    let initial_fuel = states.first().unwrap().player.fuel;
-    let final_fuel = states.last().unwrap().player.fuel;
-    let fuel_used = initial_fuel - final_fuel;
+    let fuel_used = states.last().unwrap().player.total_fuel_used;
     let time_taken = states.len() as u32;
     ScriptStats {
         code_len: script.trim().len(),

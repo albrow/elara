@@ -73,6 +73,7 @@ impl Actor for PlayerChannelActor {
 
                 // Moving in any direction costs one fuel.
                 state.player.fuel -= 1;
+                state.player.total_fuel_used += 1;
                 // Update the position and animation state. Note that the player may not
                 // be able to actually move if there are obstacles in the way.
                 let (new_pos, new_anim_state) = self.try_to_move(&state, direction);
@@ -320,6 +321,7 @@ mod test {
                 message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Right,
+                total_fuel_used: 1,
             }
         );
         state = new_state;
@@ -334,6 +336,7 @@ mod test {
                 message: String::from(""),
                 anim_state: PlayerAnimState::Turning,
                 facing: Orientation::Down,
+                total_fuel_used: 1,
             }
         );
         state = new_state;
@@ -348,6 +351,7 @@ mod test {
                 message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Down,
+                total_fuel_used: 2,
             }
         );
     }
