@@ -9,8 +9,13 @@ import {
   MenuList,
   Tooltip,
   Text,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderMark,
 } from "@chakra-ui/react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
   MdPause,
   MdPlayArrow,
@@ -22,6 +27,7 @@ import {
   MdSave,
   MdReplay,
 } from "react-icons/md";
+import { range } from "../../lib/utils";
 
 import type { EditorState } from "./editor";
 
@@ -38,6 +44,8 @@ export interface ControlBarProps {
   onReset?: () => void;
   stepIndex?: number;
   numSteps?: number;
+  onSliderChange?: (value: number) => void;
+  onSliderChangeEnd?: (value: number) => void;
 }
 
 export default function ControlBar(props: ControlBarProps) {
@@ -53,6 +61,28 @@ export default function ControlBar(props: ControlBarProps) {
         throw Error(`Invalid editor state: ${props.editorState}`);
     }
   }, [props.editorState]);
+
+  const [showSliderTip, setShowSliderTip] = useState(true);
+
+  const onSliderChange = useCallback(
+    (value: number) => {
+      setShowSliderTip(false);
+      if (props.onSliderChange) {
+        props.onSliderChange(value);
+      }
+    },
+    [props]
+  );
+
+  const onSliderChangeEnd = useCallback(
+    (value: number) => {
+      setShowSliderTip(true);
+      if (props.onSliderChangeEnd) {
+        props.onSliderChangeEnd(value);
+      }
+    },
+    [props]
+  );
 
   return (
     <Box bg="gray.800" p={2} roundedTop="md">
@@ -121,15 +151,47 @@ export default function ControlBar(props: ControlBarProps) {
           )}
         </Box>
         {props.numSteps && props.stepIndex !== undefined && (
-          <Box my="auto" ml="10px">
-            <Text as="span" fontSize="sm" color="white">
-              Step {props.stepIndex + 1}/{props.numSteps}
-            </Text>
-            <Text as="span" fontSize="sm" color="white">
-              {" "}
-              ({getStateText()})
-            </Text>
-          </Box>
+          <>
+            <Box ml="18px" width="180px" my="auto">
+              <Slider
+                defaultValue={0}
+                value={props.stepIndex}
+                min={0}
+                max={props.numSteps - 1}
+                step={1}
+                focusThumbOnChange={false}
+                onChange={onSliderChange}
+                onChangeEnd={onSliderChangeEnd}
+              >
+                {range(props.numSteps).map((i) => (
+                  <SliderMark
+                    key={i}
+                    color="white"
+                    fontSize="md"
+                    fontWeight="bold"
+                    value={i}
+                    ml="-2px"
+                  >
+                    ·
+                  </SliderMark>
+                ))}
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <Tooltip
+                  label="Click and drag to move through the code"
+                  hidden={!showSliderTip}
+                >
+                  <SliderThumb />
+                </Tooltip>
+              </Slider>
+            </Box>
+            <Box my="auto" ml="12px">
+              <Text as="span" fontSize="sm" color="white" verticalAlign="top">
+                {props.stepIndex + 1}/{props.numSteps} ({getStateText()})
+              </Text>
+            </Box>
+          </>
         )}
         <Spacer />
         <Box hidden={!props.onDownload && !props.onUpload}>

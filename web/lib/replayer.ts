@@ -58,6 +58,19 @@ export class Replayer {
     this.onStep(this.index, this.states[this.index]);
   }
 
+  goToStep(index: number) {
+    this.pause();
+    if (index < 0 || index >= this.states.length) {
+      throw new Error(
+        `goToStep called with invalid index: ${index} (max should be this${
+          this.states.length - 1
+        })`
+      );
+    }
+    this.index = index;
+    this.onStep(this.index, this.states[this.index]);
+  }
+
   // Stops the replayer, but does not reset the index.
   pause() {
     if (this.timer_id) {

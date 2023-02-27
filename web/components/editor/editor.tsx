@@ -295,6 +295,13 @@ export default function Editor(props: EditorProps) {
     }
   }, []);
 
+  const onSliderChange = useCallback((value: number) => {
+    if (replayer.current) {
+      replayer.current.goToStep(value);
+    }
+    setState("paused");
+  }, []);
+
   const onDownload = useCallback(async () => {
     await saveCode(getCode());
   }, [getCode]);
@@ -353,6 +360,7 @@ export default function Editor(props: EditorProps) {
         onReset={onReset}
         stepIndex={stepIndex}
         numSteps={numSteps}
+        onSliderChange={onSliderChange}
       />
       <Box
         id="editor-wrapper"
