@@ -182,6 +182,12 @@ export default function Editor(props: EditorProps) {
     [view]
   );
 
+  const resetState = useCallback(() => {
+    setActiveLine(null);
+    setCodeError(null);
+    setState("editing");
+  }, []);
+
   // If the initial code changes, update the CodeMirror view.
   useEffect(() => {
     setCode(props.code);
@@ -201,16 +207,15 @@ export default function Editor(props: EditorProps) {
 
   const makeOnReplayDoneHandler = useCallback(
     (script: string, result: RunResult) => () => {
-      setState("editing");
-      setActiveLine(null);
-      setCodeError(null);
+      resetState();
       props.onReplayDone(script, result);
     },
-    [props]
+    [props, resetState]
   );
 
   // When the "run" button is clicked, run the code and set up the replayer.
   const onRun = useCallback(() => {
+    resetState();
     const script = getCode();
     let result: RunResult;
     try {
@@ -246,17 +251,17 @@ export default function Editor(props: EditorProps) {
     );
     // Start the replay in the "paused" state.
     setState("paused");
-  }, [getCode, makeOnReplayDoneHandler, onReplayStep, props]);
+  }, [getCode, makeOnReplayDoneHandler, onReplayStep, props, resetState]);
 
   const onCancel = useCallback(() => {
-    setState("editing");
+    resetState();
     if (props.onCancel) {
       props.onCancel(getCode());
     }
     if (replayer.current) {
       replayer.current.stop();
     }
-  }, [getCode, props]);
+  }, [getCode, props, resetState]);
 
   const onPlay = useCallback(() => {
     setState("running");
