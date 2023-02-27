@@ -18,6 +18,7 @@ import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { highlightHoverable } from "../../lib/highlight_hoverable";
 import { Replayer } from "../../lib/replayer";
+import { loadCode, saveCode } from "../../lib/file_system";
 import { hoverDocs } from "./hover_docs";
 import ControlBar from "./control_bar";
 
@@ -295,14 +296,13 @@ export default function Editor(props: EditorProps) {
   }, []);
 
   const onDownload = useCallback(async () => {
-    // TODO(albrow): Implement this.
-    console.log("download code pressed");
-  }, []);
+    await saveCode(getCode());
+  }, [getCode]);
 
   const onUpload = useCallback(async () => {
-    // TODO(albrow): Implement this.
-    console.log("upload code pressed");
-  }, []);
+    const loadedCode = await loadCode();
+    setCode(loadedCode);
+  }, [setCode]);
 
   // Reset the code to its initial state for the current
   // level (regardless of what has been saved in the save
