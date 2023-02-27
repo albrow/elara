@@ -237,22 +237,16 @@ export default function Editor(props: EditorProps) {
       console.error(e);
       throw e;
     }
-
-    if (result.outcome === "success" || result.outcome === "continue") {
-      if (replayer) {
-        replayer.stop();
-      }
-      replayer = new Replayer(
-        result.states,
-        onReplayStep,
-        makeOnReplayDoneHandler(script, result)
-      );
-      setState("paused");
-    } else {
-      // TODO(albrow): Handle different kinds of errors.
-      console.log("result error", result.outcome);
-      makeOnReplayDoneHandler(script, result)();
+    if (replayer) {
+      replayer.stop();
     }
+    replayer = new Replayer(
+      result.states,
+      onReplayStep,
+      makeOnReplayDoneHandler(script, result)
+    );
+    // Start the replay in the "paused" state.
+    setState("paused");
   }, [getCode, makeOnReplayDoneHandler, onReplayStep, props]);
 
   const onCancel = useCallback(() => {
