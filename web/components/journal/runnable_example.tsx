@@ -3,7 +3,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 
 import { SANDBOX_LEVEL } from "../../lib/scenes";
 import Editor, { CodeError } from "../editor/editor";
-import ControlBar from "../control_bar";
+import ControlBar from "../editor/control_bar";
 import { Replayer } from "../../lib/replayer";
 import {
   Game,
@@ -169,12 +169,12 @@ export default function RunnableExample(props: RunnableExampleProps) {
         <ControlBar
           isRunning={isRunning}
           isPaused={isPaused}
-          runHandler={runHandler}
-          stopHandler={stopHandler}
-          pauseHandler={pauseHandler}
-          stepForwardHandler={stepForwardHandler}
-          stepBackHandler={stepBackHandler}
-          resumeHandler={resumeHandler}
+          onRun={runHandler}
+          onCancel={stopHandler}
+          onPause={pauseHandler}
+          onStepForward={stepForwardHandler}
+          onStepBack={stepBackHandler}
+          onPlay={resumeHandler}
           // TODO(albrow): Implment resetCodeHandler for RunnableExample.
         />
         <Box>

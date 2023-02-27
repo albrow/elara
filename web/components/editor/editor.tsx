@@ -2,17 +2,26 @@ import { indentWithTab } from "@codemirror/commands";
 import { lintGutter, setDiagnostics, Diagnostic } from "@codemirror/lint";
 import { keymap, EditorView } from "@codemirror/view";
 import { useCodeMirror } from "@uiw/react-codemirror";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createTheme } from "@uiw/codemirror-themes";
 import { tags as t } from "@lezer/highlight";
 import { Box } from "@chakra-ui/react";
 
 import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
-import { LinePos } from "../../../elara-lib/pkg";
+import {
+  FuzzyStateWithLine,
+  LinePos,
+  RhaiError,
+  RunResult,
+} from "../../../elara-lib/pkg";
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { highlightHoverable } from "../../lib/highlight_hoverable";
+import { Replayer } from "../../lib/replayer";
 import { hoverDocs } from "./hover_docs";
+import ControlBar from "./control_bar";
+
+export type EditorState = "editing" | "running" | "paused";
 
 const extensions = [
   lintGutter(),
@@ -29,15 +38,6 @@ export interface CodeError {
 }
 
 export type EditorType = "level" | "example";
-
-interface EditorProps {
-  code: string;
-  type: EditorType;
-  editable: boolean;
-  setGetCodeHandler: (handler: () => string) => void;
-  activeLine?: LinePos;
-  codeError?: CodeError;
-}
 
 const myTheme = createTheme({
   theme: "light",
@@ -93,32 +93,50 @@ function codeErrorToDiagnostic(view: EditorView, e: CodeError): Diagnostic {
   };
 }
 
+let replayer: Replayer | null = null;
+
+interface EditorProps {
+  // The starting code (e.g. inivial level code or user code loaded from local storage).
+  code: string;
+  // E.g., the original code for the level or runnable example. The code that we will reset to.
+  originalCode: string;
+  type: EditorType;
+  runScript: (script: string) => RunResult;
+  onReplayDone: (script: string, result: RunResult) => void;
+  // A handler for unexpected exceptions that occur when running the script.
+  onScriptError: (script: string, error: Error) => void;
+  onStep?: (step: FuzzyStateWithLine) => void;
+  onCancel?: (script: string) => void;
+}
+
 export default function Editor(props: EditorProps) {
   const editor = useRef<HTMLDivElement | null>(null);
+  const [state, setState] = useState<EditorState>("editing");
+  const [activeLine, setActiveLine] = useState<LinePos | null>(null);
+  const [codeError, setCodeError] = useState<CodeError | null>(null);
 
   const height = props.type === "level" ? "377px" : undefined;
   const sizeClass = props.type === "level" ? "level-sized" : undefined;
 
   const { setContainer, view } = useCodeMirror({
     height,
-    editable: props.editable,
-    readOnly: !props.editable,
+    editable: state === "editing",
+    readOnly: state !== "editing",
     container: editor.current,
     extensions,
     value: props.code,
     theme: myTheme,
   });
 
-  // Note(albrow): This is a bit of a hack but greatly improves performance.
-  //
-  // Using the CodeMirror.onChange function to update the code in the parent
-  // every time it changes can easily cause browser jank, so we use this
-  // callback instead. When the parent needs to get the current code (e.g.
-  // when the "Run" button is pressed), it calls the callback set by
-  // setGetCodeHandler.
-  useEffect(() => {
-    props.setGetCodeHandler(() => view?.state.doc.toString() || "");
-  });
+  useEffect(
+    () => () => {
+      // When the component is unmounted, stop the replayer.
+      if (replayer) {
+        replayer.stop();
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     if (editor.current) {
@@ -128,28 +146,213 @@ export default function Editor(props: EditorProps) {
 
   useEffect(() => {
     if (view) {
-      if (props.activeLine) {
-        highlightLine(view, props.activeLine.line);
+      if (activeLine) {
+        highlightLine(view, activeLine.line);
       } else {
         unhighlightAll(view);
       }
     }
-  }, [props.activeLine, view]);
+  }, [activeLine, view]);
 
   useEffect(() => {
     if (view) {
-      if (props.codeError) {
-        const diagnostic = codeErrorToDiagnostic(view, props.codeError);
+      if (codeError) {
+        const diagnostic = codeErrorToDiagnostic(view, codeError);
         view.dispatch(setDiagnostics(view.state, [diagnostic]));
       } else {
         view.dispatch(setDiagnostics(view.state, []));
       }
     }
-  }, [props.codeError, view]);
+  }, [codeError, view]);
+
+  const getCode = useCallback(
+    () => view?.state.doc.toString() || "",
+    [view?.state.doc]
+  );
+
+  const setCode = useCallback(
+    (code: string) => {
+      view?.dispatch({
+        changes: {
+          from: 0,
+          to: view.state.doc.length,
+          insert: code,
+        },
+      });
+    },
+    [view]
+  );
+
+  // If the initial code changes, update the CodeMirror view.
+  useEffect(() => {
+    setCode(props.code);
+  }, [props.code, setCode]);
+
+  const onReplayStep = useCallback(
+    (step: FuzzyStateWithLine) => {
+      if (step.line_pos) {
+        setActiveLine(step.line_pos);
+      }
+      if (props.onStep) {
+        props.onStep(step);
+      }
+    },
+    [props]
+  );
+
+  const makeOnReplayDoneHandler = useCallback(
+    (script: string, result: RunResult) => () => {
+      setState("editing");
+      setActiveLine(null);
+      setCodeError(null);
+      props.onReplayDone(script, result);
+    },
+    [props]
+  );
+
+  // When the "run" button is clicked, run the code and set up the replayer.
+  const onRun = useCallback(() => {
+    const script = getCode();
+    let result: RunResult;
+    try {
+      result = props.runScript(script);
+    } catch (e) {
+      if (e instanceof RhaiError && e.line) {
+        // If there is a RhaiError (e.g. a syntax error) *with* a line number,
+        // display it in the editor.
+        setCodeError({
+          line: e.line,
+          col: e.col,
+          message: e.message,
+        });
+        return;
+      }
+      if (e instanceof Error) {
+        // If there was another kind of error, call the onScriptError handler.
+        props.onScriptError(script, e as Error);
+        return;
+      }
+      // If we got a non-Error object, just rethrow it. This is really unexpected.
+      console.error("Unexpected exception with a non-error type!");
+      console.error(e);
+      throw e;
+    }
+
+    if (result.outcome === "success" || result.outcome === "continue") {
+      if (replayer) {
+        replayer.stop();
+      }
+      replayer = new Replayer(
+        result.states,
+        onReplayStep,
+        makeOnReplayDoneHandler(script, result)
+      );
+      setState("paused");
+    } else {
+      // TODO(albrow): Handle different kinds of errors.
+      console.log("result error", result.outcome);
+      makeOnReplayDoneHandler(script, result)();
+    }
+  }, [getCode, makeOnReplayDoneHandler, onReplayStep, props]);
+
+  const onCancel = useCallback(() => {
+    setState("editing");
+    if (props.onCancel) {
+      props.onCancel(getCode());
+    }
+    if (replayer) {
+      replayer.stop();
+    }
+  }, [getCode, props]);
+
+  const onPlay = useCallback(() => {
+    setState("running");
+    if (replayer) {
+      replayer.start();
+    }
+  }, []);
+
+  const onPause = useCallback(() => {
+    setState("paused");
+    if (replayer) {
+      replayer.pause();
+    }
+  }, []);
+
+  const onStepForward = useCallback(() => {
+    if (replayer) {
+      replayer.stepForward();
+    }
+  }, []);
+
+  const onStepBack = useCallback(() => {
+    if (replayer) {
+      replayer.stepBackward();
+    }
+  }, []);
+
+  const onDownload = useCallback(async () => {
+    // TODO(albrow): Implement this.
+    console.log("download code pressed");
+  }, []);
+
+  const onUpload = useCallback(async () => {
+    // TODO(albrow): Implement this.
+    console.log("upload code pressed");
+  }, []);
+
+  // Reset the code to its initial state for the current
+  // level (regardless of what has been saved in the save
+  // data).
+  const onReset = useCallback(() => {
+    setCode(props.originalCode);
+  }, [props.originalCode, setCode]);
+
+  // useEffect(() => {
+  //   const keyListener = async (event: KeyboardEvent) => {
+  //     if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+  //       // Save on Ctrl + S or Cmd + S
+  //       await saveCodeHandler();
+  //       event.preventDefault();
+  //       return false;
+  //     }
+  //     // Run the script on Shift + Enter
+  //     if (event.shiftKey && event.key === "Enter" && !isRunning) {
+  //       runHandler();
+  //       event.preventDefault();
+  //       return false;
+  //     }
+  //     // Stop running the script on Escape.
+  //     if (event.key === "Escape" && isRunning) {
+  //       stopHandler();
+  //       event.preventDefault();
+  //       return false;
+  //     }
+  //     return Promise.resolve();
+  //   };
+  //   document.addEventListener("keydown", keyListener);
+  //   return () => {
+  //     document.removeEventListener("keydown", keyListener);
+  //   };
+  // }, [isRunning, runHandler, saveCodeHandler, stopHandler]);
 
   return (
-    <Box id="editor-wrapper" className={sizeClass}>
-      <div ref={editor} />
-    </Box>
+    <>
+      <ControlBar
+        editorState={state}
+        onRun={onRun}
+        onCancel={onCancel}
+        onPause={onPause}
+        onStepForward={onStepForward}
+        onStepBack={onStepBack}
+        onPlay={onPlay}
+        onDownload={onDownload}
+        onUpload={onUpload}
+        onReset={onReset}
+      />
+      <Box id="editor-wrapper" className={sizeClass}>
+        <div ref={editor} />
+      </Box>
+    </>
   );
 }
