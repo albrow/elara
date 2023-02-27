@@ -116,13 +116,11 @@ export default function Editor(props: EditorProps) {
   const [numSteps, setNumSteps] = useState<number>(0);
   const [stepIndex, setStepIndex] = useState<number>(0);
 
-  const height = props.type === "level" ? "377px" : undefined;
-  const sizeClass = props.type === "level" ? "level-sized" : undefined;
-
   const { setContainer, view } = useCodeMirror({
-    height,
+    height: props.type === "level" ? "377px" : "auto",
     editable: state === "editing",
     readOnly: state !== "editing",
+    indentWithTab: false,
     container: editor.current,
     extensions,
     value: props.code,
@@ -356,8 +354,21 @@ export default function Editor(props: EditorProps) {
         stepIndex={stepIndex}
         numSteps={numSteps}
       />
-      <Box id="editor-wrapper" className={sizeClass}>
-        <div ref={editor} />
+      <Box
+        id="editor-wrapper"
+        height={props.type === "level" ? "381px" : undefined}
+        borderWidth="2px"
+        borderTop="0px"
+        paddingBottom="2px"
+        background="gray.100"
+        borderColor="gray.700"
+        borderBottomRightRadius="0.375rem"
+        borderBottomLeftRadius="0.375rem"
+      >
+        <div
+          ref={editor}
+          className={props.type === "level" ? "editor-level" : "editor-example"}
+        />
       </Box>
     </>
   );
