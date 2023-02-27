@@ -93,8 +93,6 @@ function codeErrorToDiagnostic(view: EditorView, e: CodeError): Diagnostic {
   };
 }
 
-let replayer: Replayer | null = null;
-
 interface EditorProps {
   // The starting code (e.g. inivial level code or user code loaded from local storage).
   code: string;
@@ -114,6 +112,7 @@ export default function Editor(props: EditorProps) {
   const [state, setState] = useState<EditorState>("editing");
   const [activeLine, setActiveLine] = useState<LinePos | null>(null);
   const [codeError, setCodeError] = useState<CodeError | null>(null);
+  const replayer = useRef<Replayer | null>(null);
 
   const height = props.type === "level" ? "377px" : undefined;
   const sizeClass = props.type === "level" ? "level-sized" : undefined;
@@ -131,8 +130,8 @@ export default function Editor(props: EditorProps) {
   useEffect(
     () => () => {
       // When the component is unmounted, stop the replayer.
-      if (replayer) {
-        replayer.stop();
+      if (replayer.current) {
+        replayer.current.stop();
       }
     },
     []
@@ -237,10 +236,10 @@ export default function Editor(props: EditorProps) {
       console.error(e);
       throw e;
     }
-    if (replayer) {
-      replayer.stop();
+    if (replayer.current) {
+      replayer.current.stop();
     }
-    replayer = new Replayer(
+    replayer.current = new Replayer(
       result.states,
       onReplayStep,
       makeOnReplayDoneHandler(script, result)
@@ -254,34 +253,34 @@ export default function Editor(props: EditorProps) {
     if (props.onCancel) {
       props.onCancel(getCode());
     }
-    if (replayer) {
-      replayer.stop();
+    if (replayer.current) {
+      replayer.current.stop();
     }
   }, [getCode, props]);
 
   const onPlay = useCallback(() => {
     setState("running");
-    if (replayer) {
-      replayer.start();
+    if (replayer.current) {
+      replayer.current.start();
     }
   }, []);
 
   const onPause = useCallback(() => {
     setState("paused");
-    if (replayer) {
-      replayer.pause();
+    if (replayer.current) {
+      replayer.current.pause();
     }
   }, []);
 
   const onStepForward = useCallback(() => {
-    if (replayer) {
-      replayer.stepForward();
+    if (replayer.current) {
+      replayer.current.stepForward();
     }
   }, []);
 
   const onStepBack = useCallback(() => {
-    if (replayer) {
-      replayer.stepBackward();
+    if (replayer.current) {
+      replayer.current.stepBackward();
     }
   }, []);
 
