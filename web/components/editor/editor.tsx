@@ -113,6 +113,8 @@ export default function Editor(props: EditorProps) {
   const [activeLine, setActiveLine] = useState<LinePos | null>(null);
   const [codeError, setCodeError] = useState<CodeError | null>(null);
   const replayer = useRef<Replayer | null>(null);
+  const [numSteps, setNumSteps] = useState<number>(0);
+  const [stepIndex, setStepIndex] = useState<number>(0);
 
   const height = props.type === "level" ? "377px" : undefined;
   const sizeClass = props.type === "level" ? "level-sized" : undefined;
@@ -183,9 +185,11 @@ export default function Editor(props: EditorProps) {
   );
 
   const resetState = useCallback(() => {
+    setState("editing");
     setActiveLine(null);
     setCodeError(null);
-    setState("editing");
+    setStepIndex(0);
+    setNumSteps(0);
   }, []);
 
   // If the initial code changes, update the CodeMirror view.
@@ -194,7 +198,8 @@ export default function Editor(props: EditorProps) {
   }, [props.code, setCode]);
 
   const onReplayStep = useCallback(
-    (step: FuzzyStateWithLine) => {
+    (i: number, step: FuzzyStateWithLine) => {
+      setStepIndex(i);
       if (step.line_pos) {
         setActiveLine(step.line_pos);
       }
@@ -241,6 +246,8 @@ export default function Editor(props: EditorProps) {
       console.error(e);
       throw e;
     }
+    setStepIndex(0);
+    setNumSteps(result.states.length);
     if (replayer.current) {
       replayer.current.stop();
     }
@@ -347,6 +354,8 @@ export default function Editor(props: EditorProps) {
         onDownload={onDownload}
         onUpload={onUpload}
         onReset={onReset}
+        stepIndex={stepIndex}
+        numSteps={numSteps}
       />
       <Box id="editor-wrapper" className={sizeClass}>
         <div ref={editor} />

@@ -15,14 +15,15 @@ export class Replayer {
   private index: number = 0;
 
   // eslint-disable-next-line class-methods-use-this
-  private onStep: (state: FuzzyStateWithLine) => void = () => {};
+  private onStep: (stepIndex: number, state: FuzzyStateWithLine) => void =
+    () => {};
 
   // eslint-disable-next-line class-methods-use-this
   private onDone: () => void = () => {};
 
   constructor(
     states: FuzzyStateWithLine[],
-    onStep: (state: FuzzyStateWithLine) => void,
+    onStep: (stepIndex: number, state: FuzzyStateWithLine) => void,
     onDone: () => void
   ) {
     this.states = states;
@@ -46,7 +47,7 @@ export class Replayer {
       return;
     }
     this.index += 1;
-    this.onStep(this.states[this.index]);
+    this.onStep(this.index, this.states[this.index]);
   }
 
   stepBackward() {
@@ -54,7 +55,7 @@ export class Replayer {
       return;
     }
     this.index -= 1;
-    this.onStep(this.states[this.index]);
+    this.onStep(this.index, this.states[this.index]);
   }
 
   // Stops the replayer, but does not reset the index.

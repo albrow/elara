@@ -8,7 +8,9 @@ import {
   MenuItem,
   MenuList,
   Tooltip,
+  Text,
 } from "@chakra-ui/react";
+import { useCallback } from "react";
 import {
   MdPause,
   MdPlayArrow,
@@ -34,9 +36,24 @@ export interface ControlBarProps {
   onDownload?: () => void;
   onUpload?: () => void;
   onReset?: () => void;
+  stepIndex?: number;
+  numSteps?: number;
 }
 
 export default function ControlBar(props: ControlBarProps) {
+  const getStateText = useCallback(() => {
+    switch (props.editorState) {
+      case "editing":
+        return "editing";
+      case "running":
+        return "running...";
+      case "paused":
+        return "paused";
+      default:
+        throw Error(`Invalid editor state: ${props.editorState}`);
+    }
+  }, [props.editorState]);
+
   return (
     <Box bg="gray.800" p={2} roundedTop="md">
       <Flex direction="row">
@@ -66,17 +83,17 @@ export default function ControlBar(props: ControlBarProps) {
         <Box>
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-            <Tooltip label="Skip backward">
-              <Button size="sm" ml={1} onClick={props.onStepBack}>
-                <MdSkipPrevious size="1.3em" />
+            <Tooltip label="Stop">
+              <Button size="sm" ml={1} onClick={props.onCancel}>
+                <MdStop size="1.3em" />
               </Button>
             </Tooltip>
           )}
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-            <Tooltip label="Stop">
-              <Button size="sm" ml={1} onClick={props.onCancel}>
-                <MdStop size="1.3em" />
+            <Tooltip label="Skip backward">
+              <Button size="sm" ml={1} onClick={props.onStepBack}>
+                <MdSkipPrevious size="1.3em" />
               </Button>
             </Tooltip>
           )}
@@ -103,6 +120,17 @@ export default function ControlBar(props: ControlBarProps) {
             </Tooltip>
           )}
         </Box>
+        {props.numSteps && props.stepIndex !== undefined && (
+          <Box my="auto" ml="10px">
+            <Text as="span" fontSize="sm" color="white">
+              Step {props.stepIndex + 1}/{props.numSteps}
+            </Text>
+            <Text as="span" fontSize="sm" color="white">
+              {" "}
+              ({getStateText()})
+            </Text>
+          </Box>
+        )}
         <Spacer />
         <Box hidden={!props.onDownload && !props.onUpload}>
           <Menu placement="bottom-end">
