@@ -313,33 +313,32 @@ export default function Editor(props: EditorProps) {
     setCode(props.originalCode);
   }, [props.originalCode, setCode]);
 
-  // useEffect(() => {
-  //   const keyListener = async (event: KeyboardEvent) => {
-  //     if ((event.ctrlKey || event.metaKey) && event.key === "s") {
-  //       // Save on Ctrl + S or Cmd + S
-  //       await saveCodeHandler();
-  //       event.preventDefault();
-  //       return false;
-  //     }
-  //     // Run the script on Shift + Enter
-  //     if (event.shiftKey && event.key === "Enter" && !isRunning) {
-  //       runHandler();
-  //       event.preventDefault();
-  //       return false;
-  //     }
-  //     // Stop running the script on Escape.
-  //     if (event.key === "Escape" && isRunning) {
-  //       stopHandler();
-  //       event.preventDefault();
-  //       return false;
-  //     }
-  //     return Promise.resolve();
-  //   };
-  //   document.addEventListener("keydown", keyListener);
-  //   return () => {
-  //     document.removeEventListener("keydown", keyListener);
-  //   };
-  // }, [isRunning, runHandler, saveCodeHandler, stopHandler]);
+  useEffect(() => {
+    const keyListener = async (event: KeyboardEvent) => {
+      // If the editor has focus, we want to handle keyboard shortcuts.
+      // Otherwise don't handle them.
+      if (!view || !view.hasFocus) {
+        return;
+      }
+      // Run the script on Shift+Enter, Cmd+Enter, or Ctrl+Enter.
+      // Also start playing immediately.
+      const modifierPressed = event.shiftKey || event.ctrlKey || event.metaKey;
+      if (modifierPressed && event.key === "Enter" && state === "editing") {
+        onRun();
+        onPlay();
+        event.preventDefault();
+      }
+      // Stop running the script on Escape.
+      if (event.key === "Escape" && state === "running") {
+        onCancel();
+        event.preventDefault();
+      }
+    };
+    document.addEventListener("keydown", keyListener);
+    return () => {
+      document.removeEventListener("keydown", keyListener);
+    };
+  }, [onCancel, onPlay, onRun, state, view]);
 
   return (
     <>
