@@ -37,6 +37,7 @@ const elaraTheme = extendTheme({
   const Level = (await import("./routes/level")).default;
   const Journal = (await import("./routes/journal")).default;
   const DialogOverBg = (await import("./routes/dialog_over_bg")).default;
+  const DemoLevel = (await import("./routes/demo_level")).default;
 
   const router = createBrowserRouter([
     {
@@ -62,6 +63,10 @@ const elaraTheme = extendTheme({
         {
           path: "/journal/concepts/:sectionName",
           element: <Journal />,
+        },
+        {
+          path: "/demo_level/:levelId",
+          element: <DemoLevel />,
         },
       ],
     },

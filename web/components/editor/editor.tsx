@@ -38,7 +38,7 @@ export interface CodeError {
   message: string;
 }
 
-export type EditorType = "level" | "example";
+export type EditorType = "level" | "example" | "demo";
 
 const myTheme = createTheme({
   theme: "light",
@@ -106,6 +106,9 @@ interface EditorProps {
   onScriptError: (script: string, error: Error) => void;
   onStep?: (step: FuzzyStateWithLine) => void;
   onCancel?: (script: string) => void;
+  // Whether to automatically reset the editor state when the replay is done.
+  // (default: true).
+  resetOnReplayDone?: boolean;
 }
 
 export default function Editor(props: EditorProps) {
@@ -118,7 +121,7 @@ export default function Editor(props: EditorProps) {
   const [stepIndex, setStepIndex] = useState<number>(0);
 
   const { setContainer, view } = useCodeMirror({
-    height: props.type === "level" ? "377px" : "auto",
+    height: props.type === "level" || props.type === "demo" ? "377px" : "auto",
     editable: state === "editing",
     readOnly: state !== "editing",
     indentWithTab: false,
@@ -211,7 +214,9 @@ export default function Editor(props: EditorProps) {
 
   const makeOnReplayDoneHandler = useCallback(
     (script: string, result: RunResult) => () => {
-      resetState();
+      if (props.resetOnReplayDone) {
+        resetState();
+      }
       props.onReplayDone(script, result);
     },
     [props, resetState]
@@ -364,7 +369,9 @@ export default function Editor(props: EditorProps) {
       />
       <Box
         id="editor-wrapper"
-        height={props.type === "level" ? "381px" : undefined}
+        height={
+          props.type === "level" || props.type === "demo" ? "381px" : undefined
+        }
         borderWidth="2px"
         borderTop="0px"
         paddingBottom="2px"
@@ -375,9 +382,17 @@ export default function Editor(props: EditorProps) {
       >
         <div
           ref={editor}
-          className={props.type === "level" ? "editor-level" : "editor-example"}
+          className={
+            props.type === "level" || props.type === "demo"
+              ? "editor-level"
+              : "editor-example"
+          }
         />
       </Box>
     </>
   );
 }
+
+Editor.defaultProps = {
+  resetOnReplayDone: true,
+};
