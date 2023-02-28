@@ -91,6 +91,6 @@ plugin for any text which supports documentation-on-hover */
   max-height: 200px;
 }
 
-.cm-gutters {
+.editor-example .cm-gutters {
   min-height: 80px !important;
 }
