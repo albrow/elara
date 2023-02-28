@@ -217,8 +217,8 @@ export default function Editor(props: EditorProps) {
     [props, resetState]
   );
 
-  // When the "run" button is clicked, run the code and set up the replayer.
-  const onRun = useCallback(() => {
+  // When the "deploy" button is clicked, run the code and set up the replayer.
+  const onDeploy = useCallback(() => {
     resetState();
     const script = getCode();
     let result: RunResult;
@@ -329,7 +329,7 @@ export default function Editor(props: EditorProps) {
       // Also start playing immediately.
       const modifierPressed = event.shiftKey || event.ctrlKey || event.metaKey;
       if (modifierPressed && event.key === "Enter" && state === "editing") {
-        onRun();
+        onDeploy();
         onPlay();
         event.preventDefault();
       }
@@ -343,13 +343,13 @@ export default function Editor(props: EditorProps) {
     return () => {
       document.removeEventListener("keydown", keyListener);
     };
-  }, [onCancel, onPlay, onRun, state, view]);
+  }, [onCancel, onPlay, onDeploy, state, view]);
 
   return (
     <>
       <ControlBar
         editorState={state}
-        onRun={onRun}
+        onDeploy={onDeploy}
         onCancel={onCancel}
         onPause={onPause}
         onStepForward={onStepForward}

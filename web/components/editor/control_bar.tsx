@@ -33,7 +33,7 @@ import type { EditorState } from "./editor";
 
 export interface ControlBarProps {
   editorState: EditorState;
-  onRun: () => void;
+  onDeploy: () => void;
   onCancel: () => void;
   onStepBack: () => void;
   onPause: () => void;
@@ -90,18 +90,15 @@ export default function ControlBar(props: ControlBarProps) {
         <Box>
           {props.editorState === "editing" && (
             <>
-              <Button size="sm" colorScheme="green" onClick={props.onRun}>
-                <MdPlayArrow size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
-                Run
-              </Button>
+              <Tooltip label="Deploy the code to the rover">
+                <Button size="sm" colorScheme="green" onClick={props.onDeploy}>
+                  <MdPlayArrow size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
+                  Deploy
+                </Button>
+              </Tooltip>
               {props.onReset && (
-                <Tooltip label="Reset the code to how it was at the start of the level">
-                  <Button
-                    ml={2}
-                    size="sm"
-                    // color="blue.300"
-                    onClick={props.onReset}
-                  >
+                <Tooltip label="Reset back to the original code">
+                  <Button ml={2} size="sm" onClick={props.onReset}>
                     <MdReplay size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
                     Reset
                   </Button>
@@ -114,7 +111,13 @@ export default function ControlBar(props: ControlBarProps) {
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
             <Tooltip label="Stop">
-              <Button size="sm" ml={1} onClick={props.onCancel}>
+              <Button
+                colorScheme="red"
+                color="black"
+                size="sm"
+                ml={1}
+                onClick={props.onCancel}
+              >
                 <MdStop size="1.3em" />
               </Button>
             </Tooltip>
@@ -129,14 +132,26 @@ export default function ControlBar(props: ControlBarProps) {
           )}
           {props.editorState === "running" && (
             <Tooltip label="Pause">
-              <Button size="sm" ml={1} onClick={props.onPause}>
+              <Button
+                colorScheme="yellow"
+                color="black"
+                size="sm"
+                ml={1}
+                onClick={props.onPause}
+              >
                 <MdPause size="1.3em" />
               </Button>
             </Tooltip>
           )}
           {props.editorState === "paused" && (
             <Tooltip label="Play">
-              <Button size="sm" ml={1} onClick={props.onPlay}>
+              <Button
+                colorScheme="green"
+                color="black"
+                size="sm"
+                ml={1}
+                onClick={props.onPlay}
+              >
                 <MdPlayArrow size="1.3em" />
               </Button>
             </Tooltip>
