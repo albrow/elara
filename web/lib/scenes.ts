@@ -91,6 +91,7 @@ export const SCENES: Scene[] = [
     name: "Function Outputs",
     route: "/journal/concepts/function_outputs",
   },
+  // sceneFromLevelName("data_terminal_demo"),
   {
     ...sceneFromLevelName("gate_and_terminal"),
     tutorialShorts: ["how_to_use_data_terminals"],

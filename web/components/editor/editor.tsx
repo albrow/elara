@@ -366,6 +366,7 @@ export default function Editor(props: EditorProps) {
         stepIndex={stepIndex}
         numSteps={numSteps}
         onSliderChange={onSliderChange}
+        sliderSize={props.type === "demo" ? "small" : "full"}
       />
       <Box
         id="editor-wrapper"

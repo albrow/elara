@@ -1,3 +1,4 @@
+mod data_terminal_demo;
 mod enemies_part_one;
 mod fuel_part_one;
 mod gate_and_terminal;
@@ -75,6 +76,7 @@ lazy_static! {
         m.insert(glitches_part_two::GlitchesPartTwo {}.short_name(), Box::new(glitches_part_two::GlitchesPartTwo {}));
         m.insert(sandbox::Sandbox{}.short_name(), Box::new(sandbox::Sandbox{}));
         m.insert(seismic_activity::SeismicActivity{}.short_name(), Box::new(seismic_activity::SeismicActivity{}));
+        m.insert(data_terminal_demo::DataTerminalDemo{}.short_name(), Box::new(data_terminal_demo::DataTerminalDemo{}));
 
         m
     };
