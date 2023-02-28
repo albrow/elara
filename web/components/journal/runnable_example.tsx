@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 
 import { SANDBOX_LEVEL } from "../../lib/scenes";
@@ -62,22 +62,20 @@ export default function RunnableExample(props: RunnableExampleProps) {
   }, [resetState]);
 
   return (
-    <Flex width="100%" direction="row" mb="50px" mt="25px" mx="auto">
-      <Box flex="1.0 1.0" maxWidth="760px" minWidth="540px">
-        <Box>
-          <Editor
-            type="example"
-            code={initialCode}
-            originalCode={initialCode}
-            runScript={runScript}
-            onReplayDone={onReplayDone}
-            onScriptError={onScriptError}
-            onStep={onEditorStep}
-            onCancel={onScriptCancel}
-          />
-        </Box>
+    <Stack direction="row" mb="50px" mt="25px" mx="auto" width="fit-content">
+      <Box width="608px">
+        <Editor
+          type="example"
+          code={initialCode}
+          originalCode={initialCode}
+          runScript={runScript}
+          onReplayDone={onReplayDone}
+          onScriptError={onScriptError}
+          onStep={onEditorStep}
+          onCancel={onScriptCancel}
+        />
       </Box>
       <MiniBoard state={boardState} />
-    </Flex>
+    </Stack>
   );
 }
