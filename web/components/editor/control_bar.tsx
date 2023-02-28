@@ -255,3 +255,7 @@ export default function ControlBar(props: ControlBarProps) {
     </Box>
   );
 }
+
+ControlBar.defaultProps = {
+  sliderSize: "full",
+};

@@ -16,12 +16,12 @@ export interface TutorialShort {
 export const SHORTS: { [key: string]: TutorialShort } = {
   how_to_run_code: {
     title: "How to run code",
-    text: "Click the run button to run your code. The code will cause the rover to move around and do things.",
+    text: `Press "deploy" and then "play" to run your code. The code will cause the rover to move around and do things.`,
     imageUrl: howToRunCodeUrl,
   },
   how_to_pause_and_step: {
     title: "One step at a time",
-    text: "Click the pause button to pause your code while it is running. Then you can use adjacent buttons to run the code one step at a time.",
+    text: "Alternatively, you can use the buttons or the slider to step through your code one step at a time.",
     imageUrl: howToPauseAndStepUrl,
   },
   how_to_see_errors: {
@@ -36,7 +36,7 @@ export const SHORTS: { [key: string]: TutorialShort } = {
   },
   how_to_navigate_scenes: {
     title: "Going back to a previous page",
-    text: 'You can use the "Scenes" dropdown near the top of the screen to go back to a previous page at any time.',
+    text: 'You can use the "journal" and "level" dropdowns near the top of the screen to go back to a previous page at any time.',
     imageUrl: howToNavigateScenesUrl,
   },
   moving_takes_fuel: {

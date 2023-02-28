@@ -45,8 +45,8 @@ export const SCENES: Scene[] = [
     ...sceneFromLevelName("movement"),
     tutorialShorts: [
       "how_to_run_code",
-      "where_to_find_objectives",
       "how_to_pause_and_step",
+      "where_to_find_objectives",
       "how_to_see_errors",
     ],
   },
