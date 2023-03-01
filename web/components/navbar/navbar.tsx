@@ -38,7 +38,7 @@ export default function Navbar() {
   );
 
   const shouldRenderNextButton = useCallback(() => {
-    if (isLastScene()) {
+    if (isLastScene() || isHome()) {
       return false;
     }
     const currScene = getSceneFromRoute(location.pathname);
@@ -51,7 +51,7 @@ export default function Navbar() {
       return saveData.levelStates[levelName as string]?.completed;
     }
     return false;
-  }, [isLastScene, location.pathname, saveData]);
+  }, [isHome, isLastScene, location.pathname, saveData.levelStates]);
 
   return (
     <Box bg="gray.800" textColor="white">
@@ -62,8 +62,8 @@ export default function Navbar() {
           <NavbarDropdown name="Levels" scenes={LEVELS} />
           <Spacer />
           {shouldRenderNextButton() && (
-            <Button colorScheme="whiteAlpha" onClick={navigateToNextScene}>
-              {isHome() ? "Start" : "Next"}
+            <Button colorScheme="blue" onClick={navigateToNextScene}>
+              Next
               <MdArrowForward size="1.3em" style={{ marginLeft: "0.2rem" }} />
             </Button>
           )}
