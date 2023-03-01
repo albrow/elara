@@ -4,8 +4,6 @@ mod fuel_part_one;
 mod gate_and_terminal;
 mod gate_and_terminal_two;
 mod gates;
-mod glitches_part_one;
-mod glitches_part_two;
 mod loops_part_one;
 mod loops_part_two;
 mod movement;
@@ -33,6 +31,30 @@ pub enum Outcome {
     // Used for levels without any set objective.
     NoObjective,
 }
+lazy_static! {
+    // These are the starting functions available by default.
+    // Each level can override these, but note that due to
+    // the requirements of the Rhai debugger they must always
+    // be wrapped in lazy_static.
+    static ref DEFAULT_AVAIL_FUNCS: Vec<&'static str> = vec![
+        "move_forward",
+        "move_backward",
+        "turn_left",
+        "turn_right",
+        "say",
+    ];
+
+    // This list adds the "read_data" function and is used for
+    // any levels that have a data terminal.
+    static ref AVAIL_FUNCS_WITH_READ: Vec<&'static str> = vec![
+        "move_forward",
+        "move_backward",
+        "turn_left",
+        "turn_right",
+        "say",
+        "read_data",
+    ];
+}
 
 pub trait Level {
     fn name(&self) -> &'static str;
@@ -53,6 +75,9 @@ pub trait Level {
             max_y: (HEIGHT - 1) as i32,
         }
     }
+    fn available_functions(&self) -> &'static Vec<&'static str> {
+        &DEFAULT_AVAIL_FUNCS
+    }
 }
 
 lazy_static! {
@@ -72,8 +97,6 @@ lazy_static! {
         m.insert(enemies_part_one::EnemiesPartOne {}.short_name(), Box::new(enemies_part_one::EnemiesPartOne {}));
         m.insert(loops_part_one::LoopsPartOne {}.short_name(), Box::new(loops_part_one::LoopsPartOne {}));
         m.insert(loops_part_two::LoopsPartTwo {}.short_name(), Box::new(loops_part_two::LoopsPartTwo {}));
-        m.insert(glitches_part_one::GlitchesPartOne {}.short_name(), Box::new(glitches_part_one::GlitchesPartOne {}));
-        m.insert(glitches_part_two::GlitchesPartTwo {}.short_name(), Box::new(glitches_part_two::GlitchesPartTwo {}));
         m.insert(sandbox::Sandbox{}.short_name(), Box::new(sandbox::Sandbox{}));
         m.insert(seismic_activity::SeismicActivity{}.short_name(), Box::new(seismic_activity::SeismicActivity{}));
         m.insert(data_terminal_demo::DataTerminalDemo{}.short_name(), Box::new(data_terminal_demo::DataTerminalDemo{}));

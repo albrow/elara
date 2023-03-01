@@ -72,16 +72,9 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
-        // Running this code should result in Outcome::Success.
-        let script = r#"move_right(2); say("lovelace"); move_right(5);"#;
-        let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
-            .unwrap();
-        assert_eq!(result.outcome, Outcome::Success);
-
         // Attempting to reach the goal without saying the password should
         // result in running out of fuel.
-        let script = "loop { move_right(1); }";
+        let script = "loop { move_forward(1); }";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
@@ -91,7 +84,7 @@ mod tests {
         );
 
         // Saying the wrong password should not open the gate.
-        let script = r#"move_right(2); say("wrong password"); move_right(5);"#;
+        let script = r#"move_forward(2); say("wrong password"); move_forward(5);"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
@@ -99,7 +92,7 @@ mod tests {
 
         // Saying the password when not next to the gate should not
         // open it.
-        let script = r#"say("lovelace"); move_right(2); move_right(5);"#;
+        let script = r#"say("lovelace"); move_forward(2); move_forward(5);"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
@@ -107,15 +100,14 @@ mod tests {
 
         // Saying the password again, should close the gate, meaning we
         // can't reach the goal.
-        let script = r#"move_right(2); say("lovelace"); say("lovelace"); move_right(5);"#;
+        let script = r#"move_forward(2); say("lovelace"); say("lovelace"); move_forward(5);"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
         // Saying the password 3x, should result in the gate being open again.
-        let script =
-            r#"move_right(2); say("lovelace"); say("lovelace"); say("lovelace"); move_right(5);"#;
+        let script = r#"move_forward(2); say("lovelace"); say("lovelace"); say("lovelace"); move_forward(5);"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();

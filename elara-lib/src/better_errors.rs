@@ -71,7 +71,11 @@ pub fn search_prev_lines(script: &str, start_line: usize) -> usize {
     return start_line;
 }
 
-pub fn convert_err(script: String, err: Box<EvalAltResult>) -> BetterError {
+pub fn convert_err(
+    avail_funcs: &Vec<&'static str>,
+    script: String,
+    err: Box<EvalAltResult>,
+) -> BetterError {
     // log!("{:?}", err);
     match *err {
         EvalAltResult::ErrorTooManyOperations(ref pos) => {
@@ -116,6 +120,15 @@ pub fn convert_err(script: String, err: Box<EvalAltResult>) -> BetterError {
         }
         EvalAltResult::ErrorFunctionNotFound(ref fn_sig, ref pos) => {
             let fn_name = fn_name_from_sig(fn_sig.as_str());
+            if !avail_funcs.contains(&fn_name.as_str()) {
+                // If the function is not available for this level, just return
+                // a "function not found" error.
+                return BetterError {
+                    message: format!("Error: Function not found: {}", fn_name),
+                    line: pos.line(),
+                    col: pos.position(),
+                };
+            }
 
             // If the function is a builtin function, we can give a more helpful error message.
             // We know exactly how many arguments and of what type the function expects.
@@ -160,6 +173,16 @@ pub fn convert_err(script: String, err: Box<EvalAltResult>) -> BetterError {
 mod tests {
     use super::*;
 
+    lazy_static! {
+        static ref TEST_AVAIL_FUNCS: Vec<&'static str> = vec![
+            "move_forward",
+            "move_backward",
+            "turn_left",
+            "turn_right",
+            "say",
+        ];
+    }
+
     #[test]
     fn test_trim_message() {
         assert_eq!(
@@ -175,16 +198,16 @@ mod tests {
     #[test]
     fn test_convert_err_semicolon() {
         let script = String::from(
-            r"move_down(1);
-            move_up(1);
-            move_left(1);
-            move_right(1)",
+            r"move_forward(1);
+            move_forward(1);
+            move_forward(1);
+            move_backward(1)",
         );
         let err = EvalAltResult::ErrorParsing(
             rhai::ParseErrorType::MissingToken(String::from(";"), String::from("at end of line")),
             rhai::Position::new(4, 21),
         );
-        let err = convert_err(script, Box::new(err));
+        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -200,10 +223,10 @@ mod tests {
         // This is a case where we should change the error message to refer to
         // the line where the semicolon is actually missing.
         let script = String::from(
-            r"move_down(1);
-            move_up(1);
-            move_left(1)
-            move_right(1);",
+            r"move_forward(1);
+            move_forward(1);
+            move_forward(1)
+            move_backward(1);",
         );
         let err = EvalAltResult::ErrorParsing(
             rhai::ParseErrorType::MissingToken(
@@ -212,7 +235,7 @@ mod tests {
             ),
             rhai::Position::new(4, 13),
         );
-        let err = convert_err(script, Box::new(err));
+        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -224,9 +247,9 @@ mod tests {
 
         // This is a case where we should *not* change the line of the error message.
         let script = String::from(
-            r"move_down(1);
-            move_up(1);
-            move_left(1) move_right(1);",
+            r"move_forward(1);
+            move_forward(1);
+            move_forward(1) move_backward(1);",
         );
         let err = EvalAltResult::ErrorParsing(
             rhai::ParseErrorType::MissingToken(
@@ -235,7 +258,7 @@ mod tests {
             ),
             rhai::Position::new(3, 26),
         );
-        let err = convert_err(script, Box::new(err));
+        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -250,11 +273,11 @@ mod tests {
         // This is another case where we should *not* change the line of the error message.
         // The preceding line is a comment, which is not required to end in a semicolon.
         let script = String::from(
-            r"move_down(1);
-            move_up(1);
-            move_left(1);
+            r"move_forward(1);
+            move_backward(1);
+            turn_left();
             // This is a comment.
-            move_right(1)",
+            move_forward(1)",
         );
         let err = EvalAltResult::ErrorParsing(
             rhai::ParseErrorType::MissingToken(
@@ -263,7 +286,7 @@ mod tests {
             ),
             rhai::Position::new(5, 13),
         );
-        let err = convert_err(script, Box::new(err));
+        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -279,7 +302,7 @@ mod tests {
         // a semicolon.
         let script = String::from(
             r"if true {
-                move_right(1)
+                move_forward(1)
             }",
         );
         let err = EvalAltResult::ErrorParsing(
@@ -289,7 +312,7 @@ mod tests {
             ),
             rhai::Position::new(2, 15),
         );
-        let err = convert_err(script, Box::new(err));
+        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -306,7 +329,7 @@ mod tests {
         let script = String::from(
             r"if true {
             }
-            move_right(1)",
+            move_forward(1)",
         );
         let err = EvalAltResult::ErrorParsing(
             rhai::ParseErrorType::MissingToken(
@@ -315,7 +338,7 @@ mod tests {
             ),
             rhai::Position::new(3, 15),
         );
-        let err = convert_err(script, Box::new(err));
+        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -329,11 +352,11 @@ mod tests {
 
         // Test scanning backwards more than one line.
         let script = String::from(
-            r"move_down(1)
+            r"move_backward(1)
 
             // This is a comment
             if true {
-              move_right(1);
+              move_forward(1);
             }",
         );
         let err = EvalAltResult::ErrorParsing(
@@ -343,7 +366,7 @@ mod tests {
             ),
             rhai::Position::new(4, 1),
         );
-        let err = convert_err(script, Box::new(err));
+        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {

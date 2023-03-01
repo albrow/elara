@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome};
+use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
 use crate::simulation::{Actor, DataTerminal, Obstacle, Orientation, Player, State};
 
 /// A simple level that uses data terminals.
@@ -15,6 +15,9 @@ impl Level for DataTerminalDemo {
     }
     fn objective(&self) -> &'static str {
         "(Demo only)"
+    }
+    fn available_functions(&self) -> &'static Vec<&'static str> {
+        &AVAIL_FUNCS_WITH_READ
     }
     fn initial_code(&self) -> &'static str {
         r#"move_forward(1);

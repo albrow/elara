@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createTheme } from "@uiw/codemirror-themes";
 import { tags as t } from "@lezer/highlight";
 import { Box } from "@chakra-ui/react";
+import { Compartment } from "@codemirror/state";
 
 import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
 import {
@@ -16,7 +17,6 @@ import {
 } from "../../../elara-lib/pkg";
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
-import { highlightHoverable } from "../../lib/highlight_hoverable";
 import { Replayer } from "../../lib/replayer";
 import { loadCode, saveCode } from "../../lib/file_system";
 import { hoverDocs } from "./hover_docs";
@@ -24,12 +24,27 @@ import ControlBar from "./control_bar";
 
 export type EditorState = "editing" | "running" | "paused";
 
+// Used to reconfigure some extensions on the fly so we can change the
+// available functions (i.e. which functions are auto-completed).
+// See: https://codemirror.net/docs/ref/#state.Compartment
+// Also see: https://codemirror.net/examples/config/#compartments
+const languageCompartment = new Compartment();
+const hoverDocsCompartment = new Compartment();
+
+function setAvailableFuncs(view: EditorView, funcs: string[]) {
+  view.dispatch({
+    effects: [
+      languageCompartment.reconfigure(rhaiSupport(funcs)),
+      hoverDocsCompartment.reconfigure(hoverDocs(funcs)),
+    ],
+  });
+}
+
 const extensions = [
   lintGutter(),
   keymap.of([indentWithTab]),
-  rhaiSupport(),
-  hoverDocs,
-  highlightHoverable,
+  languageCompartment.of(rhaiSupport([])),
+  hoverDocsCompartment.of(hoverDocs([])),
 ];
 
 export interface CodeError {
@@ -104,6 +119,9 @@ interface EditorProps {
   onReplayDone: (script: string, result: RunResult) => void;
   // A handler for unexpected exceptions that occur when running the script.
   onScriptError: (script: string, error: Error) => void;
+  // Which built-in functions should be considered available. These functions
+  // will have autocomplete and hover docs enabled.
+  availableFunctions: string[];
   onStep?: (step: FuzzyStateWithLine) => void;
   onCancel?: (script: string) => void;
   // Whether to automatically reset the editor state when the replay is done.
@@ -140,6 +158,13 @@ export default function Editor(props: EditorProps) {
     },
     []
   );
+
+  useEffect(() => {
+    // Update the available functions when needed.
+    if (view) {
+      setAvailableFuncs(view, props.availableFunctions);
+    }
+  }, [props.availableFunctions, view]);
 
   useEffect(() => {
     if (editor.current) {

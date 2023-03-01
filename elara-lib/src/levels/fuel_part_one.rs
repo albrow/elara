@@ -90,7 +90,8 @@ mod tests {
         );
 
         // Running this code should result in Outcome::Success.
-        let script = r"move_forward(5);
+        let script = r"
+            move_forward(5);
             turn_left();
             turn_left();
             move_forward(1);
@@ -101,15 +102,13 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
-        // Running this code should result in Outcome::Success.
-        let script = "move_down(5); move_up(1); move_right(4);";
-        let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
-            .unwrap();
-        assert_eq!(result.outcome, Outcome::Success);
-
         // Player should not be able to move past the obstacles for this level.
-        let script = "move_down(5); move_right(4); move_up(1);";
+        let script = r"
+            move_forward(5);
+            turn_left();
+            move_forward(4);
+            turn_left();
+            move_forward(1);";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();

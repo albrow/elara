@@ -68,6 +68,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
           type="example"
           code={initialCode}
           originalCode={initialCode}
+          availableFunctions={SANDBOX_LEVEL.available_functions}
           runScript={runScript}
           onReplayDone={onReplayDone}
           onScriptError={onScriptError}

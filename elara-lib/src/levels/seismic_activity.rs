@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome};
+use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
 use crate::simulation::{Actor, DataTerminal, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, Pos, State};
 
@@ -60,6 +60,9 @@ impl Level for SeismicActivity {
     }
     fn objective(&self) -> &'static str {
         "Read from the data terminal ({terminal}) to figure out which way is safe. Then move the rover ({robot}) to the goal ({goal})."
+    }
+    fn available_functions(&self) -> &'static Vec<&'static str> {
+        &AVAIL_FUNCS_WITH_READ
     }
     fn initial_code(&self) -> &'static str {
         r#"// This code reads the safe direction from the data terminal
@@ -145,7 +148,6 @@ mod tests {
             say("The safe direction is: " + safe_direction);
             
             if safe_direction == "left" {
-                // If the safe direction is "left", we should go left.
                 turn_left();
                 move_forward(3);
                 turn_right();
@@ -154,8 +156,6 @@ mod tests {
                 move_forward(3);
             }
             if safe_direction == "right" {
-                // What should we do if the safe direction is "right"?
-                // ADD YOUR CODE BELOW
                 turn_right();
                 move_forward(3);
                 turn_left();
@@ -171,18 +171,24 @@ mod tests {
         // Hard-coding the movement direction should always result in failure.
         // In this specific case, it should be Outcome::Continue because we didn't
         // run out of fuel, but we didn't reach the goal either.
-        let script = r"move_up(2);
-            move_left(3);
-            move_up(3);
-            move_right(3);";
+        let script = r"move_forward(2);
+            turn_left();
+            move_forward(3);
+            turn_right();
+            move_forward(3);
+            turn_right();
+            move_forward(3);";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
-        let script = r"move_up(2);
-            move_right(3);
-            move_up(3);
-            move_left(3);";
+        let script = r"move_forward(2);
+            turn_right();
+            move_forward(3);
+            turn_left();
+            move_forward(3);
+            turn_left();
+            move_forward(3);";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
@@ -190,23 +196,35 @@ mod tests {
 
         // Only accounting for one branch of the if statement should
         // also result in failure.
-        let script = r#"move_up(2);
+        let script = r#"
+            move_forward(2);
             let safe_direction = read_data();
+            say("The safe direction is: " + safe_direction);
+            
             if safe_direction == "left" {
-                move_left(3);
-                move_up(3);
-                move_right(3);
+                turn_left();
+                move_forward(3);
+                turn_right();
+                move_forward(3);
+                turn_right();
+                move_forward(3);
             }"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
-        let script = r#"move_up(2);
+        let script = r#"
+            move_forward(2);
             let safe_direction = read_data();
+            say("The safe direction is: " + safe_direction);
+            
             if safe_direction == "right" {
-                move_right(3);
-                move_up(3);
-                move_left(3);
+                turn_right();
+                move_forward(3);
+                turn_left();
+                move_forward(3);
+                turn_left();
+                move_forward(3);
             }"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)

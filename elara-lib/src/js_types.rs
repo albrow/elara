@@ -114,16 +114,22 @@ pub struct LevelData {
     pub objective: String,
     pub initial_state: FuzzyState,
     pub initial_code: String,
+    pub available_functions: Array, // Array<String>
 }
 
 impl LevelData {
     pub fn from(level: &dyn levels::Level) -> Self {
+        let avail_funcs = Array::new();
+        for func in level.available_functions() {
+            avail_funcs.push(&JsValue::from(func.to_string()));
+        }
         Self {
             name: level.name().to_string(),
             short_name: level.short_name().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
             initial_state: FuzzyState::from(level.initial_fuzzy_state()),
+            available_functions: avail_funcs,
         }
     }
 }

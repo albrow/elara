@@ -80,14 +80,5 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-
-        // Running this code should result in Outcome::Success.
-        let script = r"move_right(3);
-            move_up(3);
-            move_left(3);";
-        let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
-            .unwrap();
-        assert_eq!(result.outcome, Outcome::Success);
     }
 }
