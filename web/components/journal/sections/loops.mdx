@@ -11,14 +11,14 @@ Everything inside the curly braces will be repeated until either:
 
 (There is also a different way to end a loop, but we'll get to that later).
 
-For example, this loop will cause the rover to move right 1 space,
-then left 1 space, over and over again until it runs out of fuel.
+For example, this loop will cause the rover to move forward and backward,
+over and over again until it runs out of fuel.
 
 <RunnableExample
   code={`loop {
   say("I'm in a loop!");
   move_forward(1);
-  turn_right();
+  move_backward(1);
 }`}
 />
 
