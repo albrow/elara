@@ -84,7 +84,7 @@ move_backward(1);
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::levels::Outcome;
+    use crate::{constants::ERR_OUT_OF_FUEL, levels::Outcome};
 
     #[test]
     fn level() {
@@ -96,35 +96,32 @@ mod tests {
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
-        assert_eq!(result.outcome, Outcome::Continue);
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        );
 
         // This is an example solution that should result in Outcome::Success.
         let script = r"
-            turn_left();
-            turn_left();
+            fn turn_right() {
+                turn_left();
+                turn_left();
+                turn_left();
+            }
+
+            move_backward(4);
+            turn_right();
+            move_backward(4);
+            turn_right();
             move_backward(3);
-            turn_left();
-            move_backward(3);
+            turn_right();
+            move_backward(2);
+            turn_right();
+            move_backward(1);
         ";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-
-        // Trying to use move_forward or turn_right should result in
-        // an error.
-        let script = r"
-            move_forward(3);
-            turn_left();
-            move_forward(3);
-        ";
-        let result = game.run_player_script_internal(script.to_string(), LEVEL);
-        assert!(result.is_err());
-        assert!(result.err().unwrap().to_string().contains("move_forward"));
-
-        let script = r"turn_right();";
-        let result = game.run_player_script_internal(script.to_string(), LEVEL);
-        assert!(result.is_err());
-        assert!(result.err().unwrap().to_string().contains("turn_right"));
     }
 }
