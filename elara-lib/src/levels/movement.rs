@@ -4,6 +4,11 @@ use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State};
 #[derive(Copy, Clone)]
 pub struct Movement {}
 
+lazy_static! {
+    static ref MOVEMENT_FUNCS: Vec<&'static str> =
+        vec!["move_forward", "move_backward", "turn_left", "turn_right",];
+}
+
 impl Level for Movement {
     fn name(&self) -> &'static str {
         "First Steps"
@@ -13,6 +18,9 @@ impl Level for Movement {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
+    }
+    fn available_functions(&self) -> &'static Vec<&'static str> {
+        &MOVEMENT_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// The code below moves the rover, but it's not going to the
