@@ -28,7 +28,9 @@ export default function FunctionListItem(props: FunctionListItemProps) {
         setIsActive(false);
       }}
     >
-      <Text fontFamily="monospace">{props.funcName}</Text>
+      <Text fontFamily="monospace" fontSize="sm">
+        {props.funcName}
+      </Text>
       {isActive && (
         <Box position="relative" width="100%">
           <Box

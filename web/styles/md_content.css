@@ -49,6 +49,13 @@
   font-weight: 500;
 }
 
+.md-content .runnable-example * {
+  /* We don't want to change any of the CSS properties inside RunnableExample */
+  font-size: unset;
+  margin-bottom: unset;
+  font-weight: unset;
+}
+
 .md-content code {
   background: var(--chakra-colors-gray-200);
   border: solid 1px var(--chakra-colors-gray-300);

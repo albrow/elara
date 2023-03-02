@@ -62,7 +62,14 @@ export default function RunnableExample(props: RunnableExampleProps) {
   }, [resetState]);
 
   return (
-    <Stack direction="row" mb="50px" mt="25px" mx="auto" width="fit-content">
+    <Stack
+      className="runnable-example"
+      direction="row"
+      mb="50px"
+      mt="25px"
+      mx="auto"
+      width="fit-content"
+    >
       <Box width="608px">
         <Editor
           type="example"
