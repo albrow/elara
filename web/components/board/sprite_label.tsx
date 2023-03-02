@@ -13,7 +13,7 @@ export default function SpriteLabel(props: SpriteLabelProps) {
       position="relative"
       top={-5}
       right={0}
-      fontSize="s"
+      fontSize="sm"
       w="fit-content"
       textShadow="0px 0px 3px black"
       zIndex={props.zIndex}
