@@ -6,6 +6,7 @@ import howToNavigateScenesUrl from "../images/shorts/how_to_navigate_scenes.gif"
 import movingTakesFuelUrl from "../images/shorts/moving_takes_fuel.gif";
 import howToGetMoreFuelUrl from "../images/shorts/how_to_get_more_fuel.gif";
 import howToUseDataTerminalsUrl from "../images/shorts/how_to_use_data_terminals.gif";
+import howToViewFunctionListUrl from "../images/shorts/how_to_view_function_list.gif";
 
 export interface TutorialShort {
   title: string;
@@ -53,6 +54,11 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     title: "Reading data from terminals",
     text: "Data terminals can hold lots of different kinds of information. You can read data from a terminal by moving the rover next to it and then using the read_data function.",
     imageUrl: howToUseDataTerminalsUrl,
+  },
+  how_to_view_function_list: {
+    title: "List of available functions",
+    text: `Some levels may have certain functions disabled. You can view the list of available functions for any level by pressing the "function list" button.`,
+    imageUrl: howToViewFunctionListUrl,
   },
 };
 
