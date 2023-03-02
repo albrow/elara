@@ -1,0 +1,64 @@
+import YoutubeVideo from "../youtube_video";
+import RunnableExample from "../runnable_example";
+
+### Creating Your Own Functions
+
+At this point, you are probably pretty familiar with using functions, but you
+can also create your own! This is a powerful and important part of programming
+because it allows you to reuse and adapt code that you have already written.
+
+To define a new function, you write the `fn` keyword, the name of the function,
+and then a list of inputs in parentheses (if any). Following that, the
+code in between the two curly braces make up the "body" of the function which
+will be run when the function is called.
+
+Here's an example of creating a new function that does not expect any inputs:
+
+💡 **Try it:** Try changing the function to say something else.
+
+<RunnableExample
+  code={`// This function just causes the rover to say "Hello, world!".
+fn say_hello() {
+  // The code here will be run when you call the say_hello function.
+  say("Hello, world!");
+}
+
+// Call the say_hello function.
+say_hello();
+`}
+/>
+
+ℹ️ **Tip:** If a function doesn't have any inputs, you still need to include
+the empty parentheses.
+
+Here's a different example:
+
+<RunnableExample
+  code={`// This function causes the rover to do a full rotation
+// (360 degrees).
+fn do_a_360() {
+  turn_left();
+  turn_left();
+  turn_left();
+  turn_left();
+}
+
+do_a_360();
+`}
+/>
+
+Lastly, here's an example of a function called `greet` that expects a name
+as an input:
+
+<RunnableExample
+  code={`// This function has one input: the name of the person to greet.
+fn greet(name) {
+  say("Nice to meet you, " + name);
+}
+
+// Call the greet function with a few different names.
+greet("Alice");
+greet("Bob");
+greet("Charlie");
+`}
+/>

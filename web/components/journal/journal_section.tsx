@@ -14,6 +14,7 @@ import Comparisons from "./sections/comparisons.mdx";
 import IfStatements from "./sections/if_statements.mdx";
 import Loops from "./sections/loops.mdx";
 import Strings from "./sections/strings.mdx";
+import CreatingFunctions from "./sections/creating_functions.mdx";
 import "../../styles/md_content.css";
 
 export const sections = {
@@ -27,6 +28,7 @@ export const sections = {
   while_loops: WhileLoops,
   if_statements: IfStatements,
   strings: Strings,
+  creating_functions: CreatingFunctions,
 };
 
 export type SectionName = keyof typeof sections;

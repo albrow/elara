@@ -118,6 +118,11 @@ export const SCENES: Scene[] = [
     ...sceneFromLevelName("partly_disabled_movement"),
     tutorialShorts: ["how_to_view_function_list"],
   },
+  {
+    type: "journal",
+    name: "Creating Functions",
+    route: "/journal/concepts/creating_functions",
+  },
 ];
 
 export const LEVELS = SCENES.filter((s) => s.type === "level");
