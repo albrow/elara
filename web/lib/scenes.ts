@@ -99,6 +99,10 @@ export const SCENES: Scene[] = [
   {
     ...sceneFromLevelName("gate_and_terminal_part_two"),
   },
+  // Temporarily disabled for the sake of saving time during playtesting.
+  // {
+  //   ...sceneFromLevelName("gate_and_terminal_part_three"),
+  // },
   {
     type: "journal",
     name: "Comparisons",

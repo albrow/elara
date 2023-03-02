@@ -10,7 +10,7 @@ import {
 } from "react";
 import { ShortId } from "../lib/tutorial_shorts";
 
-export const VERSION = 6;
+export const VERSION = 7;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 export interface LevelState {
@@ -50,6 +50,43 @@ export function save(saveData: SaveData): void {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(saveData));
 }
 
+function migrateSaveData(saveData: SaveData): SaveData {
+  const newData = deepCopy(saveData);
+
+  if (saveData.version < 5) {
+    // For older versions, just log a warning and return the default save data.
+    console.warn("Save data too old to migrate. Falling back to default.");
+    return {
+      version: VERSION,
+      levelStates: {},
+      seenDialogTrees: [],
+      seenTutorialShorts: [],
+    };
+  }
+
+  // Migrate from version 5 to 6.
+  if (newData.version === 5) {
+    newData.version = 6;
+    // The structure of the level changed from version 5 to 6, so the
+    // old code won't work anymore.
+    delete newData.levelStates.gate_and_terminal;
+  }
+
+  // Migrate from version 6 to 7.
+  if (newData.version === 6) {
+    newData.version = 7;
+    // gate_and_terminal_part_two was renamed to gate_and_terminal_part_three
+    // and a new level was added in its place.
+    if (newData.levelStates.gate_and_terminal_part_two) {
+      newData.levelStates.gate_and_terminal_part_three =
+        newData.levelStates.gate_and_terminal_part_two;
+      delete newData.levelStates.gate_and_terminal_part_two;
+    }
+  }
+
+  return newData;
+}
+
 export function load(): SaveData {
   const rawData = localStorage.getItem(LOCAL_STORAGE_KEY);
   if (rawData) {
@@ -57,21 +94,7 @@ export function load(): SaveData {
     if (saveData.version === VERSION) {
       return saveData;
     }
-
-    // Migrate from version 5 to 6.
-    if (saveData.version === 5) {
-      const newSaveData = deepCopy(saveData);
-      newSaveData.version = 6;
-      // The structure of the level changed from version 5 to 6, so the
-      // old code won't work anymore.
-      delete newSaveData.levelStates.gate_and_terminal;
-      return newSaveData;
-    }
-
-    // TODO(albrow): Add more migrations.
-
-    // For older versions, just log a warning and return the default save data.
-    console.warn("Save data version mismatch");
+    return migrateSaveData(saveData);
   }
   return {
     version: VERSION,

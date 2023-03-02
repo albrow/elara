@@ -4,46 +4,52 @@ use crate::simulation::{
 };
 
 #[derive(Copy, Clone)]
-pub struct GateAndTerminalPartTwo {}
+pub struct GateAndTerminalPartThree {}
 
-impl Level for GateAndTerminalPartTwo {
+impl Level for GateAndTerminalPartThree {
     fn name(&self) -> &'static str {
-        "Slipped My Mind"
+        "Needle in a Haystack"
     }
     fn short_name(&self) -> &'static str {
-        "gate_and_terminal_part_two"
+        "gate_and_terminal_part_three"
     }
     fn objective(&self) -> &'static str {
-        "Get the password from the data terminal ({terminal}), unlock the gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
+        "Try the other data terminals ({terminal}) to find the right password, then move the rover ({robot}) to the goal ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
         &AVAIL_FUNCS_WITH_READ
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Yet another locked gate! Just like before, the password is
-// stored in a data terminal. Can you get through on your own
-// this time?
+        r#"// This code reads the data from the closest data terminal and
+// tries using it as the password. However, it looks like it
+// isn't the right password. Try the other terminals?
 //
-// ADD YOUR CODE BELOW
+// CHANGE THE CODE BELOW
+let password = read_data();
+move_forward(1);
+say(password);
 "#
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(11, 1, 10, Orientation::Left);
+        state.player = Player::new(1, 0, 20, Orientation::Down);
         state.goal = Some(Goal {
-            pos: Pos { x: 9, y: 4 },
+            pos: Pos { x: 4, y: 1 },
         });
         state.obstacles = vec![
-            Obstacle::new(8, 0),
-            Obstacle::new(8, 1),
-            Obstacle::new(8, 2),
-            Obstacle::new(9, 0),
-            Obstacle::new(10, 2),
-            Obstacle::new(11, 0),
-            Obstacle::new(11, 2),
+            Obstacle::new(2, 0),
+            Obstacle::new(2, 2),
+            Obstacle::new(2, 3),
+            Obstacle::new(0, 3),
+            Obstacle::new(1, 3),
+            Obstacle::new(2, 3),
         ];
-        state.password_gates = vec![PasswordGate::new(9, 2, "hopper".to_string(), false)];
-        state.data_terminals = vec![DataTerminal::new(10, 0, "hopper".to_string())];
+        state.password_gates = vec![PasswordGate::new(2, 1, "vaughan".to_string(), false)];
+        state.data_terminals = vec![
+            DataTerminal::new(0, 0, "carver".to_string()),
+            DataTerminal::new(0, 1, "curie".to_string()),
+            DataTerminal::new(0, 2, "vaughan".to_string()),
+        ];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
@@ -62,7 +68,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &GateAndTerminalPartTwo {};
+        const LEVEL: &'static dyn Level = &GateAndTerminalPartThree {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
@@ -73,11 +79,13 @@ mod tests {
 
         // Running this code should result in Outcome::Success.
         let script = r#"
-            move_forward(1);
+            move_forward(2);
             let password = read_data();
+            turn_left();
+            turn_left();
             move_forward(1);
             say(password);
-            turn_left();
+            turn_right();
             move_forward(3);
         "#;
         let result = game

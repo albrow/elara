@@ -23,7 +23,7 @@ export const CHOICES: {
 };
 
 export const TREES: DialogTrees = {
-  level_gate_and_terminal_part_two: {
+  level_gate_and_terminal_part_three: {
     name: "Multiple Data Terminals",
     startId: "explain_multi_terminals",
   },

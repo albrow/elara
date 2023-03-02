@@ -7,7 +7,7 @@
 import * as Intro from "./intro";
 import * as Gates from "./level_gates";
 import * as GateAndTerminal from "./level_gate_and_terminal";
-import * as GateAndTerminalPartTwo from "./level_gate_and_terminal_part_two";
+import * as GateAndTerminalPartThree from "./level_gate_and_terminal_part_three";
 import * as Variables from "./journal_variables";
 import * as SeismicActivity from "./level_seismic_activity";
 
@@ -17,14 +17,14 @@ type NodeIds =
   | Intro.NodeIds
   | Gates.NodeIds
   | GateAndTerminal.NodeIds
-  | GateAndTerminalPartTwo.NodeIds
+  | GateAndTerminalPartThree.NodeIds
   | Variables.NodeIds
   | SeismicActivity.NodeIds;
 type ChoiceIds =
   | Intro.ChoiceIds
   | Gates.ChoiceIds
   | GateAndTerminal.ChoiceIds
-  | GateAndTerminalPartTwo.ChoiceIds
+  | GateAndTerminalPartThree.ChoiceIds
   | Variables.ChoiceIds
   | SeismicActivity.ChoiceIds;
 
@@ -59,7 +59,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   ...Intro.NODES,
   ...Gates.NODES,
   ...GateAndTerminal.NODES,
-  ...GateAndTerminalPartTwo.NODES,
+  ...GateAndTerminalPartThree.NODES,
   ...Variables.NODES,
   ...SeismicActivity.NODES,
 };
@@ -68,7 +68,7 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...Intro.CHOICES,
   ...Gates.CHOICES,
   ...GateAndTerminal.CHOICES,
-  ...GateAndTerminalPartTwo.CHOICES,
+  ...GateAndTerminalPartThree.CHOICES,
   ...Variables.CHOICES,
   ...SeismicActivity.CHOICES,
 };
@@ -77,7 +77,7 @@ export const TREES: DialogTrees = {
   ...Intro.TREES,
   ...Gates.TREES,
   ...GateAndTerminal.TREES,
-  ...GateAndTerminalPartTwo.TREES,
+  ...GateAndTerminalPartThree.TREES,
   ...Variables.TREES,
   ...SeismicActivity.TREES,
 };
