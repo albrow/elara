@@ -123,6 +123,7 @@ export const SCENES: Scene[] = [
     name: "Creating Functions",
     route: "/journal/concepts/creating_functions",
   },
+  sceneFromLevelName("reimplement_turn_right"),
 ];
 
 export const LEVELS = SCENES.filter((s) => s.type === "level");

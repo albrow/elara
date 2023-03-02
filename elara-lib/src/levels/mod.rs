@@ -10,6 +10,7 @@ mod loops_part_two;
 mod movement;
 mod movement_part_two;
 mod partly_disabled_movement;
+mod reimplement_turn_right;
 mod sandbox;
 mod seismic_activity;
 
@@ -106,6 +107,7 @@ lazy_static! {
         m.insert(seismic_activity::SeismicActivity{}.short_name(), Box::new(seismic_activity::SeismicActivity{}));
         m.insert(data_terminal_demo::DataTerminalDemo{}.short_name(), Box::new(data_terminal_demo::DataTerminalDemo{}));
         m.insert(partly_disabled_movement::PartlyDisabledMovement{}.short_name(), Box::new(partly_disabled_movement::PartlyDisabledMovement{}));
+        m.insert(reimplement_turn_right::ReimplementTurnRight{}.short_name(), Box::new(reimplement_turn_right::ReimplementTurnRight{}));
 
         m
     };

@@ -1,50 +1,76 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State};
+use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State};
 
 #[derive(Copy, Clone)]
-pub struct PartlyDisabledMovement {}
+pub struct ReimplementTurnRight {}
 
 lazy_static! {
     static ref AVAILABLE_FUNCS: Vec<&'static str> = vec!["move_backward", "turn_left", "say"];
 }
 
-impl Level for PartlyDisabledMovement {
+impl Level for ReimplementTurnRight {
     fn name(&self) -> &'static str {
-        "Impaired Movement"
+        "Three Lefts Make a Right"
     }
     fn short_name(&self) -> &'static str {
-        "partly_disabled_movement"
+        "reimplement_turn_right"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Create a new turn_right function, then move the rover ({robot}) to the goal ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
         &AVAILABLE_FUNCS
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Can you navigate to the goal using only the move_backward
-// and turn_left functions?
-//
-// ADD YOUR CODE BELOW
-"#
+        r"fn turn_right() {
+  // ADD YOUR CODE HERE
+  
+}
+
+// Using the new turn_right function, this code will move
+// the rover all the way to the goal! If you did it right,
+// you DON'T need to change the following code.
+move_backward(4);
+turn_right();
+move_backward(4);
+turn_right();
+move_backward(3);
+turn_right();
+move_backward(2);
+turn_right();
+move_backward(1);
+"
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(0, 7, 10, Orientation::Right);
+        state.player = Player::new(0, 0, 10, Orientation::Left);
         state.goal = Some(Goal {
-            pos: Pos { x: 3, y: 4 },
+            pos: Pos { x: 2, y: 2 },
         });
         state.obstacles = vec![
+            Obstacle::new(0, 1),
+            Obstacle::new(0, 2),
             Obstacle::new(0, 3),
-            Obstacle::new(1, 3),
+            Obstacle::new(0, 4),
+            Obstacle::new(0, 5),
+            Obstacle::new(1, 1),
+            Obstacle::new(1, 5),
+            Obstacle::new(2, 1),
             Obstacle::new(2, 3),
+            Obstacle::new(2, 5),
+            Obstacle::new(3, 1),
+            Obstacle::new(3, 2),
             Obstacle::new(3, 3),
-            Obstacle::new(4, 3),
-            Obstacle::new(4, 4),
+            Obstacle::new(3, 5),
             Obstacle::new(4, 5),
-            Obstacle::new(4, 6),
-            Obstacle::new(4, 7),
+            Obstacle::new(5, 0),
+            Obstacle::new(5, 1),
+            Obstacle::new(5, 2),
+            Obstacle::new(5, 3),
+            Obstacle::new(5, 4),
+            Obstacle::new(5, 5),
         ];
+        state.fuel_spots = vec![FuelSpot::new(2, 4)];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
@@ -63,7 +89,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &PartlyDisabledMovement {};
+        const LEVEL: &'static dyn Level = &ReimplementTurnRight {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
