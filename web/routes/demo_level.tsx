@@ -82,6 +82,7 @@ export default function DemoLevel() {
               onStep={onEditorStep}
               onCancel={onScriptCancel}
               resetOnReplayDone={false}
+              availableFunctions={currLevel().available_functions}
             />
           </Box>
         </Box>
