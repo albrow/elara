@@ -16,7 +16,7 @@ export const NODES: {
   },
   how_to_backtrack: {
     text:
-      'If you need to, you can always come back to this page later by pressing the "Scenes" ' +
+      'If you need to, you can always come back to this page later by pressing the "Journal" ' +
       "button near the top of the screen.",
     choiceIds: ["ack_variables_take_time"],
   },
