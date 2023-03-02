@@ -114,6 +114,7 @@ export const SCENES: Scene[] = [
     route: "/journal/concepts/if_statements",
   },
   sceneFromLevelName("seismic_activity"),
+  sceneFromLevelName("partly_disabled_movement"),
 ];
 
 export const LEVELS = SCENES.filter((s) => s.type === "level");

@@ -27,6 +27,7 @@ pub struct ScriptRunner {
     step_positions: Rc<RefCell<Vec<Position>>>,
 }
 
+#[derive(Debug)]
 pub struct ScriptResult {
     pub states: Vec<State>,
     pub positions: Vec<Position>,
@@ -590,6 +591,7 @@ impl ScriptRunner {
     }
 }
 
+#[derive(Debug)]
 pub struct ScriptStats {
     // Length of the script in bytes.
     pub code_len: usize,
