@@ -93,11 +93,13 @@ mod tests {
             turn_left();
             move_forward(3);
         ";
-        game.run_player_script_internal(script.to_string(), LEVEL)
-            .expect_err("Using move_forward should be an error");
+        let result = game.run_player_script_internal(script.to_string(), LEVEL);
+        assert!(result.is_err());
+        assert!(result.err().unwrap().to_string().contains("move_forward"));
 
         let script = r"turn_right();";
-        game.run_player_script_internal(script.to_string(), LEVEL)
-            .expect_err("Using turn_right should be an error");
+        let result = game.run_player_script_internal(script.to_string(), LEVEL);
+        assert!(result.is_err());
+        assert!(result.err().unwrap().to_string().contains("turn_right"));
     }
 }

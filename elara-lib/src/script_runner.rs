@@ -99,11 +99,24 @@ impl ScriptRunner {
         match engine.run_ast(&ast) {
             Err(err) => {
                 match *err {
-                    EvalAltResult::ErrorRuntime(_, _)
-                        if err.to_string().contains(ERR_SIMULATION_END) =>
-                    {
-                        // Special case for when the simulation ends before the script
-                        // finishes running. This is not actually an error, so we continue.
+                    EvalAltResult::ErrorRuntime(_, _) => {
+                        if err.to_string().contains(ERR_SIMULATION_END) {
+                            // Special case for when the simulation ends before the script
+                            // finishes running. This is not actually an error, so we continue.
+                        } else {
+                            // Other runtime errors should be considered a failure.
+                            // In this case we still return all the states and positions.
+                            let outcome = Outcome::Failure(err.to_string());
+                            let states = self.simulation.borrow().get_history();
+                            let positions = self.step_positions.borrow().to_vec();
+                            let stats = compute_stats(&script, &states);
+                            return Ok(ScriptResult {
+                                states,
+                                positions,
+                                outcome,
+                                stats,
+                            });
+                        }
                     }
                     _ => {
                         // For all other kinds of errors, we return the error.

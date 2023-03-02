@@ -99,12 +99,18 @@ mod tests {
         let script = r#"
             let password = read_data();
         "#;
-        let result = game.run_player_script_internal(script.to_string(), LEVEL);
-        assert!(result.is_err());
-        assert!(result
-            .err()
-            .unwrap()
-            .to_string()
-            .contains(ERR_NO_DATA_TERMINAL));
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        // result.outcome should be Outcome::Failure and the message
+        // should contain ERR_NO_DATA_TERMINAL.
+        match result.outcome {
+            Outcome::Failure(msg) => {
+                assert!(msg.to_string().contains(ERR_NO_DATA_TERMINAL));
+            }
+            _ => {
+                panic!("Expected Outcome::Failure, got {:?}", result.outcome);
+            }
+        }
     }
 }
