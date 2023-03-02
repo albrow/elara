@@ -49,7 +49,7 @@
   font-weight: 500;
 }
 
-.md-content .runnable-example,
+.md-content .runnable-example .control-bar,
 .md-content .runnable-example p {
   /* We don't want to change any of the CSS properties inside RunnableExample */
   font-size: unset;

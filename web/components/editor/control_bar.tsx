@@ -88,7 +88,7 @@ export default function ControlBar(props: ControlBarProps) {
   );
 
   return (
-    <Box bg="gray.800" p={2} roundedTop="md">
+    <Box bg="gray.800" p={2} roundedTop="md" className="control-bar">
       <Flex direction="row">
         <Box>
           {props.editorState === "editing" && (
