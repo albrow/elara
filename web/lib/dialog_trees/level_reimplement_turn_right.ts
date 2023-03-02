@@ -4,10 +4,15 @@ export type NodeIds =
   | "right_turns_ahead"
   | "right_turns_ahead_2"
   | "idea_to_turn_right"
-  | "idea_to_turn_right_2"
+  | "not_might_makes_a_right"
+  | "not_two_negatives"
+  | "how_to_use_three_lefts"
   | "three_lefts_will_take_longer";
 export type ChoiceIds =
   | "how_to_turn_right"
+  | "guess_might_makes_a_right"
+  | "guess_three_lefts_make_a_right"
+  | "guess_two_negatives"
   | "ack_idea_to_turn_right"
   | "wont_three_lefts_take_longer";
 
@@ -26,20 +31,35 @@ export const NODES: {
     choiceIds: ["how_to_turn_right"],
   },
   idea_to_turn_right: {
-    text: `Oh I have an idea! You know the saying "three lefts make a right"?`,
-    choiceIds: [],
-    nextId: "idea_to_turn_right_2",
-  },
-  idea_to_turn_right_2: {
     text:
-      "Well, I think we can use that to our advantage here. Why don't you try making " +
-      "a new function that just turns G.R.O.V.E.R. three times to the left?",
+      `Oh I have an idea! You know the saying "two wrongs don't make a right"? Well... ` +
+      `what does make a right?`,
+    choiceIds: [
+      "guess_might_makes_a_right",
+      "guess_three_lefts_make_a_right",
+      "guess_two_negatives",
+    ],
+  },
+  not_might_makes_a_right: {
+    text: `I have heard the saying "might makes right", but that's not what I had in mind. Guess again?`,
+    choiceIds: ["guess_three_lefts_make_a_right"],
+  },
+  not_two_negatives: {
+    text:
+      `Sure, if you multiply two negative numbers together you get a positive number, ` +
+      `but I was thinking of something different. Guess again?`,
+    choiceIds: ["guess_three_lefts_make_a_right"],
+  },
+  how_to_use_three_lefts: {
+    text:
+      "Exactly! Why don't you try making a new function that just turns G.R.O.V.E.R. " +
+      "three times to the left?",
     choiceIds: ["wont_three_lefts_take_longer", "ack_idea_to_turn_right"],
   },
   three_lefts_will_take_longer: {
     text:
-      "Yeah, it would take three times as long. But it means you can write a " +
-      "lot fewer lines of code! Besides, it's only temporary until we can get G.R.O.V.E.R. repaired.",
+      "Yeah, it would take three times as long for G.R.O.V.E.R. to turn that way. But it " +
+      "means you can write fewer lines of code! Besides, it's only temporary until we can get him repaired.",
     choiceIds: ["ack_idea_to_turn_right"],
   },
 };
@@ -51,11 +71,23 @@ export const CHOICES: {
     text: "Any ideas?",
     nextId: "idea_to_turn_right",
   },
+  guess_might_makes_a_right: {
+    text: "Might?",
+    nextId: "not_might_makes_a_right",
+  },
+  guess_three_lefts_make_a_right: {
+    text: "Three lefts?",
+    nextId: "how_to_use_three_lefts",
+  },
+  guess_two_negatives: {
+    text: "Two negatives?",
+    nextId: "not_two_negatives",
+  },
   ack_idea_to_turn_right: {
     text: "I'll give it a try!",
   },
   wont_three_lefts_take_longer: {
-    text: "Won't that take a lot longer?",
+    text: "Won't that take longer?",
     nextId: "three_lefts_will_take_longer",
   },
 };
