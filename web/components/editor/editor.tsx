@@ -379,6 +379,7 @@ export default function Editor(props: EditorProps) {
     <>
       <ControlBar
         editorState={state}
+        availableFunctions={props.availableFunctions}
         onDeploy={onDeploy}
         onCancel={onCancel}
         onPause={onPause}

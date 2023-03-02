@@ -39,9 +39,9 @@ const hoverWords = [
   "read_data",
 ] as const;
 
-type HoverWord = typeof hoverWords[number];
+export type HoverWord = typeof hoverWords[number];
 
-const docPages: {
+export const docPages: {
   [key in HoverWord]: (props: MDXProps) => JSX.Element;
 } = {
   turn_right: TurnRight,
@@ -90,13 +90,7 @@ function showDocsOnHover(availFuncs: string[]) {
         const dom = document.createElement("div");
         const root = createRoot(dom);
         root.render(
-          <Box
-            px="15px"
-            pb="5px"
-            maxW="500px"
-            className="md-content hover-doc"
-            bg="red.500"
-          >
+          <Box px="15px" pb="5px" maxW="500px" className="md-content hover-doc">
             <Page />
           </Box>
         );

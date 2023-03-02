@@ -27,12 +27,14 @@ import {
   MdSave,
   MdReplay,
 } from "react-icons/md";
-import { range } from "../../lib/utils";
 
+import { range } from "../../lib/utils";
 import type { EditorState } from "./editor";
+import FunctionList from "./hover_docs/function_list";
 
 export interface ControlBarProps {
   editorState: EditorState;
+  availableFunctions: string[];
   onDeploy: () => void;
   onCancel: () => void;
   onStepBack: () => void;
@@ -214,17 +216,20 @@ export default function ControlBar(props: ControlBarProps) {
           </>
         )}
         <Spacer />
+        <FunctionList funcNames={props.availableFunctions} />
         <Box hidden={!props.onDownload && !props.onUpload}>
           <Menu placement="bottom-end">
-            <MenuButton
-              rounded="md"
-              _hover={{ background: "gray.700" }}
-              color="white"
-              p={1}
-              px={2}
-            >
-              <MdMenu size="1.3em" />
-            </MenuButton>
+            <Tooltip label="Additional options">
+              <MenuButton
+                rounded="md"
+                _hover={{ background: "gray.700" }}
+                color="white"
+                p={1}
+                px={2}
+              >
+                <MdMenu size="1.3em" />
+              </MenuButton>
+            </Tooltip>
             <MenuList
               background="gray.700"
               borderColor="black"
