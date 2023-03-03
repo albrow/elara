@@ -247,47 +247,63 @@ export default function Editor(props: EditorProps) {
     [props, resetState]
   );
 
+  // Deploys the code (i.e. runs the script and gets the resulting states). If
+  // playImmediately is true, starts the replayer immediately. Otherwise,
+  // waits for the user to click the "play" button.
+  const deployCode = useCallback(
+    (playImmediately: boolean) => {
+      resetState();
+      const script = getCode();
+      let result: RunResult;
+      try {
+        result = props.runScript(script);
+      } catch (e) {
+        if (e instanceof RhaiError && e.line) {
+          // If there is a RhaiError (e.g. a syntax error) *with* a line number,
+          // display it in the editor.
+          setCodeError({
+            line: e.line,
+            col: e.col,
+            message: e.message,
+          });
+          return;
+        }
+        if (e instanceof Error) {
+          // If there was another kind of error, call the onScriptError handler.
+          props.onScriptError(script, e as Error);
+          return;
+        }
+        // If we got a non-Error object, just rethrow it. This is really unexpected.
+        console.error("Unexpected exception with a non-error type!");
+        console.error(e);
+        throw e;
+      }
+      setStepIndex(0);
+      setNumSteps(result.states.length);
+      if (replayer.current) {
+        replayer.current.stop();
+      }
+      replayer.current = new Replayer(
+        result.states,
+        onReplayStep,
+        makeOnReplayDoneHandler(script, result)
+      );
+      if (playImmediately) {
+        // Immediately start the replay.
+        setState("running");
+        replayer.current.start();
+      } else {
+        // Start the replay in the "paused" state.
+        setState("paused");
+      }
+    },
+    [getCode, makeOnReplayDoneHandler, onReplayStep, props, resetState]
+  );
+
   // When the "deploy" button is clicked, run the code and set up the replayer.
   const onDeploy = useCallback(() => {
-    resetState();
-    const script = getCode();
-    let result: RunResult;
-    try {
-      result = props.runScript(script);
-    } catch (e) {
-      if (e instanceof RhaiError && e.line) {
-        // If there is a RhaiError (e.g. a syntax error) *with* a line number,
-        // display it in the editor.
-        setCodeError({
-          line: e.line,
-          col: e.col,
-          message: e.message,
-        });
-        return;
-      }
-      if (e instanceof Error) {
-        // If there was another kind of error, call the onScriptError handler.
-        props.onScriptError(script, e as Error);
-        return;
-      }
-      // If we got a non-Error object, just rethrow it. This is really unexpected.
-      console.error("Unexpected exception with a non-error type!");
-      console.error(e);
-      throw e;
-    }
-    setStepIndex(0);
-    setNumSteps(result.states.length);
-    if (replayer.current) {
-      replayer.current.stop();
-    }
-    replayer.current = new Replayer(
-      result.states,
-      onReplayStep,
-      makeOnReplayDoneHandler(script, result)
-    );
-    // Start the replay in the "paused" state.
-    setState("paused");
-  }, [getCode, makeOnReplayDoneHandler, onReplayStep, props, resetState]);
+    deployCode(false);
+  }, [deployCode]);
 
   const onCancel = useCallback(() => {
     resetState();
@@ -359,8 +375,7 @@ export default function Editor(props: EditorProps) {
       // Also start playing immediately.
       const modifierPressed = event.shiftKey || event.ctrlKey || event.metaKey;
       if (modifierPressed && event.key === "Enter" && state === "editing") {
-        onDeploy();
-        onPlay();
+        deployCode(true);
         event.preventDefault();
       }
       // Stop running the script on Escape.
@@ -373,7 +388,7 @@ export default function Editor(props: EditorProps) {
     return () => {
       document.removeEventListener("keydown", keyListener);
     };
-  }, [onCancel, onPlay, onDeploy, state, view]);
+  }, [onCancel, state, view, deployCode]);
 
   return (
     <>
