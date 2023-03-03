@@ -27,6 +27,7 @@ import {
   MdSave,
   MdReplay,
 } from "react-icons/md";
+import { FaSatelliteDish } from "react-icons/fa";
 
 import { range } from "../../lib/utils";
 import type { EditorState } from "./editor";
@@ -95,7 +96,10 @@ export default function ControlBar(props: ControlBarProps) {
             <>
               <Tooltip label="Deploy the code to the rover">
                 <Button size="sm" colorScheme="green" onClick={props.onDeploy}>
-                  <MdPlayArrow size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
+                  <FaSatelliteDish
+                    size="1.2em"
+                    style={{ marginRight: "0.2rem" }}
+                  />{" "}
                   Deploy
                 </Button>
               </Tooltip>
