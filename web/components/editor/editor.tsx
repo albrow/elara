@@ -184,9 +184,17 @@ export default function Editor(props: EditorProps) {
 
   useEffect(() => {
     if (view) {
-      if (codeError) {
+      if (codeError != null) {
         const diagnostic = codeErrorToDiagnostic(view, codeError);
-        view.dispatch(setDiagnostics(view.state, [diagnostic]));
+        // Note(albrow): I'm not even going to pretend to understand why this
+        // setTimeout is necessary. Without it, the error message is not displayed
+        // in the editor unless you click the "deploy" button a second time. 🐲 🤷‍♂️
+        //
+        // DON'T REMOVE THIS.
+        setTimeout(
+          () => view.dispatch(setDiagnostics(view.state, [diagnostic])),
+          1
+        );
       } else {
         view.dispatch(setDiagnostics(view.state, []));
       }
@@ -366,20 +374,20 @@ export default function Editor(props: EditorProps) {
 
   useEffect(() => {
     const keyListener = async (event: KeyboardEvent) => {
-      // If the editor has focus, we want to handle keyboard shortcuts.
-      // Otherwise don't handle them.
-      if (!view || !view.hasFocus) {
-        return;
-      }
-      // Run the script on Shift+Enter, Cmd+Enter, or Ctrl+Enter.
-      // Also start playing immediately.
       const modifierPressed = event.shiftKey || event.ctrlKey || event.metaKey;
-      if (modifierPressed && event.key === "Enter" && state === "editing") {
+      if (
+        view &&
+        view.hasFocus &&
+        modifierPressed &&
+        event.key === "Enter" &&
+        state === "editing"
+      ) {
+        // Deploy and run the script on Shift+Enter, Cmd+Enter, or Ctrl+Enter,
+        // but only if this editor has focus.
         deployCode(true);
         event.preventDefault();
-      }
-      // Stop running the script on Escape.
-      if (event.key === "Escape" && state === "running") {
+      } else if (event.key === "Escape" && state === "running") {
+        // Stop running the script on Escape.
         onCancel();
         event.preventDefault();
       }
