@@ -37,7 +37,7 @@ export const SHORTS: { [key: string]: TutorialShort } = {
   },
   how_to_navigate_scenes: {
     title: "Going back to a previous page",
-    text: 'You can use the "journal" and "level" dropdowns near the top of the screen to go back to a previous page at any time.',
+    text: 'You can use the "journal" and "levels" dropdowns near the top of the screen to go back to a previous page at any time.',
     imageUrl: howToNavigateScenesUrl,
   },
   moving_takes_fuel: {
