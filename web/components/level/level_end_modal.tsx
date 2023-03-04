@@ -96,6 +96,7 @@ export default function LevelEndModal(props: LevelEndModalProps) {
         onClose={handleClose}
         scrollBehavior="inside"
         preserveScrollBarGap
+        closeOnOverlayClick={false}
       >
         <ModalOverlay zIndex={LEVEL_END_MODAL_Z_INDEX} />
         <ModalContent minW="container.md" zIndex={LEVEL_END_MODAL_Z_INDEX + 1}>
