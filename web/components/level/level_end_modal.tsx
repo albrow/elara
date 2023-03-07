@@ -65,12 +65,10 @@ export default function LevelEndModal(props: LevelEndModalProps) {
   const { navigateToNextScene } = useSceneNavigator();
   const currScene = useCurrScene();
 
-  const isLastScene = useCallback(() => {
-    if (!currScene) {
-      return false;
-    }
-    return currScene.nextScene == null;
-  }, [currScene]);
+  const isLastScene = useCallback(
+    () => currScene?.nextScene == null,
+    [currScene]
+  );
 
   const handleClose = useCallback(() => {
     props.setVisible(false);

@@ -22,17 +22,15 @@ export default function Navbar() {
   const LEVELS = useLevels();
   const { navigateToNextScene } = useSceneNavigator();
 
-  const isLastScene = useCallback(() => {
-    if (!currScene) {
-      return false;
-    }
-    return currScene.nextScene == null;
-  }, [currScene]);
+  const isLastScene = useCallback(
+    () => currScene?.nextScene == null,
+    [currScene]
+  );
 
   const isHome = useCallback(() => route.name === "home", [route.name]);
 
   const shouldRenderNextButton = useCallback(() => {
-    if (isLastScene() || isHome() || !currScene) {
+    if (isHome() || isLastScene() || !currScene) {
       return false;
     }
     if (currScene.type === "level") {
