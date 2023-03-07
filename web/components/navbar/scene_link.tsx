@@ -3,11 +3,11 @@ import { Box, MenuItem, Text } from "@chakra-ui/react";
 import { useCallback } from "react";
 
 import { MdLock } from "react-icons/md";
-import { getLevelIndexFromScene, Scene } from "../../lib/scenes";
+import { SceneWithMeta } from "../../contexts/scenes";
 import DisablableLink from "./disablable_link";
 
 interface SceneLinkProps {
-  scene: Scene;
+  scene: SceneWithMeta;
   isLocked: boolean;
 }
 
@@ -36,8 +36,7 @@ export default function SceneLink(props: SceneLinkProps) {
     // If the scene is a level, then we want to include the level
     // index in the link text.
     if (props.scene.type === "level") {
-      const levelIndex = getLevelIndexFromScene(props.scene);
-      return `Level ${levelIndex}: ${props.scene.level?.name}`;
+      return `Level ${props.scene.levelIndex}: ${props.scene.level?.name}`;
     }
     return props.scene.name;
   }, [props.scene]);

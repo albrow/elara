@@ -1,54 +1,46 @@
-import { useRouteNode, useRouter } from "react-router5";
+import { useRouteNode } from "react-router5";
 import { Container, Box, Flex, Spacer, Button } from "@chakra-ui/react";
 import { MdArrowForward } from "react-icons/md";
 import { useCallback } from "react";
 
 import { NAVBAR_HEIGHT } from "../../lib/constants";
 import {
-  getNextSceneFromRoute,
-  getSceneFromRoute,
-  JOURNAL_PAGES,
-  LEVELS,
-} from "../../lib/scenes";
+  useCurrScene,
+  useJournalPages,
+  useLevels,
+  useSceneNavigator,
+} from "../../contexts/scenes";
 import { useSaveData } from "../../contexts/save_data";
 import NavbarLink from "./navbar_link";
 import NavbarDropdown from "./navbar_dropdown";
 
 export default function Navbar() {
-  const router = useRouter();
   const { route } = useRouteNode("");
   const [saveData, _] = useSaveData();
-
-  const navigateToNextScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(route);
-    if (nextScene == null) {
-      throw new Error("Invalid route");
-    }
-    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
-  }, [route, router]);
+  const currScene = useCurrScene();
+  const JOURNAL_PAGES = useJournalPages();
+  const LEVELS = useLevels();
+  const { navigateToNextScene } = useSceneNavigator();
 
   const isLastScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(route);
-    return nextScene == null;
-  }, [route]);
+    if (!currScene) {
+      return false;
+    }
+    return currScene.nextScene == null;
+  }, [currScene]);
 
   const isHome = useCallback(() => route.name === "home", [route.name]);
 
   const shouldRenderNextButton = useCallback(() => {
-    if (isLastScene() || isHome()) {
+    if (isLastScene() || isHome() || !currScene) {
       return false;
-    }
-    const currScene = getSceneFromRoute(route);
-    if (currScene == null) {
-      // E.g. this can happen if we're on the home screen.
-      return true;
     }
     if (currScene.type === "level") {
       const levelName = currScene.level?.short_name;
       return saveData.levelStates[levelName as string]?.completed;
     }
     return false;
-  }, [isHome, isLastScene, route, saveData.levelStates]);
+  }, [currScene, isHome, isLastScene, saveData.levelStates]);
 
   return (
     <Box bg="gray.800" textColor="white">

@@ -1,9 +1,7 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { MdArrowForward } from "react-icons/md";
-import { useRouteNode, useRouter } from "react-router5";
 
-import { useCallback } from "react";
-import { getNextSceneFromRoute } from "../../lib/scenes";
+import { useSceneNavigator } from "../../contexts/scenes";
 import Functions from "./sections/functions.mdx";
 import FunctionOutputs from "./sections/function_outputs.mdx";
 import Comments from "./sections/comments.mdx";
@@ -39,16 +37,7 @@ export interface JournalProps {
 
 export default function JournalSection(props: JournalProps) {
   const SectionComponent = sections[props.section];
-  const { route } = useRouteNode("");
-  const router = useRouter();
-
-  const navigateToNextScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(route);
-    if (nextScene == null) {
-      throw new Error("Invalid route");
-    }
-    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
-  }, [route, router]);
+  const { navigateToNextScene } = useSceneNavigator();
 
   return (
     <>

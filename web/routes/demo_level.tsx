@@ -1,4 +1,4 @@
-import { useRouteNode, useRouter } from "react-router5";
+import { useRouter } from "react-router5";
 import { useState, useEffect, useCallback } from "react";
 import { Container, Flex, Box } from "@chakra-ui/react";
 import { Unsubscribe } from "router5/dist/types/base";
@@ -10,23 +10,21 @@ import {
 } from "../../elara-lib/pkg/elara_lib";
 import Board from "../components/board/board";
 import Editor from "../components/editor/editor";
-import { LEVELS } from "../lib/scenes";
+import { useCurrScene } from "../contexts/scenes";
 
 const game = Game.new();
 
 // A stripped down, smaller level page used for recording GIFs and videos.
 export default function DemoLevel() {
-  const { route } = useRouteNode("");
   const router = useRouter();
-  const levelShortName = route.params.levelId;
+  const currScene = useCurrScene();
 
   const currLevel = useCallback(() => {
-    const level = LEVELS.find((l) => l.level!.short_name === levelShortName);
-    if (!level) {
-      throw new Error(`cannot find level with short name ${levelShortName}`);
+    if (!currScene || currScene.type !== "level" || !currScene.level) {
+      throw new Error(`Could not get level for current scene: ${currScene}`);
     }
-    return level.level!;
-  }, [levelShortName]);
+    return currScene.level!;
+  }, [currScene]);
 
   const [boardState, setBoardState] = useState(currLevel().initial_state);
 

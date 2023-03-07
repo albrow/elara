@@ -1,10 +1,10 @@
 import { Container } from "@chakra-ui/react";
-import { useRouteNode, useRouter } from "react-router5";
+import { useRouteNode } from "react-router5";
 import { useEffect, useCallback } from "react";
 
 import { TREES } from "../lib/dialog_trees";
 import { NAVBAR_HEIGHT } from "../lib/constants";
-import { getNextSceneFromRoute } from "../lib/scenes";
+import { useSceneNavigator } from "../contexts/scenes";
 import DialogTree from "../components/dialog/dialog_tree";
 
 export default function DialogOverBg() {
@@ -13,15 +13,7 @@ export default function DialogOverBg() {
   if (treeName == null) {
     throw new Error("treeName is required");
   }
-  const router = useRouter();
-
-  const navigateToNextScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(route);
-    if (nextScene == null) {
-      throw new Error("Invalid route");
-    }
-    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
-  }, [route, router]);
+  const { navigateToNextScene } = useSceneNavigator();
 
   const currTree = useCallback(() => {
     if (treeName == null) {

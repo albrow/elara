@@ -19,15 +19,10 @@ import {
   MdOutlineTimer,
   MdReplay,
 } from "react-icons/md";
-import { useRouteNode, useRouter } from "react-router5";
 
 import type { ScriptStats } from "../../../elara-lib/pkg";
 import { LEVEL_END_MODAL_Z_INDEX } from "../../lib/constants";
-import {
-  getNextSceneFromRoute,
-  getSceneIndexFromRoute,
-  SCENES,
-} from "../../lib/scenes";
+import { useCurrScene, useSceneNavigator } from "../../contexts/scenes";
 
 export type LevelOutcome = "success" | "failure" | "no_objective";
 
@@ -67,13 +62,15 @@ function getRandomSuccessGif(): string {
 }
 
 export default function LevelEndModal(props: LevelEndModalProps) {
-  const { route } = useRouteNode("");
-  const router = useRouter();
+  const { navigateToNextScene } = useSceneNavigator();
+  const currScene = useCurrScene();
 
-  const isLastScene = useCallback(
-    () => getSceneIndexFromRoute(route) === SCENES.length - 1,
-    [route]
-  );
+  const isLastScene = useCallback(() => {
+    if (!currScene) {
+      return false;
+    }
+    return currScene.nextScene == null;
+  }, [currScene]);
 
   const handleClose = useCallback(() => {
     props.setVisible(false);
@@ -82,14 +79,10 @@ export default function LevelEndModal(props: LevelEndModalProps) {
     }
   }, [props]);
 
-  const navigateToNextScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(route);
-    if (nextScene == null) {
-      throw new Error("Invalid route");
-    }
-    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
+  const onNextClick = useCallback(() => {
     handleClose();
-  }, [handleClose, route, router]);
+    navigateToNextScene();
+  }, [handleClose, navigateToNextScene]);
 
   // TODO(albrow): Fix issues with z-index. Doesn't seem to be respecting the
   // values I'm setting here, and the player message can sometimes appear on
@@ -159,11 +152,7 @@ export default function LevelEndModal(props: LevelEndModalProps) {
                     Keep Playing
                     <MdReplay size="1.3em" style={{ marginLeft: "0.2rem" }} />
                   </Button>
-                  <Button
-                    colorScheme="blue"
-                    ml={2}
-                    onClick={navigateToNextScene}
-                  >
+                  <Button colorScheme="blue" ml={2} onClick={onNextClick}>
                     Next
                     <MdArrowForward
                       size="1.3em"

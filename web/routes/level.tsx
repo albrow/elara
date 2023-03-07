@@ -1,4 +1,3 @@
-import { useRouteNode } from "react-router5";
 import { useState, useEffect, useCallback } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
 
@@ -11,7 +10,6 @@ import {
 import Board from "../components/board/board";
 import Editor from "../components/editor/editor";
 import ObjectiveText from "../components/level/objective_text";
-import { getLevelIndexFromScene, getSceneFromRoute } from "../lib/scenes";
 import {
   markLevelCompleted,
   updateLevelCode,
@@ -23,32 +21,30 @@ import { TREES } from "../lib/dialog_trees";
 import { useShortsModal } from "../contexts/shorts_modal";
 import LevelEndModal from "../components/level/level_end_modal";
 import { getLevelEndProps } from "../lib/level_end_messages";
+import { useCurrScene } from "../contexts/scenes";
 
 const game = Game.new();
 
 export default function Level() {
-  const { route } = useRouteNode("");
   const [saveData, setSaveData] = useSaveData();
+  const currScene = useCurrScene();
 
-  const currScene = useCallback(() => {
-    const s = getSceneFromRoute(route);
-    if (!s) {
-      throw new Error(
-        `Could not get scene from route: ${route.name} ${route.params}`
-      );
+  const currLevel = useCallback(() => {
+    if (!currScene || currScene.type !== "level" || !currScene.level) {
+      throw new Error(`Could not get level for current scene: ${currScene}`);
     }
-    return s;
-  }, [route]);
-  const currLevel = useCallback(() => currScene().level!, [currScene]);
-  const levelIndex = useCallback(
-    () => getLevelIndexFromScene(currScene()),
-    [currScene]
-  );
+    return currScene.level!;
+  }, [currScene]);
 
   // Update the page title whenever the level changes.
   useEffect(() => {
-    document.title = `Elara | Level ${levelIndex()}: ${currLevel().name}`;
-  }, [levelIndex, currLevel]);
+    if (!currScene) {
+      return;
+    }
+    document.title = `Elara | Level ${currScene.levelIndex}: ${
+      currLevel().name
+    }`;
+  }, [currLevel, currScene]);
 
   const initialCode = useCallback(
     () =>
@@ -66,13 +62,12 @@ export default function Level() {
   const [showShortsModal, _] = useShortsModal();
   useEffect(() => {
     // Update the shorts modal state whenever the route changes.
-    const scene = getSceneFromRoute(route);
-    if (scene?.tutorialShorts) {
+    if (currScene?.tutorialShorts) {
       // Note this may be overriden by the ShortsModalContext if the user
       // has already seen these particular tutorials.
-      showShortsModal(scene.tutorialShorts);
+      showShortsModal(currScene.tutorialShorts);
     }
-  }, [route, showShortsModal]);
+  }, [currScene?.tutorialShorts, showShortsModal]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalKind, setModalKind] = useState<"success" | "failure">("success");
@@ -205,7 +200,7 @@ export default function Level() {
       <Container maxW="container.xl" mt={6}>
         <Box>
           <Text fontSize="2xl" fontWeight="bold" mb={1}>
-            Level {levelIndex()}: {currLevel().name}
+            Level {currScene?.levelIndex}: {currLevel().name}
           </Text>
           <p>
             <b>Objective:</b> <ObjectiveText text={currLevel().objective} />

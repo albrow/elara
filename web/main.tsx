@@ -36,6 +36,7 @@ const elaraTheme = extendTheme({
   // Importing other components *after* init() means the Components themselves
   // can be synchrounous and not worry about waiting for Wasm to load.
   const Root = (await import("./routes/root")).default;
+  const { ScenesProvider } = await import("./contexts/scenes");
 
   const routes: Route[] = [
     {
@@ -76,9 +77,11 @@ const elaraTheme = extendTheme({
       <RouterProvider router={router}>
         <ChakraProvider theme={elaraTheme} resetCSS>
           <SaveDataProvider>
-            <ShortsModalProvider>
-              <Root />
-            </ShortsModalProvider>
+            <ScenesProvider>
+              <ShortsModalProvider>
+                <Root />
+              </ShortsModalProvider>
+            </ScenesProvider>
           </SaveDataProvider>
         </ChakraProvider>
       </RouterProvider>
