@@ -18,10 +18,11 @@ import {
 } from "../../elara-lib/pkg";
 import { ShortId } from "../lib/tutorial_shorts";
 import { TREES } from "../lib/dialog_trees";
+import { LevelState, useSaveData } from "./save_data";
 
 export type SceneType = "level" | "dialog" | "journal";
 
-export interface Scene {
+interface RawScene {
   type: SceneType;
   name: string;
   routeName: string;
@@ -30,11 +31,11 @@ export interface Scene {
   tutorialShorts?: ShortId[];
 }
 
-export interface SceneWithMeta extends Scene {
-  // unlocked: boolean;
+export interface Scene extends RawScene {
+  unlocked: boolean;
   index: number;
   levelIndex?: number;
-  nextScene?: SceneWithMeta;
+  nextScene?: Scene;
 }
 
 const levelData: Map<string, LevelData> = new Map(
@@ -44,7 +45,7 @@ const levelData: Map<string, LevelData> = new Map(
 // A special level used for runnable examples.
 export const SANDBOX_LEVEL = levelData.get("sandbox")!;
 
-function levelScene(shortName: string, tutorialShorts?: ShortId[]): Scene {
+function levelScene(shortName: string, tutorialShorts?: ShortId[]): RawScene {
   const level = levelData.get(shortName);
   if (!level) {
     throw new Error(`No level with short name ${shortName}`);
@@ -60,7 +61,7 @@ function levelScene(shortName: string, tutorialShorts?: ShortId[]): Scene {
 }
 
 // eslint-disable-next-line no-unused-vars
-function demoLevelScene(shortName: string): Scene {
+function demoLevelScene(shortName: string): RawScene {
   const level = levelData.get(shortName);
   if (!level) {
     throw new Error(`No level with short name ${shortName}`);
@@ -74,7 +75,7 @@ function demoLevelScene(shortName: string): Scene {
   };
 }
 
-function dialogScene(treeName: keyof typeof TREES): Scene {
+function dialogScene(treeName: keyof typeof TREES): RawScene {
   return {
     type: "dialog",
     name: `${TREES[treeName].name}`,
@@ -83,7 +84,7 @@ function dialogScene(treeName: keyof typeof TREES): Scene {
   };
 }
 
-function journalScene(sectionName: string): Scene {
+function journalScene(sectionName: string): RawScene {
   return {
     type: "journal",
     name: titleCase(sectionName.split("_").join(" ")),
@@ -92,7 +93,7 @@ function journalScene(sectionName: string): Scene {
   };
 }
 
-const RAW_SCENES: Scene[] = [
+const RAW_SCENES: RawScene[] = [
   dialogScene("intro"),
   levelScene("movement", [
     "how_to_run_code",
@@ -125,17 +126,43 @@ const RAW_SCENES: Scene[] = [
 ];
 
 const getLevelIndexFromScene = (
-  allScenes: Scene[],
-  scene: Scene
+  allScenes: RawScene[],
+  scene: RawScene
 ): number | undefined => {
   const levels = allScenes.filter((s) => s.type === "level");
   return levels.indexOf(scene);
 };
 
-function processScenes(scenes: Scene[]): SceneWithMeta[] {
-  const result: SceneWithMeta[] = scenes.map((scene, index) => ({
+// Returns the *scene index* of the last uncompleted level, or the last
+// level index if all levels have been completed.
+function getLastUncompletedLevelIndex(
+  levelStates: Record<string, LevelState>,
+  allScenes: RawScene[]
+) {
+  for (let i = 0; i < allScenes.length; i += 1) {
+    const scene = allScenes[i];
+    if (scene.type === "level") {
+      const levelName = scene.level?.short_name;
+      const levelState = levelStates[levelName as string];
+      if (levelState == null || !levelState.completed) {
+        return i;
+      }
+    }
+  }
+  return allScenes.length - 1;
+}
+
+function processScenes(
+  levelStates: Record<string, LevelState>,
+  scenes: RawScene[]
+): Scene[] {
+  // The cutoff is the index of the latest uncompleted level.
+  // Everything after the cutoff is locked.
+  const cutoff = getLastUncompletedLevelIndex(levelStates, scenes);
+  const result: Scene[] = scenes.map((scene, index) => ({
     ...scene,
     index,
+    unlocked: index <= cutoff,
     levelIndex: getLevelIndexFromScene(scenes, scene),
   }));
   // eslint-disable-next-line no-restricted-syntax
@@ -147,32 +174,27 @@ function processScenes(scenes: Scene[]): SceneWithMeta[] {
   return result;
 }
 
-const SCENES = processScenes(RAW_SCENES);
-
-const getSceneIndexFromRoute = (
-  scenes: SceneWithMeta[],
+function getSceneIndexFromRoute(
+  scenes: Scene[],
   route: State
-): number | undefined => {
+): number | undefined {
   const givenParamsJSON = JSON.stringify(route.params);
   return scenes.findIndex(
     (scene) =>
       scene.routeName === route.name &&
       JSON.stringify(scene.routeParams) === givenParamsJSON
   );
-};
+}
 
-const getSceneFromRoute = (
-  scenes: SceneWithMeta[],
-  route: State
-): SceneWithMeta | null => {
+function getSceneFromRoute(scenes: Scene[], route: State): Scene | null {
   const index = getSceneIndexFromRoute(scenes, route);
   if (index === undefined) {
     return null;
   }
   return scenes[index];
-};
+}
 
-export const ScenesContext = createContext<SceneWithMeta[]>([]);
+export const ScenesContext = createContext<Scene[]>([]);
 
 // A custom hook that returns all scenes.
 export const useScenes = () => useContext(ScenesContext);
@@ -186,10 +208,10 @@ export const useJournalPages = () =>
   useContext(ScenesContext).filter((s) => s.type === "journal");
 
 // A custom hook that always returns the current scene.
-export const useCurrScene = () => {
+export function useCurrScene() {
   const scenes = useScenes();
   const { route } = useRouteNode("");
-  const [currScene, setCurrScene] = useState<SceneWithMeta | null>(
+  const [currScene, setCurrScene] = useState<Scene | null>(
     getSceneFromRoute(scenes, route)
   );
   useEffect(() => {
@@ -197,10 +219,10 @@ export const useCurrScene = () => {
   }, [route, scenes]);
 
   return currScene;
-};
+}
 
 // A custom hook that allows for navigating between scenes.
-export const useSceneNavigator = () => {
+export function useSceneNavigator() {
   const currScene = useCurrScene();
   const router = useRouter();
   const navigateToNextScene = useCallback(() => {
@@ -214,11 +236,11 @@ export const useSceneNavigator = () => {
     router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
   }, [currScene, router]);
   return { navigateToNextScene };
-};
+}
 
 // A custom hook that returns the current level or, if the current
 // scene is not a level returns null.
-export const useCurrLevel = () => {
+export function useCurrLevel() {
   const currScene = useCurrScene();
   if (!currScene) {
     return null;
@@ -227,10 +249,14 @@ export const useCurrLevel = () => {
     return currScene.level;
   }
   return null;
-};
+}
 
 export function ScenesProvider(props: PropsWithChildren<{}>) {
-  const providerValue = useMemo(() => SCENES, []);
+  const [saveData, _] = useSaveData();
+  const providerValue = useMemo(
+    () => processScenes(saveData.levelStates, RAW_SCENES),
+    [saveData.levelStates]
+  );
 
   return (
     <ScenesContext.Provider value={providerValue}>

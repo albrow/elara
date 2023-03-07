@@ -3,11 +3,11 @@ import { Box, MenuItem, Text } from "@chakra-ui/react";
 import { useCallback } from "react";
 
 import { MdLock } from "react-icons/md";
-import { SceneWithMeta } from "../../contexts/scenes";
+import { Scene } from "../../contexts/scenes";
 import DisablableLink from "./disablable_link";
 
 interface SceneLinkProps {
-  scene: SceneWithMeta;
+  scene: Scene;
   isLocked: boolean;
 }
 
