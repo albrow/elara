@@ -30,6 +30,9 @@ export default function Journal() {
     } else {
       document.title = "Elara | Journal";
     }
+    // Scroll to the top of the page when loading a new
+    // journal section.
+    window.scrollTo(0, 0);
   }, [sectionName]);
 
   const getDialogTree = useCallback(() => {
