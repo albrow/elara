@@ -34,7 +34,7 @@ move_forward(1);
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(0, 0, 10, Orientation::Right);
+        state.player = Player::new(0, 0, 20, Orientation::Right);
         state.goal = Some(Goal {
             pos: Pos { x: 3, y: 3 },
         });

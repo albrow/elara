@@ -23,7 +23,7 @@ impl Level for MovementPartTwo {
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(8, 7, 10, Orientation::Right);
+        state.player = Player::new(8, 7, 20, Orientation::Right);
         state.goal = Some(Goal {
             pos: Pos { x: 8, y: 4 },
         });
