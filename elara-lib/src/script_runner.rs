@@ -147,7 +147,7 @@ impl ScriptRunner {
         // stable.
         #[allow(deprecated)]
         engine.register_debugger(
-            |_| Dynamic::from(()),
+            |_engine, debugger| debugger,
             move |context, _event, node, _source, pos| {
                 // log!("{:?}: {:?} at {}", _event, node, pos);
                 match node {
@@ -569,7 +569,7 @@ impl ScriptRunner {
             // an error.
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
-            engine.register_result_fn(
+            engine.register_fn(
                 "read_data",
                 move || -> Result<Dynamic, Box<EvalAltResult>> {
                     tx.borrow().send(Action::ReadData).unwrap();
