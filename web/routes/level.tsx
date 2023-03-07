@@ -5,7 +5,6 @@ import { Container, Flex, Text, Box } from "@chakra-ui/react";
 import {
   FuzzyStateWithLine,
   Game,
-  LevelData,
   RunResult,
   ScriptStats,
 } from "../../elara-lib/pkg";
@@ -40,9 +39,16 @@ export default function Level() {
     }
     return s;
   }, [route]);
-
   const currLevel = useCallback(() => currScene().level!, [currScene]);
-  const levelIndex = getLevelIndexFromScene(currScene());
+  const levelIndex = useCallback(
+    () => getLevelIndexFromScene(currScene()),
+    [currScene]
+  );
+
+  // Update the page title whenever the level changes.
+  useEffect(() => {
+    document.title = `Elara | Level ${levelIndex()}: ${currLevel().name}`;
+  }, [levelIndex, currLevel]);
 
   const initialCode = useCallback(
     () =>
@@ -52,53 +58,14 @@ export default function Level() {
   );
 
   const [boardState, setBoardState] = useState(currLevel().initial_state);
-
-  // Set the boardState whenever the level changes.
   useEffect(() => {
+    // Set the boardState whenever the level changes.
     setBoardState(currLevel().initial_state);
   }, [currLevel]);
 
   const [showShortsModal, _] = useShortsModal();
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalKind, setModalKind] = useState<"success" | "failure">("success");
-  const [modalTitle, setModalTitle] = useState("");
-  const [modalMessage, setModalMessage] = useState("");
-  const [modalStats, setModalStats] = useState<ScriptStats | undefined>();
-  const dialogTreeName = `level_${currLevel().short_name}`;
-
-  const getDialogTree = useCallback(() => {
-    if (!(dialogTreeName in TREES)) {
-      // There is no dialog tree for this level.
-      return null;
-    }
-    return dialogTreeName;
-  }, [dialogTreeName]);
-
-  const shouldShowDialogTree = useCallback(
-    () =>
-      getDialogTree() !== null &&
-      !saveData.seenDialogTrees.includes(dialogTreeName),
-    [dialogTreeName, getDialogTree, saveData.seenDialogTrees]
-  );
-
-  const [dialogVisible, setDialogVisible] = useState(shouldShowDialogTree());
-
   useEffect(() => {
-    document.title = `Elara | Level ${levelIndex}: ${currLevel().name}`;
-  }, [levelIndex, currLevel]);
-
-  const resetLevelState = useCallback(
-    (levelOverride?: LevelData) => {
-      const levelToLoad = levelOverride || currLevel();
-      setModalVisible(false);
-      setBoardState(levelToLoad.initial_state);
-    },
-    [currLevel]
-  );
-
-  useEffect(() => {
-    // Check if we need to show tutorial shorts modal.
+    // Update the shorts modal state whenever the route changes.
     const scene = getSceneFromRoute(route);
     if (scene?.tutorialShorts) {
       // Note this may be overriden by the ShortsModalContext if the user
@@ -106,6 +73,40 @@ export default function Level() {
       showShortsModal(scene.tutorialShorts);
     }
   }, [route, showShortsModal]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalKind, setModalKind] = useState<"success" | "failure">("success");
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalStats, setModalStats] = useState<ScriptStats | undefined>();
+
+  const getDialogTree = useCallback(() => {
+    const dialogTreeName = `level_${currLevel().short_name}`;
+    if (!(dialogTreeName in TREES)) {
+      // There is no dialog tree for this level.
+      return null;
+    }
+    return dialogTreeName;
+  }, [currLevel]);
+
+  const shouldShowDialogTree = useCallback(() => {
+    const dialogTreeName = `level_${currLevel().short_name}`;
+    return (
+      getDialogTree() !== null &&
+      !saveData.seenDialogTrees.includes(dialogTreeName)
+    );
+  }, [currLevel, getDialogTree, saveData.seenDialogTrees]);
+
+  const [dialogVisible, setDialogVisible] = useState(shouldShowDialogTree());
+  useEffect(() => {
+    // Update the dialog state whenever the level changes.
+    setDialogVisible(shouldShowDialogTree());
+  }, [shouldShowDialogTree]);
+
+  const resetLevelState = useCallback(() => {
+    setModalVisible(false);
+    setBoardState(currLevel().initial_state);
+  }, [currLevel]);
 
   // Returns a function that can be used to run a script.
   // Passed through to the editor, which doesn't know about the game object or
@@ -204,7 +205,7 @@ export default function Level() {
       <Container maxW="container.xl" mt={6}>
         <Box>
           <Text fontSize="2xl" fontWeight="bold" mb={1}>
-            Level {levelIndex}: {currLevel().name}
+            Level {levelIndex()}: {currLevel().name}
           </Text>
           <p>
             <b>Objective:</b> <ObjectiveText text={currLevel().objective} />

@@ -75,20 +75,21 @@ export default function LevelEndModal(props: LevelEndModalProps) {
     [route]
   );
 
-  const navigateToNextScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(route);
-    if (nextScene == null) {
-      throw new Error("Invalid route");
-    }
-    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
-  }, [route, router]);
-
   const handleClose = useCallback(() => {
     props.setVisible(false);
     if (props.onClose) {
       props.onClose();
     }
   }, [props]);
+
+  const navigateToNextScene = useCallback(() => {
+    const nextScene = getNextSceneFromRoute(route);
+    if (nextScene == null) {
+      throw new Error("Invalid route");
+    }
+    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
+    handleClose();
+  }, [handleClose, route, router]);
 
   // TODO(albrow): Fix issues with z-index. Doesn't seem to be respecting the
   // values I'm setting here, and the player message can sometimes appear on
