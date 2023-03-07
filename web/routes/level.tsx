@@ -1,7 +1,6 @@
-import { useRouteNode, useRouter } from "react-router5";
+import { useRouteNode } from "react-router5";
 import { useState, useEffect, useCallback } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
-import { Unsubscribe } from "router5/dist/types/base";
 
 import {
   FuzzyStateWithLine,
@@ -30,15 +29,20 @@ const game = Game.new();
 
 export default function Level() {
   const { route } = useRouteNode("");
-  const router = useRouter();
   const [saveData, setSaveData] = useSaveData();
 
-  const currScene = getSceneFromRoute(route);
-  if (!currScene || !currScene.level) {
-    throw new Error("cannot determine level");
-  }
-  const currLevel = useCallback(() => currScene.level!, [currScene]);
-  const levelIndex = getLevelIndexFromScene(currScene);
+  const currScene = useCallback(() => {
+    const s = getSceneFromRoute(route);
+    if (!s) {
+      throw new Error(
+        `Could not get scene from route: ${route.name} ${route.params}`
+      );
+    }
+    return s;
+  }, [route]);
+
+  const currLevel = useCallback(() => currScene().level!, [currScene]);
+  const levelIndex = getLevelIndexFromScene(currScene());
 
   const initialCode = useCallback(
     () =>
@@ -48,6 +52,11 @@ export default function Level() {
   );
 
   const [boardState, setBoardState] = useState(currLevel().initial_state);
+
+  // Set the boardState whenever the level changes.
+  useEffect(() => {
+    setBoardState(currLevel().initial_state);
+  }, [currLevel]);
 
   const [showShortsModal, _] = useShortsModal();
 
@@ -87,15 +96,6 @@ export default function Level() {
     },
     [currLevel]
   );
-
-  // Reset the relevant state when the URL changes.
-  useEffect(() => {
-    const unsubscribe = router.subscribe((_transition) => {
-      resetLevelState(currLevel());
-      setDialogVisible(shouldShowDialogTree());
-    }) as Unsubscribe;
-    return unsubscribe;
-  }, [currLevel, resetLevelState, router, shouldShowDialogTree]);
 
   useEffect(() => {
     // Check if we need to show tutorial shorts modal.
