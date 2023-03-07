@@ -7,7 +7,9 @@ import { createTheme } from "@uiw/codemirror-themes";
 import { tags as t } from "@lezer/highlight";
 import { Box } from "@chakra-ui/react";
 import { Compartment } from "@codemirror/state";
+import { Unsubscribe } from "router5/dist/types/base";
 
+import { useRouter } from "react-router5";
 import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
 import {
   FuzzyStateWithLine,
@@ -127,6 +129,8 @@ interface EditorProps {
   // Whether to automatically reset the editor state when the replay is done.
   // (default: true).
   resetOnReplayDone?: boolean;
+  // An optional callback that can be used, e.g., to save the code to local storage.
+  persistCode?: (script: string) => void;
 }
 
 export default function Editor(props: EditorProps) {
@@ -137,6 +141,7 @@ export default function Editor(props: EditorProps) {
   const replayer = useRef<Replayer | null>(null);
   const [numSteps, setNumSteps] = useState<number>(0);
   const [stepIndex, setStepIndex] = useState<number>(0);
+  const router = useRouter();
 
   const { setContainer, view } = useCodeMirror({
     height: props.type === "level" || props.type === "demo" ? "377px" : "auto",
@@ -158,6 +163,49 @@ export default function Editor(props: EditorProps) {
     },
     []
   );
+
+  const resetState = useCallback(() => {
+    setState("editing");
+    setActiveLine(null);
+    setCodeError(null);
+    setStepIndex(0);
+    setNumSteps(0);
+  }, []);
+
+  const getCode = useCallback(
+    () => view?.state.doc.toString() || "",
+    [view?.state.doc]
+  );
+
+  const setCode = useCallback(
+    (code: string) => {
+      view?.dispatch({
+        changes: {
+          from: 0,
+          to: view.state.doc.length,
+          insert: code,
+        },
+      });
+    },
+    [view]
+  );
+
+  // Handle route changes.
+  useEffect(() => {
+    const unsubscribe = router.subscribe((_transition) => {
+      // Persist the code if there is a handler provided.
+      if (props.persistCode) {
+        props.persistCode(getCode());
+      }
+      // Stop the replayer if it is running.
+      if (replayer.current) {
+        replayer.current.stop();
+      }
+      // Reset the state.
+      resetState();
+    }) as Unsubscribe;
+    return unsubscribe;
+  }, [getCode, props, resetState, router]);
 
   useEffect(() => {
     // Update the available functions when needed.
@@ -200,32 +248,6 @@ export default function Editor(props: EditorProps) {
       }
     }
   }, [codeError, view]);
-
-  const getCode = useCallback(
-    () => view?.state.doc.toString() || "",
-    [view?.state.doc]
-  );
-
-  const setCode = useCallback(
-    (code: string) => {
-      view?.dispatch({
-        changes: {
-          from: 0,
-          to: view.state.doc.length,
-          insert: code,
-        },
-      });
-    },
-    [view]
-  );
-
-  const resetState = useCallback(() => {
-    setState("editing");
-    setActiveLine(null);
-    setCodeError(null);
-    setStepIndex(0);
-    setNumSteps(0);
-  }, []);
 
   // If the initial code changes, update the CodeMirror view.
   useEffect(() => {

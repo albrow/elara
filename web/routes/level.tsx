@@ -162,6 +162,18 @@ export default function Level() {
     [currLevel, saveData, setSaveData]
   );
 
+  const persistCode = useCallback(
+    (script: string) => {
+      const pendingSaveData = updateLevelCode(
+        saveData,
+        currLevel().short_name,
+        script
+      );
+      setSaveData(pendingSaveData);
+    },
+    [currLevel, saveData, setSaveData]
+  );
+
   const onScriptError = useCallback((script: string, error: Error) => {
     setModalKind("failure");
     setModalTitle("Uh Oh!");
@@ -211,6 +223,7 @@ export default function Level() {
                 onScriptError={onScriptError}
                 onStep={onEditorStep}
                 onCancel={onScriptCancel}
+                persistCode={persistCode}
               />
             </Box>
           </Box>
