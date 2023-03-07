@@ -109,7 +109,7 @@ impl ScriptRunner {
                             let outcome = Outcome::Failure(err.to_string());
                             let states = self.simulation.borrow().get_history();
                             let positions = self.step_positions.borrow().to_vec();
-                            let stats = compute_stats(&script, &states);
+                            let stats = compute_stats(&engine, &script, &states);
                             return Ok(ScriptResult {
                                 states,
                                 positions,
@@ -130,7 +130,7 @@ impl ScriptRunner {
         let states = self.simulation.borrow().get_history();
         let positions = self.step_positions.borrow().to_vec();
         let outcome = self.simulation.borrow().last_outcome();
-        let stats = compute_stats(&script, &states);
+        let stats = compute_stats(&engine, &script, &states);
         Ok(ScriptResult {
             states,
             positions,
@@ -614,11 +614,14 @@ pub struct ScriptStats {
     pub time_taken: u32,
 }
 
-fn compute_stats(script: &str, states: &Vec<State>) -> ScriptStats {
+fn compute_stats(engine: &Engine, script: &str, states: &Vec<State>) -> ScriptStats {
     let fuel_used = states.last().unwrap().player.total_fuel_used;
     let time_taken = states.len() as u32;
+    // Note that we use compact_script to remove all comments and unnecessary whitespace
+    // prior to computing the length.
+    let code_len = engine.compact_script(script).unwrap().len();
     ScriptStats {
-        code_len: script.trim().len(),
+        code_len,
         fuel_used,
         time_taken,
     }
