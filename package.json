@@ -20,7 +20,6 @@
     "@types/mdx": "^2.0.3",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
-    "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
@@ -58,8 +57,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.6.0",
-    "react-router-dom": "^6.4.2",
+    "react-router5": "^8.0.1",
     "remark-gfm": "^3.0.1",
+    "router5-plugin-browser": "^8.0.1",
+    "router5-plugin-logger": "^8.0.1",
+    "title-case": "^3.0.3",
     "uuid": "^9.0.0"
   },
   "eslintConfig": {
@@ -145,11 +147,13 @@
       "no-unused-vars": [
         "error",
         {
-          "varsIgnorePattern": "^_"
+          "varsIgnorePattern": "^_.*",
+          "argsIgnorePattern": "^_.*"
         }
       ],
       "no-undef": "off",
-      "no-underscore-dangle": "off"
+      "no-underscore-dangle": "off",
+      "jsx-a11y/anchor-is-valid": "off"
     }
   }
 }

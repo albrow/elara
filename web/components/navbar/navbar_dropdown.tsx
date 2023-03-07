@@ -1,8 +1,9 @@
 import { Box, Menu, MenuButton, MenuList } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { MdExpandMore } from "react-icons/md";
-import { LevelState, useSaveData } from "../../contexts/save_data";
+import { useRouter } from "react-router5";
 
+import { LevelState, useSaveData } from "../../contexts/save_data";
 import { Scene, SCENES } from "../../lib/scenes";
 import SceneLink from "./scene_link";
 
@@ -50,6 +51,7 @@ function getLockedSceneIndexes(
 }
 
 export default function NavbarDropdown(props: NavbarDropdownProps) {
+  const router = useRouter();
   const [saveData, _] = useSaveData();
 
   const lockedSceneIndexes = useMemo(() => {
@@ -80,7 +82,7 @@ export default function NavbarDropdown(props: NavbarDropdownProps) {
         {props.scenes.map((scene, index) => (
           <SceneLink
             scene={scene}
-            key={scene.route}
+            key={router.buildPath(scene.routeName, scene.routeParams)}
             isLocked={lockedSceneIndexes[index]}
           />
         ))}

@@ -1,28 +1,44 @@
-import { Outlet, useLocation, Navigate } from "react-router-dom";
 import { Container } from "@chakra-ui/react";
+import { useRouteNode } from "react-router5";
 
+import { useCallback } from "react";
 import Navbar from "../components/navbar/navbar";
+import Home from "./home";
+import Level from "./level";
+import Journal from "./journal";
+import DialogOverBg from "./dialog_over_bg";
+import DemoLevel from "./demo_level";
 
 export default function Root() {
-  const location = useLocation();
+  const { route } = useRouteNode("");
 
-  if (location.pathname === "/") {
-    // This seems to be necessary because of how child routes
-    // work in React Router v6. We can't simply display the content
-    // of Home.tsx inside of Root.tsx, because that would result in the
-    // content being displayed on *every* child route, which is not what
-    // we want.
-    //
-    // So instead, we make it so Root.tsx contains *just* the nav bar
-    // then we automatically redirect to /home if you try to visit /
-    // directly.
-    return <Navigate to="/home" />;
+  if (!route) {
+    throw new Error("Route is undefined");
   }
+
+  const currPage = useCallback(() => {
+    if (route.name === "home") {
+      return <Home />;
+    }
+    if (route.name === "level") {
+      return <Level />;
+    }
+    if (route.name === "dialog") {
+      return <DialogOverBg />;
+    }
+    if (route.name === "journal_section") {
+      return <Journal />;
+    }
+    if (route.name === "demo_level") {
+      return <DemoLevel />;
+    }
+    throw new Error(`Unknown route: ${route.name}`);
+  }, [route]);
 
   return (
     <Container minW="container.md" maxW="none" p={0}>
       <Navbar />
-      <Outlet />
+      {currPage()}
     </Container>
   );
 }

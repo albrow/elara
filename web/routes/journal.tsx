@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useRouteNode } from "react-router5";
 import { useCallback, useEffect, useState } from "react";
 import { Container, Flex, Box } from "@chakra-ui/react";
 import { useSaveData } from "../contexts/save_data";
@@ -12,7 +12,8 @@ import DialogModal from "../components/dialog/dialog_modal";
 import ShowDialogButton from "../components/level/show_dialog_button";
 
 export default function Journal() {
-  let { sectionName } = useParams();
+  const { route } = useRouteNode("");
+  let { sectionName } = route.params as { sectionName?: SectionName };
   const [saveData, _] = useSaveData();
 
   // Default to the first section.

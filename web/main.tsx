@@ -1,7 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import createRouter from "router5";
+import { RouterProvider } from "react-router5";
+import type { Route } from "router5";
+import loggerPlugin from "router5-plugin-logger";
+import browserPlugin from "router5-plugin-browser";
 
 import "@fontsource/nunito/400.css";
 import "@fontsource/nunito/500.css";
@@ -20,7 +24,6 @@ const elaraTheme = extendTheme({
   },
   zIndices: {
     tooltip: TOOL_TIP_Z_INDEX,
-    // TODO(albrow): Combine modal z index constants into one.
     modal: TUTORIAL_MODAL_Z_INDEX,
     modalOverlay: TUTORIAL_MODAL_Z_INDEX - 2,
   },
@@ -33,54 +36,52 @@ const elaraTheme = extendTheme({
   // Importing other components *after* init() means the Components themselves
   // can be synchrounous and not worry about waiting for Wasm to load.
   const Root = (await import("./routes/root")).default;
-  const Home = (await import("./routes/home")).default;
-  const Level = (await import("./routes/level")).default;
-  const Journal = (await import("./routes/journal")).default;
-  const DialogOverBg = (await import("./routes/dialog_over_bg")).default;
-  const DemoLevel = (await import("./routes/demo_level")).default;
 
-  const router = createBrowserRouter([
+  const routes: Route[] = [
     {
+      name: "home",
       path: "/",
-      element: <Root />,
-      children: [
-        {
-          path: "/home",
-          element: <Home />,
-        },
-        {
-          path: "/level/:levelId",
-          element: <Level />,
-        },
-        {
-          path: "/dialog/:treeName",
-          element: <DialogOverBg />,
-        },
-        {
-          path: "/journal",
-          element: <Journal />,
-        },
-        {
-          path: "/journal/concepts/:sectionName",
-          element: <Journal />,
-        },
-        {
-          path: "/demo_level/:levelId",
-          element: <DemoLevel />,
-        },
-      ],
     },
-  ]);
+    {
+      name: "level",
+      path: "/level/:levelId",
+    },
+    {
+      name: "dialog",
+      path: "/dialog/:treeName",
+    },
+    {
+      name: "journal",
+      path: "/journal",
+    },
+    {
+      name: "journal_section",
+      path: "/journal/:sectionName",
+    },
+    {
+      name: "demo_level",
+      path: "/demo_level/:levelId",
+    },
+  ];
+
+  const router = createRouter(routes, {
+    defaultRoute: "home",
+  });
+  router.usePlugin(browserPlugin());
+  router.usePlugin(loggerPlugin);
+  router.start();
 
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-      <ChakraProvider theme={elaraTheme} resetCSS>
-        <SaveDataProvider>
-          <ShortsModalProvider>
-            <RouterProvider router={router} />
-          </ShortsModalProvider>
-        </SaveDataProvider>
-      </ChakraProvider>
+      <RouterProvider router={router}>
+        <ChakraProvider theme={elaraTheme} resetCSS>
+          <SaveDataProvider>
+            <ShortsModalProvider>
+              <Root />
+            </ShortsModalProvider>
+          </SaveDataProvider>
+        </ChakraProvider>
+      </RouterProvider>
     </React.StrictMode>
   );
 })();

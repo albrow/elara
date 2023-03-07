@@ -1,8 +1,8 @@
+import { useRouteNode, useRouter } from "react-router5";
 import { Container, Box, Flex, Spacer, Button } from "@chakra-ui/react";
 import { MdArrowForward } from "react-icons/md";
-import { useLocation, useNavigate } from "react-router-dom";
-
 import { useCallback } from "react";
+
 import { NAVBAR_HEIGHT } from "../../lib/constants";
 import {
   getNextSceneFromRoute,
@@ -15,33 +15,30 @@ import NavbarLink from "./navbar_link";
 import NavbarDropdown from "./navbar_dropdown";
 
 export default function Navbar() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const { route } = useRouteNode("");
   const [saveData, _] = useSaveData();
 
   const navigateToNextScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(location.pathname);
+    const nextScene = getNextSceneFromRoute(route);
     if (nextScene == null) {
       throw new Error("Invalid route");
     }
-    navigate(nextScene.route);
-  }, [location, navigate]);
+    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
+  }, [route, router]);
 
   const isLastScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(location.pathname);
+    const nextScene = getNextSceneFromRoute(route);
     return nextScene == null;
-  }, [location.pathname]);
+  }, [route]);
 
-  const isHome = useCallback(
-    () => location.pathname === "/home",
-    [location.pathname]
-  );
+  const isHome = useCallback(() => route.name === "home", [route.name]);
 
   const shouldRenderNextButton = useCallback(() => {
     if (isLastScene() || isHome()) {
       return false;
     }
-    const currScene = getSceneFromRoute(location.pathname);
+    const currScene = getSceneFromRoute(route);
     if (currScene == null) {
       // E.g. this can happen if we're on the home screen.
       return true;
@@ -51,13 +48,13 @@ export default function Navbar() {
       return saveData.levelStates[levelName as string]?.completed;
     }
     return false;
-  }, [isHome, isLastScene, location.pathname, saveData.levelStates]);
+  }, [isHome, isLastScene, route, saveData.levelStates]);
 
   return (
     <Box bg="gray.800" textColor="white">
       <Container maxW="container.xl" p={2} height={`${NAVBAR_HEIGHT}px`}>
         <Flex height="100%" align="center">
-          <NavbarLink to="/home" name="Home" />
+          <NavbarLink routeName="home" text="Home" />
           <NavbarDropdown name="Journal" scenes={JOURNAL_PAGES} />
           <NavbarDropdown name="Levels" scenes={LEVELS} />
           <Spacer />

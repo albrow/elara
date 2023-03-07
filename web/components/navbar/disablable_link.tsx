@@ -1,8 +1,9 @@
 import { PropsWithChildren } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router5";
 
 export interface DisablableLinkProps {
-  to: string;
+  routeName: string;
+  routeParams?: Record<string, any>;
   disabled?: boolean;
 }
 
@@ -12,5 +13,14 @@ export default function DisablableLink(
   if (props.disabled) {
     return <span>{props.children}</span>;
   }
-  return <Link to={props.to}>{props.children}</Link>;
+
+  return (
+    <Link routeName={props.routeName} routeParams={props.routeParams}>
+      {props.children}
+    </Link>
+  );
 }
+
+DisablableLink.defaultProps = {
+  routeParams: {},
+};

@@ -1,16 +1,16 @@
 import { Container } from "@chakra-ui/react";
-import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useRouteNode } from "react-router5";
 
 import HomeContent from "../components/home.mdx";
 import "../styles/md_content.css";
 
 export default function Home() {
-  const location = useLocation();
+  const { route } = useRouteNode("");
 
   useEffect(() => {
     document.title = "Elara | Home";
-  }, [location]);
+  }, [route.name]);
 
   return (
     <Container maxW="container.xl" p={8}>

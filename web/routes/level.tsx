@@ -1,6 +1,7 @@
-import { useLocation } from "react-router-dom";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouteNode, useRouter } from "react-router5";
+import { useState, useEffect, useCallback } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
+import { Unsubscribe } from "router5/dist/types/base";
 
 import {
   FuzzyStateWithLine,
@@ -28,10 +29,11 @@ import { getLevelEndProps } from "../lib/level_end_messages";
 const game = Game.new();
 
 export default function Level() {
-  const location = useLocation();
+  const { route } = useRouteNode("");
+  const router = useRouter();
   const [saveData, setSaveData] = useSaveData();
 
-  const currScene = getSceneFromRoute(location.pathname);
+  const currScene = getSceneFromRoute(route);
   if (!currScene || !currScene.level) {
     throw new Error("cannot determine level");
   }
@@ -87,24 +89,23 @@ export default function Level() {
   );
 
   // Reset the relevant state when the URL changes.
-  const lastLocation = useRef(location.pathname);
   useEffect(() => {
-    if (lastLocation.current !== location.pathname) {
-      lastLocation.current = location.pathname;
+    const unsubscribe = router.subscribe((_transition) => {
       resetLevelState(currLevel());
       setDialogVisible(shouldShowDialogTree());
-    }
-  }, [currLevel, location, resetLevelState, shouldShowDialogTree]);
+    }) as Unsubscribe;
+    return unsubscribe;
+  }, [currLevel, resetLevelState, router, shouldShowDialogTree]);
 
   useEffect(() => {
     // Check if we need to show tutorial shorts modal.
-    const scene = getSceneFromRoute(location.pathname);
+    const scene = getSceneFromRoute(route);
     if (scene?.tutorialShorts) {
       // Note this may be overriden by the ShortsModalContext if the user
       // has already seen these particular tutorials.
       showShortsModal(scene.tutorialShorts);
     }
-  }, [location, showShortsModal]);
+  }, [route, showShortsModal]);
 
   // Returns a function that can be used to run a script.
   // Passed through to the editor, which doesn't know about the game object or

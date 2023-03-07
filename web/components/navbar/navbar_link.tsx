@@ -1,24 +1,18 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useRouter } from "react-router5";
 import { Box } from "@chakra-ui/react";
 
 interface NavbarLinkProps {
-  to: string;
-  name: string;
+  routeName: string;
+  routeParams?: Record<string, any>;
+  text: string;
 }
 
 export default function NavbarLink(props: NavbarLinkProps) {
-  const location = useLocation();
-  let isActive = location.pathname === props.to;
-
-  // Special case for journal links. We consider the link active if
-  // we are currently viewing at a section, which is a subroute of
-  // /journal/
-  if (location.pathname.startsWith("/journal/")) {
-    isActive = props.to.startsWith("/journal");
-  }
+  const router = useRouter();
+  const isActive = router.isActive(props.routeName, props.routeParams);
 
   return (
-    <Link to={props.to}>
+    <Link routeName={props.routeName} routeParams={props.routeParams}>
       <Box
         fontWeight="bold"
         minW="max"
@@ -32,8 +26,12 @@ export default function NavbarLink(props: NavbarLinkProps) {
           !isActive ? { background: "var(--chakra-colors-gray-700)" } : {}
         }
       >
-        {props.name}
+        {props.text}
       </Box>
     </Link>
   );
 }
+
+NavbarLink.defaultProps = {
+  routeParams: {},
+};

@@ -1,6 +1,7 @@
-import { useLocation, useParams } from "react-router-dom";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouteNode, useRouter } from "react-router5";
+import { useState, useEffect, useCallback } from "react";
 import { Container, Flex, Box } from "@chakra-ui/react";
+import { Unsubscribe } from "router5/dist/types/base";
 
 import {
   FuzzyStateWithLine,
@@ -15,8 +16,9 @@ const game = Game.new();
 
 // A stripped down, smaller level page used for recording GIFs and videos.
 export default function DemoLevel() {
-  const location = useLocation();
-  const levelShortName = useParams().levelId as string;
+  const { route } = useRouteNode("");
+  const router = useRouter();
+  const levelShortName = route.params.levelId;
 
   const currLevel = useCallback(() => {
     const level = LEVELS.find((l) => l.level!.short_name === levelShortName);
@@ -41,13 +43,12 @@ export default function DemoLevel() {
   );
 
   // Reset the relevant state when the URL changes.
-  const lastLocation = useRef(location.pathname);
   useEffect(() => {
-    if (lastLocation.current !== location.pathname) {
-      lastLocation.current = location.pathname;
+    const unsubscribe = router.subscribe((_transition) => {
       resetLevelState(currLevel());
-    }
-  }, [currLevel, location, resetLevelState]);
+    }) as Unsubscribe;
+    return unsubscribe;
+  }, [currLevel, resetLevelState, router]);
 
   // Returns a function that can be used to run a script.
   // Passed through to the editor, which doesn't know about the game object or

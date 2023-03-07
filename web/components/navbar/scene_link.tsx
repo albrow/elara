@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useRouter } from "react-router5";
 import { Box, MenuItem, Text } from "@chakra-ui/react";
 import { useCallback } from "react";
 
@@ -12,8 +12,11 @@ interface SceneLinkProps {
 }
 
 export default function SceneLink(props: SceneLinkProps) {
-  const location = useLocation();
-  const isActive = location.pathname === props.scene.route;
+  const router = useRouter();
+  const isActive = router.isActive(
+    props.scene.routeName,
+    props.scene.routeParams
+  );
 
   const getHoverStyle = useCallback(() => {
     let style = {};
@@ -40,7 +43,11 @@ export default function SceneLink(props: SceneLinkProps) {
   }, [props.scene]);
 
   return (
-    <DisablableLink to={props.scene.route} disabled={props.isLocked}>
+    <DisablableLink
+      routeName={props.scene.routeName}
+      routeParams={props.scene.routeParams}
+      disabled={props.isLocked}
+    >
       <MenuItem
         background={isActive ? "gray.600" : "gray.700"}
         _hover={getHoverStyle()}

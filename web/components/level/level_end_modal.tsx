@@ -19,11 +19,15 @@ import {
   MdOutlineTimer,
   MdReplay,
 } from "react-icons/md";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useRouteNode, useRouter } from "react-router5";
 
 import type { ScriptStats } from "../../../elara-lib/pkg";
 import { LEVEL_END_MODAL_Z_INDEX } from "../../lib/constants";
-import { getNextSceneFromRoute, SCENES } from "../../lib/scenes";
+import {
+  getNextSceneFromRoute,
+  getSceneIndexFromRoute,
+  SCENES,
+} from "../../lib/scenes";
 
 export type LevelOutcome = "success" | "failure" | "no_objective";
 
@@ -63,21 +67,21 @@ function getRandomSuccessGif(): string {
 }
 
 export default function LevelEndModal(props: LevelEndModalProps) {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { route } = useRouteNode("");
+  const router = useRouter();
 
   const isLastScene = useCallback(
-    () => location.pathname === SCENES[SCENES.length - 1].route,
-    [location.pathname]
+    () => getSceneIndexFromRoute(route) === SCENES.length - 1,
+    [route]
   );
 
   const navigateToNextScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(location.pathname);
+    const nextScene = getNextSceneFromRoute(route);
     if (nextScene == null) {
       throw new Error("Invalid route");
     }
-    navigate(nextScene.route);
-  }, [location, navigate]);
+    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
+  }, [route, router]);
 
   const handleClose = useCallback(() => {
     props.setVisible(false);

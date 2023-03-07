@@ -1,9 +1,13 @@
+import { titleCase } from "title-case";
+import type { State } from "router5";
+
 import {
   // eslint-disable-next-line camelcase
   get_level_data,
   LevelData,
 } from "../../elara-lib/pkg";
 import { ShortId } from "./tutorial_shorts";
+import { TREES } from "./dialog_trees";
 
 const levelData: Map<string, LevelData> = new Map(
   Object.entries(get_level_data() as any)
@@ -17,12 +21,13 @@ export type SceneType = "level" | "dialog" | "journal";
 export interface Scene {
   type: SceneType;
   name: string;
-  route: string;
+  routeName: string;
+  routeParams?: Record<string, any>;
   level?: LevelData;
   tutorialShorts?: ShortId[];
 }
 
-function sceneFromLevelName(shortName: string): Scene {
+function levelScene(shortName: string, tutorialShorts?: ShortId[]): Scene {
   const level = levelData.get(shortName);
   if (!level) {
     throw new Error(`No level with short name ${shortName}`);
@@ -30,115 +35,103 @@ function sceneFromLevelName(shortName: string): Scene {
   return {
     type: "level",
     name: `Level: ${level.name}`,
-    route: `/level/${shortName}`,
+    routeName: "level",
+    routeParams: { levelId: shortName },
+    level,
+    tutorialShorts,
+  };
+}
+
+// eslint-disable-next-line no-unused-vars
+function demoLevelScene(shortName: string): Scene {
+  const level = levelData.get(shortName);
+  if (!level) {
+    throw new Error(`No level with short name ${shortName}`);
+  }
+  return {
+    type: "level",
+    name: `(DEMO) Level: ${level.name}`,
+    routeName: "demo_level",
+    routeParams: { levelId: shortName },
     level,
   };
 }
 
-export const SCENES: Scene[] = [
-  {
+function dialogScene(treeName: keyof typeof TREES): Scene {
+  return {
     type: "dialog",
-    name: "Introduction",
-    route: "/dialog/intro",
-  },
-  {
-    ...sceneFromLevelName("movement"),
-    tutorialShorts: [
-      "how_to_run_code",
-      "how_to_pause_and_step",
-      "where_to_find_objectives",
-      "how_to_see_errors",
-    ],
-  },
-  {
+    name: `${TREES[treeName].name}`,
+    routeName: "dialog",
+    routeParams: { treeName },
+  };
+}
+
+function journalScene(sectionName: string): Scene {
+  return {
     type: "journal",
-    name: "Functions",
-    route: "/journal/concepts/functions",
-  },
-  {
-    type: "journal",
-    name: "Comments",
-    route: "/journal/concepts/comments",
-  },
-  {
-    ...sceneFromLevelName("movement_part_two"),
-    tutorialShorts: ["how_to_navigate_scenes"],
-  },
-  {
-    ...sceneFromLevelName("fuel_part_one"),
-    tutorialShorts: ["moving_takes_fuel", "how_to_get_more_fuel"],
-  },
-  {
-    type: "journal",
-    name: "Strings",
-    route: "/journal/concepts/strings",
-  },
-  {
-    type: "journal",
-    name: "Loops",
-    route: "/journal/concepts/loops",
-  },
-  sceneFromLevelName("loops_part_one"),
-  sceneFromLevelName("loops_part_two"),
-  sceneFromLevelName("gates"),
-  {
-    type: "journal",
-    name: "Variables",
-    route: "/journal/concepts/variables",
-  },
-  {
-    type: "journal",
-    name: "Function Outputs",
-    route: "/journal/concepts/function_outputs",
-  },
-  // sceneFromLevelName("data_terminal_demo"),
-  {
-    ...sceneFromLevelName("gate_and_terminal"),
-    tutorialShorts: ["how_to_use_data_terminals"],
-  },
-  {
-    ...sceneFromLevelName("gate_and_terminal_part_two"),
-  },
+    name: titleCase(sectionName.split("_").join(" ")),
+    routeName: "journal_section",
+    routeParams: { sectionName },
+  };
+}
+
+export const SCENES: Scene[] = [
+  dialogScene("intro"),
+  levelScene("movement", [
+    "how_to_run_code",
+    "how_to_pause_and_step",
+    "where_to_find_objectives",
+    "how_to_see_errors",
+  ]),
+  journalScene("functions"),
+  journalScene("comments"),
+  levelScene("movement_part_two", ["how_to_navigate_scenes"]),
+  levelScene("fuel_part_one", ["moving_takes_fuel", "how_to_get_more_fuel"]),
+  journalScene("strings"),
+  journalScene("loops"),
+  levelScene("loops_part_one"),
+  levelScene("loops_part_two"),
+  levelScene("gates"),
+  journalScene("variables"),
+  journalScene("function_outputs"),
+
+  levelScene("gate_and_terminal", ["how_to_use_data_terminals"]),
+  levelScene("gate_and_terminal_part_two"),
   // Temporarily disabled for the sake of saving time during playtesting.
-  // {
-  //   ...sceneFromLevelName("gate_and_terminal_part_three"),
-  // },
-  {
-    type: "journal",
-    name: "Comparisons",
-    route: "/journal/concepts/comparisons",
-  },
-  {
-    type: "journal",
-    name: "If Statements",
-    route: "/journal/concepts/if_statements",
-  },
-  sceneFromLevelName("seismic_activity"),
-  {
-    ...sceneFromLevelName("partly_disabled_movement"),
-    tutorialShorts: ["how_to_view_function_list"],
-  },
-  {
-    type: "journal",
-    name: "Creating Functions",
-    route: "/journal/concepts/creating_functions",
-  },
-  sceneFromLevelName("reimplement_turn_right"),
+  // levelScene("gate_and_terminal_part_three"),
+  journalScene("comparisons"),
+  journalScene("if_statements"),
+  levelScene("seismic_activity"),
+  levelScene("partly_disabled_movement", ["how_to_view_function_list"]),
+  journalScene("creating_functions"),
+  levelScene("reimplement_turn_right"),
 ];
 
 export const LEVELS = SCENES.filter((s) => s.type === "level");
 export const JOURNAL_PAGES = SCENES.filter((s) => s.type === "journal");
 
-export const getSceneIndexFromRoute = (route: string): number | undefined =>
-  SCENES.findIndex((scene) => scene.route === route);
+// TODO(albrow): Wrap this up in a scene provider.
+export const getSceneIndexFromRoute = (route: State): number | undefined => {
+  const givenParamsJSON = JSON.stringify(route.params);
+  return SCENES.findIndex(
+    (scene) =>
+      scene.routeName === route.name &&
+      JSON.stringify(scene.routeParams) === givenParamsJSON
+  );
+};
 
 export const getLevelIndexFromScene = (scene: Scene): number | undefined =>
   LEVELS.indexOf(scene);
 
-export const getSceneFromRoute = (route: string): Scene | undefined =>
-  SCENES.find((scene) => scene.route === route);
+export const getSceneFromRoute = (route: State): Scene | undefined => {
+  const index = getSceneIndexFromRoute(route);
+  if (index === undefined) {
+    return undefined;
+  }
+  return SCENES[index];
+};
 
-export const getNextSceneFromRoute = (route: string): Scene | undefined => {
+export const getNextSceneFromRoute = (route: State): Scene | undefined => {
   const index = getSceneIndexFromRoute(route);
   if (index === undefined) {
     return undefined;

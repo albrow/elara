@@ -1,25 +1,27 @@
 import { Container } from "@chakra-ui/react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useRouteNode, useRouter } from "react-router5";
 import { useEffect, useCallback } from "react";
 
 import { TREES } from "../lib/dialog_trees";
 import { NAVBAR_HEIGHT } from "../lib/constants";
 import { getNextSceneFromRoute } from "../lib/scenes";
-
 import DialogTree from "../components/dialog/dialog_tree";
 
 export default function DialogOverBg() {
-  const location = useLocation();
-  const { treeName } = useParams();
-  const navigate = useNavigate();
+  const { route } = useRouteNode("");
+  const treeName = route.params.treeName as string | null;
+  if (treeName == null) {
+    throw new Error("treeName is required");
+  }
+  const router = useRouter();
 
   const navigateToNextScene = useCallback(() => {
-    const nextScene = getNextSceneFromRoute(location.pathname);
+    const nextScene = getNextSceneFromRoute(route);
     if (nextScene == null) {
       throw new Error("Invalid route");
     }
-    navigate(nextScene.route);
-  }, [location, navigate]);
+    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
+  }, [route, router]);
 
   const currTree = useCallback(() => {
     if (treeName == null) {
@@ -34,7 +36,7 @@ export default function DialogOverBg() {
 
   useEffect(() => {
     document.title = `Elara | ${currTree().name}`;
-  }, [location, currTree]);
+  }, [route, currTree]);
 
   return (
     <Container
@@ -42,7 +44,7 @@ export default function DialogOverBg() {
       height={`calc(100vh - ${NAVBAR_HEIGHT}px)`}
       pb="20px"
     >
-      <DialogTree treeName={treeName!} onEnd={navigateToNextScene} />
+      <DialogTree treeName={treeName} onEnd={navigateToNextScene} />
     </Container>
   );
 }
