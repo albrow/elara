@@ -18,12 +18,17 @@ export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
 
 // Z-indexes are all defined here so we can make sure
 // elements are in the correct order.
+//
+// **IMPORTANT**: If you change these, search for related CSS properties.
+// Some CSS properties need to be manually kept in sync with these values.
+// In such a case, there should be a comment above the CSS property explaining it.
+//
 export const LEVEL_END_MODAL_Z_INDEX = 1200;
 export const JOURNAL_MODAL_Z_INDEX = 1200;
 export const TUTORIAL_MODAL_Z_INDEX = 1200;
 export const DIALOG_MODAL_Z_INDEX = 1150;
-export const HOVER_DOC_Z_INDEX = 900;
-export const TOOL_TIP_Z_INDEX = 800;
+export const CHAKRA_TOOL_TIP_Z_INDEX = 900; // Used for Chakra tooltips (not including rover messages).
+export const CM_TOOL_TIP_Z_INDEX = 800; // Used for Codemirror tooltips (e.g. hover docs).
 export const AXIS_LABEL_Z_INDEX = 700;
 export const PLAYER_MESSAGE_Z_INDEX = 400;
 export const BUG_Z_INDEX = 300;

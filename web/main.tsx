@@ -15,7 +15,10 @@ import "@fontsource/nunito/900.css";
 import init from "../elara-lib/pkg";
 import { SaveDataProvider } from "./contexts/save_data";
 import { ShortsModalProvider } from "./contexts/shorts_modal";
-import { TOOL_TIP_Z_INDEX, TUTORIAL_MODAL_Z_INDEX } from "./lib/constants";
+import {
+  CHAKRA_TOOL_TIP_Z_INDEX,
+  TUTORIAL_MODAL_Z_INDEX,
+} from "./lib/constants";
 
 const elaraTheme = extendTheme({
   fonts: {
@@ -23,7 +26,7 @@ const elaraTheme = extendTheme({
     body: "Nunito, sans-serif",
   },
   zIndices: {
-    tooltip: TOOL_TIP_Z_INDEX,
+    tooltip: CHAKRA_TOOL_TIP_Z_INDEX,
     modal: TUTORIAL_MODAL_Z_INDEX,
     modalOverlay: TUTORIAL_MODAL_Z_INDEX - 2,
   },

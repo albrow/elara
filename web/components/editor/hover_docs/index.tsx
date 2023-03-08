@@ -13,7 +13,6 @@ import { syntaxTree } from "@codemirror/language";
 import { MDXProps } from "mdx/types";
 import { createRoot } from "react-dom/client";
 
-import { HOVER_DOC_Z_INDEX } from "../../../lib/constants";
 import TurnRight from "./pages/turn_right.mdx";
 import TurnLeft from "./pages/turn_left.mdx";
 import MoveForward from "./pages/move_forward.mdx";
@@ -92,16 +91,10 @@ function showDocsOnHover(availFuncs: string[]) {
       end,
       create() {
         const dom = document.createElement("div");
-        dom.style.zIndex = HOVER_DOC_Z_INDEX.toString();
+        dom.className = "hover-doc-container";
         const root = createRoot(dom);
         root.render(
-          <Box
-            px="15px"
-            pb="5px"
-            maxW="500px"
-            className="md-content hover-doc"
-            zIndex={HOVER_DOC_Z_INDEX}
-          >
+          <Box px="15px" pb="5px" maxW="500px" className="md-content hover-doc">
             <Page />
           </Box>
         );

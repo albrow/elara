@@ -2,11 +2,13 @@
   outline: none !important;
 }
 
-.cm-tooltip-hover {
+.cm-tooltip-hover,
+.cm-tooltip,
+.ͼ1 .cm-tooltip {
   /* Unfortunately there's no way to import typescript constants here,
-  but we should make sure this matches TOOL_TIP_Z_INDEX in
+  but we should make sure this matches CM_TOOL_TIP_Z_INDEX in
   web/lib/constants.ts */
-  z-index: 1100;
+  z-index: 800;
 }
 
 .cm-foldGutter {
