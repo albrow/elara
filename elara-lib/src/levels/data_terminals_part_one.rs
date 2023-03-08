@@ -1,0 +1,120 @@
+use super::{Level, Outcome, AVAIL_FUNCS_WITH_READ};
+use crate::{
+    constants::ERR_OUT_OF_FUEL,
+    simulation::{Actor, DataTerminal, Obstacle, Orientation, Player, State},
+};
+
+const HUMMUS_RECIPE: &'static str = "Ingredients: 3 cups chickpeas, juice of 1 lemon...";
+
+#[derive(Copy, Clone)]
+pub struct DataTerminalsPartOne {}
+
+impl Level for DataTerminalsPartOne {
+    fn name(&self) -> &'static str {
+        "Secret Recipe"
+    }
+    fn short_name(&self) -> &'static str {
+        "data_terminals_part_one"
+    }
+    fn objective(&self) -> &'static str {
+        "Use the say function to find out what the data terminal ({terminal}) holds."
+    }
+    fn available_functions(&self) -> &'static Vec<&'static str> {
+        &AVAIL_FUNCS_WITH_READ
+    }
+    fn initial_code(&self) -> &'static str {
+        r#"// Move the rover next to the data terminal. Then, use the
+// read_data function which outputs the data from the terminal.
+// You will need to pass the output from the read_data function as
+// the input to the say function.
+//
+// ADD YOUR CODE BELOW
+
+"#
+    }
+    fn initial_states(&self) -> Vec<State> {
+        let mut state = State::new();
+        state.player = Player::new(0, 3, 10, Orientation::Right);
+        state.goal = None;
+        state.obstacles = vec![
+            Obstacle::new(0, 2),
+            Obstacle::new(1, 2),
+            Obstacle::new(2, 2),
+            Obstacle::new(3, 2),
+            Obstacle::new(4, 2),
+            Obstacle::new(5, 2),
+            Obstacle::new(6, 2),
+            Obstacle::new(0, 4),
+            Obstacle::new(1, 4),
+            Obstacle::new(2, 4),
+            Obstacle::new(3, 4),
+            Obstacle::new(4, 4),
+            Obstacle::new(5, 4),
+            Obstacle::new(6, 4),
+        ];
+        state.data_terminals = vec![DataTerminal::new(6, 3, HUMMUS_RECIPE.to_string())];
+        vec![state]
+    }
+    fn actors(&self) -> Vec<Box<dyn Actor>> {
+        vec![]
+    }
+    fn check_win(&self, state: &State) -> Outcome {
+        // Note that this level uses a different check_win function. There is not
+        // goal to reach. Instead you beat the level by saying the correct message.
+        if state.player.fuel == 0 {
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        } else if state.player.message == HUMMUS_RECIPE {
+            Outcome::Success
+        } else {
+            Outcome::Continue
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::levels::{Outcome, ERR_OUT_OF_FUEL};
+
+    #[test]
+    fn level() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &DataTerminalsPartOne {};
+
+        // // Running the initial code should result in Outcome::Failure due to
+        // // running out of fuel.
+        // let script = LEVEL.initial_code();
+        // let result = game
+        //     .run_player_script_internal(script.to_string(), LEVEL)
+        //     .unwrap();
+        // assert_eq!(
+        //     result.outcome,
+        //     Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        // );
+
+        // // Running this code should result in Outcome::Success.
+        // let script = r"
+        //     move_forward(5);
+        //     turn_left();
+        //     turn_left();
+        //     move_forward(1);
+        //     turn_right();
+        //     move_forward(4);";
+        // let result = game
+        //     .run_player_script_internal(script.to_string(), LEVEL)
+        //     .unwrap();
+        // assert_eq!(result.outcome, Outcome::Success);
+
+        // // Player should not be able to move past the obstacles for this level.
+        // let script = r"
+        //     move_forward(5);
+        //     turn_left();
+        //     move_forward(4);
+        //     turn_left();
+        //     move_forward(1);";
+        // let result = game
+        //     .run_player_script_internal(script.to_string(), LEVEL)
+        //     .unwrap();
+        // assert_eq!(result.outcome, Outcome::Continue);
+    }
+}

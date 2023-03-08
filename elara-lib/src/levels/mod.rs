@@ -1,4 +1,5 @@
 mod data_terminal_demo;
+mod data_terminals_part_one;
 mod enemies_part_one;
 mod fuel_part_one;
 mod gate_and_terminal;
@@ -90,6 +91,9 @@ lazy_static! {
         m.insert(movement::Movement {}.short_name(), Box::new(movement::Movement {}));
         m.insert(movement_part_two::MovementPartTwo {}.short_name(), Box::new(movement_part_two::MovementPartTwo {}));
         m.insert(fuel_part_one::FuelPartOne {}.short_name(), Box::new(fuel_part_one::FuelPartOne {}));
+        m.insert(data_terminals_part_one::DataTerminalsPartOne {}.short_name(),
+            Box::new(data_terminals_part_one::DataTerminalsPartOne {}),
+        );
         m.insert(gates::Gates {}.short_name(), Box::new(gates::Gates {}));
         m.insert(gate_and_terminal::GateAndTerminal {}.short_name(),
             Box::new(gate_and_terminal::GateAndTerminal {}),

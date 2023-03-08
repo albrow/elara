@@ -109,11 +109,11 @@ const RAW_SCENES: RawScene[] = [
   journalScene("loops"),
   levelScene("loops_part_one"),
   levelScene("loops_part_two"),
+  journalScene("function_outputs"),
+  levelScene("data_terminals_part_one", ["how_to_use_data_terminals"]),
   levelScene("gates"),
   journalScene("variables"),
-  journalScene("function_outputs"),
-
-  levelScene("gate_and_terminal", ["how_to_use_data_terminals"]),
+  levelScene("gate_and_terminal"),
   levelScene("gate_and_terminal_part_two"),
   // Temporarily disabled for the sake of saving time during playtesting.
   // levelScene("gate_and_terminal_part_three"),
