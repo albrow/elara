@@ -23,10 +23,11 @@ impl Level for DataTerminalsPartOne {
         &AVAIL_FUNCS_WITH_READ
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Move the rover next to the data terminal. Then, use the
-// read_data function which outputs the data from the terminal.
-// You will need to pass the output from the read_data function as
-// the input to the say function.
+        r#"// The read_data function outputs the data from a terminal, but only
+// if the rover is right next to it!
+//
+// You need to use the output from the read_data function as the
+// *input* to the say function.
 //
 // ADD YOUR CODE BELOW
 
@@ -81,40 +82,45 @@ mod tests {
         let mut game = crate::Game::new();
         const LEVEL: &'static dyn Level = &DataTerminalsPartOne {};
 
-        // // Running the initial code should result in Outcome::Failure due to
-        // // running out of fuel.
-        // let script = LEVEL.initial_code();
-        // let result = game
-        //     .run_player_script_internal(script.to_string(), LEVEL)
-        //     .unwrap();
-        // assert_eq!(
-        //     result.outcome,
-        //     Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
-        // );
+        // Running the initial code should result in Outcome::Continue.
+        let script = LEVEL.initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue,);
 
-        // // Running this code should result in Outcome::Success.
-        // let script = r"
-        //     move_forward(5);
-        //     turn_left();
-        //     turn_left();
-        //     move_forward(1);
-        //     turn_right();
-        //     move_forward(4);";
-        // let result = game
-        //     .run_player_script_internal(script.to_string(), LEVEL)
-        //     .unwrap();
-        // assert_eq!(result.outcome, Outcome::Success);
+        // Running this code should result in Outcome::Success.
+        let script = r"
+            move_forward(5);
+            say(read_data());";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
 
-        // // Player should not be able to move past the obstacles for this level.
-        // let script = r"
-        //     move_forward(5);
-        //     turn_left();
-        //     move_forward(4);
-        //     turn_left();
-        //     move_forward(1);";
-        // let result = game
-        //     .run_player_script_internal(script.to_string(), LEVEL)
-        //     .unwrap();
-        // assert_eq!(result.outcome, Outcome::Continue);
+        // Saying something else should result in Outcome::Continue.
+        let script = r#"
+            move_forward(5);
+            say("This isn't the right message");
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
+
+        // This code should cause the rover to run out of fuel before saying the
+        // message. (This test is a helpful sanity check since we are using a special
+        // check_win function).
+        let script = r#"
+            move_forward(11);
+            say(read_data());
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+        );
     }
 }
