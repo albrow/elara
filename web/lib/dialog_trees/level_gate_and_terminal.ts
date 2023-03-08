@@ -8,7 +8,7 @@ export type NodeIds =
   | "explain_data_terminals_existing_code_2";
 export type ChoiceIds =
   | "request_gate_solution"
-  | "ack_data_terminals"
+  | "ack_password_on_data_terminal"
   | "ack_data_terminals_existing_code_1"
   | "ack_data_terminals_existing_code_2";
 
@@ -26,7 +26,7 @@ export const NODES: {
   },
   explain_data_terminals_2: {
     text: `Oh! I think you can retrieve the password from the nearby data terminal.`,
-    choiceIds: ["ack_data_terminals"],
+    choiceIds: ["ack_password_on_data_terminal"],
   },
   explain_data_terminals_existing_code_1: {
     text:
@@ -47,7 +47,7 @@ export const CHOICES: {
     text: "Oh no! How can I get through?",
     nextId: "explain_data_terminals_1",
   },
-  ack_data_terminals: {
+  ack_password_on_data_terminal: {
     text: "I see...",
     nextId: "explain_data_terminals_existing_code_1",
   },

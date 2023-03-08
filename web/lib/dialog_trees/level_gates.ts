@@ -32,7 +32,7 @@ export const CHOICES: {
 
 export const TREES: DialogTrees = {
   level_gates: {
-    name: "Fuel",
+    name: "Gates",
     startId: "explain_gates",
   },
 };

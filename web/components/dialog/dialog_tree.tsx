@@ -112,22 +112,25 @@ export default function DialogTree(props: DialogTreeProps) {
             />
           ))}
           <ChatMessage text={node.text} fromPlayer={false} />
-          <Flex direction="row" alignContent="right" justifyContent="right">
-            <Box>
-              {node.choiceIds.map((choiceId) => {
-                const choice = CHOICES[choiceId as keyof typeof CHOICES];
-                return (
-                  <Button
-                    ml="1px"
-                    key={choice.text}
-                    fontSize="1.1rem"
-                    onClick={() => choiceClickHandler(choice)}
-                  >
-                    {choice.text}
-                  </Button>
-                );
-              })}
-            </Box>
+          <Flex
+            direction="row"
+            flexWrap="wrap"
+            alignContent="right"
+            justifyContent="right"
+          >
+            {node.choiceIds.map((choiceId) => {
+              const choice = CHOICES[choiceId as keyof typeof CHOICES];
+              return (
+                <Button
+                  ml="1px"
+                  key={choice.text}
+                  fontSize="1.1rem"
+                  onClick={() => choiceClickHandler(choice)}
+                >
+                  {choice.text}
+                </Button>
+              );
+            })}
           </Flex>
           {/* A dummy div used for automatically scrolling to the bottom whenever new messages
       are added */}

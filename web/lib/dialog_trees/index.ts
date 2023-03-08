@@ -6,6 +6,7 @@
 
 import * as Intro from "./intro";
 import * as Gates from "./level_gates";
+import * as DataTerminalsPartOne from "./level_data_terminals_part_one";
 import * as GateAndTerminal from "./level_gate_and_terminal";
 import * as GateAndTerminalPartThree from "./level_gate_and_terminal_part_three";
 import * as Variables from "./journal_variables";
@@ -17,6 +18,7 @@ import * as ReImplementTurnRight from "./level_reimplement_turn_right";
 // that the compiler will catch any incorrect or missing references.
 type NodeIds =
   | Intro.NodeIds
+  | DataTerminalsPartOne.NodeIds
   | Gates.NodeIds
   | GateAndTerminal.NodeIds
   | GateAndTerminalPartThree.NodeIds
@@ -26,6 +28,7 @@ type NodeIds =
   | ReImplementTurnRight.NodeIds;
 type ChoiceIds =
   | Intro.ChoiceIds
+  | DataTerminalsPartOne.ChoiceIds
   | Gates.ChoiceIds
   | GateAndTerminal.ChoiceIds
   | GateAndTerminalPartThree.ChoiceIds
@@ -63,6 +66,7 @@ export interface DialogTrees {
 
 export const NODES: { [key in NodeIds]: DialogNode } = {
   ...Intro.NODES,
+  ...DataTerminalsPartOne.NODES,
   ...Gates.NODES,
   ...GateAndTerminal.NODES,
   ...GateAndTerminalPartThree.NODES,
@@ -74,6 +78,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...Intro.CHOICES,
+  ...DataTerminalsPartOne.CHOICES,
   ...Gates.CHOICES,
   ...GateAndTerminal.CHOICES,
   ...GateAndTerminalPartThree.CHOICES,
@@ -85,6 +90,7 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
 
 export const TREES: DialogTrees = {
   ...Intro.TREES,
+  ...DataTerminalsPartOne.TREES,
   ...Gates.TREES,
   ...GateAndTerminal.TREES,
   ...GateAndTerminalPartThree.TREES,
