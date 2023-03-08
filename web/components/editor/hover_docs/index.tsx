@@ -13,6 +13,7 @@ import { syntaxTree } from "@codemirror/language";
 import { MDXProps } from "mdx/types";
 import { createRoot } from "react-dom/client";
 
+import { HOVER_DOC_Z_INDEX } from "../../../lib/constants";
 import TurnRight from "./pages/turn_right.mdx";
 import TurnLeft from "./pages/turn_left.mdx";
 import MoveForward from "./pages/move_forward.mdx";
@@ -24,6 +25,7 @@ import MoveRight from "./pages/move_right.mdx";
 import Say from "./pages/say.mdx";
 import Add from "./pages/add.mdx";
 import ReadData from "./pages/read_data.mdx";
+import GetOrientation from "./pages/get_orientation.mdx";
 
 const hoverWords = [
   "turn_right",
@@ -37,6 +39,7 @@ const hoverWords = [
   "say",
   "add",
   "read_data",
+  "get_orientation",
 ] as const;
 
 export type HoverWord = typeof hoverWords[number];
@@ -55,6 +58,7 @@ export const docPages: {
   say: Say,
   add: Add,
   read_data: ReadData,
+  get_orientation: GetOrientation,
 };
 
 // A plugin that shows a tooltip with documentation for built-in functions.
@@ -88,9 +92,16 @@ function showDocsOnHover(availFuncs: string[]) {
       end,
       create() {
         const dom = document.createElement("div");
+        dom.style.zIndex = HOVER_DOC_Z_INDEX.toString();
         const root = createRoot(dom);
         root.render(
-          <Box px="15px" pb="5px" maxW="500px" className="md-content hover-doc">
+          <Box
+            px="15px"
+            pb="5px"
+            maxW="500px"
+            className="md-content hover-doc"
+            zIndex={HOVER_DOC_Z_INDEX}
+          >
             <Page />
           </Box>
         );
