@@ -3,11 +3,9 @@ import YoutubeVideo from "../youtube_video";
 
 ### Variables
 
-<YoutubeVideo embedId="7uxW3U6UbRU" />
-
 You can think of variables as "containers" that you can put values into and then
-reference later. Almost anything can be stored in a variable, and you can use
-the variable in other places in your code.
+use later. Almost anything can be stored in a variable: numbers, strings,
+or even the output of a function.
 
 To create a new variable, use the `let` keyword. In the example below, we
 create a new variable called `x` and set it to `2`.
@@ -38,5 +36,18 @@ we create a new variable called `greeting` and set it to `"Hello"`.
   code={`// Create a new variable named greeting and set it to "Hello".
 let greeting = "Hello";
 say(greeting);
+`}
+/>
+
+If a function has an output, you can store it in a variable. This is super useful
+when you want to save the output and use it later on.
+
+<RunnableExample
+  code={`// Store the output of the add function in a variable.
+let sum = add(2, 3);
+move_forward(1);
+
+// Now we can use the variable in other places.
+say(sum);
 `}
 />
