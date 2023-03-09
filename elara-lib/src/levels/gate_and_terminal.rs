@@ -23,9 +23,9 @@ impl Level for GateAndTerminal {
         r#"move_forward(1);
 
 // This code reads the password from the data terminal and
-// stores it in a variable called the_password. (You don't
+// stores it in a variable called password. (You don't
 // need to change this part).
-let the_password = read_data();
+let password = read_data();
 
 // Now you just need to unlock the gate and move to the goal.
 // ADD YOUR CODE BELOW
@@ -80,9 +80,9 @@ mod tests {
         // Running this code should result in Outcome::Success.
         let script = r#"
             move_forward(1);
-            let the_password = read_data();
+            let password = read_data();
             move_forward(1);
-            say(the_password);
+            say(password);
             move_forward(3);
         "#;
         let result = game
