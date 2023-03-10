@@ -31,7 +31,7 @@ export const NODES: {
   explain_data_terminals_existing_code_1: {
     text:
       `To help you get started I already wrote some code for you that reads the data and stores ` +
-      `it in a variable called the_password.`,
+      `it in a variable called password.`,
     choiceIds: ["ack_data_terminals_existing_code_1"],
   },
   explain_data_terminals_existing_code_2: {
