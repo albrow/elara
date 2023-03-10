@@ -113,6 +113,7 @@ const RAW_SCENES: RawScene[] = [
   levelScene("data_terminals_part_one"),
   levelScene("gates"),
   journalScene("variables"),
+  levelScene("variables_intro"),
   levelScene("gate_and_terminal"),
   levelScene("gate_and_terminal_part_two"),
   // Temporarily disabled for the sake of saving time during playtesting.

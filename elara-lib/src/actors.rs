@@ -99,13 +99,15 @@ impl Actor for PlayerChannelActor {
                 }
             }
             Ok(Action::Say(message)) => {
-                // If we're next to a password gate and we said the password, toggle the gate.
-                if let Some(gate_index) = get_adjacent_gate(&state, &state.player.pos) {
-                    let gate = &state.password_gates[gate_index];
-                    if message == gate.password {
-                        state.password_gates[gate_index].open = !gate.open;
-                    }
-                }
+                // If we're next to any password gates and we said the password, toggle the gate.
+                get_adjacent_gates(&state, &state.player.pos)
+                    .iter()
+                    .for_each(|&gate_index| {
+                        let gate = &state.password_gates[gate_index];
+                        if message == gate.password {
+                            state.password_gates[gate_index].open = !gate.open;
+                        }
+                    });
 
                 state.player.message = message;
             }
@@ -263,24 +265,25 @@ fn is_outside_bounds(bounds: &Bounds, pos: &Pos) -> bool {
     pos.x > bounds.max_x || pos.y > bounds.max_y || pos.x < bounds.min_x || pos.y < bounds.min_y
 }
 
-/// Returns the index of the password gate adjacent to the given position.
-/// Returns None if there is no adjacent gate.
-fn get_adjacent_gate(state: &State, pos: &Pos) -> Option<usize> {
+/// Returns the index of any password gates adjacent to the given position.
+/// Returns an empty vector if there is no adjacent gate.
+fn get_adjacent_gates(state: &State, pos: &Pos) -> Vec<usize> {
+    let mut gate_indexes = vec![];
     for (i, gate) in state.password_gates.iter().enumerate() {
         if gate.pos.x == pos.x && gate.pos.y == pos.y + 1 {
-            return Some(i);
+            gate_indexes.push(i);
         }
         if pos.y != 0 && gate.pos.x == pos.x && gate.pos.y == pos.y - 1 {
-            return Some(i);
+            gate_indexes.push(i);
         }
         if gate.pos.x == pos.x + 1 && gate.pos.y == pos.y {
-            return Some(i);
+            gate_indexes.push(i);
         }
         if pos.x != 0 && gate.pos.x == pos.x - 1 && gate.pos.y == pos.y {
-            return Some(i);
+            gate_indexes.push(i);
         }
     }
-    None
+    gate_indexes
 }
 
 #[cfg(test)]

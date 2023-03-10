@@ -14,6 +14,7 @@ mod partly_disabled_movement;
 mod reimplement_turn_right;
 mod sandbox;
 mod seismic_activity;
+mod variables_intro;
 
 use std::collections::HashMap;
 
@@ -95,6 +96,7 @@ lazy_static! {
             Box::new(data_terminals_part_one::DataTerminalsPartOne {}),
         );
         m.insert(gates::Gates {}.short_name(), Box::new(gates::Gates {}));
+        m.insert(variables_intro::VariablesIntro{}.short_name(), Box::new(variables_intro::VariablesIntro{}));
         m.insert(gate_and_terminal::GateAndTerminal {}.short_name(),
             Box::new(gate_and_terminal::GateAndTerminal {}),
         );
