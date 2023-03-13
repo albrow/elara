@@ -52,12 +52,19 @@ export default function MiniBoard(props: MiniBoardProps) {
     [props.state.players]
   );
 
+  // The css transition for the background image.
   const getCssTransition = useCallback(() => {
     if (props.state.players[0].anim_state === "idle") {
       return "none";
     }
     return `background-position ${CSS_ANIM_DURATION}s`;
   }, [props.state.players]);
+
+  // Whether or not the other sprite positions should be animated.
+  const shouldAnimSpritePos = useCallback(
+    () => props.state.players[0].anim_state !== "idle",
+    [props.state.players]
+  );
 
   return (
     <Box
@@ -80,7 +87,7 @@ export default function MiniBoard(props: MiniBoardProps) {
             key={i}
             offset={getSpriteOffset(gate.pos)}
             reading={gate.reading}
-            animatePos
+            animatePos={shouldAnimSpritePos()}
             // fuzzy={gate.fuzzy}
           />
         ))}
