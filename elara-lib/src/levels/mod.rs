@@ -13,6 +13,7 @@ mod movement_part_two;
 mod partly_disabled_movement;
 mod reimplement_turn_right;
 mod sandbox;
+mod sandbox_with_data_terminal;
 mod seismic_activity;
 mod variables_intro;
 
@@ -110,6 +111,7 @@ lazy_static! {
         m.insert(loops_part_one::LoopsPartOne {}.short_name(), Box::new(loops_part_one::LoopsPartOne {}));
         m.insert(loops_part_two::LoopsPartTwo {}.short_name(), Box::new(loops_part_two::LoopsPartTwo {}));
         m.insert(sandbox::Sandbox{}.short_name(), Box::new(sandbox::Sandbox{}));
+        m.insert(sandbox_with_data_terminal::SandboxWithDataTerminal{}.short_name(), Box::new(sandbox_with_data_terminal::SandboxWithDataTerminal {}));
         m.insert(seismic_activity::SeismicActivity{}.short_name(), Box::new(seismic_activity::SeismicActivity{}));
         m.insert(data_terminal_demo::DataTerminalDemo{}.short_name(), Box::new(data_terminal_demo::DataTerminalDemo{}));
         m.insert(partly_disabled_movement::PartlyDisabledMovement{}.short_name(), Box::new(partly_disabled_movement::PartlyDisabledMovement{}));

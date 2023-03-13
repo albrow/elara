@@ -7,16 +7,18 @@ import {
   Game,
   FuzzyStateWithLine,
   RunResult,
+  LevelData,
 } from "../../../elara-lib/pkg/elara_lib";
 import MiniBoard from "./mini_board";
 
 export interface RunnableExampleProps {
   code: string;
+  level?: LevelData;
 }
 
 export default function RunnableExample(props: RunnableExampleProps) {
   const game = Game.new();
-  const initialState = SANDBOX_LEVEL.initial_state;
+  const initialState = props.level!.initial_state;
 
   // If the initial code is short, add some extra lines
   // to make the editor look better.
@@ -30,15 +32,13 @@ export default function RunnableExample(props: RunnableExampleProps) {
     setBoardState(initialState);
   }, [initialState]);
 
-  // Note: For runnable examples, we always use the special "sandbox" level.
   const runScript = useCallback(
-    (script: string) =>
-      game.run_player_script(script, SANDBOX_LEVEL.short_name),
-    [game]
+    (script: string) => game.run_player_script(script, props.level!.short_name),
+    [game, props.level]
   );
 
   const onReplayDone = useCallback(
-    (script: string, result: RunResult) => {
+    (_script: string, result: RunResult) => {
       if (!["success", "continue", "no_objective"].includes(result.outcome)) {
         // TDOO(albrow): Use a modal component instead of an alert window.
         alert(result.outcome);
@@ -87,3 +87,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
     </Stack>
   );
 }
+
+RunnableExample.defaultProps = {
+  level: SANDBOX_LEVEL,
+};

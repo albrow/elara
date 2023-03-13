@@ -42,8 +42,11 @@ const levelData: Map<string, LevelData> = new Map(
   Object.entries(get_level_data() as any)
 );
 
-// A special level used for runnable examples.
+// Special levels used for runnable examples.
 export const SANDBOX_LEVEL = levelData.get("sandbox")!;
+export const SANDBOX_WITH_TERMINAL_LEVEL = levelData.get(
+  "sandbox_with_data_terminal"
+)!;
 
 function levelScene(shortName: string, tutorialShorts?: ShortId[]): RawScene {
   const level = levelData.get(shortName);
@@ -265,26 +268,3 @@ export function ScenesProvider(props: PropsWithChildren<{}>) {
     </ScenesContext.Provider>
   );
 }
-
-// TODO(albrow): Uncomment this if we get vitest working.
-// if (import.meta.vitest) {
-//   const { test, expect } = import.meta.vitest;
-
-//   test("processScenes", () => {
-//     const scenes = processScenes([
-//       { type: "level", name: "Level 1", routeName: "level" },
-//       { type: "level", name: "Level 2", routeName: "level" },
-//       { type: "level", name: "Level 3", routeName: "level" },
-//     ]);
-//     const expectedScenes: SceneWithMeta[] = [
-//       { type: "level", name: "Level 1", routeName: "level", index: 0 },
-//       { type: "level", name: "Level 2", routeName: "level", index: 1 },
-//       { type: "level", name: "Level 3", routeName: "level", index: 2 },
-//     ];
-//     // eslint-disable-next-line prefer-destructuring
-//     expectedScenes[0].nextScene = expectedScenes[1];
-//     // eslint-disable-next-line prefer-destructuring
-//     expectedScenes[1].nextScene = expectedScenes[2];
-//     expect(scenes).toStrictEqual([expectedScenes]);
-//   });
-// }
