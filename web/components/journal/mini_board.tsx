@@ -62,6 +62,7 @@ export default function MiniBoard(props: MiniBoardProps) {
   return (
     <Box
       id="mini-board"
+      overflow="hidden"
       minH="110px"
       width={440}
       p={4}
