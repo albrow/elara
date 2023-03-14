@@ -131,6 +131,8 @@ interface EditorProps {
   resetOnReplayDone?: boolean;
   // An optional callback that can be used, e.g., to save the code to local storage.
   persistCode?: (script: string) => void;
+  // Whether or not to show the hamburger menu in the control bar with additional options.
+  showAdditionalOptions?: boolean;
 }
 
 export default function Editor(props: EditorProps) {
@@ -438,6 +440,7 @@ export default function Editor(props: EditorProps) {
         numSteps={numSteps}
         onSliderChange={onSliderChange}
         sliderSize={props.type === "demo" ? "small" : "full"}
+        showAdditionalOptions={props.showAdditionalOptions}
       />
       <Box
         id="editor-wrapper"

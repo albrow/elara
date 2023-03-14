@@ -50,6 +50,7 @@ export interface ControlBarProps {
   onSliderChange?: (value: number) => void;
   onSliderChangeEnd?: (value: number) => void;
   sliderSize?: "full" | "small";
+  showAdditionalOptions?: boolean;
 }
 
 export default function ControlBar(props: ControlBarProps) {
@@ -221,7 +222,11 @@ export default function ControlBar(props: ControlBarProps) {
         )}
         <Spacer />
         <FunctionList funcNames={props.availableFunctions} />
-        <Box hidden={!props.onDownload && !props.onUpload}>
+        <Box
+          hidden={
+            !props.onDownload && !props.onUpload && props.showAdditionalOptions
+          }
+        >
           <Menu placement="bottom-end">
             <Tooltip label="Additional options">
               <MenuButton
@@ -267,4 +272,5 @@ export default function ControlBar(props: ControlBarProps) {
 
 ControlBar.defaultProps = {
   sliderSize: "full",
+  showAdditionalOptions: true,
 };
