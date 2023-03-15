@@ -75,7 +75,8 @@
 }
 
 .md-content table {
-  margin-bottom: 1rem;
+  margin: auto;
+  margin-bottom: 1.5rem;
   border: solid 1px var(--chakra-colors-gray-300);
   padding: 0.1rem 0.4rem;
 }
