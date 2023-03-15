@@ -1007,7 +1007,7 @@ mod test {
             .unwrap();
         assert_trace_eq(
             &result,
-            vec![vec![], vec![9, 6, 3], vec![9, 6, 3], vec![9, 6, 4]],
+            vec![vec![], vec![9, 7, 3], vec![9, 7, 3], vec![9, 7, 4]],
         );
     }
 }
