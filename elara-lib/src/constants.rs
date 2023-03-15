@@ -101,6 +101,13 @@ lazy_static! {
             },
         );
         m.insert(
+            "get_orientation",
+            BuiltinFunction {
+                name: "get_orientation",
+                arg_types: &[],
+            },
+        );
+        m.insert(
             "add",
             BuiltinFunction {
                 name: "add",

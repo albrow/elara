@@ -90,6 +90,11 @@ const builtInFuncs: PartialFuncOption[] = [
     info: "Move right by a number of spaces.",
     apply: applyFuncWithArgs,
   },
+  {
+    label: "get_orientation",
+    info: "Outputs whatever direction G.R.O.V.E.R. is facing.",
+    apply: applyFuncWithoutArgs,
+  },
   // The add function is just for teaching purposes, so we
   // don't want to autocomplete it.
   // {
