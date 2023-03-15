@@ -126,6 +126,7 @@ interface EditorProps {
   availableFunctions: string[];
   onStep?: (step: FuzzyStateWithLine) => void;
   onCancel?: (script: string) => void;
+  onStateChange?: (state: EditorState) => void;
   // Whether to automatically reset the editor state when the replay is done.
   // (default: true).
   resetOnReplayDone?: boolean;
@@ -165,6 +166,14 @@ export default function Editor(props: EditorProps) {
     },
     []
   );
+
+  const { onStateChange } = props;
+  useEffect(() => {
+    // Call the onStateChange handler whenever the state changes.
+    if (onStateChange) {
+      onStateChange(state);
+    }
+  }, [state, onStateChange]);
 
   const resetState = useCallback(() => {
     setState("editing");

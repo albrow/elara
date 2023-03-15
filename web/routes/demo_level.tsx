@@ -9,7 +9,7 @@ import {
   LevelData,
 } from "../../elara-lib/pkg/elara_lib";
 import Board from "../components/board/board";
-import Editor from "../components/editor/editor";
+import Editor, { EditorState } from "../components/editor/editor";
 import { useCurrScene } from "../contexts/scenes";
 
 const game = Game.new();
@@ -18,6 +18,7 @@ const game = Game.new();
 export default function DemoLevel() {
   const router = useRouter();
   const currScene = useCurrScene();
+  const [editorState, setEditorState] = useState<EditorState>("editing");
 
   const currLevel = useCallback(() => {
     if (!currScene || currScene.type !== "level" || !currScene.level) {
@@ -62,6 +63,10 @@ export default function DemoLevel() {
     setBoardState(step.state);
   }, []);
 
+  const onEditorStateChange = useCallback((state: EditorState) => {
+    setEditorState(state);
+  }, []);
+
   const onScriptCancel = useCallback(() => {
     resetLevelState();
   }, [resetLevelState]);
@@ -82,11 +87,15 @@ export default function DemoLevel() {
               onCancel={onScriptCancel}
               resetOnReplayDone={false}
               availableFunctions={currLevel().available_functions}
+              onStateChange={onEditorStateChange}
             />
           </Box>
         </Box>
         <Box id="board-wrapper" position="relative">
-          <Board gameState={boardState} />
+          <Board
+            gameState={boardState}
+            enableAnimations={editorState === "running"}
+          />
         </Box>
       </Flex>
     </Container>

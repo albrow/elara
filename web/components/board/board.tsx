@@ -30,6 +30,7 @@ import Square from "./square";
 
 interface BoardProps {
   gameState: FuzzyState;
+  enableAnimations: boolean;
 }
 
 export default function Board(props: BoardProps) {
@@ -100,6 +101,7 @@ export default function Board(props: BoardProps) {
             // fuzzy={player.fuzzy}
             animState={player.anim_state}
             facing={player.facing}
+            enableAnimations={props.enableAnimations}
           />
         );
       })}

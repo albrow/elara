@@ -17,6 +17,7 @@ import { AXIS_WIDTH, CSS_ANIM_DURATION, TILE_SIZE } from "../../lib/constants";
 
 export interface MiniBoardProps {
   state: FuzzyState;
+  enableAnimations: boolean;
 }
 
 export default function MiniBoard(props: MiniBoardProps) {
@@ -54,16 +55,20 @@ export default function MiniBoard(props: MiniBoardProps) {
 
   // The css transition for the background image.
   const getCssTransition = useCallback(() => {
-    if (props.state.players[0].anim_state === "idle") {
+    if (
+      !props.enableAnimations ||
+      props.state.players[0].anim_state === "idle"
+    ) {
       return "none";
     }
     return `background-position ${CSS_ANIM_DURATION}s`;
-  }, [props.state.players]);
+  }, [props.enableAnimations, props.state.players]);
 
   // Whether or not the other sprite positions should be animated.
   const shouldAnimSpritePos = useCallback(
-    () => props.state.players[0].anim_state !== "idle",
-    [props.state.players]
+    () =>
+      props.enableAnimations && props.state.players[0].anim_state !== "idle",
+    [props.enableAnimations, props.state.players]
   );
 
   return (
@@ -96,6 +101,7 @@ export default function MiniBoard(props: MiniBoardProps) {
           fuel={props.state.players[0].fuel}
           message={props.state.players[0].message}
           animState={props.state.players[0].anim_state}
+          enableAnimations={props.enableAnimations}
           facing={props.state.players[0].facing}
         />
       </Box>

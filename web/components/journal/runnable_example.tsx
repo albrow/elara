@@ -2,7 +2,7 @@ import { Box, Stack } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 
 import { SANDBOX_LEVEL } from "../../contexts/scenes";
-import Editor from "../editor/editor";
+import Editor, { EditorState } from "../editor/editor";
 import {
   Game,
   FuzzyStateWithLine,
@@ -19,6 +19,7 @@ export interface RunnableExampleProps {
 export default function RunnableExample(props: RunnableExampleProps) {
   const game = Game.new();
   const initialState = props.level!.initial_state;
+  const [editorState, setEditorState] = useState<EditorState>("editing");
 
   // If the initial code is short, add some extra lines
   // to make the editor look better.
@@ -48,9 +49,13 @@ export default function RunnableExample(props: RunnableExampleProps) {
     [resetState]
   );
 
-  const onEditorStep = (step: FuzzyStateWithLine) => {
+  const onEditorStep = useCallback((step: FuzzyStateWithLine) => {
     setBoardState(step.state);
-  };
+  }, []);
+
+  const onEditorStateChange = useCallback((state: EditorState) => {
+    setEditorState(state);
+  }, []);
 
   const onScriptError = useCallback((script: string, error: Error) => {
     // TDOO(albrow): Use a modal component instead of an alert window.
@@ -81,9 +86,14 @@ export default function RunnableExample(props: RunnableExampleProps) {
           onScriptError={onScriptError}
           onStep={onEditorStep}
           onCancel={onScriptCancel}
+          onStateChange={onEditorStateChange}
         />
       </Box>
-      <MiniBoard state={boardState} />
+      <MiniBoard
+        state={boardState}
+        // Only enable animations when the editor is running.
+        enableAnimations={editorState === "running"}
+      />
     </Stack>
   );
 }

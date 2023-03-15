@@ -20,6 +20,7 @@ interface PlayerProps {
   fuel: number;
   message: string;
   animState: string;
+  enableAnimations: boolean;
   facing: string;
 }
 
@@ -29,11 +30,11 @@ function speechBubblePlacement(pos: Pos): PlacementWithLogical {
 
 export default function Player(props: PlayerProps) {
   const getCssTransition = useCallback(() => {
-    if (props.animState === "idle") {
+    if (!props.enableAnimations || props.animState === "idle") {
       return "none";
     }
     return `left ${CSS_ANIM_DURATION}s, top ${CSS_ANIM_DURATION}s`;
-  }, [props.animState]);
+  }, [props.animState, props.enableAnimations]);
 
   const getRobotImgUrl = useCallback(() => {
     switch (props.facing) {

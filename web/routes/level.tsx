@@ -8,7 +8,7 @@ import {
   ScriptStats,
 } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
-import Editor from "../components/editor/editor";
+import Editor, { EditorState } from "../components/editor/editor";
 import ObjectiveText from "../components/level/objective_text";
 import {
   markLevelCompleted,
@@ -28,6 +28,7 @@ const game = Game.new();
 export default function Level() {
   const [saveData, setSaveData] = useSaveData();
   const currScene = useCurrScene();
+  const [editorState, setEditorState] = useState<EditorState>("editing");
 
   const currLevel = useCallback(() => {
     if (!currScene || currScene.type !== "level" || !currScene.level) {
@@ -126,6 +127,10 @@ export default function Level() {
     setBoardState(step.state);
   }, []);
 
+  const onEditorStateChange = useCallback((state: EditorState) => {
+    setEditorState(state);
+  }, []);
+
   // Called when the replay is done (i.e. the user has either completed or failed the
   // objective).
   const onReplayDone = useCallback(
@@ -220,11 +225,18 @@ export default function Level() {
                 onStep={onEditorStep}
                 onCancel={onScriptCancel}
                 persistCode={persistCode}
+                onStateChange={onEditorStateChange}
               />
             </Box>
           </Box>
           <Box id="board-wrapper" position="relative">
-            <Board gameState={boardState} />
+            <Board
+              gameState={boardState}
+              // Note: We only want to enable animations if the editor is in the "running" state.
+              // If the editor is in the "paused" state, it's more clear to move the sprites in
+              // discrete steps.
+              enableAnimations={editorState === "running"}
+            />
           </Box>
         </Flex>
         {!dialogVisible && getDialogTree() !== null && (
