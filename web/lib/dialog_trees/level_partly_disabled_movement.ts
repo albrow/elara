@@ -29,7 +29,7 @@ export const NODES: {
     nextId: "clarify_grover_damage_2",
   },
   clarify_grover_damage_2: {
-    text: "The damage is mostly to the movement and navigation system. It looks like his left tread can only move backward.",
+    text: "The damage is mostly to the movement and navigation system.",
     choiceIds: ["ack_grover_damage"],
   },
   movement_impaired_until_repairs: {
