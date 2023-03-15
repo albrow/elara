@@ -4,7 +4,6 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import createRouter from "router5";
 import { RouterProvider } from "react-router5";
 import type { Route } from "router5";
-import loggerPlugin from "router5-plugin-logger";
 import browserPlugin from "router5-plugin-browser";
 
 import "@fontsource/nunito/400.css";
@@ -72,7 +71,6 @@ const elaraTheme = extendTheme({
     defaultRoute: "home",
   });
   router.usePlugin(browserPlugin());
-  router.usePlugin(loggerPlugin);
   router.start();
 
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
