@@ -785,6 +785,7 @@ fn eval_curr_orientation(context: &EvalContext) -> Result<Orientation, Error> {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::levels::SANDBOX_LEVEL_WITH_DATA_TERMINAL;
 
     #[test]
     fn test_check_semicolons() {
@@ -869,5 +870,67 @@ mod test {
         }
     "#;
         assert!(check_semicolons(source).is_err());
+    }
+
+    /// Asserts that result is not a failure and then checks the each
+    /// line number in results.positions.
+    fn assert_positions_eq(result: &ScriptResult, expected: Vec<Option<usize>>) {
+        assert!(result.outcome == Outcome::NoObjective || result.outcome == Outcome::Continue);
+        assert_eq!(result.positions.len(), expected.len());
+        for (i, pos) in expected.iter().enumerate() {
+            assert_eq!(result.positions[i].line(), *pos);
+        }
+    }
+
+    /// A test for functions which always have a constant number of steps (e.g.
+    /// turn_right and say).
+    #[test]
+    fn test_positions_for_zero_step_functions() {
+        let mut game = crate::Game::new();
+
+        let script = r#"
+            get_orientation();
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .unwrap();
+        assert_positions_eq(&result, vec![None]);
+    }
+
+    /// A test for functions which always have a constant number of steps (e.g.
+    /// turn_right and say).
+    #[test]
+    fn test_positions_for_constant_step_functions() {
+        let mut game = crate::Game::new();
+
+        let script = r#"
+            turn_left();
+            turn_right();
+            say("hello");
+            read_data();
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .unwrap();
+        assert_positions_eq(&result, vec![None, Some(2), Some(3), Some(4), Some(5)]);
+    }
+
+    /// A test for functions with a variable number of steps (e.g.
+    /// move_forward and wait).
+    #[test]
+    fn test_positions_for_variable_step_functions() {
+        let mut game = crate::Game::new();
+
+        let script = r#"
+            move_forward(2);
+            move_backward(3);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .unwrap();
+        assert_positions_eq(
+            &result,
+            vec![None, Some(2), Some(2), Some(3), Some(3), Some(3)],
+        );
     }
 }

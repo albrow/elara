@@ -86,6 +86,13 @@ pub trait Level {
     }
 }
 
+// Special constants for sandbox levels. Used in some tests.
+#[allow(dead_code)]
+pub const SANDBOX_LEVEL: &'static dyn Level = &sandbox::Sandbox {};
+#[allow(dead_code)]
+pub const SANDBOX_LEVEL_WITH_DATA_TERMINAL: &'static dyn Level =
+    &sandbox_with_data_terminal::SandboxWithDataTerminal {};
+
 lazy_static! {
     #[derive(Debug, Clone, Copy)]
     pub static ref LEVELS: HashMap<&'static str, Box<dyn Level + Sync>> = {
