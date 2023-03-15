@@ -10,7 +10,7 @@ import { Compartment } from "@codemirror/state";
 import { Unsubscribe } from "router5/dist/types/base";
 
 import { useRouter } from "react-router5";
-import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
+import { highlightLines, unhighlightAll } from "../../lib/highlight_line";
 import {
   FuzzyStateWithLines,
   RhaiError,
@@ -233,7 +233,7 @@ export default function Editor(props: EditorProps) {
   useEffect(() => {
     if (view) {
       if (activeLines && activeLines.length > 0) {
-        highlightLine(view, activeLines[activeLines.length - 1]);
+        highlightLines(view, activeLines);
       } else {
         unhighlightAll(view);
       }

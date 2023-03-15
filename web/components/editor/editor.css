@@ -24,14 +24,14 @@
   background: transparent !important;
 }
 
-/* .line-running is the class added by our Editor component
-to indicate which line of code is currently running */
-.line-running {
+/* .active-line-primary is the class added by our Editor component
+to indicate the line of code is currently running */
+.active-line-primary {
   position: relative;
   background-color: var(--chakra-colors-blue-100);
 }
 
-.line-running::before {
+.active-line-primary::before {
   content: "▶︎";
   position: absolute;
   top: -0.25rem;
@@ -41,7 +41,7 @@ to indicate which line of code is currently running */
   color: var(--chakra-colors-blue-400);
 }
 
-.line-running::after {
+.active-line-primary::after {
   content: "";
   position: absolute;
   z-index: 200;
@@ -50,6 +50,35 @@ to indicate which line of code is currently running */
   width: 100%;
   height: 2px;
   background-color: var(--chakra-colors-blue-400);
+}
+
+/* .active-line-secondary is the class added by our Editor component
+to indicate which lines of code (if any) are part of the current
+call stack (i.e. it highlights function calls higher up in the stack). */
+.active-line-secondary {
+  position: relative;
+  background-color: var(--chakra-colors-teal-100);
+}
+
+.active-line-secondary::before {
+  content: "▶︎";
+  position: absolute;
+  top: -0.25rem;
+  z-index: 200;
+  left: -1.1rem;
+  font-size: 1rem;
+  color: var(--chakra-colors-teal-400);
+}
+
+.active-line-secondary::after {
+  content: "";
+  position: absolute;
+  z-index: 200;
+  top: 1rem;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--chakra-colors-teal-400);
 }
 
 .cm-tooltip.cm-tooltip-hover {
