@@ -57,7 +57,7 @@ export const SHORTS: { [key: string]: TutorialShort } = {
   },
   how_to_view_function_list: {
     title: "List of available functions",
-    text: `Some levels may have certain functions disabled. You can view the list of available functions for any level by pressing the "function list" button.`,
+    text: `You can view the list of available functions for any level by pressing the "function list" button.`,
     imageUrl: howToViewFunctionListUrl,
   },
 };
