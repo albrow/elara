@@ -106,7 +106,10 @@ const RAW_SCENES: RawScene[] = [
   ]),
   journalScene("functions"),
   journalScene("comments"),
-  levelScene("movement_part_two", ["how_to_navigate_scenes"]),
+  levelScene("movement_part_two", [
+    "how_to_navigate_scenes",
+    "how_to_view_function_list",
+  ]),
   levelScene("fuel_part_one", ["moving_takes_fuel", "how_to_get_more_fuel"]),
   journalScene("strings"),
   journalScene("loops"),
@@ -124,7 +127,7 @@ const RAW_SCENES: RawScene[] = [
   journalScene("comparisons"),
   journalScene("if_statements"),
   levelScene("seismic_activity"),
-  levelScene("partly_disabled_movement", ["how_to_view_function_list"]),
+  levelScene("partly_disabled_movement"),
   journalScene("creating_functions"),
   levelScene("reimplement_turn_right"),
 ];
