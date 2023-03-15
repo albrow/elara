@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
 
 import {
-  FuzzyStateWithLine,
+  FuzzyStateWithLines,
   Game,
   RunResult,
   ScriptStats,
@@ -123,7 +123,7 @@ export default function Level() {
     [currLevel, saveData, setSaveData]
   );
 
-  const onEditorStep = useCallback((step: FuzzyStateWithLine) => {
+  const onEditorStep = useCallback((step: FuzzyStateWithLines) => {
     setBoardState(step.state);
   }, []);
 

@@ -4,7 +4,7 @@ import { Container, Flex, Box } from "@chakra-ui/react";
 import { Unsubscribe } from "router5/dist/types/base";
 
 import {
-  FuzzyStateWithLine,
+  FuzzyStateWithLines,
   Game,
   LevelData,
 } from "../../elara-lib/pkg/elara_lib";
@@ -59,7 +59,7 @@ export default function DemoLevel() {
     [currLevel]
   );
 
-  const onEditorStep = useCallback((step: FuzzyStateWithLine) => {
+  const onEditorStep = useCallback((step: FuzzyStateWithLines) => {
     setBoardState(step.state);
   }, []);
 

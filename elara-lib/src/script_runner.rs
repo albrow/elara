@@ -21,16 +21,23 @@ pub struct ScriptRunner {
     simulation: Rc<RefCell<Simulation>>,
     /// Used to send actions from the script to the PlayerChannelActor.
     player_action_tx: Rc<RefCell<mpsc::Sender<Action>>>,
-    /// Tracks which lines of code in the user script cause the simulation to
-    /// step forward. This is used to highlight active/running lines of code in
-    /// the editor UI.
-    step_positions: Rc<RefCell<Vec<Position>>>,
+    /// Used for building up the trace of positions for each step in the simulation.
+    pending_trace: Rc<RefCell<Vec<Vec<usize>>>>,
 }
 
 #[derive(Debug)]
 pub struct ScriptResult {
+    /// The state corresponding to each step in the simulation.
     pub states: Vec<State>,
-    pub positions: Vec<Position>,
+    /// The line numbers corresponding to each step in the simulation. Similar
+    /// to a stack trace, but we only track lines of code which cause the
+    /// simulation to step forward. This is used to highlight active/running
+    /// lines of code in the editor UI. Each step may be associated with
+    /// multiple lines of code (e.g. in the event of a call to a user-defined
+    /// function), which is why this is a vector of vectors. The last line number
+    /// in each step corresponds to the *innermost* statement (i.e. the bottom
+    /// of the call stack, typically the body of the function being called).
+    pub trace: Vec<Vec<usize>>,
     pub outcome: Outcome,
     pub stats: ScriptStats,
 }
@@ -43,9 +50,10 @@ impl ScriptRunner {
         ScriptRunner {
             simulation,
             player_action_tx,
-            // Start with NONE position for step 0. This ensures that
-            // the positions align with simulation steps.
-            step_positions: Rc::new(RefCell::new(vec![Position::NONE])),
+            // Start with empty line numbers for step 0. This ensures that
+            // the trace aligns with simulation steps. Or in other words, at
+            // step 0 there is not active line number.
+            pending_trace: Rc::new(RefCell::new(vec![vec![]])),
         }
     }
 
@@ -83,9 +91,10 @@ impl ScriptRunner {
             Err(err) => return Err(convert_err(avail_funcs, script.to_string(), err)),
         }
 
-        // Reset step_positions.
-        self.step_positions.borrow_mut().clear();
-        self.step_positions.borrow_mut().push(Position::NONE);
+        // Reset pending_trace. We always start with an empty list for step 0 (i.e. no
+        // active line numbers).
+        self.pending_trace.borrow_mut().clear();
+        self.pending_trace.borrow_mut().push(vec![]);
 
         // Make engine non-mutable now that we are done configuring it.
         // This is a safety measure to prevent scripts from mutating the
@@ -105,14 +114,14 @@ impl ScriptRunner {
                             // finishes running. This is not actually an error, so we continue.
                         } else {
                             // Other runtime errors should be considered a failure.
-                            // In this case we still return all the states and positions.
+                            // In this case we still return all the states and trace.
                             let outcome = Outcome::Failure(err.to_string());
                             let states = self.simulation.borrow().get_history();
-                            let positions = self.step_positions.borrow().to_vec();
+                            let trace = self.pending_trace.borrow().to_vec();
                             let stats = compute_stats(&engine, &script, &states);
                             return Ok(ScriptResult {
                                 states,
-                                positions,
+                                trace: trace,
                                 outcome,
                                 stats,
                             });
@@ -128,19 +137,19 @@ impl ScriptRunner {
         };
 
         let states = self.simulation.borrow().get_history();
-        let positions = self.step_positions.borrow().to_vec();
+        let positions = self.pending_trace.borrow().to_vec();
         let outcome = self.simulation.borrow().last_outcome();
         let stats = compute_stats(&engine, &script, &states);
         Ok(ScriptResult {
             states,
-            positions,
+            trace: positions,
             outcome,
             stats,
         })
     }
 
     fn register_debugger(&self, engine: &mut Engine, avail_funcs: &'static Vec<&'static str>) {
-        let step_positions = self.step_positions.clone();
+        let pending_trace = self.pending_trace.clone();
         let simulation = self.simulation.clone();
         // Note(albrow): register_debugger is not actually deprecated. The Rhai maintainers
         // have decided to use the "deprecated" attribute to indicate that the API is not
@@ -158,7 +167,7 @@ impl ScriptRunner {
                         // );
                         Self::handle_debugger_function_call(
                             avail_funcs,
-                            step_positions.clone(),
+                            pending_trace.clone(),
                             context,
                             pos,
                             fn_call_expr,
@@ -171,7 +180,7 @@ impl ScriptRunner {
                         // );
                         Self::handle_debugger_function_call(
                             avail_funcs,
-                            step_positions.clone(),
+                            pending_trace.clone(),
                             context,
                             pos,
                             fn_call_expr,
@@ -201,7 +210,7 @@ impl ScriptRunner {
     // AST at runtime.
     fn handle_debugger_function_call(
         avail_funcs: &Vec<&'static str>,
-        step_positions: Rc<RefCell<Vec<Position>>>,
+        pending_trace: Rc<RefCell<Vec<Vec<usize>>>>,
         context: EvalContext,
         pos: Position,
         fn_call_expr: &Box<FnCallExpr>,
@@ -212,18 +221,31 @@ impl ScriptRunner {
             // are later considered built-in.
             return Ok(DebuggerCommand::StepInto);
         }
+
+        // Compute the full list of line numbers including the current line
+        // number and any function calls from higher up in the call stack.
+        let mut trace_lines = context
+            .global_runtime_state()
+            .debugger()
+            .call_stack()
+            .iter()
+            .map(|stack| stack.pos.line().unwrap())
+            .collect::<Vec<usize>>();
+        let line = pos.line().unwrap();
+        trace_lines.push(line);
+
         match fn_call_expr.name.as_str() {
             "wait" => {
                 // The number of steps here depends on the argument. E.g. wait(3) means
                 // that this line should be considered "active" for 3 steps.
                 let duration = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
                 for _ in 0..duration {
-                    step_positions.borrow_mut().push(pos);
+                    pending_trace.borrow_mut().push(trace_lines.clone());
                 }
                 Ok(DebuggerCommand::StepInto)
             }
             "turn_right" | "turn_left" => {
-                step_positions.borrow_mut().push(pos);
+                pending_trace.borrow_mut().push(trace_lines.clone());
                 Ok(DebuggerCommand::StepInto)
             }
             "move_forward" | "move_backward" => {
@@ -231,7 +253,7 @@ impl ScriptRunner {
                 // on the argument.
                 let move_steps = eval_call_args_as_int(&context, fn_call_expr).unwrap_or(0);
                 for _ in 0..move_steps {
-                    step_positions.borrow_mut().push(pos);
+                    pending_trace.borrow_mut().push(trace_lines.clone());
                 }
                 Ok(DebuggerCommand::StepInto)
             }
@@ -249,7 +271,7 @@ impl ScriptRunner {
                 };
                 let total_steps = move_steps + rotation_steps;
                 for _ in 0..total_steps {
-                    step_positions.borrow_mut().push(pos);
+                    pending_trace.borrow_mut().push(trace_lines.clone());
                 }
                 Ok(DebuggerCommand::StepInto)
             }
@@ -264,7 +286,7 @@ impl ScriptRunner {
                 };
                 let total_steps = move_steps + rotation_steps;
                 for _ in 0..total_steps {
-                    step_positions.borrow_mut().push(pos);
+                    pending_trace.borrow_mut().push(trace_lines.clone());
                 }
                 Ok(DebuggerCommand::StepInto)
             }
@@ -279,7 +301,7 @@ impl ScriptRunner {
                 };
                 let total_steps = move_steps + rotation_steps;
                 for _ in 0..total_steps {
-                    step_positions.borrow_mut().push(pos);
+                    pending_trace.borrow_mut().push(trace_lines.clone());
                 }
                 Ok(DebuggerCommand::StepInto)
             }
@@ -294,18 +316,18 @@ impl ScriptRunner {
                 };
                 let total_steps = move_steps + rotation_steps;
                 for _ in 0..total_steps {
-                    step_positions.borrow_mut().push(pos);
+                    pending_trace.borrow_mut().push(trace_lines.clone());
                 }
                 Ok(DebuggerCommand::StepInto)
             }
             "say" => {
                 // The say function always has a duration of one step.
-                step_positions.borrow_mut().push(pos);
+                pending_trace.borrow_mut().push(trace_lines.clone());
                 Ok(DebuggerCommand::StepInto)
             }
             "read_data" => {
                 // The read_data function always has a duration of one step.
-                step_positions.borrow_mut().push(pos);
+                pending_trace.borrow_mut().push(trace_lines.clone());
                 Ok(DebuggerCommand::StepInto)
             }
             _ => Ok(DebuggerCommand::StepInto),
@@ -873,19 +895,17 @@ mod test {
     }
 
     /// Asserts that result is not a failure and then checks the each
-    /// line number in results.positions.
-    fn assert_positions_eq(result: &ScriptResult, expected: Vec<Option<usize>>) {
+    /// line number in results.trace. Note that we only check the line number,
+    /// not the column number.
+    fn assert_trace_eq(result: &ScriptResult, expected: Vec<Vec<usize>>) {
         assert!(result.outcome == Outcome::NoObjective || result.outcome == Outcome::Continue);
-        assert_eq!(result.positions.len(), expected.len());
-        for (i, pos) in expected.iter().enumerate() {
-            assert_eq!(result.positions[i].line(), *pos);
-        }
+        assert_eq!(result.trace, expected);
     }
 
     /// A test for functions which always have a constant number of steps (e.g.
     /// turn_right and say).
     #[test]
-    fn test_positions_for_zero_step_functions() {
+    fn test_trace_for_zero_step_functions() {
         let mut game = crate::Game::new();
 
         let script = r#"
@@ -894,13 +914,13 @@ mod test {
         let result = game
             .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
             .unwrap();
-        assert_positions_eq(&result, vec![None]);
+        assert_trace_eq(&result, vec![vec![]]);
     }
 
     /// A test for functions which always have a constant number of steps (e.g.
     /// turn_right and say).
     #[test]
-    fn test_positions_for_constant_step_functions() {
+    fn test_trace_for_constant_step_functions() {
         let mut game = crate::Game::new();
 
         let script = r#"
@@ -912,13 +932,13 @@ mod test {
         let result = game
             .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
             .unwrap();
-        assert_positions_eq(&result, vec![None, Some(2), Some(3), Some(4), Some(5)]);
+        assert_trace_eq(&result, vec![vec![], vec![2], vec![3], vec![4], vec![5]]);
     }
 
     /// A test for functions with a variable number of steps (e.g.
     /// move_forward and wait).
     #[test]
-    fn test_positions_for_variable_step_functions() {
+    fn test_trace_for_variable_step_functions() {
         let mut game = crate::Game::new();
 
         let script = r#"
@@ -928,9 +948,66 @@ mod test {
         let result = game
             .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
             .unwrap();
-        assert_positions_eq(
+        assert_trace_eq(
             &result,
-            vec![None, Some(2), Some(2), Some(3), Some(3), Some(3)],
+            vec![vec![], vec![2], vec![2], vec![3], vec![3], vec![3]],
+        );
+    }
+
+    /// A test for user-defined function calls. In this case we want each
+    /// step to be associated with *both* the line number of the call and
+    /// the line number in the body of the function.
+    #[test]
+    fn test_trace_for_function_calls() {
+        let mut game = crate::Game::new();
+
+        let script = r#"
+            fn foo() {
+                move_forward(2);
+                say("hello");
+            }
+            foo();
+            foo();
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .unwrap();
+        assert_trace_eq(
+            &result,
+            vec![
+                vec![],
+                vec![6, 3],
+                vec![6, 3],
+                vec![6, 4],
+                vec![7, 3],
+                vec![7, 3],
+                vec![7, 4],
+            ],
+        );
+    }
+
+    /// A test for nested user-defined function calls, i.e. with a greater
+    /// call stack depth.
+    #[test]
+    fn test_trace_for_nested_function_calls() {
+        let mut game = crate::Game::new();
+
+        let script = r#"
+            fn bar() {
+                move_forward(2);
+                say("hello");
+            }
+            fn foo() {
+                bar();
+            }
+            foo();
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .unwrap();
+        assert_trace_eq(
+            &result,
+            vec![vec![], vec![9, 6, 3], vec![9, 6, 3], vec![9, 6, 4]],
         );
     }
 }

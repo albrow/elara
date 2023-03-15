@@ -13,26 +13,21 @@ pub struct RhaiError {
     pub col: usize,
 }
 
+/// The state and active line numbers associated with each step in
+/// a simulation run.
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyStateWithLine {
+pub struct FuzzyStateWithLines {
     pub state: FuzzyState,
-    pub line_pos: LinePos,
+    pub lines: Array, // Array<number>
 }
 
 #[wasm_bindgen]
-#[derive(Clone, PartialEq, Debug)]
-pub struct LinePos {
-    pub line: i32,
-    pub col: i32,
-}
-
-#[wasm_bindgen]
-impl FuzzyStateWithLine {
-    pub fn new() -> FuzzyStateWithLine {
-        FuzzyStateWithLine {
+impl FuzzyStateWithLines {
+    pub fn new() -> FuzzyStateWithLines {
+        FuzzyStateWithLines {
             state: FuzzyState::new(),
-            line_pos: LinePos { line: 0, col: 0 },
+            lines: Array::new_with_length(0),
         }
     }
 }
@@ -68,7 +63,7 @@ impl From<&script_runner::ScriptStats> for ScriptStats {
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
 pub struct RunResult {
-    pub states: Array,   // Array<StateWithPos>
+    pub states: Array,   // Array<FuzzyStateWithLines>
     pub outcome: String, // "success" | "continue" | "other failure message"
     pub stats: ScriptStats,
 }
@@ -76,26 +71,22 @@ pub struct RunResult {
 /// Converts script_runner::ScriptResult to a format that is wasm_bindgen
 /// compatible and can ultimately be used by the JavaScript code.
 pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
-    let arr = Array::new_with_length(result.states.len() as u32);
-    for (i, (state, pos)) in result
-        .states
-        .iter()
-        .zip(result.positions.iter())
-        .enumerate()
-    {
-        arr.set(
+    let states_array = Array::new_with_length(result.states.len() as u32);
+    for (i, (state, lines)) in result.states.iter().zip(result.trace.iter()).enumerate() {
+        let lines_array = Array::new_with_length(lines.len() as u32);
+        for (j, &line_number) in lines.iter().enumerate() {
+            lines_array.set(j as u32, line_number.into());
+        }
+        states_array.set(
             i as u32,
-            JsValue::from(FuzzyStateWithLine {
+            JsValue::from(FuzzyStateWithLines {
                 state: FuzzyState::from(levels::FuzzyState::from_single_state(state)),
-                line_pos: LinePos {
-                    line: pos.line().unwrap_or(0) as i32,
-                    col: pos.position().unwrap_or(0) as i32,
-                },
+                lines: lines_array,
             }),
         );
     }
     RunResult {
-        states: arr,
+        states: states_array,
         outcome: match result.outcome.clone() {
             Outcome::Success => String::from("success"),
             Outcome::Failure(msg) => msg,

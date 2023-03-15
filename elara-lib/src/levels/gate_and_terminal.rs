@@ -92,7 +92,7 @@ mod tests {
         // Regression check for a bug where read_data was not correctly
         // adding a position to result.positions, resulting in a length
         // mismatch.
-        assert_eq!(result.states.len(), result.positions.len());
+        assert_eq!(result.states.len(), result.trace.len());
 
         // Calling read_data when we are not next to a data terminal
         // should result in an error.

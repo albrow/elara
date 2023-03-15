@@ -12,8 +12,7 @@ import { Unsubscribe } from "router5/dist/types/base";
 import { useRouter } from "react-router5";
 import { highlightLine, unhighlightAll } from "../../lib/highlight_line";
 import {
-  FuzzyStateWithLine,
-  LinePos,
+  FuzzyStateWithLines,
   RhaiError,
   RunResult,
 } from "../../../elara-lib/pkg";
@@ -124,7 +123,7 @@ interface EditorProps {
   // Which built-in functions should be considered available. These functions
   // will have autocomplete and hover docs enabled.
   availableFunctions: string[];
-  onStep?: (step: FuzzyStateWithLine) => void;
+  onStep?: (step: FuzzyStateWithLines) => void;
   onCancel?: (script: string) => void;
   onStateChange?: (state: EditorState) => void;
   // Whether to automatically reset the editor state when the replay is done.
@@ -139,7 +138,7 @@ interface EditorProps {
 export default function Editor(props: EditorProps) {
   const editor = useRef<HTMLDivElement | null>(null);
   const [state, setState] = useState<EditorState>("editing");
-  const [activeLine, setActiveLine] = useState<LinePos | null>(null);
+  const [activeLines, setActiveLines] = useState<number[]>([]);
   const [codeError, setCodeError] = useState<CodeError | null>(null);
   const replayer = useRef<Replayer | null>(null);
   const [numSteps, setNumSteps] = useState<number>(0);
@@ -177,7 +176,7 @@ export default function Editor(props: EditorProps) {
 
   const resetState = useCallback(() => {
     setState("editing");
-    setActiveLine(null);
+    setActiveLines([]);
     setCodeError(null);
     setStepIndex(0);
     setNumSteps(0);
@@ -233,13 +232,13 @@ export default function Editor(props: EditorProps) {
 
   useEffect(() => {
     if (view) {
-      if (activeLine) {
-        highlightLine(view, activeLine.line);
+      if (activeLines && activeLines.length > 0) {
+        highlightLine(view, activeLines[activeLines.length - 1]);
       } else {
         unhighlightAll(view);
       }
     }
-  }, [activeLine, view]);
+  }, [activeLines, view]);
 
   useEffect(() => {
     if (view) {
@@ -266,10 +265,10 @@ export default function Editor(props: EditorProps) {
   }, [props.code, setCode]);
 
   const onReplayStep = useCallback(
-    (i: number, step: FuzzyStateWithLine) => {
+    (i: number, step: FuzzyStateWithLines) => {
       setStepIndex(i);
-      if (step.line_pos) {
-        setActiveLine(step.line_pos);
+      if (step.lines) {
+        setActiveLines(step.lines);
       }
       if (props.onStep) {
         props.onStep(step);

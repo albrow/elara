@@ -5,7 +5,7 @@ import { SANDBOX_LEVEL } from "../../contexts/scenes";
 import Editor, { EditorState } from "../editor/editor";
 import {
   Game,
-  FuzzyStateWithLine,
+  FuzzyStateWithLines,
   RunResult,
   LevelData,
 } from "../../../elara-lib/pkg/elara_lib";
@@ -49,7 +49,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
     [resetState]
   );
 
-  const onEditorStep = useCallback((step: FuzzyStateWithLine) => {
+  const onEditorStep = useCallback((step: FuzzyStateWithLines) => {
     setBoardState(step.state);
   }, []);
 

@@ -1,4 +1,4 @@
-import { FuzzyStateWithLine } from "../../elara-lib/pkg/elara_lib";
+import { FuzzyStateWithLines } from "../../elara-lib/pkg/elara_lib";
 import { DEFAULT_GAME_SPEED } from "./constants";
 
 function msPerStep(speed: number): number {
@@ -6,7 +6,7 @@ function msPerStep(speed: number): number {
 }
 
 export class Replayer {
-  private states: FuzzyStateWithLine[] = [];
+  private states: FuzzyStateWithLines[] = [];
 
   private speed = DEFAULT_GAME_SPEED;
 
@@ -15,15 +15,15 @@ export class Replayer {
   private index: number = 0;
 
   // eslint-disable-next-line class-methods-use-this
-  private onStep: (stepIndex: number, state: FuzzyStateWithLine) => void =
+  private onStep: (stepIndex: number, state: FuzzyStateWithLines) => void =
     () => {};
 
   // eslint-disable-next-line class-methods-use-this
   private onDone: () => void = () => {};
 
   constructor(
-    states: FuzzyStateWithLine[],
-    onStep: (stepIndex: number, state: FuzzyStateWithLine) => void,
+    states: FuzzyStateWithLines[],
+    onStep: (stepIndex: number, state: FuzzyStateWithLines) => void,
     onDone: () => void
   ) {
     this.states = states;
