@@ -1,6 +1,7 @@
-import { indentWithTab } from "@codemirror/commands";
+import { indentLess, indentMore } from "@codemirror/commands";
+import { completionStatus, acceptCompletion } from "@codemirror/autocomplete";
 import { lintGutter, setDiagnostics, Diagnostic } from "@codemirror/lint";
-import { keymap, EditorView } from "@codemirror/view";
+import { EditorView, KeyBinding, keymap } from "@codemirror/view";
 import { useCodeMirror } from "@uiw/react-codemirror";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createTheme } from "@uiw/codemirror-themes";
@@ -41,9 +42,28 @@ function setAvailableFuncs(view: EditorView, funcs: string[]) {
   });
 }
 
+// We use a custom tab keybinding to change the default behavior. For our
+// purposes, we want to use tab to either accept an autocomplete option or
+// to increase/decrease the indentation level.
+const completeOrIndentWithTab: KeyBinding[] = [
+  {
+    key: "Tab",
+    run: (view: EditorView) => {
+      if (completionStatus(view.state)) {
+        // Select and insert the currently selected autocomplete option.
+        return acceptCompletion(view);
+      }
+      // Otherwise, use the default behavior of increasing indent level.
+      return indentMore(view);
+    },
+    shift: indentLess,
+  },
+];
+
 const extensions = [
   lintGutter(),
-  keymap.of([indentWithTab]),
+  // keymap.of([indentWithTab]),
+  keymap.of(completeOrIndentWithTab),
   languageCompartment.of(rhaiSupport([])),
   hoverDocsCompartment.of(hoverDocs([])),
 ];
