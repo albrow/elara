@@ -90,7 +90,7 @@ lazy_static! {
             "say",
             BuiltinFunction {
                 name: "say",
-                arg_types: &["string"],
+                arg_types: &["any"],
             },
         );
         m.insert(
@@ -126,6 +126,13 @@ lazy_static! {
             BuiltinFunction {
                 name: "wait",
                 arg_types: &["number"],
+            },
+        );
+        m.insert(
+            "push",
+            BuiltinFunction {
+                name: "push",
+                arg_types: &["array", "any"],
             },
         );
 

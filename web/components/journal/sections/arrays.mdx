@@ -1,41 +1,63 @@
+import RunnableExample from "../runnable_example";
+
 ### Arrays
 
-An array is a list of values. The values can be of any type, and they
+An array is just a list of values. The values can be of any type, and they
 are not necessarily all of the same type. The values inside an array
 are sometimes called "elements".
 
+<RunnableExample code={`// You can use an array as the input to a function.
+say([1, 2, 3, 4]);
+
+// Or you can create an array and assign it to a variable.
+// This code creates an array called "fruits"
+let fruits = ["apples", "oranges", "bananas"];
+say(fruits);
+`}/>
+
 You can access the elements of an array by providing an "index" in
-between square brackets (`[` and `]`). See below for some examples. Note
-that the first element of the array has index `0`, **_not_** `1`.
+between square brackets (`[` and `]`).
 
-You can also use the `len` function on an array to determine its length,
-i.e., how many elements it contains.
+ℹ️ **Tip:** The first element of the array has index `0`, **_not_** `1`.
 
-#### Examples
+<RunnableExample
+  code={`let fruits = ["apples", "oranges", "bananas"];
 
-Declaring an array and assigning it to a variable:
+// Get the first element of the array, i.e. the element with index 0.
+let first_fruit = fruits[0];
+say(first_fruit);
 
-```rhai
-let arr = [1, 2, 3];
-```
+// Get the other elements of the array...
+say(fruits[1]);
+say(fruits[2]);
+`}
+/>
 
-Accessing the first element of an array:
+You can also change the value of an element in an array by using the assignment
+operator (i.e. a single equals sign `=`). This is similar to changing the
+value of a variable.
 
-```rhai
-let arr = [1, 2, 3];
-say(arr[0]);
-```
+<RunnableExample
+  code={`let fruits = ["apples", "oranges", "bananas"];
+say(fruits);
 
-Getting the next element of an array (i.e., the element at index 1):
+// Change the value of the first element of the array.
+fruits[0] = "pears";
+say(fruits);
+`}
+/>
 
-```rhai
-let arr = [1, 2, 3];
-say(arr[1]);
-```
+Finally, you can use the `push` function to add an element to the end
+of an array. The push function expects two inputs: an array and the value
+you want to add.
 
-Using the `len` function to determine the length of an array:
+<RunnableExample
+  code={`let words = ["fee", "fi"];
+say(words);
 
-```rhai
-let arr = [1, 2, 3];
-say(len(arr));
-```
+// Add the elements "fo" and "fum" to the end of the array.
+push(words, "fo");
+push(words, "fum");
+say(words);
+`}
+/>

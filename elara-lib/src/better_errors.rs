@@ -139,18 +139,32 @@ pub fn convert_err(
                         line: pos.line(),
                         col: pos.position(),
                     },
-                    1 => BetterError {
-                        message: format!(
-                            "Error: {} should have one {} as an input.",
-                            builtin_fn.name, builtin_fn.arg_types[0]
-                        ),
-                        line: pos.line(),
-                        col: pos.position(),
-                    },
+                    1 => {
+                        if builtin_fn.arg_types[0] == "any" {
+                            BetterError {
+                                message: format!(
+                                    "Error: {} should have one input of any type.",
+                                    builtin_fn.name
+                                ),
+                                line: pos.line(),
+                                col: pos.position(),
+                            }
+                        } else {
+                            BetterError {
+                                message: format!(
+                                    "Error: {} should have one {} as an input.",
+                                    builtin_fn.name, builtin_fn.arg_types[0]
+                                ),
+                                line: pos.line(),
+                                col: pos.position(),
+                            }
+                        }
+                    }
                     _ => BetterError {
                         message: format!(
-                            "Error: Wrong inputs for {}. Should be ({}).",
+                            "Error: Wrong inputs for {}. Should have {} inputs ({}).",
                             builtin_fn.name,
+                            builtin_fn.arg_types.len(),
                             builtin_fn.arg_types.join(", ")
                         ),
                         line: pos.line(),

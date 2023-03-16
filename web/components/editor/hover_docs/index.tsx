@@ -25,6 +25,7 @@ import Say from "./pages/say.mdx";
 import Add from "./pages/add.mdx";
 import ReadData from "./pages/read_data.mdx";
 import GetOrientation from "./pages/get_orientation.mdx";
+import Push from "./pages/push.mdx";
 
 const hoverWords = [
   "turn_right",
@@ -39,6 +40,7 @@ const hoverWords = [
   "add",
   "read_data",
   "get_orientation",
+  "push",
 ] as const;
 
 export type HoverWord = typeof hoverWords[number];
@@ -58,6 +60,7 @@ export const docPages: {
   add: Add,
   read_data: ReadData,
   get_orientation: GetOrientation,
+  push: Push,
 };
 
 // A plugin that shows a tooltip with documentation for built-in functions.

@@ -109,7 +109,12 @@ const builtInFuncs: PartialFuncOption[] = [
   },
   {
     label: "say",
-    info: "Cause G.R.O.V.E.R. to say something",
+    info: "Cause G.R.O.V.E.R. to say something.",
+    apply: applyFuncWithArgs,
+  },
+  {
+    label: "push",
+    info: "Add an element to the end of an array.",
     apply: applyFuncWithArgs,
   },
 ];

@@ -130,6 +130,7 @@ const RAW_SCENES: RawScene[] = [
   levelScene("partly_disabled_movement"),
   journalScene("creating_functions"),
   levelScene("reimplement_turn_right"),
+  journalScene("arrays"),
 ];
 
 const getLevelIndexFromScene = (
