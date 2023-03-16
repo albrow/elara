@@ -37,7 +37,8 @@ export default function FunctionListItem(props: FunctionListItemProps) {
             userSelect="text"
             bg="gray.200"
             position="absolute"
-            top="-20px"
+            top="0"
+            transform="translateY(calc(-100% + 20px))"
             right={`${FUNCTION_LIST_WIDTH - 14}px`}
             shadow="dark-lg"
             onKeyDown={() => {}}
