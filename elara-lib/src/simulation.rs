@@ -1,3 +1,4 @@
+use rhai::Dynamic;
 use std::fmt;
 
 use crate::{
@@ -261,7 +262,6 @@ impl Enemy {
 #[derive(Clone, PartialEq, Debug)]
 pub struct Obstacle {
     pub pos: Pos,
-    // TODO(albrow): Make some obstacles destructible?
 }
 
 impl Obstacle {
@@ -296,14 +296,47 @@ impl PasswordGate {
 }
 
 #[derive(Clone, PartialEq, Debug)]
+pub enum TermData {
+    String(String),
+    Array(Vec<TermData>),
+}
+
+impl From<String> for TermData {
+    fn from(s: String) -> TermData {
+        TermData::String(s)
+    }
+}
+
+impl From<&str> for TermData {
+    fn from(s: &str) -> TermData {
+        TermData::String(s.to_string())
+    }
+}
+
+impl From<Vec<TermData>> for TermData {
+    fn from(v: Vec<TermData>) -> TermData {
+        TermData::Array(v)
+    }
+}
+
+impl From<TermData> for Dynamic {
+    fn from(data: TermData) -> Dynamic {
+        match data {
+            TermData::String(s) => s.into(),
+            TermData::Array(v) => Dynamic::from_array(v.into_iter().map(|x| x.into()).collect()),
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug)]
 pub struct DataTerminal {
     pub pos: Pos,
-    pub data: String,
+    pub data: TermData,
     pub reading: bool,
 }
 
 impl DataTerminal {
-    pub fn new(x: u32, y: u32, data: String) -> DataTerminal {
+    pub fn new(x: u32, y: u32, data: TermData) -> DataTerminal {
         DataTerminal {
             pos: Pos {
                 x: x as i32,

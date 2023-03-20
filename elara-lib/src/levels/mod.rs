@@ -3,6 +3,7 @@ mod data_terminals_part_one;
 mod enemies_part_one;
 mod fuel_part_one;
 mod gate_and_terminal;
+mod gate_and_terminal_array;
 mod gate_and_terminal_three;
 mod gate_and_terminal_two;
 mod gates;
@@ -123,6 +124,7 @@ lazy_static! {
         m.insert(data_terminal_demo::DataTerminalDemo{}.short_name(), Box::new(data_terminal_demo::DataTerminalDemo{}));
         m.insert(partly_disabled_movement::PartlyDisabledMovement{}.short_name(), Box::new(partly_disabled_movement::PartlyDisabledMovement{}));
         m.insert(reimplement_turn_right::ReimplementTurnRight{}.short_name(), Box::new(reimplement_turn_right::ReimplementTurnRight{}));
+        m.insert(gate_and_terminal_array::GateAndTerminalArray{}.short_name(), Box::new(gate_and_terminal_array::GateAndTerminalArray{}));
 
         m
     };

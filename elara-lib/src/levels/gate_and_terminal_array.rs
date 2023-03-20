@@ -4,14 +4,14 @@ use crate::simulation::{
 };
 
 #[derive(Copy, Clone)]
-pub struct GateAndTerminalPartTwo {}
+pub struct GateAndTerminalArray {}
 
-impl Level for GateAndTerminalPartTwo {
+impl Level for GateAndTerminalArray {
     fn name(&self) -> &'static str {
-        "Slipped My Mind"
+        "Using Arrays (TBD)"
     }
     fn short_name(&self) -> &'static str {
-        "gate_and_terminal_part_two"
+        "gate_and_terminal_array"
     }
     fn objective(&self) -> &'static str {
         "Get the password from the data terminal ({terminal}), unlock the gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
@@ -20,30 +20,26 @@ impl Level for GateAndTerminalPartTwo {
         &AVAIL_FUNCS_WITH_READ
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Yet another locked gate! Just like before, the password is
-// stored in a data terminal. Can you get through on your own
-// this time?
-//
-// ADD YOUR CODE BELOW
+        r#"
 "#
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(11, 1, 10, Orientation::Left);
+        state.player = Player::new(5, 0, 10, Orientation::Down);
         state.goal = Some(Goal {
-            pos: Pos { x: 9, y: 4 },
+            pos: Pos { x: 5, y: 5 },
         });
         state.obstacles = vec![
-            Obstacle::new(8, 0),
-            Obstacle::new(8, 1),
-            Obstacle::new(8, 2),
-            Obstacle::new(9, 0),
-            Obstacle::new(10, 2),
-            Obstacle::new(11, 0),
-            Obstacle::new(11, 2),
+            Obstacle::new(4, 0),
+            Obstacle::new(4, 2),
+            Obstacle::new(4, 3),
+            Obstacle::new(6, 3),
+            Obstacle::new(6, 0),
+            Obstacle::new(6, 1),
+            Obstacle::new(6, 2),
         ];
-        state.password_gates = vec![PasswordGate::new(9, 2, "hopper".into(), false)];
-        state.data_terminals = vec![DataTerminal::new(10, 0, "hopper".into())];
+        state.password_gates = vec![PasswordGate::new(5, 3, "turing".to_string(), false)];
+        state.data_terminals = vec![DataTerminal::new(4, 1, "turing".into())];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
@@ -62,7 +58,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &GateAndTerminalPartTwo {};
+        const LEVEL: &'static dyn Level = &GateAndTerminalArray {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
@@ -71,18 +67,6 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
-        // Running this code should result in Outcome::Success.
-        let script = r#"
-            move_forward(1);
-            let password = read_data();
-            move_forward(1);
-            say(password);
-            turn_left();
-            move_forward(3);
-        "#;
-        let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
-            .unwrap();
-        assert_eq!(result.outcome, Outcome::Success);
+        // TODO(albrow): Test success case.
     }
 }

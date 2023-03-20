@@ -53,7 +53,7 @@ impl Level for DataTerminalsPartOne {
             Obstacle::new(5, 4),
             Obstacle::new(6, 4),
         ];
-        state.data_terminals = vec![DataTerminal::new(6, 3, HUMMUS_RECIPE.to_string())];
+        state.data_terminals = vec![DataTerminal::new(6, 3, HUMMUS_RECIPE.into())];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {

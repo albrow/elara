@@ -46,9 +46,9 @@ say(password);
         ];
         state.password_gates = vec![PasswordGate::new(2, 1, "vaughan".to_string(), false)];
         state.data_terminals = vec![
-            DataTerminal::new(0, 0, "carver".to_string()),
-            DataTerminal::new(0, 1, "curie".to_string()),
-            DataTerminal::new(0, 2, "vaughan".to_string()),
+            DataTerminal::new(0, 0, "carver".into()),
+            DataTerminal::new(0, 1, "curie".into()),
+            DataTerminal::new(0, 2, "vaughan".into()),
         ];
         vec![state]
     }

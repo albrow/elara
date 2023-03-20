@@ -48,7 +48,7 @@ impl Level for SandboxWithDataTerminal {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(0, 0, 50, Orientation::Right);
-        state.data_terminals = vec![DataTerminal::new(1, 0, "bananas".to_string())];
+        state.data_terminals = vec![DataTerminal::new(1, 0, "bananas".into())];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {

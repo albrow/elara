@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 use crate::levels;
 use crate::levels::Outcome;
 use crate::script_runner;
-use crate::simulation::{EnemyAnimState, Orientation, PlayerAnimState};
+use crate::simulation::{EnemyAnimState, Orientation, PlayerAnimState, TermData};
 
 #[wasm_bindgen(getter_with_clone)]
 pub struct RhaiError {
@@ -290,7 +290,7 @@ impl FuzzyState {
                         x: data_terminal.pos.x as i32,
                         y: data_terminal.pos.y as i32,
                     },
-                    data: data_terminal.data.clone(),
+                    data: term_data_to_js(&data_terminal.data),
                     reading: data_terminal.reading,
                     fuzzy: fuzzy_data_terminal.fuzzy,
                 }),
@@ -305,6 +305,19 @@ impl FuzzyState {
             obstacles,
             password_gates,
             data_terminals,
+        }
+    }
+}
+
+fn term_data_to_js(data: &TermData) -> JsValue {
+    match data {
+        TermData::String(str) => JsValue::from_str(str),
+        TermData::Array(arr) => {
+            let js_arr = Array::new_with_length(arr.len() as u32);
+            for (i, item) in arr.iter().enumerate() {
+                js_arr.set(i as u32, term_data_to_js(item));
+            }
+            JsValue::from(js_arr)
         }
     }
 }
@@ -363,7 +376,7 @@ pub struct FuzzyPasswordGate {
 #[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyDataTerminal {
     pub pos: Pos,
-    pub data: String,
+    pub data: JsValue, // string | string[]
     pub reading: bool,
     pub fuzzy: bool,
 }

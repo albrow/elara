@@ -39,7 +39,7 @@ say(data);
             Obstacle::new(2, 2),
             Obstacle::new(2, 3),
         ];
-        state.data_terminals = vec![DataTerminal::new(0, 1, "bananas".to_string())];
+        state.data_terminals = vec![DataTerminal::new(0, 1, "bananas".into())];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {

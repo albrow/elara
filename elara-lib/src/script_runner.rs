@@ -575,7 +575,7 @@ impl ScriptRunner {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("say", move |s: Dynamic| {
-                let message = format!("{}", s);
+                let message = s.to_string();
                 tx.borrow().send(Action::Say(message)).unwrap();
                 simulation.borrow_mut().step_forward();
             });
@@ -601,7 +601,7 @@ impl ScriptRunner {
                     let pos = &state.player.pos;
                     if let Some(terminal_index) = get_adjacent_terminal(&state, pos) {
                         let data = state.data_terminals[terminal_index].data.clone();
-                        Ok(Dynamic::from(data))
+                        Ok(data.into())
                     } else {
                         // TODO(albrow): Can we determine the line number for the error message?
                         Err(ERR_NO_DATA_TERMINAL.into())
