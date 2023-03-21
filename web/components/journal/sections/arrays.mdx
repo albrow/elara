@@ -17,10 +17,10 @@ let things = [42, "piano", true];
 say(things);
 `}/>
 
-You can access the elements of an array by providing an "index" in
+You can access the individual elements of an array by providing an "index" in
 between square brackets (`[` and `]`).
 
-ℹ️ **Tip:** The first element of the array has index `0`, **_not_** `1`.
+ℹ️ **Tip:** The first element of the array has an index of `0`, **_not_** `1`.
 
 <RunnableExample
   code={`let fruits = ["apples", "oranges", "bananas"];
@@ -32,35 +32,5 @@ say(first_fruit);
 // Get the other elements of the array...
 say(fruits[1]);
 say(fruits[2]);
-`}
-/>
-
-You can also change a specific element in an array by using the assignment
-operator (i.e. a single equals sign `=`). This is similar to changing the
-value of a variable.
-
-<RunnableExample
-  code={`let fruits = ["apples", "oranges", "bananas"];
-say(fruits);
-
-// Change the value of the first element of the array.
-fruits[0] = "pears";
-say(fruits);
-`}
-/>
-
-Finally, you can use the `push` function to add an element to the end
-of an array. The push function expects two inputs: an array and the value
-you want to add.
-
-<RunnableExample
-  code={`let words = ["fee", "fi"];
-say(words);
-
-// Add the elements "fo" and "fum" to the end of the array.
-push(words, "fo");
-say(words);
-push(words, "fum");
-say(words);
 `}
 />
