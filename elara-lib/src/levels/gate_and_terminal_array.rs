@@ -8,7 +8,7 @@ pub struct GateAndTerminalArray {}
 
 impl Level for GateAndTerminalArray {
     fn name(&self) -> &'static str {
-        "Using Arrays (TBD)"
+        "Needle in a Haystack"
     }
     fn short_name(&self) -> &'static str {
         "gate_and_terminal_array"
@@ -20,26 +20,46 @@ impl Level for GateAndTerminalArray {
         &AVAIL_FUNCS_WITH_READ
     }
     fn initial_code(&self) -> &'static str {
-        r#"
+        r#"// This data terminal holds an array instead of just a string.
+let array = read_data();
+
+// The password is at index 2 in the array. Once you get the
+// password, you know what to do!
+//
+// ADD YOUR CODE BELOW
+
 "#
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(5, 0, 10, Orientation::Down);
+        state.player = Player::new(10, 6, 10, Orientation::Left);
         state.goal = Some(Goal {
-            pos: Pos { x: 5, y: 5 },
+            pos: Pos { x: 5, y: 6 },
         });
         state.obstacles = vec![
-            Obstacle::new(4, 0),
-            Obstacle::new(4, 2),
-            Obstacle::new(4, 3),
-            Obstacle::new(6, 3),
-            Obstacle::new(6, 0),
-            Obstacle::new(6, 1),
-            Obstacle::new(6, 2),
+            Obstacle::new(7, 5),
+            Obstacle::new(7, 7),
+            Obstacle::new(8, 5),
+            Obstacle::new(8, 7),
+            Obstacle::new(9, 5),
+            Obstacle::new(9, 7),
+            Obstacle::new(10, 5),
+            Obstacle::new(10, 7),
+            Obstacle::new(11, 5),
+            Obstacle::new(11, 7),
         ];
-        state.password_gates = vec![PasswordGate::new(5, 3, "turing".to_string(), false)];
-        state.data_terminals = vec![DataTerminal::new(4, 1, vec!["one", "two", "three"].into())];
+        state.password_gates = vec![PasswordGate::new(7, 6, "vaughan".to_string(), false)];
+        state.data_terminals = vec![DataTerminal::new(
+            11,
+            6,
+            vec![
+                "HTTP ERROR 418",
+                "Ingredients: 500g freeze-dried spinach, 5g ground coriander, 1 can coconut milk...",
+                "vaughan",
+                "42",
+            ]
+            .into(),
+        )];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
@@ -67,6 +87,16 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
-        // TODO(albrow): Test success case.
+        // Running this code should result in Outcome::Success.
+        let script = r#"
+            let array = read_data();
+            move_forward(2);
+            say(array[2]);
+            move_forward(3);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
     }
 }
