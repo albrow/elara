@@ -313,9 +313,9 @@ impl From<&str> for TermData {
     }
 }
 
-impl From<Vec<TermData>> for TermData {
-    fn from(v: Vec<TermData>) -> TermData {
-        TermData::Array(v)
+impl<T: Into<TermData>> From<Vec<T>> for TermData {
+    fn from(v: Vec<T>) -> TermData {
+        TermData::Array(v.into_iter().map(|x| x.into()).collect())
     }
 }
 
