@@ -4,7 +4,8 @@ use crate::{
     simulation::{Actor, DataTerminal, Obstacle, Orientation, Player, State},
 };
 
-const HUMMUS_RECIPE: &'static str = "Ingredients: 3 cups chickpeas, juice of 1 lemon...";
+const HUMMUS_RECIPE: &'static str =
+    "Ingredients: 120g dried chickpeas, 2g citric acid, 2g ground paprika...";
 
 #[derive(Copy, Clone)]
 pub struct DataTerminalsPartOne {}

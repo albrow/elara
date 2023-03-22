@@ -54,7 +54,7 @@ let array = read_data();
             6,
             vec![
                 "HTTP ERROR 418",
-                "Ingredients: 500g freeze-dried spinach, 5g ground coriander, 1 can coconut milk...",
+                "Ingredients: 500g freeze-dried spinach, 5g ground coriander, 30g coconut milk powder...",
                 "vaughan",
                 "42",
             ]
