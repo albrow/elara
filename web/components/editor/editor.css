@@ -125,3 +125,7 @@ plugin for any text which supports documentation-on-hover */
 .editor-example .cm-gutters {
   min-height: 80px !important;
 }
+
+.cm-diagnostic.cm-diagnostic-error {
+  max-width: 600px;
+}

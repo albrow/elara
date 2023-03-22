@@ -71,12 +71,202 @@ pub fn search_prev_lines(script: &str, start_line: usize) -> usize {
     return start_line;
 }
 
+fn convert_func_not_found_err(
+    avail_funcs: &Vec<&'static str>,
+    fn_sig: &str,
+    pos: &rhai::Position,
+) -> BetterError {
+    let fn_name = fn_name_from_sig(fn_sig);
+    if !avail_funcs.contains(&fn_name.as_str()) {
+        // If the function is not available for this level, just return
+        // a "function not found" error.
+        return BetterError {
+            message: format!("Error: Function not found: {}", fn_name),
+            line: pos.line(),
+            col: pos.position(),
+        };
+    }
+
+    // If the function is a builtin function, we can give a more helpful error message.
+    // We know exactly how many arguments and of what type the function expects.
+    if let Some(builtin_fn) = BUILTIN_FUNCTIONS.get(fn_name.as_str()) {
+        return match builtin_fn.arg_types.len() {
+            0 => BetterError {
+                message: format!("Error: {} should not have any inputs.", builtin_fn.name),
+                line: pos.line(),
+                col: pos.position(),
+            },
+            1 => {
+                if builtin_fn.arg_types[0] == "any" {
+                    BetterError {
+                        message: format!(
+                            "Error: {} should have one input of any type.",
+                            builtin_fn.name
+                        ),
+                        line: pos.line(),
+                        col: pos.position(),
+                    }
+                } else {
+                    BetterError {
+                        message: format!(
+                            "Error: {} should have one {} as an input.",
+                            builtin_fn.name, builtin_fn.arg_types[0]
+                        ),
+                        line: pos.line(),
+                        col: pos.position(),
+                    }
+                }
+            }
+            _ => BetterError {
+                message: format!(
+                    "Error: Wrong inputs for {}. Should have {} inputs ({}).",
+                    builtin_fn.name,
+                    builtin_fn.arg_types.len(),
+                    builtin_fn.arg_types.join(", ")
+                ),
+                line: pos.line(),
+                col: pos.position(),
+            },
+        };
+    }
+
+    // In this case, just return a generic "function not found" error.
+    BetterError {
+        message: format!("Error: Function not found: {}", fn_name),
+        line: pos.line(),
+        col: pos.position(),
+    }
+}
+
+/// Returns true if the script contains an extra set of parentheses on the line
+/// where the error occurred.
+fn is_extra_parentheses_set(script: &str, err_pos: &rhai::Position) -> bool {
+    if let Some(line_number) = err_pos.line() {
+        let line = script.lines().nth(line_number - 1).unwrap();
+        if line.contains(")()") {
+            return true;
+        }
+    }
+    false
+}
+
+/// Returns true if the script contains an extra closing parentheses on the line
+/// where the error occurred.
+fn is_extra_closing_parentheses(script: &str, err_pos: &rhai::Position) -> bool {
+    if let Some(line_number) = err_pos.line() {
+        let line = script.lines().nth(line_number - 1).unwrap();
+        // Count the number of open and closed parentheses on the line.
+        let mut open_parens = 0;
+        let mut closed_parens = 0;
+        for c in line.chars() {
+            if c == '(' {
+                open_parens += 1;
+            }
+            if c == ')' {
+                closed_parens += 1;
+            }
+            if closed_parens > open_parens {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+fn convert_missing_semicolon_error(script: &str, desc: &str, pos: &rhai::Position) -> BetterError {
+    if desc == "at end of line" {
+        return BetterError {
+            message: String::from("Syntax Error: Missing semicolon ';' at end of line."),
+            line: pos.line(),
+            col: pos.position(),
+        };
+    }
+    if desc == "to terminate this statement" {
+        // Sometimes the Rhai parser spits out a missing semicolon error when the real culprit
+        // is extra parentheses. (E.g. `turn_left()()` instead of `turn_left()`). Check if this
+        // is the case.
+        if is_extra_parentheses_set(script, pos) {
+            return BetterError {
+                message: String::from("Syntax Error: Unexpected extra parentheses '()'."),
+                line: pos.line(),
+                col: pos.position(),
+            };
+        } else if is_extra_closing_parentheses(script, pos) {
+            return BetterError {
+                message: String::from("Syntax Error: Unexpected extra closing parentheses ')'."),
+                line: pos.line(),
+                col: pos.position(),
+            };
+        }
+
+        // Sometimes Rhai will give a missing semicolon error on the next line instead of
+        // the line where the semicolon is actually missing. Check for this and then change
+        // the line number if needed.
+        let orig_line = pos.line().unwrap();
+        let mut message = String::from(
+            "Syntax Error: Missing semicolon ';' after function call or other statement.",
+        );
+        let line = search_prev_lines(script, orig_line);
+        if line != orig_line {
+            // If we found a better line to put the error message on, we should
+            // also change the message for the sake of clarity.
+            message = String::from("Syntax Error: Missing semicolon ';' at end of line.");
+        }
+
+        return BetterError {
+            message: message,
+            line: Some(line),
+            col: pos.position(),
+        };
+    }
+
+    // In all other cases, just return a generic missing semicolon error.
+    BetterError {
+        message: String::from("Syntax Error: Missing semicolon ';' at end of line."),
+        line: pos.line(),
+        col: pos.position(),
+    }
+}
+
+fn convert_var_not_found_error(
+    avail_funcs: &Vec<&'static str>,
+    var_name: &str,
+    pos: &rhai::Position,
+) -> BetterError {
+    log!("var_name: {}", var_name);
+    if var_name == "Loop" {
+        return BetterError {
+            message: format!(
+                r#"Error: Variable not found: {}. (Hint: did you mean loop with a lowercase 'l'?)"#,
+                var_name
+            ),
+            line: pos.line(),
+            col: pos.position(),
+        };
+    } else if avail_funcs.contains(&var_name) {
+        return BetterError {
+            message: format!(
+                r#"Error: Variable not found: {}. (Hint: if you meant to call a function, make sure you include parentheses after the function name.)"#,
+                var_name,
+            ),
+            line: pos.line(),
+            col: pos.position(),
+        };
+    }
+
+    BetterError {
+        message: format!("Error: Variable not found: {}", var_name),
+        line: pos.line(),
+        col: pos.position(),
+    }
+}
+
 pub fn convert_err(
     avail_funcs: &Vec<&'static str>,
     script: String,
     err: Box<EvalAltResult>,
 ) -> BetterError {
-    // log!("{:?}", err);
+    log!("{:?}", err);
     match *err {
         EvalAltResult::ErrorTooManyOperations(ref pos) => {
             return BetterError {
@@ -89,89 +279,21 @@ pub fn convert_err(
             rhai::ParseErrorType::MissingToken(ref token, ref desc),
             ref pos,
         ) => {
-            if (token == ";") && (desc == "at end of line") {
-                return BetterError {
-                    message: String::from("Syntax Error: Missing semicolon ';' at end of line."),
-                    line: pos.line(),
-                    col: pos.position(),
-                };
-            }
-            if (token == ";") && (desc == "to terminate this statement") {
-                // Sometimes Rhai will give a missing semicolon error on the next line instead of
-                // the line where the semicolon is actually missing. Check for this and then change
-                // the line number if needed.
-                let orig_line = pos.line().unwrap();
-                let mut message = String::from(
-                    "Syntax Error: Missing semicolon ';' after function call or other statement.",
-                );
-                let line = search_prev_lines(script.as_str(), orig_line);
-                if line != orig_line {
-                    // If we found a better line to put the error message on, we should
-                    // also change the message for the sake of clarity.
-                    message = String::from("Syntax Error: Missing semicolon ';' at end of line.");
-                }
-
-                return BetterError {
-                    message: message,
-                    line: Some(line),
-                    col: pos.position(),
-                };
+            if token == ";" {
+                return convert_missing_semicolon_error(script.as_str(), desc, pos);
             }
         }
         EvalAltResult::ErrorFunctionNotFound(ref fn_sig, ref pos) => {
-            let fn_name = fn_name_from_sig(fn_sig.as_str());
-            if !avail_funcs.contains(&fn_name.as_str()) {
-                // If the function is not available for this level, just return
-                // a "function not found" error.
-                return BetterError {
-                    message: format!("Error: Function not found: {}", fn_name),
-                    line: pos.line(),
-                    col: pos.position(),
-                };
-            }
-
-            // If the function is a builtin function, we can give a more helpful error message.
-            // We know exactly how many arguments and of what type the function expects.
-            if let Some(builtin_fn) = BUILTIN_FUNCTIONS.get(fn_name.as_str()) {
-                return match builtin_fn.arg_types.len() {
-                    0 => BetterError {
-                        message: format!("Error: {} should not have any inputs.", builtin_fn.name),
-                        line: pos.line(),
-                        col: pos.position(),
-                    },
-                    1 => {
-                        if builtin_fn.arg_types[0] == "any" {
-                            BetterError {
-                                message: format!(
-                                    "Error: {} should have one input of any type.",
-                                    builtin_fn.name
-                                ),
-                                line: pos.line(),
-                                col: pos.position(),
-                            }
-                        } else {
-                            BetterError {
-                                message: format!(
-                                    "Error: {} should have one {} as an input.",
-                                    builtin_fn.name, builtin_fn.arg_types[0]
-                                ),
-                                line: pos.line(),
-                                col: pos.position(),
-                            }
-                        }
-                    }
-                    _ => BetterError {
-                        message: format!(
-                            "Error: Wrong inputs for {}. Should have {} inputs ({}).",
-                            builtin_fn.name,
-                            builtin_fn.arg_types.len(),
-                            builtin_fn.arg_types.join(", ")
-                        ),
-                        line: pos.line(),
-                        col: pos.position(),
-                    },
-                };
-            }
+            return convert_func_not_found_err(avail_funcs, fn_sig, pos);
+        }
+        EvalAltResult::ErrorVariableNotFound(ref var_name, ref pos) => {
+            return convert_var_not_found_error(avail_funcs, var_name, pos);
+        }
+        EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::VariableUndefined(ref var_name),
+            ref pos,
+        ) => {
+            return convert_var_not_found_error(avail_funcs, var_name, pos);
         }
         _ => {}
     }
