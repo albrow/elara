@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use regex::Regex;
 use rhai::EvalAltResult;
 
@@ -143,7 +145,7 @@ fn convert_func_not_found_err(
 fn is_extra_parentheses_set(script: &str, err_pos: &rhai::Position) -> bool {
     if let Some(line_number) = err_pos.line() {
         let line = script.lines().nth(line_number - 1).unwrap();
-        if line.contains(")()") {
+        if line.contains(")()") || line.contains("()(") {
             return true;
         }
     }
@@ -228,17 +230,27 @@ fn convert_missing_semicolon_error(script: &str, desc: &str, pos: &rhai::Positio
     }
 }
 
+lazy_static! {
+    /// A map of common keyword typos to helpful hints.
+    static ref KEYWORD_HINTS: HashMap<&'static str, &'static str> = {
+        let mut m: HashMap<&'static str, &'static str> = HashMap::new();
+        m.insert("Loop", "Did you mean loop with a lowercase 'l'?");
+        m.insert("Let", "Did you mean let with a lowercase 'l'?");
+        m.insert("If", "Did you mean if with a lowercase 'i'?");
+        m
+    };
+}
+
 fn convert_var_not_found_error(
     avail_funcs: &Vec<&'static str>,
     var_name: &str,
     pos: &rhai::Position,
 ) -> BetterError {
-    log!("var_name: {}", var_name);
-    if var_name == "Loop" {
+    if KEYWORD_HINTS.contains_key(var_name) {
         return BetterError {
             message: format!(
-                r#"Error: Variable not found: {}. (Hint: did you mean loop with a lowercase 'l'?)"#,
-                var_name
+                r#"Error: Variable not found: {}. (Hint: {})"#,
+                var_name, KEYWORD_HINTS[var_name]
             ),
             line: pos.line(),
             col: pos.position(),
@@ -246,7 +258,7 @@ fn convert_var_not_found_error(
     } else if avail_funcs.contains(&var_name) {
         return BetterError {
             message: format!(
-                r#"Error: Variable not found: {}. (Hint: if you meant to call a function, make sure you include parentheses after the function name.)"#,
+                r#"Error: Variable not found: {}. (Hint: If you meant to call a function, make sure you include parentheses after the function name.)"#,
                 var_name,
             ),
             line: pos.line(),
@@ -266,7 +278,7 @@ pub fn convert_err(
     script: String,
     err: Box<EvalAltResult>,
 ) -> BetterError {
-    log!("{:?}", err);
+    // log!("{:?}", err);
     match *err {
         EvalAltResult::ErrorTooManyOperations(ref pos) => {
             return BetterError {
