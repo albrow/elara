@@ -107,7 +107,7 @@ export default function Board(props: BoardProps) {
       })}
       {(props.gameState.goals as FuzzyGoal[]).map((goal, i) => (
         // eslint-disable-next-line react/no-array-index-key
-        <Goal key={i} offset={posToOffset(goal.pos)} fuzzy={goal.fuzzy} />
+        <Goal key={i} offset={posToOffset(goal.pos)} />
       ))}
       {(props.gameState.fuel_spots as FuzzyFuelSpot[]).map((fuelSpot, i) => {
         const fuelOffset = posToOffset(fuelSpot.pos);

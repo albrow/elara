@@ -1,11 +1,9 @@
 import { Offset } from "../../lib/utils";
 import { TILE_SIZE, GOAL_Z_INDEX } from "../../lib/constants";
 import flagImgUrl from "../../images/flag.png";
-import glitchyFlagImgUrl from "../../images/flag_glitchy.gif";
 
 interface GoalProps {
   offset: Offset;
-  fuzzy: boolean;
 }
 
 export default function Goal(props: GoalProps) {
@@ -13,7 +11,7 @@ export default function Goal(props: GoalProps) {
     <img
       className="flag sprite"
       alt="goal"
-      src={props.fuzzy ? glitchyFlagImgUrl : flagImgUrl}
+      src={flagImgUrl}
       style={{
         width: `${TILE_SIZE - 1}px`,
         height: `${TILE_SIZE - 1}px`,

@@ -10,40 +10,23 @@ impl SeismicActivity {
     // obstacles for each possible state.
     fn obstacles(&self) -> Vec<Obstacle> {
         return vec![
-            Obstacle::new(1, 1),
-            Obstacle::new(1, 2),
-            Obstacle::new(1, 3),
             Obstacle::new(1, 4),
             Obstacle::new(1, 5),
             Obstacle::new(1, 6),
-            Obstacle::new(2, 1),
+            Obstacle::new(2, 4),
             Obstacle::new(2, 6),
-            Obstacle::new(3, 1),
-            Obstacle::new(3, 3),
             Obstacle::new(3, 4),
             Obstacle::new(3, 6),
-            Obstacle::new(4, 1),
-            Obstacle::new(4, 3),
-            Obstacle::new(4, 3),
             Obstacle::new(4, 4),
             Obstacle::new(4, 6),
             Obstacle::new(4, 7),
-            Obstacle::new(5, 1),
-            Obstacle::new(5, 3),
-            Obstacle::new(6, 1),
-            Obstacle::new(6, 3),
             Obstacle::new(6, 4),
             Obstacle::new(6, 6),
             Obstacle::new(6, 7),
-            Obstacle::new(7, 1),
-            Obstacle::new(7, 3),
             Obstacle::new(7, 4),
             Obstacle::new(7, 6),
-            Obstacle::new(8, 1),
+            Obstacle::new(8, 4),
             Obstacle::new(8, 6),
-            Obstacle::new(9, 1),
-            Obstacle::new(9, 2),
-            Obstacle::new(9, 3),
             Obstacle::new(9, 4),
             Obstacle::new(9, 5),
             Obstacle::new(9, 6),
@@ -59,7 +42,7 @@ impl Level for SeismicActivity {
         "seismic_activity"
     }
     fn objective(&self) -> &'static str {
-        "Read from the data terminal ({terminal}) to figure out which way is safe. Then move the rover ({robot}) to the goal ({goal})."
+        "Move the rover ({robot}) to either the left or the right goal ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
         &AVAIL_FUNCS_WITH_READ
@@ -67,7 +50,7 @@ impl Level for SeismicActivity {
     fn initial_code(&self) -> &'static str {
         r#"// This code reads the safe direction from the data terminal
 // (either "left" or "right") and stores it in a variable
-// called safe_direction.
+// called safe_direction. You DON'T need to change this part.
 move_forward(2);
 let safe_direction = read_data();
 say("The safe direction is: " + safe_direction);
@@ -76,15 +59,10 @@ if safe_direction == "left" {
   // If the safe direction is "left", we should go left.
   turn_left();
   move_forward(3);
-  turn_right();
-  move_forward(3);
-  turn_right();
-  move_forward(3);
 }
 if safe_direction == "right" {
   // What should we do if the safe direction is "right"?
   // ADD YOUR CODE BELOW
-  
   
   
 }"#
@@ -95,10 +73,10 @@ if safe_direction == "right" {
                 player: Player::new(5, 7, 12, Orientation::Up),
                 fuel_spots: vec![],
                 goal: Some(Goal {
-                    pos: Pos { x: 5, y: 2 },
+                    pos: Pos { x: 2, y: 5 },
                 }),
                 enemies: vec![],
-                obstacles: [self.obstacles().clone(), vec![Obstacle::new(7, 5)]].concat(),
+                obstacles: [self.obstacles().clone(), vec![Obstacle::new(6, 5)]].concat(),
                 password_gates: vec![],
                 data_terminals: vec![DataTerminal::new(5, 4, "left".into())],
             },
@@ -106,10 +84,10 @@ if safe_direction == "right" {
                 player: Player::new(5, 7, 12, Orientation::Up),
                 fuel_spots: vec![],
                 goal: Some(Goal {
-                    pos: Pos { x: 5, y: 2 },
+                    pos: Pos { x: 8, y: 5 },
                 }),
                 enemies: vec![],
-                obstacles: [self.obstacles().clone(), vec![Obstacle::new(3, 5)]].concat(),
+                obstacles: [self.obstacles().clone(), vec![Obstacle::new(4, 5)]].concat(),
                 password_gates: vec![],
                 data_terminals: vec![DataTerminal::new(5, 4, "right".into())],
             },
@@ -150,17 +128,9 @@ mod tests {
             if safe_direction == "left" {
                 turn_left();
                 move_forward(3);
-                turn_right();
-                move_forward(3);
-                turn_right();
-                move_forward(3);
             }
             if safe_direction == "right" {
                 turn_right();
-                move_forward(3);
-                turn_left();
-                move_forward(3);
-                turn_left();
                 move_forward(3);
             }"#;
         let result = game
@@ -173,10 +143,6 @@ mod tests {
         // run out of fuel, but we didn't reach the goal either.
         let script = r"move_forward(2);
             turn_left();
-            move_forward(3);
-            turn_right();
-            move_forward(3);
-            turn_right();
             move_forward(3);";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
@@ -184,10 +150,6 @@ mod tests {
         assert_eq!(result.outcome, Outcome::Continue);
         let script = r"move_forward(2);
             turn_right();
-            move_forward(3);
-            turn_left();
-            move_forward(3);
-            turn_left();
             move_forward(3);";
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
@@ -204,10 +166,6 @@ mod tests {
             if safe_direction == "left" {
                 turn_left();
                 move_forward(3);
-                turn_right();
-                move_forward(3);
-                turn_right();
-                move_forward(3);
             }"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
@@ -220,10 +178,6 @@ mod tests {
             
             if safe_direction == "right" {
                 turn_right();
-                move_forward(3);
-                turn_left();
-                move_forward(3);
-                turn_left();
                 move_forward(3);
             }"#;
         let result = game
