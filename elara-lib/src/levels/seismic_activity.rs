@@ -36,7 +36,7 @@ impl SeismicActivity {
 
 impl Level for SeismicActivity {
     fn name(&self) -> &'static str {
-        "Seismic Activity"
+        "Astroid Strike"
     }
     fn short_name(&self) -> &'static str {
         "seismic_activity"
