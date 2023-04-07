@@ -85,8 +85,8 @@ export const CHOICES: {
 };
 
 export const TREES: DialogTrees = {
-  level_seismic_activity: {
-    name: "Seismic Activity",
+  level_astroid_strike: {
+    name: "Astroid Strike",
     startId: "explain_asteroid_strike",
   },
 };

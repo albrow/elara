@@ -10,7 +10,7 @@ import * as DataTerminalsPartOne from "./level_data_terminals_part_one";
 import * as GateAndTerminal from "./level_gate_and_terminal";
 import * as GateAndTerminalPartThree from "./level_gate_and_terminal_part_three";
 import * as Variables from "./journal_variables";
-import * as SeismicActivity from "./level_seismic_activity";
+import * as AstroidStrike from "./level_astroid_strike";
 import * as PartlyDisabledMovement from "./level_partly_disabled_movement";
 import * as ReImplementTurnRight from "./level_reimplement_turn_right";
 
@@ -23,7 +23,7 @@ type NodeIds =
   | GateAndTerminal.NodeIds
   | GateAndTerminalPartThree.NodeIds
   | Variables.NodeIds
-  | SeismicActivity.NodeIds
+  | AstroidStrike.NodeIds
   | PartlyDisabledMovement.NodeIds
   | ReImplementTurnRight.NodeIds;
 type ChoiceIds =
@@ -33,7 +33,7 @@ type ChoiceIds =
   | GateAndTerminal.ChoiceIds
   | GateAndTerminalPartThree.ChoiceIds
   | Variables.ChoiceIds
-  | SeismicActivity.ChoiceIds
+  | AstroidStrike.ChoiceIds
   | PartlyDisabledMovement.ChoiceIds
   | ReImplementTurnRight.ChoiceIds;
 
@@ -71,7 +71,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   ...GateAndTerminal.NODES,
   ...GateAndTerminalPartThree.NODES,
   ...Variables.NODES,
-  ...SeismicActivity.NODES,
+  ...AstroidStrike.NODES,
   ...PartlyDisabledMovement.NODES,
   ...ReImplementTurnRight.NODES,
 };
@@ -83,7 +83,7 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...GateAndTerminal.CHOICES,
   ...GateAndTerminalPartThree.CHOICES,
   ...Variables.CHOICES,
-  ...SeismicActivity.CHOICES,
+  ...AstroidStrike.CHOICES,
   ...PartlyDisabledMovement.CHOICES,
   ...ReImplementTurnRight.CHOICES,
 };
@@ -95,7 +95,7 @@ export const TREES: DialogTrees = {
   ...GateAndTerminal.TREES,
   ...GateAndTerminalPartThree.TREES,
   ...Variables.TREES,
-  ...SeismicActivity.TREES,
+  ...AstroidStrike.TREES,
   ...PartlyDisabledMovement.TREES,
   ...ReImplementTurnRight.TREES,
 };
