@@ -16,28 +16,28 @@ impl Level for ReimplementTurnRight {
         "reimplement_turn_right"
     }
     fn objective(&self) -> &'static str {
-        "Create a new turn_right function, then move the rover ({robot}) to the goal ({goal})."
+        "Finish defining the new_turn_right function, then move the rover ({robot}) to the goal ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
         &AVAILABLE_FUNCS
     }
     fn initial_code(&self) -> &'static str {
-        r"fn turn_right() {
+        r"fn new_turn_right() {
   // ADD YOUR CODE HERE
   
 }
 
-// Using the new turn_right function, this code will move
+// Using the new_turn_right function, this code will move
 // the rover all the way to the goal! If you did it right,
 // you DON'T need to change the following code.
 move_backward(4);
-turn_right();
+new_turn_right();
 move_backward(4);
-turn_right();
+new_turn_right();
 move_backward(3);
-turn_right();
+new_turn_right();
 move_backward(2);
-turn_right();
+new_turn_right();
 move_backward(1);
 "
     }
@@ -103,20 +103,20 @@ mod tests {
 
         // This is an example solution that should result in Outcome::Success.
         let script = r"
-            fn turn_right() {
+            fn new_turn_right() {
                 turn_left();
                 turn_left();
                 turn_left();
             }
 
             move_backward(4);
-            turn_right();
+            new_turn_right();
             move_backward(4);
-            turn_right();
+            new_turn_right();
             move_backward(3);
-            turn_right();
+            new_turn_right();
             move_backward(2);
-            turn_right();
+            new_turn_right();
             move_backward(1);
         ";
         let result = game
