@@ -66,7 +66,7 @@ impl Level for AstroidStrikePartTwo {
     fn initial_states(&self) -> Vec<State> {
         vec![
             State {
-                player: Player::new(1, 3, 15, Orientation::Right),
+                player: Player::new(1, 3, 10, Orientation::Right),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 4, y: 0 },
@@ -81,7 +81,7 @@ impl Level for AstroidStrikePartTwo {
                 data_terminals: vec![DataTerminal::new(0, 3, "top".into())],
             },
             State {
-                player: Player::new(1, 3, 15, Orientation::Right),
+                player: Player::new(1, 3, 10, Orientation::Right),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 7, y: 3 },
@@ -96,7 +96,7 @@ impl Level for AstroidStrikePartTwo {
                 data_terminals: vec![DataTerminal::new(0, 3, "middle".into())],
             },
             State {
-                player: Player::new(1, 3, 15, Orientation::Right),
+                player: Player::new(1, 3, 10, Orientation::Right),
                 fuel_spots: vec![],
                 goal: Some(Goal {
                     pos: Pos { x: 4, y: 6 },
