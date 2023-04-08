@@ -1,6 +1,6 @@
 import {
-  createContext,
   PropsWithChildren,
+  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -34,6 +34,7 @@ interface RawScene {
 export interface Scene extends RawScene {
   unlocked: boolean;
   completed: boolean;
+  challengeCompleted: boolean;
   index: number;
   levelIndex?: number;
   nextScene?: Scene;
@@ -177,6 +178,11 @@ function processScenes(
       scene.type === "level" &&
       levelStates[scene.level?.short_name!] &&
       levelStates[scene.level?.short_name!].completed,
+    challengeCompleted:
+      (scene.type === "level" &&
+        levelStates[scene.level?.short_name!] &&
+        levelStates[scene.level?.short_name!].challengeCompleted) ||
+      false,
     unlocked: index <= cutoff,
     levelIndex: getLevelIndexFromScene(scenes, scene),
   }));

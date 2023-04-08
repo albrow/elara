@@ -7,7 +7,10 @@ export interface LevelEndProps {
   modalMessage: string;
 }
 
-export function getLevelEndProps(result: RunResult): LevelEndProps {
+export function getLevelEndProps(
+  result: RunResult,
+  challenge: string
+): LevelEndProps {
   switch (result.outcome) {
     case "no_objective":
       return {
@@ -18,12 +21,32 @@ export function getLevelEndProps(result: RunResult): LevelEndProps {
           "You completed the objective! You can replay this level if you want or move on to the next one.",
       };
     case "success":
+      if (challenge === "") {
+        // Level does not have a challenge.
+        return {
+          isCompleted: true,
+          modalKind: "success",
+          modalTitle: "Great Job!",
+          modalMessage:
+            "You completed the objective! You can replay this level if you want or move on to the next one.",
+        };
+      }
+      if (!result.passes_challenge) {
+        // Level has a challenge and the user failed it.
+        return {
+          isCompleted: true,
+          modalKind: "success",
+          modalTitle: "Great Job!",
+          modalMessage:
+            "You completed the objective! There's an optional extra challenge you can try, or you can move on to the next level.",
+        };
+      }
+      // Level has a challenge and the user passed it.
       return {
         isCompleted: true,
         modalKind: "success",
-        modalTitle: "Great Job!",
-        modalMessage:
-          "You completed the objective! You can replay this level if you want or move on to the next one.",
+        modalTitle: "Fantastic!",
+        modalMessage: "Wow! You passed the extra challenge!",
       };
     case "continue":
       return {

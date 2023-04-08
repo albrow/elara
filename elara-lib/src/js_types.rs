@@ -108,6 +108,7 @@ pub struct LevelData {
     pub initial_state: FuzzyState,
     pub initial_code: String,
     pub available_functions: Array, // Array<String>
+    pub challenge: String,
 }
 
 impl LevelData {
@@ -123,6 +124,7 @@ impl LevelData {
             initial_code: level.initial_code().to_string(),
             initial_state: FuzzyState::from(level.initial_fuzzy_state()),
             available_functions: avail_funcs,
+            challenge: level.challenge().unwrap_or_default().to_string(),
         }
     }
 }

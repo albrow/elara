@@ -2,7 +2,13 @@ import { useRouter } from "react-router5";
 import { Box, MenuItem, Text } from "@chakra-ui/react";
 import { Fragment, useCallback } from "react";
 
-import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
+import {
+  MdLock,
+  MdCheckCircle,
+  MdCheckCircleOutline,
+  MdStar,
+  MdStarBorder,
+} from "react-icons/md";
 import { Scene } from "../../contexts/scenes";
 import DisablableLink from "./disablable_link";
 
@@ -83,7 +89,32 @@ export default function SceneLink(props: SceneLinkProps) {
       );
     }
 
-    // TODO(albrow): Add icons for challenges.
+    if (props.scene.level?.challenge) {
+      if (props.scene.challengeCompleted) {
+        icons.push(
+          <MdStar
+            size="1.2em"
+            color="var(--chakra-colors-yellow-400)"
+            style={{
+              marginRight: "0.2rem",
+              display: "inline",
+              verticalAlign: "middle",
+            }}
+          />
+        );
+      } else {
+        icons.push(
+          <MdStarBorder
+            size="1.2em"
+            style={{
+              marginRight: "0.2rem",
+              display: "inline",
+              verticalAlign: "middle",
+            }}
+          />
+        );
+      }
+    }
 
     return (
       <>
@@ -92,7 +123,13 @@ export default function SceneLink(props: SceneLinkProps) {
         ))}
       </>
     );
-  }, [props.isLocked, props.scene.completed, props.scene.type]);
+  }, [
+    props.isLocked,
+    props.scene.challengeCompleted,
+    props.scene.completed,
+    props.scene.level?.challenge,
+    props.scene.type,
+  ]);
 
   return (
     <DisablableLink

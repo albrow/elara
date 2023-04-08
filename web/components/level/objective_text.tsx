@@ -1,3 +1,4 @@
+import { Text } from "@chakra-ui/react";
 import flagImageUrl from "../../images/flag.png";
 import groverDownUrl from "../../images/grover_down.png";
 import fuelImgUrl from "../../images/fuel.png";
@@ -43,5 +44,9 @@ function splitText(text: string) {
 // in Rust and then format them in the UI.
 export default function ObjectiveText(props: ObjectiveTextProps) {
   const segments = splitText(props.text);
-  return <span>{segments}</span>;
+  return (
+    <Text as="span" verticalAlign="middle">
+      {segments}
+    </Text>
+  );
 }

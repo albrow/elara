@@ -2,6 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
 
 import {
+  MdCheckCircle,
+  MdCheckCircleOutline,
+  MdStar,
+  MdStarBorder,
+} from "react-icons/md";
+import {
   FuzzyStateWithLines,
   Game,
   RunResult,
@@ -11,6 +17,7 @@ import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
 import ObjectiveText from "../components/level/objective_text";
 import {
+  markLevelChallengeCompleted,
   markLevelCompleted,
   updateLevelCode,
   useSaveData,
@@ -135,7 +142,7 @@ export default function Level() {
   // objective).
   const onReplayDone = useCallback(
     (script: string, result: RunResult) => {
-      const endResult = getLevelEndProps(result);
+      const endResult = getLevelEndProps(result, currLevel().challenge);
 
       // Show the modal.
       setModalKind(endResult.modalKind);
@@ -154,6 +161,13 @@ export default function Level() {
       if (endResult.isCompleted) {
         // Update the level completed status.
         pendingSaveData = markLevelCompleted(
+          pendingSaveData,
+          currLevel().short_name
+        );
+      }
+      if (result.passes_challenge) {
+        // Update the level completed status.
+        pendingSaveData = markLevelChallengeCompleted(
           pendingSaveData,
           currLevel().short_name
         );
@@ -186,6 +200,60 @@ export default function Level() {
     resetLevelState();
   }, [resetLevelState]);
 
+  const getObjectiveIcon = useCallback(() => {
+    if (currScene !== null && currScene.completed) {
+      return (
+        <MdCheckCircle
+          size="1.1em"
+          color="var(--chakra-colors-green-400)"
+          style={{
+            marginRight: "0.2rem",
+            display: "inline",
+            verticalAlign: "middle",
+          }}
+        />
+      );
+    }
+    return (
+      <MdCheckCircleOutline
+        size="1.1em"
+        color="var(--chakra-colors-gray-400)"
+        style={{
+          marginRight: "0.2rem",
+          display: "inline",
+          verticalAlign: "middle",
+        }}
+      />
+    );
+  }, [currScene]);
+
+  const getChallengeIcon = useCallback(() => {
+    if (currScene !== null && currScene.challengeCompleted) {
+      return (
+        <MdStar
+          size="1.1em"
+          color="var(--chakra-colors-yellow-400)"
+          style={{
+            marginRight: "0.2rem",
+            display: "inline",
+            verticalAlign: "middle",
+          }}
+        />
+      );
+    }
+    return (
+      <MdStarBorder
+        size="1.1em"
+        color="var(--chakra-colors-gray-400)"
+        style={{
+          marginRight: "0.2rem",
+          display: "inline",
+          verticalAlign: "middle",
+        }}
+      />
+    );
+  }, [currScene]);
+
   return (
     <>
       <LevelEndModal
@@ -207,9 +275,22 @@ export default function Level() {
           <Text fontSize="2xl" fontWeight="bold" mb={1}>
             Level {currScene?.levelIndex}: {currLevel().name}
           </Text>
-          <p>
-            <b>Objective:</b> <ObjectiveText text={currLevel().objective} />
-          </p>
+          <Text as="span" verticalAlign="middle">
+            {getObjectiveIcon()}
+            <Text as="span" verticalAlign="middle" fontWeight="bold">
+              Objective:
+            </Text>{" "}
+            <ObjectiveText text={currLevel().objective} />
+          </Text>
+          {currLevel().challenge !== "" && (
+            <Text as="span" ml="0.5em" verticalAlign="middle">
+              {getChallengeIcon()}
+              <Text as="span" verticalAlign="middle" fontWeight="bold">
+                Challenge:
+              </Text>{" "}
+              <ObjectiveText text={currLevel().challenge} />
+            </Text>
+          )}
         </Box>
         <Flex direction="row" mt={4}>
           <Box id="editor-section" mr={2} flexGrow={1}>
