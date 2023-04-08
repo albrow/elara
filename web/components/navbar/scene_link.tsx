@@ -1,8 +1,8 @@
 import { useRouter } from "react-router5";
 import { Box, MenuItem, Text } from "@chakra-ui/react";
-import { useCallback } from "react";
+import { Fragment, useCallback } from "react";
 
-import { MdLock } from "react-icons/md";
+import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 import { Scene } from "../../contexts/scenes";
 import DisablableLink from "./disablable_link";
 
@@ -36,10 +36,63 @@ export default function SceneLink(props: SceneLinkProps) {
     // If the scene is a level, then we want to include the level
     // index in the link text.
     if (props.scene.type === "level") {
-      return `Level ${props.scene.levelIndex}: ${props.scene.level?.name}`;
+      return `${props.scene.levelIndex}: ${props.scene.level?.name}`;
     }
     return props.scene.name;
   }, [props.scene]);
+
+  const getSceneIcons = useCallback(() => {
+    if (props.isLocked) {
+      return (
+        <MdLock
+          size="1.1em"
+          style={{
+            marginRight: "0.3rem",
+            display: "inline",
+            verticalAlign: "middle",
+          }}
+        />
+      );
+    }
+    if (props.scene.type !== "level") {
+      return null;
+    }
+    const icons = [];
+    if (props.scene.completed) {
+      icons.push(
+        <MdCheckCircle
+          size="1.3em"
+          color="var(--chakra-colors-green-400)"
+          style={{
+            marginRight: "0.3rem",
+            display: "inline",
+            verticalAlign: "middle",
+          }}
+        />
+      );
+    } else {
+      icons.push(
+        <MdCheckCircleOutline
+          size="1.3em"
+          style={{
+            marginRight: "0.3rem",
+            display: "inline",
+            verticalAlign: "middle",
+          }}
+        />
+      );
+    }
+
+    // TODO(albrow): Add icons for challenges.
+
+    return (
+      <>
+        {icons.map((icon) => (
+          <Fragment key={icon.type}>{icon}</Fragment>
+        ))}
+      </>
+    );
+  }, [props.isLocked, props.scene.completed, props.scene.type]);
 
   return (
     <DisablableLink
@@ -54,22 +107,16 @@ export default function SceneLink(props: SceneLinkProps) {
       >
         <Box>
           <Text
+            as="span"
             ml={1}
-            display="inline-block"
+            display="inline"
             fontWeight="bold"
             color={isActive ? "white" : "gray.300"}
           >
-            {props.isLocked && (
-              <MdLock
-                size="1.0em"
-                style={{
-                  paddingTop: "0.2rem",
-                  marginRight: "0.3rem",
-                  display: "inline",
-                }}
-              />
-            )}
-            {getSceneName()}
+            {getSceneIcons()}
+            <Text display="inline" verticalAlign="middle">
+              {getSceneName()}
+            </Text>
           </Text>
         </Box>
       </MenuItem>

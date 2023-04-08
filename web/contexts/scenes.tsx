@@ -33,6 +33,7 @@ interface RawScene {
 
 export interface Scene extends RawScene {
   unlocked: boolean;
+  completed: boolean;
   index: number;
   levelIndex?: number;
   nextScene?: Scene;
@@ -172,6 +173,10 @@ function processScenes(
   const result: Scene[] = scenes.map((scene, index) => ({
     ...scene,
     index,
+    completed:
+      scene.type === "level" &&
+      levelStates[scene.level?.short_name!] &&
+      levelStates[scene.level?.short_name!].completed,
     unlocked: index <= cutoff,
     levelIndex: getLevelIndexFromScene(scenes, scene),
   }));
