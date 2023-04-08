@@ -66,6 +66,7 @@ pub struct RunResult {
     pub states: Array,   // Array<FuzzyStateWithLines>
     pub outcome: String, // "success" | "continue" | "other failure message"
     pub stats: ScriptStats,
+    pub passes_challenge: bool,
 }
 
 /// Converts script_runner::ScriptResult to a format that is wasm_bindgen
@@ -94,6 +95,7 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
             Outcome::NoObjective => String::from("no_objective"),
         },
         stats: ScriptStats::from(&result.stats),
+        passes_challenge: result.passes_challenge,
     }
 }
 

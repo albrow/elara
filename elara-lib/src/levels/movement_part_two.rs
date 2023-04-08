@@ -1,5 +1,8 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State};
+use crate::{
+    script_runner::ScriptStats,
+    simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State},
+};
 
 #[derive(Copy, Clone)]
 pub struct MovementPartTwo {}
@@ -51,6 +54,12 @@ impl Level for MovementPartTwo {
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
+    fn challenge(&self) -> Option<&'static str> {
+        Some("Code length must be 40 characters or less.")
+    }
+    fn check_challenge(&self, _states: &Vec<State>, _script: &str, stats: &ScriptStats) -> bool {
+        stats.code_len <= 40
+    }
 }
 
 #[cfg(test)]
@@ -80,5 +89,35 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
+    }
+
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &MovementPartTwo {};
+
+        // This code beats the level, but doesn't satisfy the challenge conditions.
+        let script = r"move_forward(3);
+            turn_left();
+            move_forward(3);
+            turn_left();
+            move_forward(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        // This code satisfies the challenge conditions.
+        let script = r"
+            loop {
+                move_forward(3);
+                turn_left();
+            }";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
     }
 }

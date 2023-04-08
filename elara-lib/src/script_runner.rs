@@ -40,6 +40,7 @@ pub struct ScriptResult {
     pub trace: Vec<Vec<usize>>,
     pub outcome: Outcome,
     pub stats: ScriptStats,
+    pub passes_challenge: bool,
 }
 
 impl ScriptRunner {
@@ -124,6 +125,7 @@ impl ScriptRunner {
                                 trace: trace,
                                 outcome,
                                 stats,
+                                passes_challenge: false,
                             });
                         }
                     }
@@ -140,11 +142,20 @@ impl ScriptRunner {
         let positions = self.pending_trace.borrow().to_vec();
         let outcome = self.simulation.borrow().last_outcome();
         let stats = compute_stats(&engine, &script, &states);
+
+        // Check if the script passes the challenge (if any).
+        let curr_level = self.simulation.borrow().curr_level();
+        let passes_challenge = match curr_level.challenge() {
+            Some(_) => curr_level.check_challenge(&states, script, &stats),
+            None => false,
+        };
+
         Ok(ScriptResult {
             states,
             trace: positions,
             outcome,
             stats,
+            passes_challenge,
         })
     }
 

@@ -23,6 +23,7 @@ use std::collections::HashMap;
 
 use crate::actors::Bounds;
 use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
+use crate::script_runner::ScriptStats;
 use crate::simulation::Actor;
 use crate::simulation::{
     DataTerminal, Enemy, FuelSpot, Goal, Obstacle, PasswordGate, Player, State,
@@ -85,6 +86,12 @@ pub trait Level {
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
         &DEFAULT_AVAIL_FUNCS
+    }
+    fn challenge(&self) -> Option<&'static str> {
+        None
+    }
+    fn check_challenge(&self, _states: &Vec<State>, _script: &str, _stats: &ScriptStats) -> bool {
+        false
     }
 }
 

@@ -48,6 +48,10 @@ impl Simulation {
         self.last_outcome = Outcome::Continue;
     }
 
+    pub fn curr_level(&self) -> &'static dyn Level {
+        self.level
+    }
+
     pub fn curr_state(&self) -> State {
         self.states[self.state_idx].clone()
     }
