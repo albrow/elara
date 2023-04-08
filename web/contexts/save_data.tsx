@@ -8,6 +8,8 @@ import {
   useMemo,
   useState,
 } from "react";
+import clone from "clone";
+
 import { ShortId } from "../lib/tutorial_shorts";
 
 export const VERSION = 7;
@@ -18,6 +20,8 @@ export interface LevelState {
   completed: boolean;
   // The latest user code.
   code: string;
+  // Whether or not the challenge was completed.
+  challengeCompleted?: boolean;
 }
 
 // The macro state of the game, including which levels have been
@@ -33,25 +37,12 @@ export interface SaveData {
   seenTutorialShorts: ShortId[];
 }
 
-function deepCopy(saveData: SaveData): SaveData {
-  return {
-    version: saveData.version,
-    levelStates: { ...(saveData.levelStates ? saveData.levelStates : {}) },
-    seenDialogTrees: [
-      ...(saveData.seenDialogTrees ? saveData.seenDialogTrees : []),
-    ],
-    seenTutorialShorts: [
-      ...(saveData.seenTutorialShorts ? saveData.seenTutorialShorts : []),
-    ],
-  };
-}
-
 export function save(saveData: SaveData): void {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(saveData));
 }
 
 function migrateSaveData(saveData: SaveData): SaveData {
-  const newData = deepCopy(saveData);
+  const newData = clone(saveData);
 
   if (saveData.version < 5) {
     // For older versions, just log a warning and return the default save data.
@@ -109,9 +100,26 @@ export function markLevelCompleted(
   saveData: SaveData,
   levelName: string
 ): SaveData {
-  const newSaveData = deepCopy(saveData);
+  const newSaveData = clone(saveData);
   newSaveData.levelStates[levelName] = {
     completed: true,
+    challengeCompleted:
+      saveData.levelStates[levelName]?.challengeCompleted || false,
+    code: saveData.levelStates[levelName]?.code || "",
+  };
+  return newSaveData;
+}
+
+// Returns a copy of the save data with challengeCompleted marked as true for the
+// given level.
+export function markLevelChallengeCompleted(
+  saveData: SaveData,
+  levelName: string
+): SaveData {
+  const newSaveData = clone(saveData);
+  newSaveData.levelStates[levelName] = {
+    completed: saveData.levelStates[levelName]?.completed || false,
+    challengeCompleted: true,
     code: saveData.levelStates[levelName]?.code || "",
   };
   return newSaveData;
@@ -122,16 +130,18 @@ export function updateLevelCode(
   levelName: string,
   code: string
 ): SaveData {
-  const newSaveData = deepCopy(saveData);
+  const newSaveData = clone(saveData);
   newSaveData.levelStates[levelName] = {
     completed: saveData.levelStates[levelName]?.completed || false,
+    challengeCompleted:
+      saveData.levelStates[levelName]?.challengeCompleted || false,
     code,
   };
   return newSaveData;
 }
 
 export function markDialogSeen(saveData: SaveData, treeName: string): SaveData {
-  const newSaveData = deepCopy(saveData);
+  const newSaveData = clone(saveData);
   if (!newSaveData.seenDialogTrees.includes(treeName)) {
     newSaveData.seenDialogTrees.push(treeName);
   }
@@ -142,7 +152,7 @@ export function markTutorialShortSeen(
   saveData: SaveData,
   shortId: ShortId
 ): SaveData {
-  const newSaveData = deepCopy(saveData);
+  const newSaveData = clone(saveData);
   if (!newSaveData.seenTutorialShorts.includes(shortId)) {
     newSaveData.seenTutorialShorts.push(shortId);
   }
@@ -198,10 +208,12 @@ if (import.meta.vitest) {
           levelStates: {
             "First Steps": {
               completed: false,
+              challengeCompleted: false,
               code: `say("hello");`,
             },
             "Fuel Up": {
               completed: false,
+              challengeCompleted: false,
               code: `move_right(5);`,
             },
           },
@@ -214,10 +226,12 @@ if (import.meta.vitest) {
           levelStates: {
             "First Steps": {
               completed: true,
+              challengeCompleted: false,
               code: `say("hello");`,
             },
             "Fuel Up": {
               completed: false,
+              challengeCompleted: false,
               code: `move_right(5);`,
             },
           },
@@ -233,7 +247,8 @@ if (import.meta.vitest) {
           version: VERSION,
           levelStates: {
             "First Steps": {
-              completed: false,
+              completed: true,
+              challengeCompleted: true,
               code: `say("hello");`,
             },
             "Fuel Up": {
@@ -253,11 +268,13 @@ if (import.meta.vitest) {
           version: VERSION,
           levelStates: {
             "First Steps": {
-              completed: false,
+              completed: true,
+              challengeCompleted: true,
               code: `say("hello");`,
             },
             "Fuel Up": {
               completed: false,
+              challengeCompleted: false,
               code: `say("updated");`,
             },
           },
