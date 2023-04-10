@@ -3,10 +3,6 @@ import {
   Box,
   Button,
   Spacer,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Tooltip,
   Text,
   Slider,
@@ -22,9 +18,6 @@ import {
   MdSkipNext,
   MdSkipPrevious,
   MdStop,
-  MdMenu,
-  MdUploadFile,
-  MdSave,
   MdReplay,
 } from "react-icons/md";
 import { FaSatelliteDish } from "react-icons/fa";
@@ -42,15 +35,12 @@ export interface ControlBarProps {
   onPause: () => void;
   onPlay: () => void;
   onStepForward: () => void;
-  onDownload?: () => void;
-  onUpload?: () => void;
   onReset?: () => void;
   stepIndex?: number;
   numSteps?: number;
   onSliderChange?: (value: number) => void;
   onSliderChangeEnd?: (value: number) => void;
   sliderSize?: "full" | "small";
-  showAdditionalOptions?: boolean;
 }
 
 export default function ControlBar(props: ControlBarProps) {
@@ -222,49 +212,6 @@ export default function ControlBar(props: ControlBarProps) {
         )}
         <Spacer />
         <FunctionList funcNames={props.availableFunctions} />
-        <Box
-          hidden={
-            !props.onDownload && !props.onUpload && props.showAdditionalOptions
-          }
-        >
-          <Menu placement="bottom-end">
-            <Tooltip label="Additional options">
-              <MenuButton
-                rounded="md"
-                _hover={{ background: "gray.700" }}
-                color="white"
-                p={1}
-                px={2}
-              >
-                <MdMenu size="1.3em" />
-              </MenuButton>
-            </Tooltip>
-            <MenuList
-              background="gray.700"
-              borderColor="black"
-              shadow="dark-lg"
-            >
-              <MenuItem
-                background="gray.700"
-                color="white"
-                _hover={{ background: "gray.600" }}
-                onClick={props.onDownload}
-              >
-                <MdSave style={{ marginRight: "0.3rem" }} />
-                Download
-              </MenuItem>
-              <MenuItem
-                background="gray.700"
-                color="white"
-                _hover={{ background: "gray.600" }}
-                onClick={props.onUpload}
-              >
-                <MdUploadFile style={{ marginRight: "0.3rem" }} />
-                Upload
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        </Box>
       </Flex>
     </Box>
   );
@@ -272,5 +219,4 @@ export default function ControlBar(props: ControlBarProps) {
 
 ControlBar.defaultProps = {
   sliderSize: "full",
-  showAdditionalOptions: true,
 };

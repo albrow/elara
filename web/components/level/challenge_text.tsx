@@ -55,7 +55,7 @@ function injectTooltips(text: string) {
       <>
         {beforeText}
         <Tooltip
-          label="A list of all available functions for this level. Click the icon in the top right of the editor panel to view the function list."
+          label="A list of all available functions for this level. Click the icon in the top right of the code editor to view the function list."
           placement="top"
           hasArrow
         >

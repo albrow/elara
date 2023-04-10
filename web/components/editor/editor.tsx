@@ -20,7 +20,6 @@ import {
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
-import { loadCode, saveCode } from "../../lib/file_system";
 import { hoverDocs } from "./hover_docs";
 import ControlBar from "./control_bar";
 
@@ -151,8 +150,6 @@ interface EditorProps {
   resetOnReplayDone?: boolean;
   // An optional callback that can be used, e.g., to save the code to local storage.
   persistCode?: (script: string) => void;
-  // Whether or not to show the hamburger menu in the control bar with additional options.
-  showAdditionalOptions?: boolean;
 }
 
 export default function Editor(props: EditorProps) {
@@ -408,15 +405,6 @@ export default function Editor(props: EditorProps) {
     setState("paused");
   }, []);
 
-  const onDownload = useCallback(async () => {
-    await saveCode(getCode());
-  }, [getCode]);
-
-  const onUpload = useCallback(async () => {
-    const loadedCode = await loadCode();
-    setCode(loadedCode);
-  }, [setCode]);
-
   // Reset the code to its initial state for the current
   // level (regardless of what has been saved in the save
   // data).
@@ -461,14 +449,11 @@ export default function Editor(props: EditorProps) {
         onStepForward={onStepForward}
         onStepBack={onStepBack}
         onPlay={onPlay}
-        onDownload={onDownload}
-        onUpload={onUpload}
         onReset={onReset}
         stepIndex={stepIndex}
         numSteps={numSteps}
         onSliderChange={onSliderChange}
         sliderSize={props.type === "demo" ? "small" : "full"}
-        showAdditionalOptions={props.showAdditionalOptions}
       />
       <Box
         id="editor-wrapper"
