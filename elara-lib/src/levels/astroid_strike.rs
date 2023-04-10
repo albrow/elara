@@ -1,4 +1,7 @@
+use rhai::Engine;
+
 use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
+use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, Pos, State};
 
@@ -99,6 +102,17 @@ if safe_direction == "right" {
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
+    fn challenge(&self) -> Option<&'static str> {
+        Some("Reach the goal without using the read_data function.")
+    }
+    fn check_challenge(&self, _states: &Vec<State>, script: &str, _stats: &ScriptStats) -> bool {
+        // Strip the comments first, then check if the script contains "read_data".
+        if let Ok(script) = Engine::new().compact_script(script) {
+            return !script.contains("read_data");
+        }
+        // Otherwise, challenge is considered not passed.
+        false
+    }
 }
 
 #[cfg(test)]
@@ -184,5 +198,61 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
+    }
+
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &AstroidStrike {};
+
+        // This code beats the level, but doesn't satisfy the challenge conditions.
+        let script = r#"
+            move_forward(2);
+            let safe_direction = read_data();
+            say("The safe direction is: " + safe_direction);
+            
+            if safe_direction == "left" {
+                turn_left();
+                move_forward(3);
+            }
+            if safe_direction == "right" {
+                turn_right();
+                move_forward(3);
+            }"#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        // This code satisfies the challenge conditions.
+        let script = r"
+            move_forward(2);
+            turn_left();
+            move_forward(3);
+            turn_right();
+            turn_right();
+            move_forward(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
+
+        // Having read_data in the comments should be okay.
+        let script = r"
+            // read_data();
+            // read_data
+            move_forward(2);
+            turn_left();
+            move_forward(3);
+            turn_right();
+            turn_right();
+            move_forward(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
     }
 }

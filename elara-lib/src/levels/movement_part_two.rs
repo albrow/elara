@@ -97,7 +97,8 @@ mod tests {
         const LEVEL: &'static dyn Level = &MovementPartTwo {};
 
         // This code beats the level, but doesn't satisfy the challenge conditions.
-        let script = r"move_forward(3);
+        let script = r"
+            move_forward(3);
             turn_left();
             move_forward(3);
             turn_left();

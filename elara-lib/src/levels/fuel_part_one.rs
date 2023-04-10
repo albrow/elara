@@ -1,5 +1,8 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State};
+use crate::{
+    script_runner::ScriptStats,
+    simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State},
+};
 
 #[derive(Copy, Clone)]
 pub struct FuelPartOne {}
@@ -12,7 +15,7 @@ impl Level for FuelPartOne {
         "fuel_part_one"
     }
     fn objective(&self) -> &'static str {
-        "First move the rover ({robot}) to collect the fuel ({fuel}), then move to the goal ({goal})."
+        "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Try collecting some fuel before moving to the goal.
@@ -66,6 +69,12 @@ move_forward(4);
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
+    fn challenge(&self) -> Option<&'static str> {
+        Some("Complete the objective in 12 or fewer steps.")
+    }
+    fn check_challenge(&self, _states: &Vec<State>, _script: &str, stats: &ScriptStats) -> bool {
+        stats.time_taken <= 12
+    }
 }
 
 #[cfg(test)]
@@ -113,5 +122,37 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
+    }
+
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &FuelPartOne {};
+
+        // This code beats the level, but doesn't satisfy the challenge conditions.
+        let script = r"
+            move_forward(5);
+            turn_left();
+            turn_left();
+            move_forward(1);
+            turn_right();
+            move_forward(4);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        // This code satisfies the challenge conditions.
+        let script = r"
+            move_forward(5);
+            move_backward(1);
+            turn_left();
+            move_forward(4);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
     }
 }

@@ -1,5 +1,10 @@
+use rhai::Engine;
+
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State};
+use crate::{
+    script_runner::ScriptStats,
+    simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State},
+};
 
 #[derive(Copy, Clone)]
 pub struct LoopsPartTwo {}
@@ -12,7 +17,7 @@ impl Level for LoopsPartTwo {
         "loops_part_two"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal}) using a loop."
+        "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Try writing a loop on your own this time.
@@ -69,6 +74,22 @@ impl Level for LoopsPartTwo {
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
+    fn challenge(&self) -> Option<&'static str> {
+        Some("Reach the goal without using a loop and with 85 characters or less.")
+    }
+    fn check_challenge(&self, _states: &Vec<State>, script: &str, stats: &ScriptStats) -> bool {
+        if stats.code_len > 85 {
+            return false;
+        }
+        // Script cannot contain the key words "loop", "for", "while", or "do".
+        // Strip the comments first, then use a regex to check for keywords.
+        if let Ok(script) = Engine::new().compact_script(script) {
+            let loop_regex = regex::Regex::new(r"\b(loop|for|while|do)\b").unwrap();
+            return !loop_regex.is_match(script.as_str());
+        }
+        // Otherwise, challenge is considered not passed.
+        false
+    }
 }
 
 #[cfg(test)]
@@ -101,5 +122,78 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
+    }
+
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &LoopsPartTwo {};
+
+        // This code beats the level, but doesn't satisfy the challenge conditions.
+        let script = r"
+            loop {
+                move_forward(2);
+                turn_right();
+                move_forward(1);
+                turn_left();
+            }";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        // This code satisfies the challenge conditions.
+        let script = r#"
+            fn main() {
+                move_forward(2);
+                turn_right();
+                move_forward(1);
+                turn_left();
+                main();
+            }
+
+            main();"#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
+
+        // This code also satisfies the challenge conditions. It's fine if
+        // comments contain the "loop", "for", "while", or "do" keywords.
+        let script = r#"
+            // loop
+            // for
+            // while
+            // do
+            fn main() {
+                move_forward(2);
+                turn_right();
+                move_forward(1);
+                turn_left();
+                main();
+            }
+
+            main();"#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
+
+        // Here is an alternative solution that passes the challenge.
+        let script = r#"
+            [0,1,2,3,4].map(|| {
+                move_forward(2);
+                turn_right();
+                move_forward(1);
+                turn_left();
+            });"#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
     }
 }
