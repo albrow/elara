@@ -29,6 +29,7 @@ import { useShortsModal } from "../contexts/shorts_modal";
 import LevelEndModal from "../components/level/level_end_modal";
 import { getLevelEndProps } from "../lib/level_end_messages";
 import { useCurrScene } from "../contexts/scenes";
+import ChallengeText from "../components/level/challenge_text";
 
 const game = Game.new();
 
@@ -288,7 +289,7 @@ export default function Level() {
               <Text as="span" verticalAlign="middle" fontWeight="bold">
                 Challenge:
               </Text>{" "}
-              <ObjectiveText text={currLevel().challenge} />
+              <ChallengeText text={currLevel().challenge} />
             </Text>
           )}
         </Box>
