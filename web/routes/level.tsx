@@ -282,7 +282,7 @@ export default function Level() {
             </Text>{" "}
             <ObjectiveText text={currLevel().objective} />
           </Text>
-          {currLevel().challenge !== "" && (
+          {currLevel().challenge !== "" && currScene?.completed && (
             <Text as="span" ml="0.5em" verticalAlign="middle">
               {getChallengeIcon()}
               <Text as="span" verticalAlign="middle" fontWeight="bold">

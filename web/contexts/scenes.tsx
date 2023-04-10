@@ -111,6 +111,7 @@ const RAW_SCENES: RawScene[] = [
   levelScene("movement_part_two", [
     "how_to_navigate_scenes",
     "how_to_view_function_list",
+    "extra_challenges",
   ]),
   levelScene("fuel_part_one", ["moving_takes_fuel", "how_to_get_more_fuel"]),
   journalScene("strings"),

@@ -7,6 +7,7 @@ import movingTakesFuelUrl from "../images/shorts/moving_takes_fuel.gif";
 import howToGetMoreFuelUrl from "../images/shorts/how_to_get_more_fuel.gif";
 import howToUseDataTerminalsUrl from "../images/shorts/how_to_use_data_terminals.gif";
 import howToViewFunctionListUrl from "../images/shorts/how_to_view_function_list.gif";
+import extraChallengesUrl from "../images/shorts/extra_challenges.gif";
 
 export interface TutorialShort {
   title: string;
@@ -59,6 +60,11 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     title: "List of available functions",
     text: `You can view the list of available functions for any level by pressing the "function list" button.`,
     imageUrl: howToViewFunctionListUrl,
+  },
+  extra_challenges: {
+    title: "Extra challenges",
+    text: "Some levels have extra challenges which appear after beating the main objective. These are completely optional, so don't worry if you can't do it right away. You can always come back and try again later!",
+    imageUrl: extraChallengesUrl,
   },
 };
 
