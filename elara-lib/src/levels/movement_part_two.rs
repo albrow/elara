@@ -109,6 +109,17 @@ mod tests {
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, false);
 
+        // This code satisfies the challenge conditions, but doesn't beat the
+        // level. passes_challenge should be false.
+        let script = r"
+            move_forward(3);
+        ";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
+        assert_eq!(result.passes_challenge, false);
+
         // This code satisfies the challenge conditions.
         let script = r"
             loop {

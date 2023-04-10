@@ -16,7 +16,7 @@ lazy_static! {
         "read_data",
         "get_orientation",
         "push",
-        // "get_pos",
+        // "get_position",
     ];
 }
 

@@ -94,9 +94,9 @@ lazy_static! {
             },
         );
         m.insert(
-            "get_pos",
+            "get_position",
             BuiltinFunction {
-                name: "get_pos",
+                name: "get_position",
                 arg_types: &[],
             },
         );

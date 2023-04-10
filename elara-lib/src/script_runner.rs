@@ -143,12 +143,21 @@ impl ScriptRunner {
         let outcome = self.simulation.borrow().last_outcome();
         let stats = compute_stats(&engine, &script, &states);
 
-        // Check if the script passes the challenge (if any).
-        let curr_level = self.simulation.borrow().curr_level();
-        let passes_challenge = match curr_level.challenge() {
-            Some(_) => curr_level.check_challenge(&states, script, &stats),
-            None => false,
-        };
+        // If the outcome is success, and the level has a challenge,
+        // check if it was passed.
+        let mut passes_challenge = false;
+        match outcome {
+            Outcome::Success => {
+                let curr_level = self.simulation.borrow().curr_level();
+                match curr_level.challenge() {
+                    Some(_) => {
+                        passes_challenge = curr_level.check_challenge(&states, script, &stats)
+                    }
+                    _ => {}
+                };
+            }
+            _ => (),
+        }
 
         Ok(ScriptResult {
             states,
@@ -552,11 +561,11 @@ impl ScriptRunner {
                 }
             });
         }
-        if avail_funcs.contains(&"get_pos") {
-            // get_pos returns the current position of the player as an array
+        if avail_funcs.contains(&"get_position") {
+            // get_position returns the current position of the player as an array
             // of [x, y].
             let simulation = self.simulation.clone();
-            engine.register_fn("get_pos", move || -> Dynamic {
+            engine.register_fn("get_position", move || -> Dynamic {
                 let pos = simulation.borrow().curr_state().player.pos;
                 rhai::Array::from(vec![
                     Dynamic::from(pos.x as i64),

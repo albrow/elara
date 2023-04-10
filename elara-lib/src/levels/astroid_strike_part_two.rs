@@ -1,9 +1,26 @@
-use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
+use rhai::Engine;
+
+use super::{std_check_win, Level, Outcome};
+use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, Pos, State};
 
 #[derive(Copy, Clone)]
 pub struct AstroidStrikePartTwo {}
+
+lazy_static! {
+    // This list includes the get_position function which is necessary
+    // for beating the bonus challenge.
+    static ref AVAIL_FUNCS: Vec<&'static str> = vec![
+        "move_forward",
+        "move_backward",
+        "turn_left",
+        "turn_right",
+        "say",
+        "read_data",
+        "get_position",
+    ];
+}
 
 impl AstroidStrikePartTwo {
     // Note: We make obstacles a method so we can re-use the same set of
@@ -53,7 +70,7 @@ impl Level for AstroidStrikePartTwo {
         "Move the rover ({robot}) to one of the goals ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAIL_FUNCS_WITH_READ
+        &AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// You'll need to read the safe direction from the data terminal
@@ -118,12 +135,25 @@ impl Level for AstroidStrikePartTwo {
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
+    fn challenge(&self) -> Option<&'static str> {
+        Some(
+            "Don't use the read_data function. (Check the function list for a new function that might help).",
+        )
+    }
+    fn check_challenge(&self, _states: &Vec<State>, script: &str, _stats: &ScriptStats) -> bool {
+        // Strip the comments first, then check if the script contains "read_data".
+        if let Ok(script) = Engine::new().compact_script(script) {
+            return !script.contains("read_data");
+        }
+        // Otherwise, challenge is considered not passed.
+        false
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::levels::Outcome;
+    use crate::{constants::ERR_OUT_OF_FUEL, levels::Outcome};
 
     #[test]
     fn level() {
@@ -177,5 +207,78 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
+    }
+
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &AstroidStrikePartTwo {};
+
+        // This code beats the level, but doesn't satisfy the challenge conditions.
+        let script = r#"
+            let safe_direction = read_data();
+            move_forward(3);
+            if safe_direction == "top" {
+                turn_left();
+            }
+            if safe_direction == "bottom" {
+                turn_right();
+            }
+            move_forward(3);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        // This code doesn't beat the level because the rover runs out
+        // of fuel.
+        let script = r"
+            move_forward(6);
+            turn_left();
+            move_forward(3);
+            turn_right();
+            turn_right();
+            move_forward(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        );
+        assert_eq!(result.passes_challenge, false);
+
+        // This code should beat the level and pass the challenge.
+        let script = r"
+            fn try_move_forward(n) {
+                // Record the current position and try moving forward one space.
+                let pos = get_position();
+                move_forward(1);
+                // Check the new position. If we're blocked, then the new position
+                // will be the same as the old.
+                let new_pos = get_position();
+                if pos == new_pos {
+                // In this case, return early (i.e. don't keep trying to move).
+                return;
+                }
+                // Otherwise, we're not blocked. Keep moving the remaining
+                // number of spaces.
+                move_forward(n-1);
+            }
+
+            move_forward(3);
+            try_move_forward(3);
+            turn_left();
+            try_move_forward(3);
+            turn_right();
+            turn_right();
+            try_move_forward(3);";
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
     }
 }

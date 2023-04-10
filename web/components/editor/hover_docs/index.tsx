@@ -25,6 +25,7 @@ import Say from "./pages/say.mdx";
 import Add from "./pages/add.mdx";
 import ReadData from "./pages/read_data.mdx";
 import GetOrientation from "./pages/get_orientation.mdx";
+import GetPosition from "./pages/get_position.mdx";
 import Push from "./pages/push.mdx";
 
 const hoverWords = [
@@ -40,6 +41,7 @@ const hoverWords = [
   "add",
   "read_data",
   "get_orientation",
+  "get_position",
   "push",
 ] as const;
 
@@ -60,6 +62,7 @@ export const docPages: {
   add: Add,
   read_data: ReadData,
   get_orientation: GetOrientation,
+  get_position: GetPosition,
   push: Push,
 };
 
