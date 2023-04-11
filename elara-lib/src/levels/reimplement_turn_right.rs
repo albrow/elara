@@ -83,10 +83,10 @@ move_backward(1);
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Code length must be 68 characters or less.")
+        Some("Code length must be 55 characters or less.")
     }
     fn check_challenge(&self, _states: &Vec<State>, _script: &str, stats: &ScriptStats) -> bool {
-        stats.code_len <= 68
+        stats.code_len <= 55
     }
 }
 
@@ -166,14 +166,11 @@ mod tests {
         // This code satisfies the challenge conditions.
         let script = r#"
             fn l() { turn_left(); }
-            fn r() {
-                l();
-                l();
-                l();
-            }
             loop {
                 move_backward(4);
-                r();
+                l();
+                l();
+                l();
             }"#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
