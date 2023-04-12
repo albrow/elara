@@ -63,7 +63,7 @@ export const SHORTS: { [key: string]: TutorialShort } = {
   },
   extra_challenges: {
     title: "Extra challenges",
-    text: "Some levels have extra challenges which appear after beating the main objective. These are completely optional, so don't worry if you can't do it right away. You can always come back and try again later!",
+    text: "Some levels have optional challenges, but don't worry if you can't do them right away. You can always try again later!",
     imageUrl: extraChallengesUrl,
   },
 };

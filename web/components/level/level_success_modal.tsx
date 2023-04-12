@@ -139,7 +139,7 @@ export default function LevelEndModal(props: LevelEndModalProps) {
                 >
                   <Animate
                     sequenceIndex={0}
-                    delay={0.3}
+                    delay={0.2}
                     start={{ opacity: 0 }}
                     end={{ opacity: 1 }}
                   >
@@ -158,7 +158,7 @@ export default function LevelEndModal(props: LevelEndModalProps) {
                   </Animate>
                   <Animate
                     sequenceIndex={1}
-                    delay={0.1}
+                    delay={0.05}
                     start={{ opacity: 0 }}
                     end={{ opacity: 1 }}
                   >
@@ -177,7 +177,7 @@ export default function LevelEndModal(props: LevelEndModalProps) {
                   </Animate>
                   <Animate
                     sequenceIndex={2}
-                    delay={0.1}
+                    delay={0.05}
                     start={{ opacity: 0 }}
                     end={{ opacity: 1 }}
                   >
@@ -245,11 +245,42 @@ export default function LevelEndModal(props: LevelEndModalProps) {
                       Challenge:
                     </Text>{" "}
                     <ChallengeText text={currLevel.challenge} />
+                    {!props.result.passes_challenge && (
+                      <Animate
+                        sequenceIndex={7}
+                        delay={0.1}
+                        start={{ opacity: 0 }}
+                        end={{ opacity: 1 }}
+                      >
+                        <Text fontStyle="italic" fontSize="sm">
+                          (You might need to learn more and then come back
+                          later.)
+                        </Text>
+                      </Animate>
+                    )}
+                    {props.result.passes_challenge &&
+                      currLevel.challenge
+                        .toLowerCase()
+                        .includes("code length") && (
+                        <Animate
+                          sequenceIndex={7}
+                          delay={0.1}
+                          start={{ opacity: 0 }}
+                          end={{ opacity: 1 }}
+                        >
+                          <Text fontStyle="italic" fontSize="sm">
+                            (Keep in mind, in the real world{" "}
+                            <b>more readable</b> code is better than{" "}
+                            <b>shorter</b> code. This challenge is just for
+                            fun!)
+                          </Text>
+                        </Animate>
+                      )}
                   </Box>
                 </Animate>
               )}
               <Animate
-                sequenceIndex={7}
+                sequenceIndex={999}
                 delay={0.5}
                 start={{ opacity: 0 }}
                 end={{ opacity: 1 }}
