@@ -87,6 +87,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
           onStep={onEditorStep}
           onCancel={onScriptCancel}
           onStateChange={onEditorStateChange}
+          showCodeLenCounter={false}
         />
       </Box>
       <MiniBoard

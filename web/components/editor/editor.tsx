@@ -154,6 +154,8 @@ interface EditorProps {
   resetOnReplayDone?: boolean;
   // An optional callback that can be used, e.g., to save the code to local storage.
   persistCode?: (script: string) => void;
+  // Whether the code length counter should be displayed (default: true).
+  showCodeLenCounter?: boolean;
 }
 
 export default function Editor(props: EditorProps) {
@@ -504,29 +506,36 @@ export default function Editor(props: EditorProps) {
           }
         />
       </Box>
-      <Box position="relative" top="-42px">
-        <Box
-          bg="gray.700"
-          float="right"
-          mr="17px"
-          px="7px"
-          py="2px"
-          borderRadius="0.375rem"
-          opacity="50%"
-        >
-          <Tooltip label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
-            <Text
-              verticalAlign="center"
-              as="div"
-              fontSize="0.8rem"
-              color="white"
-              _hover={{ cursor: "help" }}
-            >
-              {codeLength || "???"} chars
-            </Text>
-          </Tooltip>
+      {props.showCodeLenCounter && (
+        <Box position="relative" top="-42px">
+          <Box
+            bg="gray.700"
+            float="right"
+            mr="17px"
+            px="7px"
+            py="2px"
+            borderRadius="0.375rem"
+            opacity="50%"
+          >
+            <Tooltip label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
+              <Text
+                verticalAlign="center"
+                as="div"
+                fontSize="0.8rem"
+                color="white"
+                _hover={{ cursor: "help" }}
+              >
+                {codeLength || "???"} chars
+              </Text>
+            </Tooltip>
+          </Box>
         </Box>
-      </Box>
+      )}
     </>
   );
 }
+
+Editor.defaultProps = {
+  resetOnReplayDone: true,
+  showCodeLenCounter: true,
+};
