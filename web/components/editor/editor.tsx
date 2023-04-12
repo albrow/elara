@@ -180,9 +180,7 @@ export default function Editor(props: EditorProps) {
       debounce(
         (code: string) => {
           const compactLen = get_compact_code_len(code);
-          if (compactLen != null) {
-            setCodeLength(compactLen);
-          }
+          setCodeLength(compactLen);
         },
         200,
         { maxWait: 1500 }
@@ -524,7 +522,7 @@ export default function Editor(props: EditorProps) {
               color="white"
               _hover={{ cursor: "help" }}
             >
-              {codeLength} chars
+              {codeLength || "???"} chars
             </Text>
           </Tooltip>
         </Box>
