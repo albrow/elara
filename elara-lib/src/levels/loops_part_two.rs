@@ -75,10 +75,10 @@ impl Level for LoopsPartTwo {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal without using a loop and with 85 characters or less.")
+        Some("Reach the goal without using a loop and with 84 characters or less.")
     }
     fn check_challenge(&self, _states: &Vec<State>, script: &str, stats: &ScriptStats) -> bool {
-        if stats.code_len > 85 {
+        if stats.code_len > 84 {
             return false;
         }
         // Script cannot contain the key words "loop", "for", "while", or "do".
