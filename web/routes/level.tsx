@@ -322,7 +322,7 @@ export default function Level() {
           </Box>
         </Flex>
         {!dialogVisible && getDialogTree() !== null && (
-          <Box mt="60px">
+          <Box mt="20px">
             <ShowDialogButton onClick={() => setDialogVisible(true)} />
           </Box>
         )}
