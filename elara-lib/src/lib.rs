@@ -137,6 +137,17 @@ impl Game {
 }
 
 #[wasm_bindgen]
+/// Returns the length of the compacted code (i.e. not counting comments
+/// or whitespace).
+pub fn get_compact_code_len(script: &str) -> Option<usize> {
+    let compacted = rhai::Engine::new().compact_script(script);
+    match compacted {
+        Ok(compacted) => Some(compacted.len()),
+        Err(_) => None,
+    }
+}
+
+#[wasm_bindgen]
 pub fn get_level_data() -> js_sys::Object {
     js_types::to_level_data_obj(LEVELS.clone())
 }

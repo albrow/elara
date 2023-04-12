@@ -3,12 +3,13 @@ import { completionStatus, acceptCompletion } from "@codemirror/autocomplete";
 import { lintGutter, setDiagnostics, Diagnostic } from "@codemirror/lint";
 import { EditorView, KeyBinding, keymap } from "@codemirror/view";
 import { useCodeMirror } from "@uiw/react-codemirror";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { createTheme } from "@uiw/codemirror-themes";
 import { tags as t } from "@lezer/highlight";
-import { Box } from "@chakra-ui/react";
+import { Box, Text, Tooltip } from "@chakra-ui/react";
 import { Compartment } from "@codemirror/state";
 import { Unsubscribe } from "router5/dist/types/base";
+import debounce from "lodash.debounce";
 
 import { useRouter } from "react-router5";
 import { highlightLines, unhighlightAll } from "../../lib/highlight_line";
@@ -16,10 +17,13 @@ import {
   FuzzyStateWithLines,
   RhaiError,
   RunResult,
+  // eslint-disable-next-line camelcase
+  get_compact_code_len,
 } from "../../../elara-lib/pkg";
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
+import { CODE_LEN_EXPLANATION } from "../../lib/constants";
 import { hoverDocs } from "./hover_docs";
 import ControlBar from "./control_bar";
 
@@ -153,6 +157,7 @@ interface EditorProps {
 }
 
 export default function Editor(props: EditorProps) {
+  // editor is a reference to HTML div which will hold the CodeMirror editor.
   const editor = useRef<HTMLDivElement | null>(null);
   const [state, setState] = useState<EditorState>("editing");
   const [activeLines, setActiveLines] = useState<number[]>([]);
@@ -160,7 +165,30 @@ export default function Editor(props: EditorProps) {
   const replayer = useRef<Replayer | null>(null);
   const [numSteps, setNumSteps] = useState<number>(0);
   const [stepIndex, setStepIndex] = useState<number>(0);
+  // codeLength is the length of the compacted code (i.e. not counting
+  // comments or non-significant whitespace). Shown in the UI and used
+  // for some challenges.
+  const [codeLength, setCodeLength] = useState<number | undefined>(
+    get_compact_code_len(props.code)
+  );
   const router = useRouter();
+
+  // Update the compacted code length on every key stroke, but debounce to
+  // avoid doing this too often.
+  const onCodeChange = useMemo(
+    () =>
+      debounce(
+        (code: string) => {
+          const compactLen = get_compact_code_len(code);
+          if (compactLen != null) {
+            setCodeLength(compactLen);
+          }
+        },
+        200,
+        { maxWait: 1500 }
+      ),
+    []
+  );
 
   const { setContainer, view } = useCodeMirror({
     height: props.type === "level" || props.type === "demo" ? "377px" : "auto",
@@ -171,6 +199,7 @@ export default function Editor(props: EditorProps) {
     extensions,
     value: props.code,
     theme: myTheme,
+    onChange: onCodeChange,
   });
 
   useEffect(
@@ -477,10 +506,29 @@ export default function Editor(props: EditorProps) {
           }
         />
       </Box>
+      <Box position="relative" top="-42px">
+        <Box
+          bg="gray.700"
+          float="right"
+          mr="17px"
+          px="7px"
+          py="2px"
+          borderRadius="0.375rem"
+          opacity="50%"
+        >
+          <Tooltip label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
+            <Text
+              verticalAlign="center"
+              as="div"
+              fontSize="0.8rem"
+              color="white"
+              _hover={{ cursor: "help" }}
+            >
+              {codeLength} chars
+            </Text>
+          </Tooltip>
+        </Box>
+      </Box>
     </>
   );
 }
-
-Editor.defaultProps = {
-  resetOnReplayDone: true,
-};

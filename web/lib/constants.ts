@@ -43,3 +43,7 @@ export const TERMINAL_Z_INDEX = 100;
 // game board.
 export const AXIS_HEIGHT = 18;
 export const AXIS_WIDTH = 18;
+
+// Various messages that are displayed to the user.
+export const CODE_LEN_EXPLANATION =
+  "The number of characters in your code not including comments, spaces, newlines, or tabs.";

@@ -1,6 +1,7 @@
 import { Text, Tooltip } from "@chakra-ui/react";
 import { BsJournalCode } from "react-icons/bs";
 import { FaQuestionCircle } from "react-icons/fa";
+import { CODE_LEN_EXPLANATION } from "../../lib/constants";
 
 export interface ChallengeTextProps {
   text: string;
@@ -15,11 +16,7 @@ function injectTooltips(text: string) {
     return (
       <>
         {beforeText}
-        <Tooltip
-          label="The number of characters in your code not including comments, spaces, newlines, or tabs."
-          placement="top"
-          hasArrow
-        >
+        <Tooltip label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
           <Text
             as="span"
             fontStyle="italic"
