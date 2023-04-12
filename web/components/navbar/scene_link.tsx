@@ -2,13 +2,8 @@ import { useRouter } from "react-router5";
 import { Box, MenuItem, Text } from "@chakra-ui/react";
 import { Fragment, useCallback } from "react";
 
-import {
-  MdLock,
-  MdCheckCircle,
-  MdCheckCircleOutline,
-  MdStar,
-  MdStarBorder,
-} from "react-icons/md";
+import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
+import { BsStar, BsStarFill } from "react-icons/bs";
 import { Scene } from "../../contexts/scenes";
 import DisablableLink from "./disablable_link";
 
@@ -92,11 +87,12 @@ export default function SceneLink(props: SceneLinkProps) {
     if (props.scene.level?.challenge) {
       if (props.scene.challengeCompleted) {
         icons.push(
-          <MdStar
-            size="1.2em"
+          <BsStarFill
+            size="1.1em"
             color="var(--chakra-colors-yellow-400)"
             style={{
               marginRight: "0.2rem",
+              marginBottom: "2px",
               display: "inline",
               verticalAlign: "middle",
             }}
@@ -104,9 +100,10 @@ export default function SceneLink(props: SceneLinkProps) {
         );
       } else {
         icons.push(
-          <MdStarBorder
-            size="1.2em"
+          <BsStar
+            size="1.1em"
             style={{
+              marginBottom: "2px",
               marginRight: "0.2rem",
               display: "inline",
               verticalAlign: "middle",

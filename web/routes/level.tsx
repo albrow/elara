@@ -1,18 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
 
-import {
-  MdCheckCircle,
-  MdCheckCircleOutline,
-  MdStar,
-  MdStarBorder,
-} from "react-icons/md";
-import {
-  FuzzyStateWithLines,
-  Game,
-  RunResult,
-  ScriptStats,
-} from "../../elara-lib/pkg";
+import { BsStar, BsStarFill } from "react-icons/bs";
+import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
+import { FuzzyStateWithLines, Game, RunResult } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
 import ObjectiveText from "../components/level/objective_text";
@@ -26,8 +17,7 @@ import DialogModal from "../components/dialog/dialog_modal";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import { TREES } from "../lib/dialog_trees";
 import { useShortsModal } from "../contexts/shorts_modal";
-import LevelEndModal from "../components/level/level_end_modal";
-import { getLevelEndProps } from "../lib/level_end_messages";
+import LevelEndModal from "../components/level/level_success_modal";
 import { useCurrScene } from "../contexts/scenes";
 import ChallengeText from "../components/level/challenge_text";
 
@@ -79,10 +69,7 @@ export default function Level() {
   }, [currScene?.tutorialShorts, showShortsModal]);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalKind, setModalKind] = useState<"success" | "failure">("success");
-  const [modalTitle, setModalTitle] = useState("");
-  const [modalMessage, setModalMessage] = useState("");
-  const [modalStats, setModalStats] = useState<ScriptStats | undefined>();
+  const [lastResult, setLastResult] = useState<RunResult | null>(null);
 
   const getDialogTree = useCallback(() => {
     const dialogTreeName = `level_${currLevel().short_name}`;
@@ -143,13 +130,8 @@ export default function Level() {
   // objective).
   const onReplayDone = useCallback(
     (script: string, result: RunResult) => {
-      const endResult = getLevelEndProps(result, currLevel().challenge);
-
       // Show the modal.
-      setModalKind(endResult.modalKind);
-      setModalTitle(endResult.modalTitle);
-      setModalMessage(endResult.modalMessage);
-      setModalStats(result.stats);
+      setLastResult(result);
       setModalVisible(true);
 
       // Store the latest code in the save data.
@@ -159,7 +141,7 @@ export default function Level() {
         currLevel().short_name,
         script
       );
-      if (endResult.isCompleted) {
+      if (result.outcome === "success") {
         // Update the level completed status.
         pendingSaveData = markLevelCompleted(
           pendingSaveData,
@@ -191,10 +173,12 @@ export default function Level() {
   );
 
   const onScriptError = useCallback((script: string, error: Error) => {
-    setModalKind("failure");
-    setModalTitle("Uh Oh!");
-    setModalMessage(error.message);
-    setModalVisible(true);
+    // TODO(albrow): Fix this.
+    alert(error.message);
+    // setModalKind("failure");
+    // setModalTitle("Uh Oh!");
+    // setModalMessage(error.message);
+    // setModalVisible(true);
   }, []);
 
   const onScriptCancel = useCallback(() => {
@@ -231,7 +215,7 @@ export default function Level() {
   const getChallengeIcon = useCallback(() => {
     if (currScene !== null && currScene.challengeCompleted) {
       return (
-        <MdStar
+        <BsStarFill
           size="1.1em"
           color="var(--chakra-colors-yellow-400)"
           style={{
@@ -243,7 +227,7 @@ export default function Level() {
       );
     }
     return (
-      <MdStarBorder
+      <BsStar
         size="1.1em"
         color="var(--chakra-colors-gray-400)"
         style={{
@@ -258,12 +242,9 @@ export default function Level() {
   return (
     <>
       <LevelEndModal
+        result={lastResult}
         visible={modalVisible}
         setVisible={setModalVisible}
-        title={modalTitle}
-        message={modalMessage}
-        kind={modalKind}
-        stats={modalStats}
         onClose={resetLevelState}
       />
       <DialogModal
