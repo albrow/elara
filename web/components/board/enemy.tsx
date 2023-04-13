@@ -11,8 +11,6 @@ interface EnemyProps {
 }
 
 export default function Enemy(props: EnemyProps) {
-  // TODO(albrow): Don't use CSS transitions if the player is pausing/stepping
-  // through manually. Will require passing in a new prop for the pause state.
   const getCssTransition = useCallback(() => {
     if (props.animState === "idle") {
       return "none";
