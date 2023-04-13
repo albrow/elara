@@ -14,10 +14,7 @@ import "@fontsource/nunito/900.css";
 import init from "../elara-lib/pkg";
 import { SaveDataProvider } from "./contexts/save_data";
 import { ShortsModalProvider } from "./contexts/shorts_modal";
-import {
-  CHAKRA_TOOL_TIP_Z_INDEX,
-  TUTORIAL_MODAL_Z_INDEX,
-} from "./lib/constants";
+
 import { ErrorModalProvider } from "./contexts/error_modal";
 
 const elaraTheme = extendTheme({
@@ -26,9 +23,12 @@ const elaraTheme = extendTheme({
     body: "Nunito, sans-serif",
   },
   zIndices: {
-    tooltip: CHAKRA_TOOL_TIP_Z_INDEX,
-    modal: TUTORIAL_MODAL_Z_INDEX,
-    modalOverlay: TUTORIAL_MODAL_Z_INDEX - 2,
+    // NOTE(albrow): Below code breaks tooltips inside of modals, so I commented
+    // it out. Maybe it's not necessary?
+    //
+    // tooltip: CHAKRA_TOOL_TIP_Z_INDEX,
+    // modal: TUTORIAL_MODAL_Z_INDEX,
+    // modalOverlay: TUTORIAL_MODAL_Z_INDEX - 2,
   },
 });
 
