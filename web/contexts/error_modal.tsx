@@ -17,7 +17,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { MdReplay } from "react-icons/md";
+import { MdOutlineErrorOutline, MdReplay } from "react-icons/md";
 import { LEVEL_END_MODAL_Z_INDEX } from "../lib/constants";
 
 export type ErrorModalKind = "error" | "continue";
@@ -33,7 +33,7 @@ export const ErrorModalContext = createContext<
   },
 ] as const);
 
-// A custom hook for showing and hiding the tutorial shorts modal.
+// A custom hook for showing and hiding the error modal.
 export const useErrorModal = () => useContext(ErrorModalContext);
 
 export function ErrorModalProvider(props: PropsWithChildren<{}>) {
@@ -99,12 +99,32 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
             >
               <ModalCloseButton />
               <ModalBody>
-                <Text fontSize={32} fontWeight="bold">
+                <Text
+                  fontSize={32}
+                  fontWeight="bold"
+                  mt="10px"
+                  mb="5px"
+                  align="center"
+                >
                   {title}
                 </Text>
-                <Text fontSize={18} lineHeight="1.4em" mt={6}>
-                  {message}
-                </Text>
+                <Box my="20px">
+                  <MdOutlineErrorOutline
+                    style={{ margin: "auto", display: "block" }}
+                    size="4em"
+                    color="var(--chakra-colors-red-400)"
+                  />
+                </Box>
+                <Box maxW="500px" mx="auto">
+                  <Text
+                    fontSize={18}
+                    lineHeight="1.4em"
+                    mt="18px"
+                    align="center"
+                  >
+                    {message}
+                  </Text>
+                </Box>
                 <Flex mt={10} mb={3} justifyContent="right" w="100%">
                   <Button colorScheme="blackAlpha" onClick={handleClose}>
                     Try Again
