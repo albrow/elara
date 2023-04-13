@@ -243,19 +243,20 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                       Challenge:
                     </Text>{" "}
                     <ChallengeText text={currLevel.challenge} />
-                    {!props.result.passes_challenge && (
-                      <Animate
-                        sequenceIndex={7}
-                        delay={0.1}
-                        start={{ opacity: 0 }}
-                        end={{ opacity: 1 }}
-                      >
-                        <Text fontStyle="italic" fontSize="sm">
-                          (You might need to learn more and then come back
-                          later.)
-                        </Text>
-                      </Animate>
-                    )}
+                    {!currScene?.challengeCompleted &&
+                      !props.result.passes_challenge && (
+                        <Animate
+                          sequenceIndex={7}
+                          delay={0.1}
+                          start={{ opacity: 0 }}
+                          end={{ opacity: 1 }}
+                        >
+                          <Text fontStyle="italic" fontSize="sm">
+                            (You may need to learn more and then come back
+                            later.)
+                          </Text>
+                        </Animate>
+                      )}
                     {props.result.passes_challenge &&
                       currLevel.challenge
                         .toLowerCase()
@@ -267,10 +268,9 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                           end={{ opacity: 1 }}
                         >
                           <Text fontStyle="italic" fontSize="sm">
-                            (Keep in mind, in the real world{" "}
-                            <b>more readable</b> code is better than{" "}
-                            <b>shorter</b> code. This challenge is just for
-                            fun!)
+                            (Keep in mind, writing <b>readable</b> code is often
+                            better than writing <b>short</b> code. This is just
+                            for fun!)
                           </Text>
                         </Animate>
                       )}
