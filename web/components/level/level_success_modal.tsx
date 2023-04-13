@@ -43,6 +43,8 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
     throw new Error("currLevel must be non-null");
   }
 
+  const isLastScene = useMemo(() => currScene?.nextScene == null, [currScene]);
+
   const getChallengeIcon = useCallback((completed: boolean) => {
     if (completed) {
       return (
@@ -287,13 +289,15 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                     Keep Playing
                     <MdReplay size="1.3em" style={{ marginLeft: "0.2rem" }} />
                   </Button>
-                  <Button colorScheme="blue" ml={2} onClick={onNextClick}>
-                    Next
-                    <MdArrowForward
-                      size="1.3em"
-                      style={{ marginLeft: "0.2rem" }}
-                    />
-                  </Button>
+                  {!isLastScene && (
+                    <Button colorScheme="blue" ml={2} onClick={onNextClick}>
+                      Next
+                      <MdArrowForward
+                        size="1.3em"
+                        style={{ marginLeft: "0.2rem" }}
+                      />
+                    </Button>
+                  )}
                 </Flex>
               </Animate>
             </AnimateGroup>
