@@ -104,7 +104,6 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
     throw new Error("result must be non-null if visible is true");
   }
 
-  // TODO(albrow): Fix issues with z-index on challenge text tooltips.
   return (
     <Box hidden={!props.visible} zIndex={LEVEL_END_MODAL_Z_INDEX}>
       <Modal
