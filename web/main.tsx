@@ -62,10 +62,6 @@ const elaraTheme = extendTheme({
       path: "/journal/:sectionName",
     },
     {
-      name: "demo_level",
-      path: "/demo_level/:levelId",
-    },
-    {
       name: "end",
       path: "/end",
     },

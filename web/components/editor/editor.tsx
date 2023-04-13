@@ -77,7 +77,7 @@ export interface CodeError {
   message: string;
 }
 
-export type EditorType = "level" | "example" | "demo";
+export type EditorType = "level" | "example";
 
 const myTheme = createTheme({
   theme: "light",
@@ -191,7 +191,7 @@ export default function Editor(props: EditorProps) {
   );
 
   const { setContainer, view } = useCodeMirror({
-    height: props.type === "level" || props.type === "demo" ? "377px" : "auto",
+    height: props.type === "level" ? "377px" : "auto",
     editable: state === "editing",
     readOnly: state !== "editing",
     indentWithTab: false,
@@ -482,13 +482,10 @@ export default function Editor(props: EditorProps) {
         stepIndex={stepIndex}
         numSteps={numSteps}
         onSliderChange={onSliderChange}
-        sliderSize={props.type === "demo" ? "small" : "full"}
       />
       <Box
         id="editor-wrapper"
-        height={
-          props.type === "level" || props.type === "demo" ? "381px" : undefined
-        }
+        height={props.type === "level" ? "381px" : undefined}
         borderWidth="2px"
         borderTop="0px"
         paddingBottom="2px"
@@ -499,11 +496,7 @@ export default function Editor(props: EditorProps) {
       >
         <div
           ref={editor}
-          className={
-            props.type === "level" || props.type === "demo"
-              ? "editor-level"
-              : "editor-example"
-          }
+          className={props.type === "level" ? "editor-level" : "editor-example"}
         />
       </Box>
       {props.showCodeLenCounter && (

@@ -7,7 +7,6 @@ import Home from "./home";
 import Level from "./level";
 import Journal from "./journal";
 import DialogOverBg from "./dialog_over_bg";
-import DemoLevel from "./demo_level";
 import End from "./end";
 
 export default function Root() {
@@ -29,9 +28,6 @@ export default function Root() {
     }
     if (route.name === "journal_section") {
       return <Journal />;
-    }
-    if (route.name === "demo_level") {
-      return <DemoLevel />;
     }
     if (route.name === "end") {
       return <End />;

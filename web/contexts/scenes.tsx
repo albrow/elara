@@ -65,21 +65,6 @@ function levelScene(shortName: string, tutorialShorts?: ShortId[]): RawScene {
   };
 }
 
-// eslint-disable-next-line no-unused-vars
-function demoLevelScene(shortName: string): RawScene {
-  const level = levelData.get(shortName);
-  if (!level) {
-    throw new Error(`No level with short name ${shortName}`);
-  }
-  return {
-    type: "level",
-    name: `(DEMO) Level: ${level.name}`,
-    routeName: "demo_level",
-    routeParams: { levelId: shortName },
-    level,
-  };
-}
-
 function dialogScene(treeName: keyof typeof TREES): RawScene {
   return {
     type: "dialog",

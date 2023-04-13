@@ -40,7 +40,6 @@ export interface ControlBarProps {
   numSteps?: number;
   onSliderChange?: (value: number) => void;
   onSliderChangeEnd?: (value: number) => void;
-  sliderSize?: "full" | "small";
 }
 
 export default function ControlBar(props: ControlBarProps) {
@@ -165,11 +164,7 @@ export default function ControlBar(props: ControlBarProps) {
         </Box>
         {props.numSteps && props.stepIndex !== undefined && (
           <>
-            <Box
-              ml="18px"
-              width={props.sliderSize === "full" ? "180px" : "80px"}
-              my="auto"
-            >
+            <Box ml="18px" width="180px" my="auto">
               <Slider
                 defaultValue={0}
                 value={props.stepIndex}
@@ -216,7 +211,3 @@ export default function ControlBar(props: ControlBarProps) {
     </Box>
   );
 }
-
-ControlBar.defaultProps = {
-  sliderSize: "full",
-};
