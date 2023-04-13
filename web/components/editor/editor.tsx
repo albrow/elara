@@ -382,6 +382,7 @@ export default function Editor(props: EditorProps) {
         throw e;
       }
       setStepIndex(0);
+      onReplayStep(0, result.states[0]);
       setNumSteps(result.states.length);
       if (replayer.current) {
         replayer.current.stop();

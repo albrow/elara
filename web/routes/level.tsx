@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
 
 import { BsStar, BsStarFill } from "react-icons/bs";
@@ -54,10 +54,14 @@ export default function Level() {
     [currLevel, saveData.levelStates]
   );
 
+  const levelName = useRef<string>(currLevel().name);
   const [boardState, setBoardState] = useState(currLevel().initial_state);
   useEffect(() => {
-    // Set the boardState whenever the level changes.
-    setBoardState(currLevel().initial_state);
+    if (levelName.current !== currLevel().name) {
+      // The level has changed, so reset the board state.
+      levelName.current = currLevel().name;
+      setBoardState(currLevel().initial_state);
+    }
   }, [currLevel]);
 
   const [showShortsModal, _] = useShortsModal();
