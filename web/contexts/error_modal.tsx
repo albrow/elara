@@ -81,6 +81,25 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
     return "An unexpected error occurred. Please try again.";
   }, [modalKind, errorMessage]);
 
+  const getIcon = useCallback(() => {
+    if (modalKind === "error") {
+      return (
+        <MdOutlineErrorOutline
+          style={{ margin: "auto", display: "block" }}
+          size="4em"
+          color="var(--chakra-colors-red-400)"
+        />
+      );
+    }
+    return (
+      <MdReplay
+        style={{ margin: "auto", display: "block" }}
+        size="4em"
+        color="var(--chakra-colors-blue-400)"
+      />
+    );
+  }, [modalKind]);
+
   return (
     <ErrorModalContext.Provider value={providerValue}>
       {visible && (
@@ -108,13 +127,7 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
                 >
                   {title}
                 </Text>
-                <Box my="20px">
-                  <MdOutlineErrorOutline
-                    style={{ margin: "auto", display: "block" }}
-                    size="4em"
-                    color="var(--chakra-colors-red-400)"
-                  />
-                </Box>
+                <Box my="20px">{getIcon()}</Box>
                 <Box maxW="500px" mx="auto">
                   <Text
                     fontSize={18}
