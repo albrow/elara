@@ -18,6 +18,7 @@ import {
   CHAKRA_TOOL_TIP_Z_INDEX,
   TUTORIAL_MODAL_Z_INDEX,
 } from "./lib/constants";
+import { ErrorModalProvider } from "./contexts/error_modal";
 
 const elaraTheme = extendTheme({
   fonts: {
@@ -80,7 +81,9 @@ const elaraTheme = extendTheme({
           <SaveDataProvider>
             <ScenesProvider>
               <ShortsModalProvider>
-                <Root />
+                <ErrorModalProvider>
+                  <Root />
+                </ErrorModalProvider>
               </ShortsModalProvider>
             </ScenesProvider>
           </SaveDataProvider>

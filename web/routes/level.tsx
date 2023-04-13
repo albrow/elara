@@ -20,6 +20,7 @@ import { useShortsModal } from "../contexts/shorts_modal";
 import LevelSuccessModal from "../components/level/level_success_modal";
 import { useCurrScene } from "../contexts/scenes";
 import ChallengeText from "../components/level/challenge_text";
+import { useErrorModal } from "../contexts/error_modal";
 
 const game = Game.new();
 
@@ -27,6 +28,7 @@ export default function Level() {
   const [saveData, setSaveData] = useSaveData();
   const currScene = useCurrScene();
   const [editorState, setEditorState] = useState<EditorState>("editing");
+  const [showErrorModal] = useErrorModal();
 
   const currLevel = useCallback(() => {
     if (!currScene || currScene.type !== "level" || !currScene.level) {
@@ -130,10 +132,6 @@ export default function Level() {
   // objective).
   const onReplayDone = useCallback(
     (script: string, result: RunResult) => {
-      // Show the modal.
-      setLastResult(result);
-      setModalVisible(true);
-
       // Store the latest code in the save data.
       // We need to do this again to prevent race conditions.
       let pendingSaveData = updateLevelCode(
@@ -142,22 +140,32 @@ export default function Level() {
         script
       );
       if (result.outcome === "success") {
-        // Update the level completed status.
+        // Show the success modal.
+        setModalVisible(true);
+        setLastResult(result);
+
+        // Update the level status in local storage.
         pendingSaveData = markLevelCompleted(
           pendingSaveData,
           currLevel().short_name
         );
-      }
-      if (result.passes_challenge) {
-        // Update the level completed status.
-        pendingSaveData = markLevelChallengeCompleted(
-          pendingSaveData,
-          currLevel().short_name
+        if (result.passes_challenge) {
+          pendingSaveData = markLevelChallengeCompleted(
+            pendingSaveData,
+            currLevel().short_name
+          );
+        }
+      } else {
+        // Show the failure modal.
+        showErrorModal(
+          result.outcome === "continue" ? "continue" : "error",
+          result.outcome === "continue" ? undefined : result.outcome
         );
       }
+
       setSaveData(pendingSaveData);
     },
-    [currLevel, saveData, setSaveData]
+    [currLevel, saveData, setSaveData, showErrorModal]
   );
 
   const persistCode = useCallback(
@@ -172,14 +180,12 @@ export default function Level() {
     [currLevel, saveData, setSaveData]
   );
 
-  const onScriptError = useCallback((script: string, error: Error) => {
-    // TODO(albrow): Fix this.
-    alert(error.message);
-    // setModalKind("failure");
-    // setModalTitle("Uh Oh!");
-    // setModalMessage(error.message);
-    // setModalVisible(true);
-  }, []);
+  const onScriptError = useCallback(
+    (_script: string, error: Error) => {
+      showErrorModal("error", error.message);
+    },
+    [showErrorModal]
+  );
 
   const onScriptCancel = useCallback(() => {
     resetLevelState();
