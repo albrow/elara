@@ -1,4 +1,4 @@
-import { useRouteNode } from "react-router5";
+import { useRouteNode, useRouter } from "react-router5";
 import { Container, Box, Flex, Spacer, Button } from "@chakra-ui/react";
 import { MdArrowForward } from "react-icons/md";
 import { useCallback } from "react";
@@ -15,6 +15,7 @@ import NavbarLink from "./navbar_link";
 import NavbarDropdown from "./navbar_dropdown";
 
 export default function Navbar() {
+  const router = useRouter();
   const { route } = useRouteNode("");
   const [saveData, _] = useSaveData();
   const currScene = useCurrScene();
@@ -29,8 +30,16 @@ export default function Navbar() {
 
   const isHome = useCallback(() => route.name === "home", [route.name]);
 
+  const onNextClick = useCallback(() => {
+    if (isLastScene()) {
+      router.navigate("end");
+    } else {
+      navigateToNextScene();
+    }
+  }, [isLastScene, navigateToNextScene, router]);
+
   const shouldRenderNextButton = useCallback(() => {
-    if (isHome() || isLastScene() || !currScene) {
+    if (isHome() || !currScene) {
       return false;
     }
     if (currScene.type === "level") {
@@ -38,7 +47,7 @@ export default function Navbar() {
       return saveData.levelStates[levelName as string]?.completed;
     }
     return false;
-  }, [currScene, isHome, isLastScene, saveData.levelStates]);
+  }, [currScene, isHome, saveData.levelStates]);
 
   return (
     <Box bg="gray.800" textColor="white">
@@ -49,7 +58,7 @@ export default function Navbar() {
           <NavbarDropdown name="Levels" scenes={LEVELS} />
           <Spacer />
           {shouldRenderNextButton() && (
-            <Button colorScheme="blue" onClick={navigateToNextScene}>
+            <Button colorScheme="blue" onClick={onNextClick}>
               Next
               <MdArrowForward size="1.3em" style={{ marginLeft: "0.2rem" }} />
             </Button>

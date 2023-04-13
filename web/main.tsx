@@ -66,6 +66,10 @@ const elaraTheme = extendTheme({
       name: "demo_level",
       path: "/demo_level/:levelId",
     },
+    {
+      name: "end",
+      path: "/end",
+    },
   ];
 
   const router = createRouter(routes, {

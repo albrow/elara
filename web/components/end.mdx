@@ -1,0 +1,55 @@
+import { Badge } from "@chakra-ui/react";
+import { BsStarFill } from "react-icons/bs";
+
+## Thanks for Playing Elara!
+
+Thank you so much for playing our game. We hope you had fun and learned about programming
+along the way. We are adding new levels all the time, so feel free to check back later for
+more content.
+
+You have completed <Badge fontSize="0.8em" colorScheme="yellow">{props.challengeProgress.completed} out of {props.challengeProgress.available}</Badge> optional challenges (indicated by the gold star icon
+<BsStarFill color="var(--chakra-colors-yellow-400)" size="0.9em" style={{ display: "inline", paddingTop: "2px" }}/> in the levels dropdown menu).
+
+{(function () {
+    if (props.challengeProgress.completed < props.challengeProgress.available) {
+        return <p>This would be a great time to go back and try to complete more. The challenges are designed to be, well... challenging! They will really test your coding knowledge to its limits and require thinking outside of the box. Don't worry if you can't complete them all.</p>
+    }
+    return <p>Congratulations! You have completed all of the optional challenges. Check back later for more!</p>
+})()}
+
+
+---
+
+### Continue Learning
+
+Elara uses a programming language called Rhai. Rhai is perfect for this game, but
+it's not widely used in the real world. If you want to learn more about programming,
+we recommend learning either Javascript or Python. Both of these languages are widely
+used and relatively easy to learn. They use a different syntax, but many of the concepts
+you learned in Elara (like variables, functions, and loops) will carry over.
+
+We wish you the best of luck on the rest of your programming journey!
+
+##### Learn JavaScript
+
+JavaScript is the most popular programming language in the world. It was originally used for
+creating websites, but today it is used for all kinds of applications. JavaScript code looks
+similar to Rhai, but has a few key differences.
+
+- [Codecademy](https://www.codecademy.com/learn/learn-javascript-fundamentals)
+- [Khan Academy](https://www.khanacademy.org/computing/computer-programming/programming)
+
+
+##### Learn Python
+
+Python is another popular programming language that is easy to learn. It can do pretty much
+anything you can think of and is especially popular for machine learning and artificial
+intelligence. Python code looks very different from Rhai, but many of the concepts are
+the same.
+
+- [Codecademy](https://www.codecademy.com/catalog/language/python)
+- [Code for Life](https://www.codeforlife.education/play/#) (starts with Blockly and then moves to Python)
+
+##### Other Resources
+
+- [Code.org](https://code.org/)

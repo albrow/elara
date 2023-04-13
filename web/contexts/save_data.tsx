@@ -11,6 +11,7 @@ import {
 import clone from "clone";
 
 import { ShortId } from "../lib/tutorial_shorts";
+import { LevelData } from "../../elara-lib/pkg/elara_lib";
 
 export const VERSION = 7;
 const LOCAL_STORAGE_KEY = "elara.save";
@@ -157,6 +158,34 @@ export function markTutorialShortSeen(
     newSaveData.seenTutorialShorts.push(shortId);
   }
   return newSaveData;
+}
+
+export interface ChallengeProgress {
+  completed: number;
+  available: number;
+}
+
+export function getChallengeProgress(
+  levels: Map<string, LevelData>,
+  saveData: SaveData
+): ChallengeProgress {
+  let completed = 0;
+  let available = 0;
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [levelName, levelState] of Object.entries(saveData.levelStates)) {
+    if (levels.get(levelName)?.challenge !== "") {
+      available += 1;
+      if (levelState.challengeCompleted) {
+        completed += 1;
+      }
+    }
+  }
+
+  return {
+    completed,
+    available,
+  };
 }
 
 export const SaveDataContext = createContext<

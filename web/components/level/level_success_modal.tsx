@@ -22,6 +22,7 @@ import {
 import { Animate, AnimateGroup, AnimateKeyframes } from "react-simple-animate";
 
 import { BsStar, BsStarFill } from "react-icons/bs";
+import { useRouter } from "react-router5";
 import type { RunResult } from "../../../elara-lib/pkg/elara_lib";
 import { LEVEL_END_MODAL_Z_INDEX } from "../../lib/constants";
 import { useCurrScene, useSceneNavigator } from "../../contexts/scenes";
@@ -37,6 +38,7 @@ interface LevelSuccessModalProps {
 
 export default function LevelSuccessModal(props: LevelSuccessModalProps) {
   const { navigateToNextScene } = useSceneNavigator();
+  const router = useRouter();
   const currScene = useCurrScene();
   const currLevel = useMemo(() => currScene?.level, [currScene]);
   if (!currLevel) {
@@ -95,8 +97,12 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
 
   const onNextClick = useCallback(() => {
     handleClose();
-    navigateToNextScene();
-  }, [handleClose, navigateToNextScene]);
+    if (isLastScene) {
+      setTimeout(() => router.navigate("end"), 0);
+    } else {
+      navigateToNextScene();
+    }
+  }, [handleClose, isLastScene, navigateToNextScene, router]);
 
   if (!props.visible) {
     return null;
@@ -289,15 +295,13 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                     Keep Playing
                     <MdReplay size="1.3em" style={{ marginLeft: "0.2rem" }} />
                   </Button>
-                  {!isLastScene && (
-                    <Button colorScheme="blue" ml={2} onClick={onNextClick}>
-                      Next
-                      <MdArrowForward
-                        size="1.3em"
-                        style={{ marginLeft: "0.2rem" }}
-                      />
-                    </Button>
-                  )}
+                  <Button colorScheme="blue" ml={2} onClick={onNextClick}>
+                    Next
+                    <MdArrowForward
+                      size="1.3em"
+                      style={{ marginLeft: "0.2rem" }}
+                    />
+                  </Button>
                 </Flex>
               </Animate>
             </AnimateGroup>

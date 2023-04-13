@@ -1,0 +1,28 @@
+import { Container } from "@chakra-ui/react";
+import { useEffect } from "react";
+import { useRouteNode } from "react-router5";
+
+import EndContent from "../components/end.mdx";
+import "../styles/md_content.css";
+import { getChallengeProgress, useSaveData } from "../contexts/save_data";
+// eslint-disable-next-line camelcase
+import { get_level_data } from "../../elara-lib/pkg/elara_lib";
+
+export default function Home() {
+  const { route } = useRouteNode("");
+  const [saveData] = useSaveData();
+  const levelData = new Map(Object.entries(get_level_data()));
+  const challengeProgress = getChallengeProgress(levelData, saveData);
+
+  useEffect(() => {
+    document.title = "Elara | End";
+  }, [route.name]);
+
+  return (
+    <Container maxW="container.xl" p={8}>
+      <div className="md-content">
+        <EndContent challengeProgress={challengeProgress} />
+      </div>
+    </Container>
+  );
+}
