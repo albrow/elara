@@ -17,7 +17,7 @@ import DialogModal from "../components/dialog/dialog_modal";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import { TREES } from "../lib/dialog_trees";
 import { useShortsModal } from "../contexts/shorts_modal";
-import LevelEndModal from "../components/level/level_success_modal";
+import LevelSuccessModal from "../components/level/level_success_modal";
 import { useCurrScene } from "../contexts/scenes";
 import ChallengeText from "../components/level/challenge_text";
 
@@ -241,7 +241,7 @@ export default function Level() {
 
   return (
     <>
-      <LevelEndModal
+      <LevelSuccessModal
         result={lastResult}
         visible={modalVisible}
         setVisible={setModalVisible}

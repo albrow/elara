@@ -28,14 +28,14 @@ import { useCurrScene, useSceneNavigator } from "../../contexts/scenes";
 import ObjectiveText from "./objective_text";
 import ChallengeText from "./challenge_text";
 
-interface LevelEndModalProps {
+interface LevelSuccessModalProps {
   result: RunResult | null;
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   onClose?: () => void;
 }
 
-export default function LevelEndModal(props: LevelEndModalProps) {
+export default function LevelSuccessModal(props: LevelSuccessModalProps) {
   const { navigateToNextScene } = useSceneNavigator();
   const currScene = useCurrScene();
   const currLevel = useMemo(() => currScene?.level, [currScene]);
@@ -104,9 +104,7 @@ export default function LevelEndModal(props: LevelEndModalProps) {
     throw new Error("result must be non-null if visible is true");
   }
 
-  // TODO(albrow): Fix issues with z-index. Doesn't seem to be respecting the
-  // values I'm setting here, and the player message can sometimes appear on
-  // top of the modal.
+  // TODO(albrow): Fix issues with z-index on challenge text tooltips.
   return (
     <Box hidden={!props.visible} zIndex={LEVEL_END_MODAL_Z_INDEX}>
       <Modal
