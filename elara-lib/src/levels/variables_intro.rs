@@ -16,7 +16,7 @@ impl Level for VariablesIntro {
         "variables_intro"
     }
     fn objective(&self) -> &'static str {
-        "Use a variable to open the locked gates ({gate}), then move the rover ({robot}) to the goal ({goal})."
+        "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"// There are several gates ahead with the same password. Instead of
@@ -31,7 +31,7 @@ let password = "supercalifragilisticexpialidocious";
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(5, 7, 6, Orientation::Up);
+        state.player = Player::new(5, 7, 7, Orientation::Up);
         state.goal = Some(Goal {
             pos: Pos { x: 9, y: 3 },
         });
@@ -41,28 +41,38 @@ let password = "supercalifragilisticexpialidocious";
             Obstacle::new(2, 4),
             Obstacle::new(3, 2),
             Obstacle::new(3, 4),
+            Obstacle::new(4, 0),
+            Obstacle::new(4, 1),
             Obstacle::new(4, 2),
             Obstacle::new(4, 4),
             Obstacle::new(4, 5),
             Obstacle::new(4, 6),
             Obstacle::new(4, 7),
-            Obstacle::new(5, 2),
+            Obstacle::new(6, 0),
+            Obstacle::new(6, 1),
             Obstacle::new(6, 2),
             Obstacle::new(6, 4),
             Obstacle::new(6, 5),
             Obstacle::new(6, 6),
-            Obstacle::new(6, 7),
             Obstacle::new(7, 2),
             Obstacle::new(7, 4),
+            Obstacle::new(7, 6),
             Obstacle::new(8, 2),
             Obstacle::new(8, 4),
+            Obstacle::new(8, 6),
             Obstacle::new(9, 2),
             Obstacle::new(9, 4),
+            Obstacle::new(9, 6),
+            Obstacle::new(9, 7),
             Obstacle::new(10, 2),
             Obstacle::new(10, 3),
             Obstacle::new(10, 4),
         ];
-        state.fuel_spots = vec![FuelSpot::new(3, 3)];
+        state.fuel_spots = vec![
+            FuelSpot::new(3, 3),
+            FuelSpot::new(8, 7),
+            FuelSpot::new(5, 0),
+        ];
         state.password_gates = vec![
             PasswordGate::new(5, 6, PASSWORD.to_string(), false),
             PasswordGate::new(5, 4, PASSWORD.to_string(), false),
@@ -75,6 +85,17 @@ let password = "supercalifragilisticexpialidocious";
     }
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
+    }
+    fn challenge(&self) -> Option<&'static str> {
+        Some("Reach the goal using 12 fuel or less.")
+    }
+    fn check_challenge(
+        &self,
+        _states: &Vec<State>,
+        _script: &str,
+        stats: &crate::script_runner::ScriptStats,
+    ) -> bool {
+        stats.fuel_used <= 12
     }
 }
 
@@ -113,6 +134,41 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
+        // An alternative solution.
+        let script = r#"
+                let password = "supercalifragilisticexpialidocious";
+                turn_right();
+                move_forward(3);
+                move_backward(3);
+                turn_left();
+                say(password);
+                move_forward(2);
+                say(password);
+                move_forward(2);
+                turn_right();
+                move_forward(4);
+            "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
+        // One more alternative solution.
+        let script = r#"
+                let password = "supercalifragilisticexpialidocious";
+                say(password);
+                move_forward(2);
+                say(password);
+                move_forward(5);
+                move_backward(3);
+                turn_right();
+                move_forward(4);
+            "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
         // Attempting to reach the goal without collecting the fuel on
         // the way should result in running out of fuel.
         let script = r#"
@@ -131,5 +187,66 @@ mod tests {
             result.outcome,
             Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
         );
+    }
+
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &VariablesIntro {};
+
+        // This code beats the level, but doesn't satisfy the challenge conditions.
+        let script = r#"
+            let password = "supercalifragilisticexpialidocious";
+            say(password);
+            move_forward(2);
+            say(password);
+            move_forward(5);
+            move_backward(3);
+            turn_right();
+            move_forward(4);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        // This code satisfies the challenge conditions.
+        let script = r#"
+            let password = "supercalifragilisticexpialidocious";
+            say(password);
+            move_forward(2);
+            say(password);
+            move_forward(2);
+            say(password);
+            turn_left();
+            move_forward(2);
+            move_backward(6);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
+
+        // This code takes more steps, but still satisfies the challenge conditions.
+        let script = r#"
+                let password = "supercalifragilisticexpialidocious";
+                say(password);
+                move_forward(2);
+                say(password);
+                move_forward(2);
+                say(password);
+                turn_left();
+                move_forward(2);
+                turn_right();
+                turn_right();
+                move_forward(6);
+            "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
     }
 }
