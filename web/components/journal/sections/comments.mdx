@@ -4,23 +4,19 @@ import RunnableExample from "../runnable_example";
 
 Every line that starts with two slashes `//` is called a
 "comment". Comments don't affect the rover at all; they are
-just little notes to help you understand the code. Feel free
-to add your own comments too!
+just little notes to help you understand the code.
 
-Here's an example of a basic comment:
+Most of the levels in Elara have some comments to help you get
+started. Make sure to read comments carefully! They can really help you
+understand what is going on 🙂 You can also add your own comments
+to any code that you write.
+
+Below is some example code that includes comments. If you run this code
+nothing will happen (which is expected).
 
 <RunnableExample
   code={`// This is a comment.
 // You can have any number of comments in your code.
+// Comments don't affect the rover at all.
 `}
 />
-
-Comments might contain something that _looks_ like code, but if
-it's inside a comment, it won't do anything. For example, this
-code will not actually say "hello", because the function call is
-inside a comment:
-
-💡 **Try it**: Try removing the two slashes before the `say` function below
-and see what happens.
-
-<RunnableExample code={`// say("hello");`} />
