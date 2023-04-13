@@ -167,27 +167,44 @@ export default function Editor(props: EditorProps) {
   const replayer = useRef<Replayer | null>(null);
   const [numSteps, setNumSteps] = useState<number>(0);
   const [stepIndex, setStepIndex] = useState<number>(0);
+  const router = useRouter();
+
+  // possiblyOutdatedCode is used in conjunction with debounce to
+  // perform certain updates when the code changes.
+  const [possiblyOutdatedCode, setPossiblyOutdatedCode] = useState<string>(
+    props.code
+  );
+
   // codeLength is the length of the compacted code (i.e. not counting
   // comments or non-significant whitespace). Shown in the UI and used
   // for some challenges.
   const [codeLength, setCodeLength] = useState<number | undefined>(
     get_compact_code_len(props.code)
   );
-  const router = useRouter();
 
-  // Update the compacted code length on every key stroke, but debounce to
-  // avoid doing this too often.
+  // We want to take some actions on every key stroke, but we don't want
+  // to do this on every single key stroke. We use the debounce function
+  // to only call the function after the user has stopped typing for a
+  // certain amount of time.
   const onCodeChange = useMemo(
     () =>
       debounce(
         (code: string) => {
-          const compactLen = get_compact_code_len(code);
-          setCodeLength(compactLen);
+          if (code !== possiblyOutdatedCode) {
+            setPossiblyOutdatedCode(code);
+
+            // Remove any existing error.
+            setCodeError(null);
+
+            // Update code length counter.
+            const compactLen = get_compact_code_len(code);
+            setCodeLength(compactLen);
+          }
         },
         200,
         { maxWait: 1500 }
       ),
-    []
+    [possiblyOutdatedCode]
   );
 
   const { setContainer, view } = useCodeMirror({
