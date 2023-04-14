@@ -23,8 +23,15 @@ import { LEVEL_END_MODAL_Z_INDEX } from "../lib/constants";
 export type ErrorModalKind = "error" | "continue";
 
 export const ErrorModalContext = createContext<
-  readonly [(kind: ErrorModalKind, error?: string) => void, () => void]
+  readonly [
+    (kind: ErrorModalKind, error?: string) => void,
+    () => void,
+    (onClose: () => void) => void
+  ]
 >([
+  () => {
+    throw new Error("useErrorModal must be used within a ErrorModalContext");
+  },
   () => {
     throw new Error("useErrorModal must be used within a ErrorModalContext");
   },
@@ -39,8 +46,18 @@ export const useErrorModal = () => useContext(ErrorModalContext);
 export function ErrorModalProvider(props: PropsWithChildren<{}>) {
   const [visible, setVisible] = useState<boolean>(false);
   const [modalKind, setModalKind] = useState<ErrorModalKind>("error");
+  const [givenOnClose, setGivenOnClose] = useState<(() => void) | undefined>(
+    undefined
+  );
   const [errorMessage, setErrorMessage] = useState<string | undefined>(
     undefined
+  );
+
+  const setErrorModalOnClose = useCallback(
+    (onClose: () => void) => {
+      setGivenOnClose(() => onClose);
+    },
+    [setGivenOnClose]
   );
 
   const showErrorModal = useCallback((kind: ErrorModalKind, error?: string) => {
@@ -55,16 +72,16 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
   }, []);
 
   const providerValue = useMemo(
-    () => [showErrorModal, hideErrorModal] as const,
-    [showErrorModal, hideErrorModal]
+    () => [showErrorModal, hideErrorModal, setErrorModalOnClose] as const,
+    [showErrorModal, hideErrorModal, setErrorModalOnClose]
   );
 
   const handleClose = useCallback(() => {
     setVisible(false);
-    // if (props.onClose) {
-    //   props.onClose();
-    // }
-  }, [setVisible]);
+    if (givenOnClose) {
+      givenOnClose();
+    }
+  }, [givenOnClose]);
 
   const title = useMemo(
     () => (modalKind === "error" ? "Uh Oh!" : "Keep Going!"),

@@ -28,7 +28,8 @@ export default function Level() {
   const [saveData, setSaveData] = useSaveData();
   const currScene = useCurrScene();
   const [editorState, setEditorState] = useState<EditorState>("editing");
-  const [showErrorModal] = useErrorModal();
+  const [showErrorModal, _hidErrorModal, setErrorModalOnClose] =
+    useErrorModal();
 
   const currLevel = useCallback(() => {
     if (!currScene || currScene.type !== "level" || !currScene.level) {
@@ -161,6 +162,7 @@ export default function Level() {
         }
       } else {
         // Show the failure modal.
+        setErrorModalOnClose(resetLevelState);
         showErrorModal(
           result.outcome === "continue" ? "continue" : "error",
           result.outcome === "continue" ? undefined : result.outcome
@@ -169,7 +171,14 @@ export default function Level() {
 
       setSaveData(pendingSaveData);
     },
-    [currLevel, saveData, setSaveData, showErrorModal]
+    [
+      currLevel,
+      resetLevelState,
+      saveData,
+      setErrorModalOnClose,
+      setSaveData,
+      showErrorModal,
+    ]
   );
 
   const persistCode = useCallback(
@@ -186,9 +195,10 @@ export default function Level() {
 
   const onScriptError = useCallback(
     (_script: string, error: Error) => {
+      setErrorModalOnClose(resetLevelState);
       showErrorModal("error", error.message);
     },
-    [showErrorModal]
+    [resetLevelState, setErrorModalOnClose, showErrorModal]
   );
 
   const onScriptCancel = useCallback(() => {

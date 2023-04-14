@@ -21,7 +21,8 @@ export default function RunnableExample(props: RunnableExampleProps) {
   const game = Game.new();
   const initialState = props.level!.initial_state;
   const [editorState, setEditorState] = useState<EditorState>("editing");
-  const [showErrorModal] = useErrorModal();
+  const [showErrorModal, _hidErrorModal, setErrorModalOnClose] =
+    useErrorModal();
 
   // If the initial code is short, add some extra lines
   // to make the editor look better.
@@ -43,11 +44,12 @@ export default function RunnableExample(props: RunnableExampleProps) {
   const onReplayDone = useCallback(
     (_script: string, result: RunResult) => {
       if (!["success", "continue", "no_objective"].includes(result.outcome)) {
+        setErrorModalOnClose(resetState);
         showErrorModal("error", result.outcome);
       }
       resetState();
     },
-    [resetState, showErrorModal]
+    [resetState, setErrorModalOnClose, showErrorModal]
   );
 
   const onEditorStep = useCallback((step: FuzzyStateWithLines) => {
@@ -60,10 +62,10 @@ export default function RunnableExample(props: RunnableExampleProps) {
 
   const onScriptError = useCallback(
     (_script: string, error: Error) => {
-      // TDOO(albrow): Use a modal component instead of an alert window.
+      setErrorModalOnClose(resetState);
       showErrorModal("error", error.message);
     },
-    [showErrorModal]
+    [resetState, setErrorModalOnClose, showErrorModal]
   );
 
   const onScriptCancel = useCallback(() => {
