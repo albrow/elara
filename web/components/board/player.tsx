@@ -15,6 +15,8 @@ import groverRightUrl from "../../images/grover_right.png";
 import { Pos } from "../../../elara-lib/pkg/elara_lib";
 import SpriteLabel from "./sprite_label";
 
+import "../../styles/animations.css";
+
 interface PlayerProps {
   offset: Offset;
   fuel: number;
@@ -32,6 +34,12 @@ export default function Player(props: PlayerProps) {
   const getAnimationStyles = useCallback(() => {
     if (!props.enableAnimations || props.animState === "idle") {
       return { transition: "none" };
+    }
+    if (props.animState === "teleporting") {
+      return {
+        transition: `left ${CSS_ANIM_DURATION}s, top ${CSS_ANIM_DURATION}s`,
+        animation: `${CSS_ANIM_DURATION}s ease-in-out teleport`,
+      };
     }
     return {
       transition: `left ${CSS_ANIM_DURATION}s, top ${CSS_ANIM_DURATION}s`,

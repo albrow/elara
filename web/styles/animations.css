@@ -1,0 +1,17 @@
+@keyframes teleport {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(0.25) rotate(180deg);
+  }
+  50% {
+    transform: scale(0.1) rotate(360deg);
+  }
+  75% {
+    transform: scale(0.25) rotate(540deg);
+  }
+  100% {
+    transform: scale(1) rotate(720deg);
+  }
+}
