@@ -4,7 +4,7 @@ use std::sync::mpsc;
 
 use crate::constants::FUEL_SPOT_AMOUNT;
 use crate::simulation::{
-    get_adjacent_terminal, Actor, EnemyAnimState, Orientation, PlayerAnimState, Pos, State,
+    get_adjacent_terminal, Actor, EnemyAnimState, Orientation, PlayerAnimState, Pos, State, Telepad,
 };
 
 #[derive(PartialEq)]
@@ -76,8 +76,9 @@ impl Actor for PlayerChannelActor {
                 state.player.total_fuel_used += 1;
                 // Update the position and animation state. Note that the player may not
                 // be able to actually move if there are obstacles in the way.
-                let (new_pos, new_anim_state) = self.try_to_move(&state, direction);
+                let (new_pos, new_facing, new_anim_state) = self.try_to_move(&state, direction);
                 state.player.pos = new_pos;
+                state.player.facing = new_facing;
                 state.player.anim_state = new_anim_state;
             }
             Ok(Action::Turn(direction)) => {
@@ -138,7 +139,11 @@ impl Actor for PlayerChannelActor {
 impl PlayerChannelActor {
     /// First checks if we can move in the desired direction, and if so, returns the
     /// new position. Otherwise, returns the current position.
-    fn try_to_move(&self, state: &State, direction: MoveDirection) -> (Pos, PlayerAnimState) {
+    fn try_to_move(
+        &self,
+        state: &State,
+        direction: MoveDirection,
+    ) -> (Pos, Orientation, PlayerAnimState) {
         let delta = match direction {
             MoveDirection::Forward => 1,
             MoveDirection::Backward => -1,
@@ -149,15 +154,30 @@ impl PlayerChannelActor {
             Orientation::Left => Pos::new(state.player.pos.x - delta, state.player.pos.y),
             Orientation::Right => Pos::new(state.player.pos.x + delta, state.player.pos.y),
         };
+        if let Some(telepad) = get_telepad_at(state, &desired_pos) {
+            return (
+                telepad.end_pos.clone(),
+                telepad.end_facing.clone(),
+                PlayerAnimState::Teleporting,
+            );
+        }
         if is_obstacle_at(state, &desired_pos)
             || is_outside_bounds(&self.bounds, &desired_pos)
             || is_closed_gate_at(state, &desired_pos)
         {
             // TODO(albrow): Use a different animation state to indicate that the player
             // is trying to move but can't. E.g., a bumping animation.
-            (state.player.pos.clone(), PlayerAnimState::Idle)
+            (
+                state.player.pos.clone(),
+                state.player.facing.clone(),
+                PlayerAnimState::Idle,
+            )
         } else {
-            (desired_pos, PlayerAnimState::Moving)
+            (
+                desired_pos,
+                state.player.facing.clone(),
+                PlayerAnimState::Moving,
+            )
         }
     }
 }
@@ -261,6 +281,15 @@ fn is_closed_gate_at(state: &State, pos: &Pos) -> bool {
     false
 }
 
+fn get_telepad_at(state: &State, pos: &Pos) -> Option<Telepad> {
+    for telepad in &state.telepads {
+        if telepad.start_pos == *pos {
+            return Some(telepad.clone());
+        }
+    }
+    None
+}
+
 fn is_outside_bounds(bounds: &Bounds, pos: &Pos) -> bool {
     pos.x > bounds.max_x || pos.y > bounds.max_y || pos.x < bounds.min_x || pos.y < bounds.min_y
 }
@@ -291,7 +320,7 @@ mod test {
     use super::*;
     use crate::{
         constants::MAX_FUEL,
-        simulation::{Goal, Obstacle, PasswordGate, Player, PlayerAnimState, Pos, State},
+        simulation::{Obstacle, PasswordGate, Player, PlayerAnimState, Pos, State, Telepad},
     };
 
     #[test]
@@ -304,15 +333,8 @@ mod test {
         };
         let (tx, rx) = mpsc::channel();
         let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
-        let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
-            fuel_spots: vec![],
-            obstacles: vec![],
-            enemies: vec![],
-            goal: None,
-            password_gates: vec![],
-            data_terminals: vec![],
-        };
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
 
         tx.send(Action::Move(MoveDirection::Forward)).unwrap();
         let new_state = actor.apply(state.clone());
@@ -368,15 +390,8 @@ mod test {
             max_y: 10,
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
-        let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
-            fuel_spots: vec![],
-            obstacles: vec![],
-            enemies: vec![],
-            goal: None,
-            password_gates: vec![],
-            data_terminals: vec![],
-        };
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
 
         // Simple case where no obstacles are in the way and we are not
         // outside the bounds.
@@ -427,15 +442,8 @@ mod test {
             max_y: 2,
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
-        let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
-            fuel_spots: vec![],
-            obstacles: vec![],
-            enemies: vec![],
-            goal: None,
-            password_gates: vec![],
-            data_terminals: vec![],
-        };
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
 
         // We can't move outside the bounds.
         state.player.pos = Pos::new(0, 0);
@@ -491,24 +499,18 @@ mod test {
             max_y: 10,
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
-        let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
-            fuel_spots: vec![],
-            obstacles: vec![
-                Obstacle::new(0, 0),
-                Obstacle::new(1, 0),
-                Obstacle::new(2, 0),
-                Obstacle::new(2, 1),
-                Obstacle::new(2, 2),
-                Obstacle::new(1, 2),
-                Obstacle::new(0, 2),
-                Obstacle::new(0, 1),
-            ],
-            enemies: vec![],
-            goal: None,
-            password_gates: vec![],
-            data_terminals: vec![],
-        };
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.obstacles = vec![
+            Obstacle::new(0, 0),
+            Obstacle::new(1, 0),
+            Obstacle::new(2, 0),
+            Obstacle::new(2, 1),
+            Obstacle::new(2, 2),
+            Obstacle::new(1, 2),
+            Obstacle::new(0, 2),
+            Obstacle::new(0, 1),
+        ];
 
         // We can't move past obstacles.
         state.player.facing = Orientation::Up;
@@ -558,26 +560,18 @@ mod test {
             max_y: 10,
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
-        let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
-            fuel_spots: vec![],
-            obstacles: vec![],
-            enemies: vec![],
-            goal: Some(Goal {
-                pos: Pos::new(3, 3),
-            }),
-            password_gates: vec![
-                PasswordGate::new(0, 0, "lovelace".to_string(), false),
-                PasswordGate::new(1, 0, "lovelace".to_string(), false),
-                PasswordGate::new(2, 0, "lovelace".to_string(), false),
-                PasswordGate::new(2, 1, "lovelace".to_string(), false),
-                PasswordGate::new(2, 2, "lovelace".to_string(), false),
-                PasswordGate::new(1, 2, "lovelace".to_string(), false),
-                PasswordGate::new(0, 2, "lovelace".to_string(), false),
-                PasswordGate::new(0, 1, "lovelace".to_string(), false),
-            ],
-            data_terminals: vec![],
-        };
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.password_gates = vec![
+            PasswordGate::new(0, 0, "lovelace".to_string(), false),
+            PasswordGate::new(1, 0, "lovelace".to_string(), false),
+            PasswordGate::new(2, 0, "lovelace".to_string(), false),
+            PasswordGate::new(2, 1, "lovelace".to_string(), false),
+            PasswordGate::new(2, 2, "lovelace".to_string(), false),
+            PasswordGate::new(1, 2, "lovelace".to_string(), false),
+            PasswordGate::new(0, 2, "lovelace".to_string(), false),
+            PasswordGate::new(0, 1, "lovelace".to_string(), false),
+        ];
 
         // We can't move past closed gates.
         state.player.facing = Orientation::Up;
@@ -627,26 +621,18 @@ mod test {
             max_y: 10,
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
-        let mut state = State {
-            player: Player::new(1, 1, MAX_FUEL, Orientation::Right),
-            fuel_spots: vec![],
-            obstacles: vec![],
-            enemies: vec![],
-            goal: Some(Goal {
-                pos: Pos::new(3, 3),
-            }),
-            password_gates: vec![
-                PasswordGate::new(0, 0, "lovelace".to_string(), true),
-                PasswordGate::new(1, 0, "lovelace".to_string(), true),
-                PasswordGate::new(2, 0, "lovelace".to_string(), true),
-                PasswordGate::new(2, 1, "lovelace".to_string(), true),
-                PasswordGate::new(2, 2, "lovelace".to_string(), true),
-                PasswordGate::new(1, 2, "lovelace".to_string(), true),
-                PasswordGate::new(0, 2, "lovelace".to_string(), true),
-                PasswordGate::new(0, 1, "lovelace".to_string(), true),
-            ],
-            data_terminals: vec![],
-        };
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.password_gates = vec![
+            PasswordGate::new(0, 0, "lovelace".to_string(), true),
+            PasswordGate::new(1, 0, "lovelace".to_string(), true),
+            PasswordGate::new(2, 0, "lovelace".to_string(), true),
+            PasswordGate::new(2, 1, "lovelace".to_string(), true),
+            PasswordGate::new(2, 2, "lovelace".to_string(), true),
+            PasswordGate::new(1, 2, "lovelace".to_string(), true),
+            PasswordGate::new(0, 2, "lovelace".to_string(), true),
+            PasswordGate::new(0, 1, "lovelace".to_string(), true),
+        ];
 
         // We *can* move past open gates.
         state.player.facing = Orientation::Up;
@@ -684,6 +670,30 @@ mod test {
         assert_eq!(
             actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(0, 1)
+        );
+    }
+
+    #[test]
+    fn get_new_player_pos_with_telepad() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.telepads = vec![Telepad::new((2, 1), (4, 4), Orientation::Left)];
+
+        // Should teleport to end_pos and be facing the new direction.
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward),
+            (
+                Pos::new(4, 4),
+                Orientation::Left,
+                PlayerAnimState::Teleporting
+            )
         );
     }
 

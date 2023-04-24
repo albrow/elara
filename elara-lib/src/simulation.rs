@@ -141,6 +141,7 @@ pub struct State {
     pub obstacles: Vec<Obstacle>,
     pub password_gates: Vec<PasswordGate>,
     pub data_terminals: Vec<DataTerminal>,
+    pub telepads: Vec<Telepad>,
 }
 
 impl State {
@@ -153,6 +154,7 @@ impl State {
             obstacles: vec![],
             password_gates: vec![],
             data_terminals: vec![],
+            telepads: vec![],
         }
     }
 }
@@ -189,6 +191,7 @@ pub enum PlayerAnimState {
     Idle,
     Moving,
     Turning,
+    Teleporting,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -394,66 +397,23 @@ pub fn get_adjacent_terminal(state: &State, pos: &Pos) -> Option<usize> {
     None
 }
 
-#[cfg(test)]
-mod test {
-    // use super::*;
+/// Teleportation pads instantly move a rover from one location to another.
+/// As a side-effect, telepads may also change which direction the rover is
+/// facing.
+#[derive(Clone, PartialEq, Debug)]
+pub struct Telepad {
+    pub start_pos: Pos,
+    pub end_pos: Pos,
+    // The direction the rover will be facing after teleporting.
+    pub end_facing: Orientation,
+}
 
-    // #[test]
-    // fn test_state() {
-    //     let state = State::new();
-    //     assert_eq!(state.player.pos.x, 0);
-    //     assert_eq!(state.player.pos.y, 0);
-    // }
-
-    // #[test]
-    // fn test_step_forward() {
-    //     struct MoveRight;
-    //     impl Actor for MoveRight {
-    //         fn apply(&mut self, state: State) -> State {
-    //             State {
-    //                 player: Player {
-    //                     pos: Pos::new(state.player.pos.x + 1, state.player.pos.y),
-    //                 },
-    //             }
-    //         }
-    //     }
-
-    //     let mut engine = StateEngine::new();
-    //     engine.add_actor(Box::new(MoveRight));
-    //     engine.step_forward();
-
-    //     let expected_state = State {
-    //         player: Player {
-    //             pos: Pos::new(1, 0),
-    //         },
-    //     };
-    //     assert_eq!(engine.curr_state(), &expected_state);
-    // }
-
-    // #[test]
-    // fn test_step_back() {
-    //     struct MoveRight;
-    //     impl Actor for MoveRight {
-    //         fn apply(&mut self, state: State) -> State {
-    //             State {
-    //                 player: Player {
-    //                     pos: Pos::new(state.player.pos.x + 1, state.player.pos.y),
-    //                 },
-    //             }
-    //         }
-    //     }
-
-    //     let mut engine = StateEngine::new();
-    //     engine.add_actor(Box::new(MoveRight));
-
-    //     engine.step_forward();
-    //     engine.step_back();
-
-    //     let expected_state = State {
-    //         player: Player {
-    //             pos: Pos::new(0, 0),
-    //         },
-    //     };
-    //     assert_eq!(engine.curr_state(), &expected_state);
-    // }
+impl Telepad {
+    pub fn new(start: (u32, u32), end: (u32, u32), end_facing: Orientation) -> Telepad {
+        Telepad {
+            start_pos: Pos::new(start.0 as i32, start.1 as i32),
+            end_pos: Pos::new(end.0 as i32, end.1 as i32),
+            end_facing,
+        }
+    }
 }

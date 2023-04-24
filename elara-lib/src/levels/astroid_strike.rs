@@ -82,6 +82,7 @@ if safe_direction == "right" {
                 obstacles: [self.obstacles().clone(), vec![Obstacle::new(6, 5)]].concat(),
                 password_gates: vec![],
                 data_terminals: vec![DataTerminal::new(5, 4, "left".into())],
+                telepads: vec![],
             },
             State {
                 player: Player::new(5, 7, 12, Orientation::Up),
@@ -93,6 +94,7 @@ if safe_direction == "right" {
                 obstacles: [self.obstacles().clone(), vec![Obstacle::new(4, 5)]].concat(),
                 password_gates: vec![],
                 data_terminals: vec![DataTerminal::new(5, 4, "right".into())],
+                telepads: vec![],
             },
         ]
     }

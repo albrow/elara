@@ -24,7 +24,7 @@ use std::collections::HashMap;
 use crate::actors::Bounds;
 use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
-use crate::simulation::Actor;
+use crate::simulation::{Actor, Telepad};
 use crate::simulation::{
     DataTerminal, Enemy, FuelSpot, Goal, Obstacle, PasswordGate, Player, State,
 };
@@ -167,6 +167,7 @@ pub struct FuzzyState {
     pub obstacles: Vec<Fuzzy<Obstacle>>,
     pub password_gates: Vec<Fuzzy<PasswordGate>>,
     pub data_terminals: Vec<Fuzzy<DataTerminal>>,
+    pub telepads: Vec<Fuzzy<Telepad>>,
 }
 
 impl FuzzyState {
@@ -205,6 +206,12 @@ impl FuzzyState {
                 .collect(),
             data_terminals: state
                 .data_terminals
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
+            telepads: state
+                .telepads
                 .clone()
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
@@ -325,6 +332,7 @@ mod tests {
             obstacles: vec![],
             password_gates: vec![],
             data_terminals: vec![],
+            telepads: vec![],
         }];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), false)],
@@ -339,6 +347,7 @@ mod tests {
             obstacles: vec![],
             password_gates: vec![],
             data_terminals: vec![],
+            telepads: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -355,6 +364,7 @@ mod tests {
                 obstacles: vec![],
                 password_gates: vec![],
                 data_terminals: vec![],
+                telepads: vec![],
             },
             State {
                 player: Player::new(1, 1, 10, Orientation::Down),
@@ -366,6 +376,7 @@ mod tests {
                 obstacles: vec![],
                 password_gates: vec![],
                 data_terminals: vec![],
+                telepads: vec![],
             },
         ];
         let expected = FuzzyState {
@@ -384,6 +395,7 @@ mod tests {
             obstacles: vec![],
             password_gates: vec![],
             data_terminals: vec![],
+            telepads: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -400,6 +412,7 @@ mod tests {
                 obstacles: vec![],
                 password_gates: vec![],
                 data_terminals: vec![],
+                telepads: vec![],
             },
             State {
                 player: Player::new(0, 0, 10, Orientation::Down),
@@ -411,6 +424,7 @@ mod tests {
                 obstacles: vec![],
                 password_gates: vec![],
                 data_terminals: vec![],
+                telepads: vec![],
             },
         ];
         let expected = FuzzyState {
@@ -434,6 +448,7 @@ mod tests {
             obstacles: vec![],
             password_gates: vec![],
             data_terminals: vec![],
+            telepads: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -447,6 +462,7 @@ mod tests {
             obstacles: vec![],
             password_gates: vec![],
             data_terminals: vec![],
+            telepads: vec![],
         }];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), false)],
@@ -456,12 +472,13 @@ mod tests {
             obstacles: vec![],
             password_gates: vec![],
             data_terminals: vec![],
+            telepads: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
 
         // TODO(albrow): Expand on tests when we support fuzziness for
-        // fuel_spots, enemies, and obstacles, etc. Right now we don't
+        // fuel_spots, enemies, obstacles, etc. Right now we don't
         // support fuzziness for arrays/vectors.
     }
 }

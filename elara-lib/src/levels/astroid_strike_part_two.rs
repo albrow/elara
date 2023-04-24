@@ -96,6 +96,7 @@ impl Level for AstroidStrikePartTwo {
                 .concat(),
                 password_gates: vec![],
                 data_terminals: vec![DataTerminal::new(0, 3, "top".into())],
+                telepads: vec![],
             },
             State {
                 player: Player::new(1, 3, 10, Orientation::Right),
@@ -111,6 +112,7 @@ impl Level for AstroidStrikePartTwo {
                 .concat(),
                 password_gates: vec![],
                 data_terminals: vec![DataTerminal::new(0, 3, "middle".into())],
+                telepads: vec![],
             },
             State {
                 player: Player::new(1, 3, 10, Orientation::Right),
@@ -126,6 +128,7 @@ impl Level for AstroidStrikePartTwo {
                 .concat(),
                 password_gates: vec![],
                 data_terminals: vec![DataTerminal::new(0, 3, "bottom".into())],
+                telepads: vec![],
             },
         ]
     }

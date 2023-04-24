@@ -177,6 +177,7 @@ impl FuzzyState {
                 PlayerAnimState::Idle => "idle",
                 PlayerAnimState::Moving => "moving",
                 PlayerAnimState::Turning => "turning",
+                PlayerAnimState::Teleporting => "teleporting",
             };
             let facing = match fuzzy_player.obj.facing {
                 Orientation::Up => "up",
