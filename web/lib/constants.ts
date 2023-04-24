@@ -35,6 +35,7 @@ export const BUG_Z_INDEX = 300;
 export const PLAYER_Z_INDEX = 200;
 export const FUEL_Z_INDEX = 100;
 export const GOAL_Z_INDEX = 100;
+export const TELEPAD_Z_INDEX = 100;
 export const WALL_Z_INDEX = 100;
 export const GATE_Z_INDEX = 100;
 export const TERMINAL_Z_INDEX = 100;

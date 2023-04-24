@@ -29,11 +29,13 @@ function speechBubblePlacement(pos: Pos): PlacementWithLogical {
 }
 
 export default function Player(props: PlayerProps) {
-  const getCssTransition = useCallback(() => {
+  const getAnimationStyles = useCallback(() => {
     if (!props.enableAnimations || props.animState === "idle") {
-      return "none";
+      return { transition: "none" };
     }
-    return `left ${CSS_ANIM_DURATION}s, top ${CSS_ANIM_DURATION}s`;
+    return {
+      transition: `left ${CSS_ANIM_DURATION}s, top ${CSS_ANIM_DURATION}s`,
+    };
   }, [props.animState, props.enableAnimations]);
 
   const getRobotImgUrl = useCallback(() => {
@@ -65,12 +67,12 @@ export default function Player(props: PlayerProps) {
       <div
         className="player sprite"
         style={{
+          ...getAnimationStyles(),
           width: `${TILE_SIZE - 1}px`,
           height: `${TILE_SIZE - 1}px`,
           zIndex: PLAYER_Z_INDEX,
           left: props.offset.left,
           top: props.offset.top,
-          transition: getCssTransition(),
         }}
       >
         <img alt="rover" className="playerImage" src={getRobotImgUrl()} />

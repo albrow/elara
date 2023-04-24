@@ -17,6 +17,7 @@ mod partly_disabled_movement;
 mod reimplement_turn_right;
 mod sandbox;
 mod sandbox_with_data_terminal;
+mod telepad_part_one;
 mod variables_intro;
 
 use std::collections::HashMap;
@@ -134,6 +135,7 @@ lazy_static! {
         m.insert(partly_disabled_movement::PartlyDisabledMovement{}.short_name(), Box::new(partly_disabled_movement::PartlyDisabledMovement{}));
         m.insert(reimplement_turn_right::ReimplementTurnRight{}.short_name(), Box::new(reimplement_turn_right::ReimplementTurnRight{}));
         m.insert(gate_and_terminal_array::GateAndTerminalArray{}.short_name(), Box::new(gate_and_terminal_array::GateAndTerminalArray{}));
+        m.insert(telepad_part_one::TelepadPartOne{}.short_name(), Box::new(telepad_part_one::TelepadPartOne{}));
 
         m
     };

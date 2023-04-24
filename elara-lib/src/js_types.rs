@@ -155,6 +155,7 @@ pub struct FuzzyState {
     pub obstacles: Array,      // Array<FuzzyObstacle>
     pub password_gates: Array, // Array<FuzzyPasswordGate>
     pub data_terminals: Array, // Array<FuzzyDataTerminal>
+    pub telepads: Array,       // Array<FuzzyTelepad>
 }
 
 impl FuzzyState {
@@ -167,6 +168,7 @@ impl FuzzyState {
             obstacles: Array::new(),
             password_gates: Array::new(),
             data_terminals: Array::new(),
+            telepads: Array::new(),
         }
     }
 
@@ -302,6 +304,31 @@ impl FuzzyState {
             );
         }
 
+        let telepads = Array::new_with_length(state.telepads.len() as u32);
+        for (i, fuzzy_telepad) in state.telepads.iter().enumerate() {
+            let telepad = &fuzzy_telepad.obj;
+            telepads.set(
+                i as u32,
+                JsValue::from(FuzzyTelepad {
+                    start_pos: Pos {
+                        x: telepad.start_pos.x as i32,
+                        y: telepad.start_pos.y as i32,
+                    },
+                    end_pos: Pos {
+                        x: telepad.end_pos.x as i32,
+                        y: telepad.end_pos.y as i32,
+                    },
+                    end_facing: match telepad.end_facing {
+                        Orientation::Up => "up".to_string(),
+                        Orientation::Down => "down".to_string(),
+                        Orientation::Left => "left".to_string(),
+                        Orientation::Right => "right".to_string(),
+                    },
+                    fuzzy: fuzzy_telepad.fuzzy,
+                }),
+            );
+        }
+
         FuzzyState {
             players,
             fuel_spots,
@@ -310,6 +337,7 @@ impl FuzzyState {
             obstacles,
             password_gates,
             data_terminals,
+            telepads,
         }
     }
 }
@@ -383,5 +411,14 @@ pub struct FuzzyDataTerminal {
     pub pos: Pos,
     pub data: JsValue, // string | string[]
     pub reading: bool,
+    pub fuzzy: bool,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct FuzzyTelepad {
+    pub start_pos: Pos,
+    pub end_pos: Pos,
+    pub end_facing: String, // Orientation
     pub fuzzy: bool,
 }

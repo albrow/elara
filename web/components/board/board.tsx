@@ -1,3 +1,5 @@
+import { Box } from "@chakra-ui/react";
+
 import {
   FuzzyDataTerminal,
   FuzzyEnemy,
@@ -7,6 +9,7 @@ import {
   FuzzyPasswordGate,
   FuzzyPlayer,
   FuzzyState,
+  FuzzyTelepad,
 } from "../../../elara-lib/pkg";
 import {
   AXIS_HEIGHT,
@@ -27,6 +30,7 @@ import Goal from "./goal";
 import Obstacle from "./obstacle";
 import Player from "./player";
 import Square from "./square";
+import Telepad from "./telepad";
 
 interface BoardProps {
   gameState: FuzzyState;
@@ -160,6 +164,23 @@ export default function Board(props: BoardProps) {
           />
         )
       )}
+      {(props.gameState.telepads as FuzzyTelepad[]).map((telepad, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <Box key={i}>
+          <Telepad
+            // eslint-disable-next-line react/no-array-index-key
+            key={`entrance_${i}`}
+            offset={posToOffset(telepad.start_pos)}
+            kind="entrance"
+          />
+          <Telepad
+            // eslint-disable-next-line react/no-array-index-key
+            key={`exit_${i}`}
+            offset={posToOffset(telepad.end_pos)}
+            kind="exit"
+          />
+        </Box>
+      ))}
     </>
   );
 }
