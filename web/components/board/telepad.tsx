@@ -1,8 +1,9 @@
 import { Box } from "@chakra-ui/react";
-import { TbDoorEnter, TbDoorExit } from "react-icons/tb";
-
 import { Offset } from "../../lib/utils";
 import { TELEPAD_Z_INDEX, TILE_SIZE } from "../../lib/constants";
+
+import telepadEntranceUrl from "../../images/telepad_green_entrance.png";
+import telepadExitUrl from "../../images/telepad_green_exit.png";
 
 export type TelepadKind = "entrance" | "exit";
 
@@ -17,42 +18,36 @@ export default function Telepad(props: TelepadProps) {
       position="absolute"
       left={props.offset.left}
       top={props.offset.top}
-      w={`${TILE_SIZE - 1}px`}
-      h={`${TILE_SIZE - 1}px`}
+      w={`${TILE_SIZE}px`}
+      h={`${TILE_SIZE}px`}
       zIndex={TELEPAD_Z_INDEX}
     >
-      <Box
-        bg="white"
-        borderRadius="100px"
-        borderColor="yellow.400"
-        borderWidth="2px"
-        p="5px"
-        w="40px"
-        h="40px"
-        margin="auto"
-        mt="5px"
-      >
-        {props.kind === "entrance" && (
-          <TbDoorEnter
-            size="28px"
-            color="var(--chakra-colors-cyan-600)"
-            style={{
-              // Flip horizontal so it lines up with the exit icon.
-              transform: "scaleX(-1)",
-              margin: "auto",
-            }}
-          />
-        )}
-        {props.kind === "exit" && (
-          <TbDoorExit
-            size="28px"
-            color="var(--chakra-colors-cyan-600)"
-            style={{
-              margin: "auto",
-            }}
-          />
-        )}
-      </Box>
+      {props.kind === "entrance" && (
+        <img
+          className="telepad sprite"
+          alt="telepad_entrance"
+          src={telepadEntranceUrl}
+          style={{
+            width: `${TILE_SIZE - 2}px`,
+            height: `${TILE_SIZE - 2}px`,
+            marginTop: "1px",
+            marginLeft: "1px",
+          }}
+        />
+      )}
+      {props.kind === "exit" && (
+        <img
+          className="telepad sprite"
+          alt="telepad_exit"
+          src={telepadExitUrl}
+          style={{
+            width: `${TILE_SIZE - 2}px`,
+            height: `${TILE_SIZE - 2}px`,
+            marginTop: "1px",
+            marginLeft: "1px",
+          }}
+        />
+      )}
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { Tooltip, PlacementWithLogical } from "@chakra-ui/react";
+import { Tooltip, PlacementWithLogical, Box } from "@chakra-ui/react";
 
 import { useCallback } from "react";
 import { Offset } from "../../lib/utils";
@@ -62,30 +62,38 @@ export default function Player(props: PlayerProps) {
   }, [props.facing]);
 
   return (
-    <Tooltip
-      hasArrow
-      isOpen
-      label={props.message}
-      bg="white"
-      color="black"
-      zIndex={PLAYER_MESSAGE_Z_INDEX}
-      placement={speechBubblePlacement(props.offset.pos)}
-      fontFamily="monospace"
+    <Box
+      position="absolute"
+      left={props.offset.left}
+      top={props.offset.top}
+      w={`${TILE_SIZE}px`}
+      h={`${TILE_SIZE}px`}
+      zIndex={PLAYER_Z_INDEX}
+      style={getAnimationStyles()}
     >
-      <div
-        className="player sprite"
-        style={{
-          ...getAnimationStyles(),
-          width: `${TILE_SIZE - 1}px`,
-          height: `${TILE_SIZE - 1}px`,
-          zIndex: PLAYER_Z_INDEX,
-          left: props.offset.left,
-          top: props.offset.top,
-        }}
+      <Tooltip
+        hasArrow
+        isOpen
+        label={props.message}
+        bg="white"
+        color="black"
+        zIndex={PLAYER_MESSAGE_Z_INDEX}
+        placement={speechBubblePlacement(props.offset.pos)}
+        fontFamily="monospace"
       >
-        <img alt="rover" className="playerImage" src={getRobotImgUrl()} />
-        <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.fuel} />
-      </div>
-    </Tooltip>
+        <div
+          className="player sprite"
+          style={{
+            width: `${TILE_SIZE - 2}px`,
+            height: `${TILE_SIZE - 2}px`,
+            marginTop: "1px",
+            zIndex: PLAYER_Z_INDEX,
+          }}
+        >
+          <img alt="rover" className="playerImage" src={getRobotImgUrl()} />
+          <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.fuel} />
+        </div>
+      </Tooltip>
+    </Box>
   );
 }
