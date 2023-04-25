@@ -18,6 +18,7 @@ mod reimplement_turn_right;
 mod sandbox;
 mod sandbox_with_data_terminal;
 mod telepad_part_one;
+mod telepad_part_two;
 mod variables_intro;
 
 use std::collections::HashMap;
@@ -25,7 +26,7 @@ use std::collections::HashMap;
 use crate::actors::Bounds;
 use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, Telepad};
+use crate::simulation::{Actor, Orientation, Telepad};
 use crate::simulation::{
     DataTerminal, Enemy, FuelSpot, Goal, Obstacle, PasswordGate, Player, State,
 };
@@ -136,6 +137,7 @@ lazy_static! {
         m.insert(reimplement_turn_right::ReimplementTurnRight{}.short_name(), Box::new(reimplement_turn_right::ReimplementTurnRight{}));
         m.insert(gate_and_terminal_array::GateAndTerminalArray{}.short_name(), Box::new(gate_and_terminal_array::GateAndTerminalArray{}));
         m.insert(telepad_part_one::TelepadPartOne{}.short_name(), Box::new(telepad_part_one::TelepadPartOne{}));
+        m.insert(telepad_part_two::TelepadPartTwo{}.short_name(), Box::new(telepad_part_two::TelepadPartTwo{}));
 
         m
     };
@@ -303,6 +305,57 @@ pub fn no_objective_check_win(state: &State) -> Outcome {
     }
 }
 
+/// Expects an array of initial states for a level where each state
+/// has only one possible orientation for each telepad. Expands the
+/// possible states to include all possible orientations for each
+/// telepad. Returns the new, expanded states.
+pub fn make_all_initial_states_for_telepads(states: Vec<State>) -> Vec<State> {
+    let mut new_states = vec![];
+    for state in states.iter() {
+        if state.telepads.len() == 0 {
+            new_states.push(state.clone());
+            continue;
+        } else if state.telepads.len() > 2 {
+            // The total number of initial states grows with 4^n where n is the
+            // number of telepads. When the user runs a script, the simulation is
+            // run once for each possible initial state. Therefore, we need to limit
+            // the number of initial states in order to keep the total script run time
+            // low.
+            panic!(
+                "Error computing initial states for telepads: a max of 2 telepads are supported"
+            );
+        }
+        for orientation in vec![
+            Orientation::Up,
+            Orientation::Down,
+            Orientation::Left,
+            Orientation::Right,
+        ] {
+            let mut new_state = state.clone();
+            new_state.telepads[0].end_facing = orientation;
+            if state.telepads.len() == 2 {
+                // If there are two telepads, we need to create a new state for each
+                // *combination* of orientations for the two telepads (i.e. 16 total).
+                for orientation in vec![
+                    Orientation::Up,
+                    Orientation::Down,
+                    Orientation::Left,
+                    Orientation::Right,
+                ] {
+                    let mut nested_state = new_state.clone();
+                    nested_state.telepads[1].end_facing = orientation;
+                    new_states.push(nested_state);
+                }
+            } else {
+                // If there is only one telepad, we only need to create a new state
+                // for each possible orientation (i.e. 4 total).
+                new_states.push(new_state);
+            }
+        }
+    }
+    new_states
+}
+
 #[derive(Debug, PartialEq)]
 pub struct Fuzzy<T> {
     pub obj: T,
@@ -318,7 +371,10 @@ impl<T> Fuzzy<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::simulation::{Orientation, Pos};
+    use crate::{
+        simulation::{Orientation, Pos},
+        state_maker::StateMaker,
+    };
 
     #[test]
     fn to_fuzzy_state() {
@@ -482,5 +538,120 @@ mod tests {
         // TODO(albrow): Expand on tests when we support fuzziness for
         // fuel_spots, enemies, obstacles, etc. Right now we don't
         // support fuzziness for arrays/vectors.
+    }
+
+    #[test]
+    fn test_make_all_initial_states_for_telepads() {
+        let state = StateMaker::new()
+            .with_telepads(vec![
+                Telepad::new((0, 0), (1, 1), Orientation::Up),
+                Telepad::new((2, 2), (3, 3), Orientation::Up),
+            ])
+            .build();
+        let initial_states = vec![state];
+
+        // We should get 16 states back, one for each possible combination of
+        // telepad ending orientations.
+        let full_initial_states = make_all_initial_states_for_telepads(initial_states);
+        let expected = vec![
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Up),
+                    Telepad::new((2, 2), (3, 3), Orientation::Up),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Up),
+                    Telepad::new((2, 2), (3, 3), Orientation::Down),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Up),
+                    Telepad::new((2, 2), (3, 3), Orientation::Left),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Up),
+                    Telepad::new((2, 2), (3, 3), Orientation::Right),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Down),
+                    Telepad::new((2, 2), (3, 3), Orientation::Up),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Down),
+                    Telepad::new((2, 2), (3, 3), Orientation::Down),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Down),
+                    Telepad::new((2, 2), (3, 3), Orientation::Left),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Down),
+                    Telepad::new((2, 2), (3, 3), Orientation::Right),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Left),
+                    Telepad::new((2, 2), (3, 3), Orientation::Up),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Left),
+                    Telepad::new((2, 2), (3, 3), Orientation::Down),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Left),
+                    Telepad::new((2, 2), (3, 3), Orientation::Left),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Left),
+                    Telepad::new((2, 2), (3, 3), Orientation::Right),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Right),
+                    Telepad::new((2, 2), (3, 3), Orientation::Up),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Right),
+                    Telepad::new((2, 2), (3, 3), Orientation::Down),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Right),
+                    Telepad::new((2, 2), (3, 3), Orientation::Left),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_telepads(vec![
+                    Telepad::new((0, 0), (1, 1), Orientation::Right),
+                    Telepad::new((2, 2), (3, 3), Orientation::Right),
+                ])
+                .build(),
+        ];
+        assert_eq!(full_initial_states.len(), expected.len());
+        assert_eq!(full_initial_states, expected);
     }
 }

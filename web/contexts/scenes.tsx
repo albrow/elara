@@ -122,6 +122,7 @@ const RAW_SCENES: RawScene[] = [
   journalScene("arrays"),
   levelScene("gate_and_terminal_array"),
   levelScene("telepad_part_one"),
+  levelScene("telepad_part_two"),
 ];
 
 const getLevelIndexFromScene = (

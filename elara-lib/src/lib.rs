@@ -13,6 +13,7 @@ mod js_types;
 mod levels;
 mod script_runner;
 mod simulation;
+mod state_maker;
 
 use actors::{Action, Bounds};
 use better_errors::BetterError;

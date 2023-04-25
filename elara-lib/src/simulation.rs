@@ -171,11 +171,12 @@ impl fmt::Debug for State {
             // Omitting obstacles field since it can be very long and
             // the obstacles never move.
             // .field("obstacles", &self.obstacles)
+            .field("telepads", &self.telepads)
             .finish()
     }
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, Copy)]
 pub enum Orientation {
     Up,
     Down,
