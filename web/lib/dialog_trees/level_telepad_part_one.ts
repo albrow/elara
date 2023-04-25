@@ -27,15 +27,15 @@ export const NODES: {
   },
   explain_telepads_catch: {
     text:
-      `Objects that are teleported get flipped around and can end up facing a different ` +
-      `direction than when they entered the telepad. As far as we can tell, the direction ` +
-      `is unpredictable and random.`,
+      `Objects that are teleported often get flipped around unpredictably. So if you enter ` +
+      `the telepad facing one direction, you can end up facing a completely different ` +
+      `direction on the other side!`,
     choiceIds: ["ack_telepads_catch"],
   },
   explain_telepads_code: {
     text:
       `In order to deal with this side-effect, you'll need to use the get_orientation function ` +
-      `to figure out which way G.R.O.V.E.R. is facing after you teleport. Then use an if statement ` +
+      `to figure out which way G.R.O.V.E.R. is facing after teleporting. Then use an if statement ` +
       `to handle each possible orientation.`,
     choiceIds: [],
     nextId: "explain_telepads_code_2",
@@ -56,7 +56,7 @@ export const CHOICES: {
     nextId: "explain_telepads_catch",
   },
   ack_telepads_catch: {
-    text: "Wow that's weird, but also kind of cool!",
+    text: "Whoa... that's weird.",
     nextId: "explain_telepads_code",
   },
   ack_telepads_code: {
