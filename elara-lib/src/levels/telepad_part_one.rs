@@ -38,8 +38,7 @@ impl TelepadPartOne {
 
 impl Level for TelepadPartOne {
     fn name(&self) -> &'static str {
-        // TODO(albrow): Change this name.
-        "Telepad Part One"
+        "Unintended Effects"
     }
     fn short_name(&self) -> &'static str {
         "telepad_part_one"
@@ -51,8 +50,16 @@ impl Level for TelepadPartOne {
         &TELEPAD_FUNCS
     }
     fn initial_code(&self) -> &'static str {
-        // TODO(albrow): Add initial code.
-        r#"
+        r#"// You will need to use the get_orientation function to figure out
+// which way the rover is facing after going through the telepad.
+move_forward(3);
+if get_orientation() == "up" {
+  turn_right();
+  move_forward(3);
+}
+
+// Add more if statements to handle the other possible orientations.
+// ADD YOUR CODE BELOW
 "#
     }
 
@@ -118,29 +125,39 @@ impl Level for TelepadPartOne {
 
 #[cfg(test)]
 mod tests {
-    // TODO(albrow): Add tests.
+    use super::*;
+    use crate::levels::Outcome;
 
-    // use super::*;
-    // use crate::constants::ERR_OUT_OF_FUEL;
-    // use crate::levels::Outcome;
+    #[test]
+    fn level() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &TelepadPartOne {};
 
-    // #[test]
-    // fn level() {
-    //     let mut game = crate::Game::new();
-    //     const LEVEL: &'static dyn Level = &TelepadPartOne {};
+        // Running the initial code should result in Outcome::Continue.
+        let script = LEVEL.initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
 
-    //     // Running the initial code should result in Outcome::Continue.
-    //     let script = LEVEL.initial_code();
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(result.outcome, Outcome::Continue);
-
-    //     // Running this code should result in Outcome::Success.
-    //     let script = "move_forward(3); turn_right(); move_forward(3);";
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(result.outcome, Outcome::Success);
-    // }
+        // Running this code should result in Outcome::Success.
+        let script = r#"move_forward(3);
+            let facing = get_orientation();
+            if facing == "up" {
+                turn_right();
+            }
+            if facing == "down" {
+                turn_left();
+            }
+            if facing == "left" {
+                turn_right();
+                turn_right();
+            }
+            move_forward(3);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+    }
 }
