@@ -172,12 +172,14 @@ export default function Board(props: BoardProps) {
             key={`entrance_${i}`}
             offset={posToOffset(telepad.start_pos)}
             kind="entrance"
+            telepadIndex={i}
           />
           <Telepad
             // eslint-disable-next-line react/no-array-index-key
             key={`exit_${i}`}
             offset={posToOffset(telepad.end_pos)}
             kind="exit"
+            telepadIndex={i}
           />
         </Box>
       ))}
