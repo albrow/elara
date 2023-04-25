@@ -14,6 +14,7 @@ import * as AstroidStrike from "./level_astroid_strike";
 import * as PartlyDisabledMovement from "./level_partly_disabled_movement";
 import * as ReImplementTurnRight from "./level_reimplement_turn_right";
 import * as JournalArrays from "./journal_arrays";
+import * as LevelTelepadPartOne from "./level_telepad_part_one";
 
 // NodeIds and ChoiceIds must be unique and declared ahead of time. This ensures
 // that the compiler will catch any incorrect or missing references.
@@ -27,7 +28,8 @@ type NodeIds =
   | AstroidStrike.NodeIds
   | PartlyDisabledMovement.NodeIds
   | ReImplementTurnRight.NodeIds
-  | JournalArrays.NodeIds;
+  | JournalArrays.NodeIds
+  | LevelTelepadPartOne.NodeIds;
 type ChoiceIds =
   | Intro.ChoiceIds
   | DataTerminalsPartOne.ChoiceIds
@@ -38,7 +40,8 @@ type ChoiceIds =
   | AstroidStrike.ChoiceIds
   | PartlyDisabledMovement.ChoiceIds
   | ReImplementTurnRight.ChoiceIds
-  | JournalArrays.ChoiceIds;
+  | JournalArrays.ChoiceIds
+  | LevelTelepadPartOne.ChoiceIds;
 
 export interface DialogNode {
   text: string;
@@ -78,6 +81,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   ...PartlyDisabledMovement.NODES,
   ...ReImplementTurnRight.NODES,
   ...JournalArrays.NODES,
+  ...LevelTelepadPartOne.NODES,
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
@@ -91,6 +95,7 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...PartlyDisabledMovement.CHOICES,
   ...ReImplementTurnRight.CHOICES,
   ...JournalArrays.CHOICES,
+  ...LevelTelepadPartOne.CHOICES,
 };
 
 export const TREES: DialogTrees = {
@@ -104,4 +109,5 @@ export const TREES: DialogTrees = {
   ...PartlyDisabledMovement.TREES,
   ...ReImplementTurnRight.TREES,
   ...JournalArrays.TREES,
+  ...LevelTelepadPartOne.TREES,
 };
