@@ -1,6 +1,7 @@
 use super::{make_all_initial_states_for_telepads, std_check_win, Level, Outcome};
-use crate::simulation::{
-    Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State, Telepad,
+use crate::{
+    simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State, Telepad},
+    state_maker::StateMaker,
 };
 
 #[derive(Copy, Clone)]
@@ -32,58 +33,49 @@ impl Level for TelepadPartTwo {
         &TELEPAD_FUNCS
     }
     fn initial_code(&self) -> &'static str {
-        r#"// The data terminal that holds the password is on the other side
-// of the telepad. Can you make it through?
+        r#"// There are two sets of telepads this time. Can you make
+// it through on your own?
 "#
     }
 
     fn initial_states(&self) -> Vec<State> {
-        let states = vec![State {
-            player: Player::new(3, 1, 10, Orientation::Right),
-            fuel_spots: vec![],
-            goal: Some(Goal {
-                pos: Pos { x: 3, y: 4 },
-            }),
-            enemies: vec![],
-            obstacles: vec![
-                Obstacle::new(0, 0),
-                Obstacle::new(0, 1),
-                Obstacle::new(0, 2),
-                Obstacle::new(1, 0),
-                Obstacle::new(1, 2),
-                Obstacle::new(2, 0),
-                Obstacle::new(2, 2),
-                Obstacle::new(2, 3),
+        let base_state = StateMaker::new()
+            .with_player(Player::new(4, 1, 20, Orientation::Right))
+            .with_goal(Some(Goal {
+                pos: Pos { x: 1, y: 5 },
+            }))
+            .with_obstacles(vec![
+                Obstacle::new(0, 5),
+                Obstacle::new(1, 4),
+                Obstacle::new(1, 6),
                 Obstacle::new(2, 4),
-                Obstacle::new(2, 5),
-                Obstacle::new(3, 0),
-                Obstacle::new(3, 5),
+                Obstacle::new(2, 6),
+                Obstacle::new(3, 1),
+                Obstacle::new(3, 4),
+                Obstacle::new(3, 6),
                 Obstacle::new(4, 0),
                 Obstacle::new(4, 2),
-                Obstacle::new(4, 3),
-                Obstacle::new(4, 4),
                 Obstacle::new(4, 5),
                 Obstacle::new(5, 0),
                 Obstacle::new(5, 2),
                 Obstacle::new(6, 0),
-                Obstacle::new(6, 1),
                 Obstacle::new(6, 2),
-                Obstacle::new(6, 5),
-                Obstacle::new(7, 4),
-                Obstacle::new(7, 6),
+                Obstacle::new(7, 1),
+                Obstacle::new(7, 5),
+                Obstacle::new(8, 4),
                 Obstacle::new(8, 6),
                 Obstacle::new(9, 4),
                 Obstacle::new(9, 6),
-                Obstacle::new(10, 5),
-            ],
-            password_gates: vec![PasswordGate::new(3, 3, "carver".to_string(), false)],
-            data_terminals: vec![DataTerminal::new(8, 4, "carver".into())],
-            telepads: vec![
-                Telepad::new((5, 1), (7, 5), Orientation::Up),
-                Telepad::new((9, 5), (1, 1), Orientation::Up),
-            ],
-        }];
-        make_all_initial_states_for_telepads(states)
+                Obstacle::new(10, 4),
+                Obstacle::new(10, 6),
+                Obstacle::new(11, 5),
+            ])
+            .with_telepads(vec![
+                Telepad::new((6, 1), (8, 5), Orientation::Up),
+                Telepad::new((10, 5), (3, 5), Orientation::Up),
+            ])
+            .build();
+        make_all_initial_states_for_telepads(vec![base_state])
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]
@@ -123,15 +115,9 @@ mod tests {
             
             move_forward(2);
             face_right();
-            move_forward(1);
-            let password = read_data();
-            move_forward(1);
+            move_forward(2);
             face_right();
-            move_forward(2);
-            turn_right();
-            move_forward(1);
-            say(password);
-            move_forward(2);
+            move_backward(2);
         "#;
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
