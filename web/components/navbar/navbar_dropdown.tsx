@@ -3,7 +3,7 @@ import { MdExpandMore } from "react-icons/md";
 import { useRouter } from "react-router5";
 import chunk from "lodash.chunk";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Scene } from "../../contexts/scenes";
 import {
   NAVBAR_DROPDOWN_ITEMS_PER_COLUMN,
@@ -21,22 +21,36 @@ export default function NavbarDropdown(props: NavbarDropdownProps) {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // This is used to close the dropdown menu when the user clicks
+  // outside of the dropdown container.
+  const dropDownContainer = useRef<HTMLDivElement>(null);
+
   const sceneColumns = useMemo(
     () => chunk(props.scenes, NAVBAR_DROPDOWN_ITEMS_PER_COLUMN),
     [props.scenes]
   );
 
-  const delayedHide = () => {
-    // Note(albrow): This is a workaround for a bug where navigation
-    // would not trigger when clicking on a link in the navbar dropdown.
-    // It seems to have something to do with the DOM ignoring events from
-    // elements which are not visible, or maybe from React unmounting
-    // components before the event can be processed.
-    setTimeout(() => setIsMenuOpen(false), 150);
-  };
+  const clickListener = useCallback((event: MouseEvent) => {
+    if (event.target instanceof HTMLElement) {
+      // If the click is outside the dropdown container, close the menu.
+      if (
+        dropDownContainer.current &&
+        !dropDownContainer.current.contains(event.target)
+      ) {
+        setIsMenuOpen(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("click", clickListener);
+    return () => {
+      document.removeEventListener("click", clickListener);
+    };
+  }, [clickListener]);
 
   return (
-    <Box position="relative" onBlur={delayedHide}>
+    <Box position="relative" ref={dropDownContainer}>
       <Button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         cursor="pointer"
@@ -81,6 +95,9 @@ export default function NavbarDropdown(props: NavbarDropdownProps) {
                     scene={scene}
                     key={router.buildPath(scene.routeName, scene.routeParams)}
                     isLocked={!scene.unlocked}
+                    onClick={() => {
+                      if (scene.unlocked) setIsMenuOpen(false);
+                    }}
                   />
                 </Box>
               ))}

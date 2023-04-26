@@ -10,6 +10,7 @@ import DisablableLink from "./disablable_link";
 interface SceneLinkProps {
   scene: Scene;
   isLocked: boolean;
+  onClick?: () => void;
 }
 
 export default function SceneLink(props: SceneLinkProps) {
@@ -133,6 +134,7 @@ export default function SceneLink(props: SceneLinkProps) {
       routeName={props.scene.routeName}
       routeParams={props.scene.routeParams}
       disabled={props.isLocked}
+      onClick={props.onClick}
     >
       <Button
         background={isActive ? "gray.600" : "gray.700"}
