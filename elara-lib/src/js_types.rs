@@ -1,10 +1,10 @@
 use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
-use crate::levels;
 use crate::levels::Outcome;
 use crate::script_runner;
 use crate::simulation::{EnemyAnimState, Orientation, PlayerAnimState, TermData};
+use crate::{levels, simulation};
 
 #[wasm_bindgen(getter_with_clone)]
 pub struct RhaiError {
@@ -145,6 +145,45 @@ pub fn to_level_data_obj(levels: levels::LEVELS) -> Object {
     obj
 }
 
+/// Special metadata which can be used for teleportation animations in the UI.
+/// Includes:
+///    - start_pos: The position of the rover before entering telepad.
+///    - enter_pos: The position of the telepad entrance.
+///    - exit_pos: The position of the telepad exit.
+#[derive(Clone, PartialEq, Debug)]
+#[wasm_bindgen(getter_with_clone)]
+pub struct TeleAnimData {
+    pub start_pos: Pos,
+    pub enter_pos: Pos,
+    pub exit_pos: Pos,
+}
+
+impl TeleAnimData {
+    pub fn from(data: &simulation::TeleAnimData) -> Self {
+        Self {
+            start_pos: Pos {
+                x: data.start_pos.x as i32,
+                y: data.start_pos.y as i32,
+            },
+            enter_pos: Pos {
+                x: data.enter_pos.x as i32,
+                y: data.enter_pos.y as i32,
+            },
+            exit_pos: Pos {
+                x: data.exit_pos.x as i32,
+                y: data.exit_pos.y as i32,
+            },
+        }
+    }
+}
+
+fn get_js_anim_data(anim_state: &PlayerAnimState) -> Option<TeleAnimData> {
+    match anim_state {
+        PlayerAnimState::Teleporting(data) => Some(TeleAnimData::from(data).into()),
+        _ => None,
+    }
+}
+
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyState {
@@ -179,7 +218,7 @@ impl FuzzyState {
                 PlayerAnimState::Idle => "idle",
                 PlayerAnimState::Moving => "moving",
                 PlayerAnimState::Turning => "turning",
-                PlayerAnimState::Teleporting => "teleporting",
+                PlayerAnimState::Teleporting(_) => "teleporting",
             };
             let facing = match fuzzy_player.obj.facing {
                 Orientation::Up => "up",
@@ -198,6 +237,7 @@ impl FuzzyState {
                     fuel: player.fuel as i32,
                     message: player.message.clone(),
                     anim_state: anim_state.to_string(),
+                    anim_data: get_js_anim_data(&player.anim_state),
                     facing: facing.to_string(),
                     fuzzy: fuzzy_player.fuzzy,
                 }),
@@ -361,8 +401,9 @@ pub struct FuzzyPlayer {
     pub pos: Pos,
     pub fuel: i32,
     pub message: String,
-    pub anim_state: String, // PlayerAnimState
-    pub facing: String,     // Orientation
+    pub anim_state: String,              // PlayerAnimState
+    pub anim_data: Option<TeleAnimData>, // TeleAnimData | (other animation data types) | undefined
+    pub facing: String,                  // Orientation
     pub fuzzy: bool,
 }
 

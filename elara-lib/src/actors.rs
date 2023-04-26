@@ -4,7 +4,8 @@ use std::sync::mpsc;
 
 use crate::constants::FUEL_SPOT_AMOUNT;
 use crate::simulation::{
-    get_adjacent_terminal, Actor, EnemyAnimState, Orientation, PlayerAnimState, Pos, State, Telepad,
+    get_adjacent_terminal, Actor, EnemyAnimState, Orientation, PlayerAnimState, Pos, State,
+    TeleAnimData, Telepad,
 };
 
 #[derive(PartialEq)]
@@ -158,7 +159,11 @@ impl PlayerChannelActor {
             return (
                 telepad.end_pos.clone(),
                 telepad.end_facing.clone(),
-                PlayerAnimState::Teleporting,
+                PlayerAnimState::Teleporting(TeleAnimData {
+                    start_pos: state.player.pos.clone(),
+                    enter_pos: desired_pos,
+                    exit_pos: telepad.end_pos.clone(),
+                }),
             );
         }
         if is_obstacle_at(state, &desired_pos)
@@ -692,7 +697,11 @@ mod test {
             (
                 Pos::new(4, 4),
                 Orientation::Left,
-                PlayerAnimState::Teleporting
+                PlayerAnimState::Teleporting(TeleAnimData {
+                    start_pos: Pos::new(1, 1),
+                    enter_pos: Pos::new(2, 1),
+                    exit_pos: Pos::new(4, 4),
+                })
             )
         );
     }

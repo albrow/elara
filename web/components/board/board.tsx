@@ -104,6 +104,7 @@ export default function Board(props: BoardProps) {
             message={player.message}
             // fuzzy={player.fuzzy}
             animState={player.anim_state}
+            animData={player.anim_data}
             facing={player.facing}
             enableAnimations={props.enableAnimations}
           />

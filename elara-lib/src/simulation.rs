@@ -192,7 +192,14 @@ pub enum PlayerAnimState {
     Idle,
     Moving,
     Turning,
-    Teleporting,
+    Teleporting(TeleAnimData),
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct TeleAnimData {
+    pub start_pos: Pos, // The position of the rover before entering telepad.
+    pub enter_pos: Pos, // The position of the telepad entrance.
+    pub exit_pos: Pos,  // The position of the telepad exit.
 }
 
 #[derive(Clone, PartialEq, Debug)]
