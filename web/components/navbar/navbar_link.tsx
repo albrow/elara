@@ -16,7 +16,7 @@ export default function NavbarLink(props: NavbarLinkProps) {
       <Box
         fontWeight="bold"
         minW="max"
-        mr={4}
+        mr="18px"
         p={1}
         px={4}
         rounded="lg"

@@ -64,6 +64,7 @@ export default function NavbarDropdown(props: NavbarDropdownProps) {
         _active={{ background: "var(--chakra-colors-gray-700)" }}
         px="14px"
         py="6px"
+        mr="18px"
       >
         <Box as="span" display="inline-flex" alignItems="center">
           <Text as="span" verticalAlign="middle">
