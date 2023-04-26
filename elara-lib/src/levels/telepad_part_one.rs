@@ -50,9 +50,13 @@ impl Level for TelepadPartOne {
         &TELEPAD_FUNCS
     }
     fn initial_code(&self) -> &'static str {
-        r#"// You will need to use the get_orientation function to figure out
-// which way the rover is facing after going through the telepad.
+        r#"// This code uses the get_orientation function to figure out which
+// way the rover is facing. You DON'T need to change this part.
 move_forward(3);
+say("I am facing " + get_orientation());
+
+// If the rover is facing up, turn to the right and then move forward.
+// You DON'T need to change this part.
 if get_orientation() == "up" {
   turn_right();
   move_forward(3);
