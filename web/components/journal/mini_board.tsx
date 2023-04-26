@@ -101,6 +101,7 @@ export default function MiniBoard(props: MiniBoardProps) {
           fuel={props.state.players[0].fuel}
           message={props.state.players[0].message}
           animState={props.state.players[0].anim_state}
+          animData={props.state.players[0].anim_data}
           enableAnimations={props.enableAnimations}
           facing={props.state.players[0].facing}
         />
