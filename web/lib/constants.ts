@@ -2,7 +2,7 @@
 // defined in their respective components.
 
 export const NAVBAR_HEIGHT = 56; // In pixels
-export const CODE_AUTOSAVE_INTERVAL = 2500; // In milliseconds
+export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
 
 // Constants related to the game board and game logic.
 export const WIDTH = 12;
@@ -27,6 +27,7 @@ export const LEVEL_END_MODAL_Z_INDEX = 1200;
 export const JOURNAL_MODAL_Z_INDEX = 1200;
 export const TUTORIAL_MODAL_Z_INDEX = 1200;
 export const DIALOG_MODAL_Z_INDEX = 1150;
+export const NAVBAR_DROPDOWN_Z_INDEX = 1100;
 export const CHAKRA_TOOL_TIP_Z_INDEX = 900; // Used for Chakra tooltips (not including rover messages).
 export const CM_TOOL_TIP_Z_INDEX = 800; // Used for Codemirror tooltips (e.g. hover docs).
 export const AXIS_LABEL_Z_INDEX = 700;

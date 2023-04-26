@@ -1,5 +1,5 @@
 import { useRouter } from "react-router5";
-import { Box, MenuItem, Text } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 import { Fragment, useCallback } from "react";
 
 import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
@@ -134,26 +134,32 @@ export default function SceneLink(props: SceneLinkProps) {
       routeParams={props.scene.routeParams}
       disabled={props.isLocked}
     >
-      <MenuItem
+      <Button
         background={isActive ? "gray.600" : "gray.700"}
+        _active={{ background: "var(--chakra-colors-gray-600)" }}
         _hover={getHoverStyle()}
+        w="100%"
+        textAlign="left"
+        justifyContent="left"
         isDisabled={props.isLocked}
+        h="max-content"
+        px="14px"
+        py="6px"
       >
         <Box>
           <Text
             as="span"
-            ml={1}
             display="inline"
             fontWeight="bold"
             color={isActive ? "white" : "gray.300"}
           >
             {getSceneIcons()}
-            <Text display="inline" verticalAlign="middle">
+            <Text display="inline" verticalAlign="middle" align="left">
               {getSceneName()}
             </Text>
           </Text>
         </Box>
-      </MenuItem>
+      </Button>
     </DisablableLink>
   );
 }
