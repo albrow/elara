@@ -9,7 +9,6 @@ import JournalSection, {
 } from "../components/journal/journal_section";
 import { TREES } from "../lib/dialog_trees";
 import DialogModal from "../components/dialog/dialog_modal";
-import ShowDialogButton from "../components/level/show_dialog_button";
 
 export default function Journal() {
   const { route } = useRouteNode("");
@@ -65,13 +64,6 @@ export default function Journal() {
             <JournalSection section={sectionName as SectionName} />
           </Box>
         </Flex>
-        {!dialogVisible && getDialogTree() !== null && (
-          // TODO(albrow): This is sort of a hack to get the button to show up in
-          // the right place. Consider changing later.
-          <Box position="relative" top="-82px" left="25px" w="500px">
-            <ShowDialogButton onClick={() => setDialogVisible(true)} />
-          </Box>
-        )}
       </Container>
     </Box>
   );

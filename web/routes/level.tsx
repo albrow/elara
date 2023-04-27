@@ -14,13 +14,13 @@ import {
   useSaveData,
 } from "../contexts/save_data";
 import DialogModal from "../components/dialog/dialog_modal";
-import ShowDialogButton from "../components/level/show_dialog_button";
 import { TREES } from "../lib/dialog_trees";
 import { useShortsModal } from "../contexts/shorts_modal";
 import LevelSuccessModal from "../components/level/success_modal";
 import { useCurrScene } from "../contexts/scenes";
 import ChallengeText from "../components/level/challenge_text";
 import { useErrorModal } from "../contexts/error_modal";
+import ShowDialogButton from "../components/level/show_dialog_button";
 
 const game = Game.new();
 
@@ -274,9 +274,18 @@ export default function Level() {
       />
       <Container maxW="container.xl" mt={6}>
         <Box>
-          <Text fontSize="2xl" fontWeight="bold" mb={1}>
-            Level {currScene?.levelIndex}: {currLevel().name}
-          </Text>
+          <Flex>
+            <Text fontSize="2xl" fontWeight="bold" mb={1}>
+              Level {currScene?.levelIndex}: {currLevel().name}
+            </Text>
+            {!dialogVisible && getDialogTree() !== null && (
+              <Box ml="17px" my="auto" mt="3px">
+                <ShowDialogButton onClick={() => setDialogVisible(true)} />
+              </Box>
+            )}
+          </Flex>
+        </Box>
+        <Box>
           <Text as="span" verticalAlign="middle">
             {getObjectiveIcon()}
             <Text as="span" verticalAlign="middle" fontWeight="bold">
@@ -322,11 +331,6 @@ export default function Level() {
             />
           </Box>
         </Flex>
-        {!dialogVisible && getDialogTree() !== null && (
-          <Box mt="20px">
-            <ShowDialogButton onClick={() => setDialogVisible(true)} />
-          </Box>
-        )}
       </Container>
     </>
   );

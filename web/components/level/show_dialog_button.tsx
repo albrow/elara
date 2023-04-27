@@ -12,9 +12,10 @@ export default function ShowDialogButton(props: ShowDialogButtonProps) {
         bg="blue.500"
         _hover={{ bg: "blue.600" }}
         _active={{ bg: "blue.700" }}
-        borderRadius="50%"
-        w="40px"
-        h="40px"
+        borderRadius="100%"
+        minW="none"
+        w="32px"
+        h="32px"
         p="0"
         onClick={props.onClick}
       >
