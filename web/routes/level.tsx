@@ -281,9 +281,11 @@ export default function Level() {
             <Text fontSize="2xl" fontWeight="bold" mb={1}>
               Level {currScene?.levelIndex}: {currLevel().name}
             </Text>
-            <Box ml="17px" my="auto" mt="3px">
-              <ShowHintButton onClick={showHintsModal} />
-            </Box>
+            {currScene?.hints != null && currScene?.hints.length > 0 && (
+              <Box ml="17px" my="auto" mt="3px">
+                <ShowHintButton onClick={showHintsModal} />
+              </Box>
+            )}
             {getDialogTree() !== null && (
               <Box ml="17px" my="auto" mt="3px">
                 <ShowDialogButton onClick={() => setDialogVisible(true)} />

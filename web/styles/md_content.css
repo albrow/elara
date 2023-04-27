@@ -100,8 +100,12 @@
 
 .md-content ul,
 .md-content ol {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   padding-left: 1.5rem;
+}
+.md-content ul li,
+.md-content ol li {
+  margin-bottom: 0.3rem;
 }
 
 .md-content.hover-doc h1,

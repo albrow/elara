@@ -15,7 +15,6 @@ import { SaveDataProvider } from "./contexts/save_data";
 import { ShortsModalProvider } from "./contexts/shorts_modal";
 
 import { ErrorModalProvider } from "./contexts/error_modal";
-import { HintsModalProvider } from "./contexts/hints_modal";
 
 const elaraTheme = extendTheme({
   fonts: {
@@ -40,6 +39,7 @@ const elaraTheme = extendTheme({
   // can be synchrounous and not worry about waiting for Wasm to load.
   const Root = (await import("./routes/root")).default;
   const { ScenesProvider } = await import("./contexts/scenes");
+  const { HintsModalProvider } = await import("./contexts/hints_modal");
 
   const routes: Route[] = [
     {
