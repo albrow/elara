@@ -23,6 +23,7 @@ export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
 // Some CSS properties need to be manually kept in sync with these values.
 // In such a case, there should be a comment above the CSS property explaining it.
 //
+export const HINTS_MODAL_Z_INDEX = 1200;
 export const LEVEL_END_MODAL_Z_INDEX = 1200;
 export const JOURNAL_MODAL_Z_INDEX = 1200;
 export const TUTORIAL_MODAL_Z_INDEX = 1200;

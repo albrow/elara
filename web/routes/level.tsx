@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Container, Flex, Text, Box } from "@chakra-ui/react";
-
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
+
 import { FuzzyStateWithLines, Game, RunResult } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
@@ -21,6 +21,8 @@ import { useCurrScene } from "../contexts/scenes";
 import ChallengeText from "../components/level/challenge_text";
 import { useErrorModal } from "../contexts/error_modal";
 import ShowDialogButton from "../components/level/show_dialog_button";
+import ShowHintButton from "../components/level/show_hint_button";
+import { useHintsModal } from "../contexts/hints_modal";
 
 const game = Game.new();
 
@@ -30,6 +32,7 @@ export default function Level() {
   const [editorState, setEditorState] = useState<EditorState>("editing");
   const [showErrorModal, _hidErrorModal, setErrorModalOnClose] =
     useErrorModal();
+  const [showHintsModal] = useHintsModal();
 
   const currLevel = useCallback(() => {
     if (!currScene || currScene.type !== "level" || !currScene.level) {
@@ -278,7 +281,10 @@ export default function Level() {
             <Text fontSize="2xl" fontWeight="bold" mb={1}>
               Level {currScene?.levelIndex}: {currLevel().name}
             </Text>
-            {!dialogVisible && getDialogTree() !== null && (
+            <Box ml="17px" my="auto" mt="3px">
+              <ShowHintButton onClick={showHintsModal} />
+            </Box>
+            {getDialogTree() !== null && (
               <Box ml="17px" my="auto" mt="3px">
                 <ShowDialogButton onClick={() => setDialogVisible(true)} />
               </Box>

@@ -15,6 +15,7 @@ import { SaveDataProvider } from "./contexts/save_data";
 import { ShortsModalProvider } from "./contexts/shorts_modal";
 
 import { ErrorModalProvider } from "./contexts/error_modal";
+import { HintsModalProvider } from "./contexts/hints_modal";
 
 const elaraTheme = extendTheme({
   fonts: {
@@ -81,7 +82,9 @@ const elaraTheme = extendTheme({
             <ScenesProvider>
               <ShortsModalProvider>
                 <ErrorModalProvider>
-                  <Root />
+                  <HintsModalProvider>
+                    <Root />
+                  </HintsModalProvider>
                 </ErrorModalProvider>
               </ShortsModalProvider>
             </ScenesProvider>
