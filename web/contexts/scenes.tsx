@@ -101,6 +101,7 @@ const RAW_SCENES: RawScene[] = [
     ],
     [
       "Find the line of code that says `move_forward(1);`. Try changing the number `1` to a different number.",
+      "The `turn_right` function doesn't expect any inputs, so you don't need to put anything in between the parentheses. (You'll learn more about function inputs soon.)",
     ]
   ),
   journalScene("functions"),
