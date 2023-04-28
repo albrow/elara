@@ -31,7 +31,7 @@ export default function NavbarDropdown(props: NavbarDropdownProps) {
   );
 
   const clickListener = useCallback((event: MouseEvent) => {
-    if (event.target instanceof HTMLElement) {
+    if (event.target instanceof Node) {
       // If the click is outside the dropdown container, close the menu.
       if (
         dropDownContainer.current &&
