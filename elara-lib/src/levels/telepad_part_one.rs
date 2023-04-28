@@ -1,3 +1,5 @@
+use rhai::Engine;
+
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State, Telepad};
 
@@ -55,8 +57,8 @@ impl Level for TelepadPartOne {
 move_forward(3);
 say("I am facing " + get_orientation());
 
-// If the rover is facing up, turn to the right and then move forward.
-// You DON'T need to change this part.
+// If the rover is facing up, turn to the right and then move
+// forward. You DON'T need to change this part.
 if get_orientation() == "up" {
   turn_right();
   move_forward(3);
@@ -125,6 +127,26 @@ if get_orientation() == "up" {
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
+    fn challenge(&self) -> Option<&'static str> {
+        Some("Have a code length of 165 or less and do not define any new functions.")
+    }
+    fn check_challenge(
+        &self,
+        _states: &Vec<State>,
+        script: &str,
+        stats: &crate::script_runner::ScriptStats,
+    ) -> bool {
+        if stats.code_len > 165 {
+            return false;
+        }
+        // Script cannot contain the key word "fn".
+        if let Ok(script) = Engine::new().compact_script(script) {
+            let fn_regex = regex::Regex::new(r"\b(fn)\b").unwrap();
+            return !fn_regex.is_match(script.as_str());
+        }
+        // Otherwise, challenge is considered not passed.
+        false
+    }
 }
 
 #[cfg(test)]
@@ -145,7 +167,116 @@ mod tests {
         assert_eq!(result.outcome, Outcome::Continue);
 
         // Running this code should result in Outcome::Success.
-        let script = r#"move_forward(3);
+        let script = r#"
+            // This code uses the get_orientation function to figure out which
+            // way the rover is facing. You DON'T need to change this part.
+            move_forward(3);
+            say("I am facing " + get_orientation());
+            
+            // If the rover is facing up, turn to the right and then move
+            // forward. You DON'T need to change this part.
+            if get_orientation() == "up" {
+                turn_right();
+                move_forward(3);
+            }
+            
+            // Add more if statements to handle the other possible orientations.
+            // ADD YOUR CODE BELOW
+            if get_orientation() == "down" {
+            turn_left();
+                move_forward(3);
+            }
+            if get_orientation() == "left" {
+                turn_right();
+                turn_right();
+                move_forward(3);
+            }
+            if get_orientation() == "right" {
+                move_forward(3);
+            }
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+    }
+
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &TelepadPartOne {};
+
+        // This code beats the objective but should not pass the challenge.
+        let script = r#"
+            // This code uses the get_orientation function to figure out which
+            // way the rover is facing. You DON'T need to change this part.
+            move_forward(3);
+            
+            // If the rover is facing up, turn to the right and then move
+            // forward. You DON'T need to change this part.
+            if get_orientation() == "up" {
+                turn_right();
+                move_forward(3);
+            }
+            
+            // Add more if statements to handle the other possible orientations.
+            // ADD YOUR CODE BELOW
+            if get_orientation() == "down" {
+                turn_left();
+                move_forward(3);
+            }
+            if get_orientation() == "left" {
+                turn_right();
+                turn_right();
+                move_forward(3);
+            }
+            if get_orientation() == "right" {
+                move_forward(3);
+            }
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        // This code meets the code length requirement but should not pass
+        // the challenge because it defines a new function.
+        let script = r#"
+            fn f() {
+                move_forward(3);
+            }
+            fn r() {
+                turn_right();
+            }
+            f();
+            let x = get_orientation();
+            if x == "up" {
+                r();
+                f();
+            }
+            if x == "down" {
+                r();
+                r();
+                r();
+                f();
+            }
+            if x == "left" {
+                r();
+                r();
+                f();
+            }
+            f();
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        // This code should pass the challenge.
+        let script = r#"
+            move_forward(3);
             let facing = get_orientation();
             if facing == "up" {
                 turn_right();
@@ -154,8 +285,8 @@ mod tests {
                 turn_left();
             }
             if facing == "left" {
-                turn_right();
-                turn_right();
+                turn_left();
+                turn_left();
             }
             move_forward(3);
         "#;
@@ -163,5 +294,6 @@ mod tests {
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
     }
 }
