@@ -67,7 +67,7 @@ move_forward(5);
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::constants::ERR_DESTROYED_BY_BUG;
+    use crate::constants::ERR_DESTROYED_BY_ENEMY;
     use crate::levels::Outcome;
 
     #[test]
@@ -76,14 +76,14 @@ mod tests {
         const LEVEL: &'static dyn Level = &EnemiesPartOne {};
 
         // Running the initial code should result in Outcome::Failure due to
-        // being destroyed by a bug.
+        // being destroyed by the malfunctioning rover.
         let script = LEVEL.initial_code();
         let result = game
             .run_player_script_internal(script.to_string(), LEVEL)
             .unwrap();
         assert_eq!(
             result.outcome,
-            Outcome::Failure(String::from(ERR_DESTROYED_BY_BUG))
+            Outcome::Failure(String::from(ERR_DESTROYED_BY_ENEMY))
         );
 
         // Running this code should result in Outcome::Success.

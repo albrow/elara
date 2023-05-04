@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { Box } from "@chakra-ui/react";
 import { Offset } from "../../lib/utils";
-import { BUG_Z_INDEX, TILE_SIZE } from "../../lib/constants";
+import { ENEMY_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 import groverUpUrl from "../../images/grover_up.png";
 import groverDownUrl from "../../images/grover_down.png";
 import groverLeftUrl from "../../images/grover_left.png";
@@ -57,7 +57,7 @@ export default function Enemy(props: EnemyProps) {
         top={props.offset.top}
         w={`${TILE_SIZE}px`}
         h={`${TILE_SIZE}px`}
-        zIndex={BUG_Z_INDEX}
+        zIndex={ENEMY_Z_INDEX}
         style={animation.style}
       >
         <div
@@ -66,7 +66,7 @@ export default function Enemy(props: EnemyProps) {
             width: `${TILE_SIZE - 2}px`,
             height: `${TILE_SIZE - 2}px`,
             marginTop: "1px",
-            zIndex: BUG_Z_INDEX,
+            zIndex: ENEMY_Z_INDEX,
           }}
         >
           <img
@@ -87,7 +87,7 @@ export default function Enemy(props: EnemyProps) {
               left: `${TILE_SIZE * 0.15}px`,
               width: `${TILE_SIZE * 0.7}px`,
               height: `${TILE_SIZE * 0.7}px`,
-              zIndex: BUG_Z_INDEX + 1,
+              zIndex: ENEMY_Z_INDEX + 1,
               filter:
                 "drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.6))  saturate(200%) brightness(150%)",
             }}

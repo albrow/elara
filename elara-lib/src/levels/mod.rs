@@ -24,7 +24,7 @@ mod variables_intro;
 use std::collections::HashMap;
 
 use crate::actors::Bounds;
-use crate::constants::{ERR_DESTROYED_BY_BUG, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
+use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, Orientation, Telepad};
 use crate::simulation::{
@@ -288,7 +288,7 @@ pub fn std_check_win(state: &State) -> Outcome {
     } else if state.player.fuel == 0 {
         Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
     } else if is_destroyed_by_enemy(state) {
-        Outcome::Failure(ERR_DESTROYED_BY_BUG.to_string())
+        Outcome::Failure(ERR_DESTROYED_BY_ENEMY.to_string())
     } else {
         Outcome::Continue
     }

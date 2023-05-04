@@ -2,7 +2,6 @@ import { Text } from "@chakra-ui/react";
 import flagImageUrl from "../../images/flag.png";
 import groverDownUrl from "../../images/grover_down.png";
 import fuelImgUrl from "../../images/fuel.png";
-import bugImgUrl from "../../images/bug.png";
 import lockedImgUrl from "../../images/locked.png";
 import tvImgUrl from "../../images/tv.png";
 import MiniSprite from "./mini_sprite";
@@ -15,7 +14,6 @@ const imgUrlMappping = {
   "{robot}": groverDownUrl,
   "{goal}": flagImageUrl,
   "{fuel}": fuelImgUrl,
-  "{bug}": bugImgUrl,
   "{gate}": lockedImgUrl,
   "{terminal}": tvImgUrl,
 };
