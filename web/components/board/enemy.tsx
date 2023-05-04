@@ -1,11 +1,14 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
+import { Box } from "@chakra-ui/react";
 import { Offset } from "../../lib/utils";
-import { TILE_SIZE, BUG_Z_INDEX, CSS_ANIM_DURATION } from "../../lib/constants";
+import { BUG_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 import groverUpUrl from "../../images/grover_up.png";
 import groverDownUrl from "../../images/grover_down.png";
 import groverLeftUrl from "../../images/grover_left.png";
 import groverRightUrl from "../../images/grover_right.png";
+import lightningEffectUrl from "../../images/lightning.gif";
 import { TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
+import { getSpriteAnimations } from "./anim_utils";
 
 interface EnemyProps {
   offset: Offset;
@@ -19,20 +22,16 @@ interface EnemyProps {
 }
 
 export default function Enemy(props: EnemyProps) {
-  const getAnimationStyles = useCallback(() => {
-    if (!props.enableAnimations || props.animState === "idle") {
-      return { transition: "none" };
-    }
-    if (props.animState === "teleporting") {
-      // TODO(albrow): Handle teleportation.
-      // return {
-      //   animation: `${CSS_ANIM_DURATION}s ease-in-out teleport`,
-      // };
-    }
-    return {
-      transition: `left ${CSS_ANIM_DURATION}s 0.1s, top ${CSS_ANIM_DURATION}s 0.1s`,
-    };
-  }, [props.animState, props.enableAnimations]);
+  const animation = useMemo(
+    () =>
+      getSpriteAnimations(
+        props.enableAnimations,
+        props.animState,
+        props.animData,
+        0.1
+      ),
+    [props.animData, props.animState, props.enableAnimations]
+  );
 
   const getRobotImgUrl = useCallback(() => {
     switch (props.facing) {
@@ -50,20 +49,51 @@ export default function Enemy(props: EnemyProps) {
   }, [props.facing]);
 
   return (
-    <img
-      alt="bug"
-      className="bug sprite"
-      src={getRobotImgUrl()}
-      style={{
-        ...getAnimationStyles(),
-        width: `${TILE_SIZE - 1}px`,
-        height: `${TILE_SIZE - 1}px`,
-        zIndex: BUG_Z_INDEX,
-        left: props.offset.left,
-        top: props.offset.top,
-        filter:
-          "drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3)) hue-rotate(180deg) brightness(85%) contrast(150%) saturate(200%)",
-      }}
-    />
+    <>
+      {animation.definitions}
+      <Box
+        position="absolute"
+        left={props.offset.left}
+        top={props.offset.top}
+        w={`${TILE_SIZE}px`}
+        h={`${TILE_SIZE}px`}
+        zIndex={BUG_Z_INDEX}
+        style={animation.style}
+      >
+        <div
+          className="enemy sprite"
+          style={{
+            width: `${TILE_SIZE - 2}px`,
+            height: `${TILE_SIZE - 2}px`,
+            marginTop: "1px",
+            zIndex: BUG_Z_INDEX,
+          }}
+        >
+          <img
+            alt="enemy"
+            className="enemy sprite"
+            src={getRobotImgUrl()}
+            style={{
+              filter:
+                "drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3)) hue-rotate(180deg) brightness(85%) contrast(150%) saturate(200%)",
+            }}
+          />
+          <img
+            src={lightningEffectUrl}
+            alt="lightning effect"
+            style={{
+              position: "relative",
+              top: `${TILE_SIZE * 0.15}px`,
+              left: `${TILE_SIZE * 0.15}px`,
+              width: `${TILE_SIZE * 0.7}px`,
+              height: `${TILE_SIZE * 0.7}px`,
+              zIndex: BUG_Z_INDEX + 1,
+              filter:
+                "drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.6))  saturate(200%) brightness(150%)",
+            }}
+          />
+        </div>
+      </Box>
+    </>
   );
 }
