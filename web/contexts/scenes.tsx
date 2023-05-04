@@ -243,6 +243,7 @@ const RAW_SCENES: RawScene[] = [
     ]
   ),
   levelScene("enemies_part_one"),
+  levelScene("enemies_with_telepad"),
 ];
 
 const getLevelIndexFromScene = (

@@ -1,4 +1,4 @@
-use crate::simulation::{Goal, Obstacle, Player, State, Telepad};
+use crate::simulation::{Enemy, Goal, Obstacle, Player, State, Telepad};
 
 /// A convenience struct for building a State via chainable
 /// methods. This is useful for tests and for configuring initial
@@ -29,6 +29,11 @@ impl StateMaker {
 
     pub fn with_goal(&mut self, goal: Option<Goal>) -> &mut Self {
         self.state.goal = goal;
+        self
+    }
+
+    pub fn with_enemies(&mut self, enemies: Vec<Enemy>) -> &mut Self {
+        self.state.enemies = enemies;
         self
     }
 
