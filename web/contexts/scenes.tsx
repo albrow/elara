@@ -242,6 +242,7 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
+  levelScene("enemies_part_one"),
 ];
 
 const getLevelIndexFromScene = (

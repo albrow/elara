@@ -131,8 +131,11 @@ export default function Board(props: BoardProps) {
           // eslint-disable-next-line react/no-array-index-key
           key={i}
           offset={posToOffset(enemy.pos)}
-          fuzzy={enemy.fuzzy}
+          facing={enemy.facing}
+          enableAnimations={props.enableAnimations}
           animState={enemy.anim_state}
+          animData={enemy.anim_data}
+          fuzzy={enemy.fuzzy}
         />
       ))}
       {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => (

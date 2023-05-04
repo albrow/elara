@@ -8,13 +8,13 @@ use crate::simulation::{
     TeleAnimData, Telepad,
 };
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum MoveDirection {
     Forward,
     Backward,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum TurnDirection {
     Right,
     Left,
@@ -196,29 +196,101 @@ pub struct EnemyBugActor {
     bounds: Bounds,
 }
 
+#[derive(Debug)]
+enum EnemyBugAction {
+    Move(MoveDirection),
+    Turn(TurnDirection),
+}
+
 impl EnemyBugActor {
     pub fn new(index: usize, bounds: Bounds) -> EnemyBugActor {
         EnemyBugActor { index, bounds }
     }
 
-    pub fn closer_pos_x(&self, enemy_pos: &Pos, player_pos: &Pos) -> Pos {
-        if player_pos.x > enemy_pos.x {
-            Pos::new(enemy_pos.x + 1, enemy_pos.y)
-        } else if player_pos.x < enemy_pos.x {
-            Pos::new(enemy_pos.x - 1, enemy_pos.y)
-        } else {
-            enemy_pos.clone()
-        }
+    pub fn can_move(&self, state: &State, direction: Orientation) -> bool {
+        let enemy = &state.enemies[self.index];
+        let desired_pos = match direction {
+            Orientation::Up => Pos::new(enemy.pos.x, enemy.pos.y - 1),
+            Orientation::Down => Pos::new(enemy.pos.x, enemy.pos.y + 1),
+            Orientation::Left => Pos::new(enemy.pos.x - 1, enemy.pos.y),
+            Orientation::Right => Pos::new(enemy.pos.x + 1, enemy.pos.y),
+        };
+        !is_obstacle_at(&state, &desired_pos)
+            && !is_outside_bounds(&self.bounds, &desired_pos)
+            && !is_closed_gate_at(&state, &desired_pos)
     }
 
-    pub fn closer_pos_y(&self, enemy_pos: &Pos, player_pos: &Pos) -> Pos {
-        if player_pos.y > enemy_pos.y {
-            Pos::new(enemy_pos.x, enemy_pos.y + 1)
-        } else if player_pos.y < enemy_pos.y {
-            Pos::new(enemy_pos.x, enemy_pos.y - 1)
+    fn get_next_action(&self, state: &State) -> EnemyBugAction {
+        let player_pos = &state.player.pos;
+        let enemy = &state.enemies[self.index];
+
+        // Prioritize moving in the axis in which the player is the furthest away.
+        let x_dist = player_pos.x.abs_diff(enemy.pos.x);
+        let y_dist = player_pos.y.abs_diff(enemy.pos.y);
+        if y_dist >= x_dist {
+            if player_pos.y < enemy.pos.y {
+                if self.can_move(state, Orientation::Up) {
+                    if enemy.facing != Orientation::Up {
+                        return EnemyBugAction::Turn(TurnDirection::Left);
+                    }
+                    return EnemyBugAction::Move(MoveDirection::Forward);
+                }
+            } else if player_pos.y > enemy.pos.y {
+                if self.can_move(state, Orientation::Down) {
+                    if enemy.facing != Orientation::Down {
+                        return EnemyBugAction::Turn(TurnDirection::Left);
+                    }
+                    return EnemyBugAction::Move(MoveDirection::Forward);
+                }
+            }
+            if player_pos.x < enemy.pos.x {
+                if self.can_move(state, Orientation::Left) {
+                    if enemy.facing != Orientation::Left {
+                        return EnemyBugAction::Turn(TurnDirection::Left);
+                    }
+                    return EnemyBugAction::Move(MoveDirection::Forward);
+                }
+            } else if player_pos.x > enemy.pos.x {
+                if self.can_move(state, Orientation::Right) {
+                    if enemy.facing != Orientation::Right {
+                        return EnemyBugAction::Turn(TurnDirection::Left);
+                    }
+                    return EnemyBugAction::Move(MoveDirection::Forward);
+                }
+            }
         } else {
-            enemy_pos.clone()
+            if player_pos.x < enemy.pos.x {
+                if self.can_move(state, Orientation::Left) {
+                    if enemy.facing != Orientation::Left {
+                        return EnemyBugAction::Turn(TurnDirection::Left);
+                    }
+                    return EnemyBugAction::Move(MoveDirection::Forward);
+                }
+            } else if player_pos.x > enemy.pos.x {
+                if self.can_move(state, Orientation::Right) {
+                    if enemy.facing != Orientation::Right {
+                        return EnemyBugAction::Turn(TurnDirection::Left);
+                    }
+                    return EnemyBugAction::Move(MoveDirection::Forward);
+                }
+            }
+            if player_pos.y < enemy.pos.y {
+                if self.can_move(state, Orientation::Up) {
+                    if enemy.facing != Orientation::Up {
+                        return EnemyBugAction::Turn(TurnDirection::Left);
+                    }
+                    return EnemyBugAction::Move(MoveDirection::Forward);
+                }
+            } else if player_pos.y > enemy.pos.y {
+                if self.can_move(state, Orientation::Down) {
+                    if enemy.facing != Orientation::Down {
+                        return EnemyBugAction::Turn(TurnDirection::Left);
+                    }
+                    return EnemyBugAction::Move(MoveDirection::Forward);
+                }
+            }
         }
+        return EnemyBugAction::Turn(TurnDirection::Left);
     }
 }
 
@@ -229,32 +301,86 @@ impl Actor for EnemyBugActor {
         // Default to Idle state.
         state.enemies[self.index].anim_state = EnemyAnimState::Idle;
 
-        let player_pos = &state.player.pos;
-        let enemy_pos = &state.enemies[self.index].pos;
+        // Update own state based on desired action.
+        let action = self.get_next_action(&state);
 
-        // Create an array of possible new positions for the enemy.
-        // Prioritize moving in the axis in which the player is the furthest away.
-        let x_dist = player_pos.x.abs_diff(enemy_pos.x);
-        let y_dist = player_pos.y.abs_diff(enemy_pos.y);
-        let mut possible_positions = vec![];
-        if x_dist >= y_dist {
-            possible_positions.push(self.closer_pos_x(enemy_pos, player_pos));
-            possible_positions.push(self.closer_pos_y(enemy_pos, player_pos));
-        } else {
-            possible_positions.push(self.closer_pos_y(enemy_pos, player_pos));
-            possible_positions.push(self.closer_pos_x(enemy_pos, player_pos));
-        }
-
-        // Iterate through possible positions and apply the first one which is unobstructed.
-        for pos in possible_positions {
-            if !is_obstacle_at(&state, &pos)
-                && !is_outside_bounds(&self.bounds, &pos)
-                && !is_closed_gate_at(&state, &pos)
-            {
-                state.enemies[self.index].pos = pos;
-                state.enemies[self.index].anim_state = EnemyAnimState::Moving;
-                break;
+        match action {
+            EnemyBugAction::Move(direction) => {
+                let desired_pos = match direction {
+                    MoveDirection::Forward => match state.enemies[self.index].facing {
+                        Orientation::Up => Pos::new(
+                            state.enemies[self.index].pos.x,
+                            state.enemies[self.index].pos.y - 1,
+                        ),
+                        Orientation::Down => Pos::new(
+                            state.enemies[self.index].pos.x,
+                            state.enemies[self.index].pos.y + 1,
+                        ),
+                        Orientation::Left => Pos::new(
+                            state.enemies[self.index].pos.x - 1,
+                            state.enemies[self.index].pos.y,
+                        ),
+                        Orientation::Right => Pos::new(
+                            state.enemies[self.index].pos.x + 1,
+                            state.enemies[self.index].pos.y,
+                        ),
+                    },
+                    MoveDirection::Backward => match state.enemies[self.index].facing {
+                        Orientation::Up => Pos::new(
+                            state.enemies[self.index].pos.x,
+                            state.enemies[self.index].pos.y + 1,
+                        ),
+                        Orientation::Down => Pos::new(
+                            state.enemies[self.index].pos.x,
+                            state.enemies[self.index].pos.y - 1,
+                        ),
+                        Orientation::Left => Pos::new(
+                            state.enemies[self.index].pos.x + 1,
+                            state.enemies[self.index].pos.y,
+                        ),
+                        Orientation::Right => Pos::new(
+                            state.enemies[self.index].pos.x - 1,
+                            state.enemies[self.index].pos.y,
+                        ),
+                    },
+                };
+                // If there is a telepad at the desired position, teleport.
+                if let Some(telepad) = get_telepad_at(&state, &desired_pos) {
+                    let anim_data = TeleAnimData {
+                        start_pos: state.enemies[self.index].pos.clone(),
+                        enter_pos: telepad.start_pos,
+                        exit_pos: telepad.end_pos.clone(),
+                    };
+                    state.enemies[self.index].pos = telepad.end_pos.clone();
+                    state.enemies[self.index].anim_state = EnemyAnimState::Teleporting(anim_data);
+                    // TODO(albrow): This will make it so that enemies always face the same direction
+                    // as players when going through a telepad. Is that what we want?
+                    state.enemies[self.index].facing = telepad.end_facing;
+                } else {
+                    state.enemies[self.index].pos = desired_pos;
+                    state.enemies[self.index].anim_state = EnemyAnimState::Moving;
+                }
             }
+            EnemyBugAction::Turn(direction) => match direction {
+                TurnDirection::Left => {
+                    state.enemies[self.index].anim_state = EnemyAnimState::Turning;
+                    state.enemies[self.index].facing = match state.enemies[self.index].facing {
+                        Orientation::Up => Orientation::Left,
+                        Orientation::Down => Orientation::Right,
+                        Orientation::Left => Orientation::Down,
+                        Orientation::Right => Orientation::Up,
+                    };
+                }
+                TurnDirection::Right => {
+                    state.enemies[self.index].anim_state = EnemyAnimState::Turning;
+                    state.enemies[self.index].facing = match state.enemies[self.index].facing {
+                        Orientation::Up => Orientation::Right,
+                        Orientation::Down => Orientation::Left,
+                        Orientation::Left => Orientation::Up,
+                        Orientation::Right => Orientation::Down,
+                    };
+                }
+            },
         }
 
         state

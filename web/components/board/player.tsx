@@ -20,7 +20,7 @@ interface PlayerProps {
   fuel: number;
   message: string;
   animState: string;
-  animData: TeleAnimData | undefined;
+  animData?: TeleAnimData;
   enableAnimations: boolean;
   facing: string;
 }
@@ -137,6 +137,7 @@ export default function Player(props: PlayerProps) {
               height: `${TILE_SIZE - 2}px`,
               marginTop: "1px",
               zIndex: PLAYER_Z_INDEX,
+              filter: "drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3))",
             }}
           >
             <img alt="rover" className="playerImage" src={getRobotImgUrl()} />

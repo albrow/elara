@@ -177,9 +177,16 @@ impl TeleAnimData {
     }
 }
 
-fn get_js_anim_data(anim_state: &PlayerAnimState) -> Option<TeleAnimData> {
+fn get_js_player_anim_data(anim_state: &PlayerAnimState) -> Option<TeleAnimData> {
     match anim_state {
         PlayerAnimState::Teleporting(data) => Some(TeleAnimData::from(data).into()),
+        _ => None,
+    }
+}
+
+fn get_js_enemy_anim_data(anim_state: &EnemyAnimState) -> Option<TeleAnimData> {
+    match anim_state {
+        EnemyAnimState::Teleporting(data) => Some(TeleAnimData::from(data).into()),
         _ => None,
     }
 }
@@ -237,7 +244,7 @@ impl FuzzyState {
                     fuel: player.fuel as i32,
                     message: player.message.clone(),
                     anim_state: anim_state.to_string(),
-                    anim_data: get_js_anim_data(&player.anim_state),
+                    anim_data: get_js_player_anim_data(&player.anim_state),
                     facing: facing.to_string(),
                     fuzzy: fuzzy_player.fuzzy,
                 }),
@@ -281,6 +288,14 @@ impl FuzzyState {
             let anim_state = match enemy.anim_state {
                 EnemyAnimState::Idle => "idle",
                 EnemyAnimState::Moving => "moving",
+                EnemyAnimState::Turning => "turning",
+                EnemyAnimState::Teleporting(_) => "teleporting",
+            };
+            let facing = match enemy.facing {
+                Orientation::Up => "up",
+                Orientation::Down => "down",
+                Orientation::Left => "left",
+                Orientation::Right => "right",
             };
             enemies.set(
                 i as u32,
@@ -290,6 +305,8 @@ impl FuzzyState {
                         y: enemy.pos.y as i32,
                     },
                     anim_state: anim_state.to_string(),
+                    anim_data: get_js_enemy_anim_data(&enemy.anim_state),
+                    facing: facing.to_string(),
                     fuzzy: fuzzy_enemy.fuzzy,
                 }),
             );
@@ -426,7 +443,9 @@ pub struct FuzzyFuelSpot {
 #[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyEnemy {
     pub pos: Pos,
-    pub anim_state: String, // EnemyAnimState
+    pub anim_state: String,              // EnemyAnimState
+    pub anim_data: Option<TeleAnimData>, // TeleAnimData | (other animation data types) | undefined
+    pub facing: String,                  // Orientation
     pub fuzzy: bool,
 }
 

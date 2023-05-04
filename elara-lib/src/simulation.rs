@@ -253,22 +253,25 @@ pub struct Goal {
 pub enum EnemyAnimState {
     Idle,
     Moving,
-    // TODO(albrow): Add more states for attacking, etc.
+    Turning,
+    Teleporting(TeleAnimData),
 }
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct Enemy {
     pub pos: Pos,
+    pub facing: Orientation,
     pub anim_state: EnemyAnimState,
 }
 
 impl Enemy {
-    pub fn new(x: u32, y: u32) -> Enemy {
+    pub fn new(x: u32, y: u32, facing: Orientation) -> Enemy {
         Enemy {
             pos: Pos {
                 x: x as i32,
                 y: y as i32,
             },
+            facing,
             anim_state: EnemyAnimState::Idle,
         }
     }
