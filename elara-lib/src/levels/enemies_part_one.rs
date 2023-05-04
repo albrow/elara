@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::actors::{Bounds, EnemyBugActor};
+use crate::actors::{Bounds, EvilRoverActor};
 use crate::constants::{HEIGHT, WIDTH};
 use crate::simulation::{Actor, Enemy, Goal, Obstacle, Orientation, Player, Pos, State};
 
@@ -49,7 +49,7 @@ move_forward(5);
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
-        vec![Box::new(EnemyBugActor::new(
+        vec![Box::new(EvilRoverActor::new(
             0,
             Bounds {
                 min_x: 0,
