@@ -39,6 +39,38 @@ impl EvilRoverActor {
             && !is_closed_gate_at(&state, &desired_pos)
     }
 
+    /// Returns an action to either move forward or turn to face the desired
+    /// direction.
+    fn move_or_turn(
+        &self,
+        curr_orientation: Orientation,
+        desired_direction: Orientation,
+    ) -> EvilRoverAction {
+        if curr_orientation == desired_direction {
+            return EvilRoverAction::Move(MoveDirection::Forward);
+        }
+        let left_direction = match curr_orientation {
+            Orientation::Up => Orientation::Left,
+            Orientation::Down => Orientation::Right,
+            Orientation::Left => Orientation::Down,
+            Orientation::Right => Orientation::Up,
+        };
+        let right_direction = match curr_orientation {
+            Orientation::Up => Orientation::Right,
+            Orientation::Down => Orientation::Left,
+            Orientation::Left => Orientation::Up,
+            Orientation::Right => Orientation::Down,
+        };
+        if desired_direction == left_direction {
+            return EvilRoverAction::Turn(TurnDirection::Left);
+        }
+        if desired_direction == right_direction {
+            return EvilRoverAction::Turn(TurnDirection::Right);
+        }
+        // If we get here, we're facing the opposite direction.
+        return EvilRoverAction::Turn(TurnDirection::Left);
+    }
+
     fn get_next_action(&self, state: &State) -> EvilRoverAction {
         let player_pos = &state.player.pos;
         let enemy = &state.enemies[self.index];
@@ -49,63 +81,39 @@ impl EvilRoverActor {
         if y_dist >= x_dist {
             if player_pos.y < enemy.pos.y {
                 if self.can_move(state, Orientation::Up) {
-                    if enemy.facing != Orientation::Up {
-                        return EvilRoverAction::Turn(TurnDirection::Left);
-                    }
-                    return EvilRoverAction::Move(MoveDirection::Forward);
+                    return self.move_or_turn(enemy.facing, Orientation::Up);
                 }
             } else if player_pos.y > enemy.pos.y {
                 if self.can_move(state, Orientation::Down) {
-                    if enemy.facing != Orientation::Down {
-                        return EvilRoverAction::Turn(TurnDirection::Left);
-                    }
-                    return EvilRoverAction::Move(MoveDirection::Forward);
+                    return self.move_or_turn(enemy.facing, Orientation::Down);
                 }
             }
             if player_pos.x < enemy.pos.x {
                 if self.can_move(state, Orientation::Left) {
-                    if enemy.facing != Orientation::Left {
-                        return EvilRoverAction::Turn(TurnDirection::Left);
-                    }
-                    return EvilRoverAction::Move(MoveDirection::Forward);
+                    return self.move_or_turn(enemy.facing, Orientation::Left);
                 }
             } else if player_pos.x > enemy.pos.x {
                 if self.can_move(state, Orientation::Right) {
-                    if enemy.facing != Orientation::Right {
-                        return EvilRoverAction::Turn(TurnDirection::Left);
-                    }
-                    return EvilRoverAction::Move(MoveDirection::Forward);
+                    return self.move_or_turn(enemy.facing, Orientation::Right);
                 }
             }
         } else {
             if player_pos.x < enemy.pos.x {
                 if self.can_move(state, Orientation::Left) {
-                    if enemy.facing != Orientation::Left {
-                        return EvilRoverAction::Turn(TurnDirection::Left);
-                    }
-                    return EvilRoverAction::Move(MoveDirection::Forward);
+                    return self.move_or_turn(enemy.facing, Orientation::Left);
                 }
             } else if player_pos.x > enemy.pos.x {
                 if self.can_move(state, Orientation::Right) {
-                    if enemy.facing != Orientation::Right {
-                        return EvilRoverAction::Turn(TurnDirection::Left);
-                    }
-                    return EvilRoverAction::Move(MoveDirection::Forward);
+                    return self.move_or_turn(enemy.facing, Orientation::Right);
                 }
             }
             if player_pos.y < enemy.pos.y {
                 if self.can_move(state, Orientation::Up) {
-                    if enemy.facing != Orientation::Up {
-                        return EvilRoverAction::Turn(TurnDirection::Left);
-                    }
-                    return EvilRoverAction::Move(MoveDirection::Forward);
+                    return self.move_or_turn(enemy.facing, Orientation::Up);
                 }
             } else if player_pos.y > enemy.pos.y {
                 if self.can_move(state, Orientation::Down) {
-                    if enemy.facing != Orientation::Down {
-                        return EvilRoverAction::Turn(TurnDirection::Left);
-                    }
-                    return EvilRoverAction::Move(MoveDirection::Forward);
+                    return self.move_or_turn(enemy.facing, Orientation::Down);
                 }
             }
         }

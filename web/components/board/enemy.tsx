@@ -75,7 +75,7 @@ export default function Enemy(props: EnemyProps) {
             src={getRobotImgUrl()}
             style={{
               filter:
-                "drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3)) hue-rotate(180deg) brightness(85%) contrast(150%) saturate(200%)",
+                "drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3)) hue-rotate(180deg) brightness(80%) sepia(20%) contrast(120%) saturate(200%)",
             }}
           />
           <img
@@ -89,7 +89,7 @@ export default function Enemy(props: EnemyProps) {
               height: `${TILE_SIZE * 0.7}px`,
               zIndex: ENEMY_Z_INDEX + 1,
               filter:
-                "drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.6))  saturate(200%) brightness(150%)",
+                "drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.6)) saturate(200%) brightness(150%)",
             }}
           />
         </div>

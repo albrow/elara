@@ -4,6 +4,18 @@ use crate::constants::{HEIGHT, WIDTH};
 use crate::simulation::{Actor, Enemy, Goal, Obstacle, Orientation, Player, Pos, State, Telepad};
 use crate::state_maker::StateMaker;
 
+lazy_static! {
+    static ref TELEPAD_FUNCS: Vec<&'static str> = vec![
+        "move_forward",
+        "move_backward",
+        "turn_left",
+        "turn_right",
+        "say",
+        "read_data",
+        "get_orientation"
+    ];
+}
+
 #[derive(Copy, Clone)]
 pub struct EnemiesWithTelepad {}
 
@@ -17,13 +29,16 @@ impl Level for EnemiesWithTelepad {
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
     }
+    fn available_functions(&self) -> &'static Vec<&'static str> {
+        &TELEPAD_FUNCS
+    }
     fn initial_code(&self) -> &'static str {
         r"
 "
     }
     fn initial_states(&self) -> Vec<State> {
         let base_state = StateMaker::new()
-            .with_player(Player::new(0, 0, 20, Orientation::Down))
+            .with_player(Player::new(0, 0, 50, Orientation::Down))
             .with_goal(Some(Goal {
                 pos: Pos { x: 1, y: 5 },
             }))
