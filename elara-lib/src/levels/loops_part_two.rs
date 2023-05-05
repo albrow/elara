@@ -2,9 +2,13 @@ use rhai::Engine;
 
 use super::{std_check_win, Level, Outcome};
 use crate::{
+    actors::{Bounds, EvilRoverActor},
+    constants::{HEIGHT, WIDTH},
     script_runner::ScriptStats,
-    simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State},
+    simulation::{Actor, Enemy, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State},
 };
+
+// TODO(albrow): Add dialog explaining the malfunctioning rover.
 
 #[derive(Copy, Clone)]
 pub struct LoopsPartTwo {}
@@ -66,10 +70,19 @@ impl Level for LoopsPartTwo {
             Obstacle::new(11, 4),
             Obstacle::new(11, 5),
         ];
+        state.enemies = vec![Enemy::new(12, 2, Orientation::Left)];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
-        vec![]
+        vec![Box::new(EvilRoverActor::new(
+            0,
+            Bounds {
+                min_x: 0,
+                max_x: (WIDTH - 1) as i32,
+                min_y: 0,
+                max_y: (HEIGHT - 1) as i32,
+            },
+        ))]
     }
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)

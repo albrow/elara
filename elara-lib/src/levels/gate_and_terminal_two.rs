@@ -1,7 +1,13 @@
 use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
-use crate::simulation::{
-    Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
+use crate::{
+    actors::{Bounds, EvilRoverActor},
+    constants::{HEIGHT, WIDTH},
+    simulation::{
+        Actor, DataTerminal, Enemy, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
+    },
 };
+
+// TODO(albrow): Add dialog explaining the malfunctioning rover.
 
 #[derive(Copy, Clone)]
 pub struct GateAndTerminalPartTwo {}
@@ -37,6 +43,11 @@ impl Level for GateAndTerminalPartTwo {
             Obstacle::new(8, 0),
             Obstacle::new(8, 1),
             Obstacle::new(8, 2),
+            Obstacle::new(8, 3),
+            Obstacle::new(8, 4),
+            Obstacle::new(8, 5),
+            Obstacle::new(8, 6),
+            Obstacle::new(8, 7),
             Obstacle::new(9, 0),
             Obstacle::new(10, 2),
             Obstacle::new(11, 0),
@@ -44,10 +55,19 @@ impl Level for GateAndTerminalPartTwo {
         ];
         state.password_gates = vec![PasswordGate::new(9, 2, "hopper".into(), false)];
         state.data_terminals = vec![DataTerminal::new(10, 0, "hopper".into())];
+        state.enemies = vec![Enemy::new(5, 0, Orientation::Right)];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
-        vec![]
+        vec![Box::new(EvilRoverActor::new(
+            0,
+            Bounds {
+                min_x: 0,
+                max_x: (WIDTH - 1) as i32,
+                min_y: 0,
+                max_y: (HEIGHT - 1) as i32,
+            },
+        ))]
     }
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)

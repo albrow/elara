@@ -4,6 +4,8 @@ use crate::constants::{HEIGHT, WIDTH};
 use crate::simulation::{Actor, Enemy, Goal, Obstacle, Orientation, Player, Pos, State, Telepad};
 use crate::state_maker::StateMaker;
 
+// TODO(albrow): Flesh this out into an actual level.
+
 lazy_static! {
     static ref TELEPAD_FUNCS: Vec<&'static str> = vec![
         "move_forward",

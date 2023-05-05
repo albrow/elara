@@ -1,9 +1,6 @@
 use crate::simulation::{Actor, EnemyAnimState, Orientation, Pos, State, TeleAnimData};
 
-use super::{
-    get_telepad_at, is_closed_gate_at, is_obstacle_at, is_outside_bounds, Bounds, MoveDirection,
-    TurnDirection,
-};
+use super::{can_move_to, get_telepad_at, Bounds, MoveDirection, TurnDirection};
 
 /// An actor for "malfunctioning" or "evil" rover enemies which always tries to chase
 /// the player down. It follows the same basic movement rules as the player but doesn't
@@ -15,7 +12,7 @@ pub struct EvilRoverActor {
     bounds: Bounds,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum EvilRoverAction {
     Move(MoveDirection),
     Turn(TurnDirection),
@@ -24,19 +21,6 @@ enum EvilRoverAction {
 impl EvilRoverActor {
     pub fn new(index: usize, bounds: Bounds) -> EvilRoverActor {
         EvilRoverActor { index, bounds }
-    }
-
-    pub fn can_move(&self, state: &State, direction: Orientation) -> bool {
-        let enemy = &state.enemies[self.index];
-        let desired_pos = match direction {
-            Orientation::Up => Pos::new(enemy.pos.x, enemy.pos.y - 1),
-            Orientation::Down => Pos::new(enemy.pos.x, enemy.pos.y + 1),
-            Orientation::Left => Pos::new(enemy.pos.x - 1, enemy.pos.y),
-            Orientation::Right => Pos::new(enemy.pos.x + 1, enemy.pos.y),
-        };
-        !is_obstacle_at(&state, &desired_pos)
-            && !is_outside_bounds(&self.bounds, &desired_pos)
-            && !is_closed_gate_at(&state, &desired_pos)
     }
 
     /// Returns an action to either move forward or turn to face the desired
@@ -80,39 +64,39 @@ impl EvilRoverActor {
         let y_dist = player_pos.y.abs_diff(enemy.pos.y);
         if y_dist >= x_dist {
             if player_pos.y < enemy.pos.y {
-                if self.can_move(state, Orientation::Up) {
+                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x, enemy.pos.y - 1)) {
                     return self.move_or_turn(enemy.facing, Orientation::Up);
                 }
             } else if player_pos.y > enemy.pos.y {
-                if self.can_move(state, Orientation::Down) {
+                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x, enemy.pos.y + 1)) {
                     return self.move_or_turn(enemy.facing, Orientation::Down);
                 }
             }
             if player_pos.x < enemy.pos.x {
-                if self.can_move(state, Orientation::Left) {
+                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x - 1, enemy.pos.y)) {
                     return self.move_or_turn(enemy.facing, Orientation::Left);
                 }
             } else if player_pos.x > enemy.pos.x {
-                if self.can_move(state, Orientation::Right) {
+                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x + 1, enemy.pos.y)) {
                     return self.move_or_turn(enemy.facing, Orientation::Right);
                 }
             }
         } else {
             if player_pos.x < enemy.pos.x {
-                if self.can_move(state, Orientation::Left) {
+                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x - 1, enemy.pos.y)) {
                     return self.move_or_turn(enemy.facing, Orientation::Left);
                 }
             } else if player_pos.x > enemy.pos.x {
-                if self.can_move(state, Orientation::Right) {
+                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x + 1, enemy.pos.y)) {
                     return self.move_or_turn(enemy.facing, Orientation::Right);
                 }
             }
             if player_pos.y < enemy.pos.y {
-                if self.can_move(state, Orientation::Up) {
+                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x, enemy.pos.y - 1)) {
                     return self.move_or_turn(enemy.facing, Orientation::Up);
                 }
             } else if player_pos.y > enemy.pos.y {
-                if self.can_move(state, Orientation::Down) {
+                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x, enemy.pos.y + 1)) {
                     return self.move_or_turn(enemy.facing, Orientation::Down);
                 }
             }
@@ -211,5 +195,118 @@ impl Actor for EvilRoverActor {
         }
 
         state
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::{
+        constants::{HEIGHT, WIDTH},
+        simulation::{Enemy, Player},
+        state_maker::StateMaker,
+    };
+
+    #[test]
+    fn get_next_action() {
+        let mut base_state = StateMaker::new()
+            .with_player(Player::new(3, 3, 0, Orientation::Up))
+            .with_enemies(vec![Enemy::new(3, 4, Orientation::Up)])
+            .build();
+        let actor = EvilRoverActor::new(
+            0,
+            Bounds {
+                min_x: 0,
+                max_x: WIDTH as i32,
+                min_y: 0,
+                max_y: HEIGHT as i32,
+            },
+        );
+
+        struct TestCase {
+            enemy_pos: Pos,
+            enemy_facing: Orientation,
+            expected_action: EvilRoverAction,
+        }
+        let test_cases = vec![
+            TestCase {
+                // One space below player, facing up.
+                enemy_pos: Pos::new(3, 4),
+                enemy_facing: Orientation::Up,
+                expected_action: EvilRoverAction::Move(MoveDirection::Forward),
+            },
+            TestCase {
+                // One space below player, facing right.
+                enemy_pos: Pos::new(3, 4),
+                enemy_facing: Orientation::Right,
+                expected_action: EvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                // One space below player, facing left.
+                enemy_pos: Pos::new(3, 4),
+                enemy_facing: Orientation::Left,
+                expected_action: EvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                // One space above player, facing down.
+                enemy_pos: Pos::new(3, 2),
+                enemy_facing: Orientation::Down,
+                expected_action: EvilRoverAction::Move(MoveDirection::Forward),
+            },
+            TestCase {
+                // One space above player, facing right.
+                enemy_pos: Pos::new(3, 2),
+                enemy_facing: Orientation::Right,
+                expected_action: EvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                // One space above player, facing left.
+                enemy_pos: Pos::new(3, 2),
+                enemy_facing: Orientation::Left,
+                expected_action: EvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                // One space to the left of player, facing right.
+                enemy_pos: Pos::new(2, 3),
+                enemy_facing: Orientation::Right,
+                expected_action: EvilRoverAction::Move(MoveDirection::Forward),
+            },
+            TestCase {
+                // One space to the left of player, facing up.
+                enemy_pos: Pos::new(2, 3),
+                enemy_facing: Orientation::Up,
+                expected_action: EvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                // One space to the left of player, facing down.
+                enemy_pos: Pos::new(2, 3),
+                enemy_facing: Orientation::Down,
+                expected_action: EvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                // One space to the right of player, facing left.
+                enemy_pos: Pos::new(4, 3),
+                enemy_facing: Orientation::Left,
+                expected_action: EvilRoverAction::Move(MoveDirection::Forward),
+            },
+            TestCase {
+                // One space to the right of player, facing up.
+                enemy_pos: Pos::new(4, 3),
+                enemy_facing: Orientation::Up,
+                expected_action: EvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                // One space to the right of player, facing down.
+                enemy_pos: Pos::new(4, 3),
+                enemy_facing: Orientation::Down,
+                expected_action: EvilRoverAction::Turn(TurnDirection::Right),
+            },
+        ];
+        for tc in test_cases {
+            base_state.enemies[0].pos = tc.enemy_pos;
+            base_state.enemies[0].facing = tc.enemy_facing;
+            let action = actor.get_next_action(&base_state);
+            assert_eq!(action, tc.expected_action);
+        }
     }
 }

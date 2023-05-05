@@ -329,7 +329,7 @@ export default function Level() {
               />
             </Box>
           </Box>
-          <Box id="board-wrapper" position="relative">
+          <Box id="board-wrapper" position="relative" overflow="hidden">
             <Board
               gameState={boardState}
               // Note: We only want to enable animations if the editor is in the "running" state.

@@ -8,8 +8,7 @@ use crate::simulation::{
 };
 
 use super::{
-    get_adjacent_gates, get_telepad_at, is_closed_gate_at, is_obstacle_at, is_outside_bounds,
-    Action, Bounds, MoveDirection, TurnDirection,
+    can_move_to, get_adjacent_gates, get_telepad_at, Action, Bounds, MoveDirection, TurnDirection,
 };
 
 pub struct PlayerChannelActor {
@@ -143,22 +142,19 @@ impl PlayerChannelActor {
                 }),
             );
         }
-        if is_obstacle_at(state, &desired_pos)
-            || is_outside_bounds(&self.bounds, &desired_pos)
-            || is_closed_gate_at(state, &desired_pos)
-        {
+        if can_move_to(state, &self.bounds, &desired_pos) {
+            (
+                desired_pos,
+                state.player.facing.clone(),
+                PlayerAnimState::Moving,
+            )
+        } else {
             // TODO(albrow): Use a different animation state to indicate that the player
             // is trying to move but can't. E.g., a bumping animation.
             (
                 state.player.pos.clone(),
                 state.player.facing.clone(),
                 PlayerAnimState::Idle,
-            )
-        } else {
-            (
-                desired_pos,
-                state.player.facing.clone(),
-                PlayerAnimState::Moving,
             )
         }
     }

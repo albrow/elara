@@ -71,6 +71,15 @@ fn is_outside_bounds(bounds: &Bounds, pos: &Pos) -> bool {
     pos.x > bounds.max_x || pos.y > bounds.max_y || pos.x < bounds.min_x || pos.y < bounds.min_y
 }
 
+/// Returns true if the given position is a valid position for an actor to move to.
+/// This applies to player and enemy actors, basically anything that moves around
+/// the board.
+fn can_move_to(state: &State, bounds: &Bounds, desired_pos: &Pos) -> bool {
+    !is_obstacle_at(state, desired_pos)
+        && !is_outside_bounds(bounds, desired_pos)
+        && !is_closed_gate_at(state, desired_pos)
+}
+
 /// Returns the index of any password gates adjacent to the given position.
 /// Returns an empty vector if there is no adjacent gate.
 fn get_adjacent_gates(state: &State, pos: &Pos) -> Vec<usize> {
