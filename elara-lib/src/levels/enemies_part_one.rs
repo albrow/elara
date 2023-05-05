@@ -21,9 +21,7 @@ impl Level for EnemiesPartOne {
 // into trouble. Can you find a different path?
 
 // CHANGE THE CODE BELOW
-move_forward(2);
-turn_left();
-move_forward(5);
+move_forward(3);
 "
     }
     fn initial_states(&self) -> Vec<State> {
