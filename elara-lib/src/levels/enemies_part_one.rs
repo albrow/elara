@@ -3,8 +3,6 @@ use crate::actors::{Bounds, EvilRoverActor};
 use crate::constants::{HEIGHT, WIDTH};
 use crate::simulation::{Actor, Enemy, Goal, Obstacle, Orientation, Player, Pos, State};
 
-// TODO(albrow): Add dialog
-
 #[derive(Copy, Clone)]
 pub struct EnemiesPartOne {}
 

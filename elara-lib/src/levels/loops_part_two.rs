@@ -8,8 +8,6 @@ use crate::{
     simulation::{Actor, Enemy, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State},
 };
 
-// TODO(albrow): Add dialog explaining the malfunctioning rover.
-
 #[derive(Copy, Clone)]
 pub struct LoopsPartTwo {}
 

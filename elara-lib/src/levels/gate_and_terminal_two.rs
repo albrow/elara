@@ -7,8 +7,6 @@ use crate::{
     },
 };
 
-// TODO(albrow): Add dialog explaining the malfunctioning rover.
-
 #[derive(Copy, Clone)]
 pub struct GateAndTerminalPartTwo {}
 

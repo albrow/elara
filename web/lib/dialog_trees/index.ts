@@ -14,6 +14,9 @@ import * as PartlyDisabledMovement from "./level_partly_disabled_movement";
 import * as ReImplementTurnRight from "./level_reimplement_turn_right";
 import * as JournalArrays from "./journal_arrays";
 import * as LevelTelepadPartOne from "./level_telepad_part_one";
+import * as LoopsPartTwo from "./level_loops_part_two";
+import * as GateAndTerminalPartTwo from "./level_gate_and_terminal_part_two";
+import * as EnemiesPartOne from "./level_enemies_part_one";
 
 // NodeIds and ChoiceIds must be unique and declared ahead of time. This ensures
 // that the compiler will catch any incorrect or missing references.
@@ -27,7 +30,10 @@ type NodeIds =
   | PartlyDisabledMovement.NodeIds
   | ReImplementTurnRight.NodeIds
   | JournalArrays.NodeIds
-  | LevelTelepadPartOne.NodeIds;
+  | LevelTelepadPartOne.NodeIds
+  | LoopsPartTwo.NodeIds
+  | GateAndTerminalPartTwo.NodeIds
+  | EnemiesPartOne.NodeIds;
 type ChoiceIds =
   | Intro.ChoiceIds
   | DataTerminalsPartOne.ChoiceIds
@@ -38,7 +44,10 @@ type ChoiceIds =
   | PartlyDisabledMovement.ChoiceIds
   | ReImplementTurnRight.ChoiceIds
   | JournalArrays.ChoiceIds
-  | LevelTelepadPartOne.ChoiceIds;
+  | LevelTelepadPartOne.ChoiceIds
+  | LoopsPartTwo.ChoiceIds
+  | GateAndTerminalPartTwo.ChoiceIds
+  | EnemiesPartOne.ChoiceIds;
 
 export interface DialogNode {
   text: string;
@@ -78,6 +87,9 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   ...ReImplementTurnRight.NODES,
   ...JournalArrays.NODES,
   ...LevelTelepadPartOne.NODES,
+  ...LoopsPartTwo.NODES,
+  ...GateAndTerminalPartTwo.NODES,
+  ...EnemiesPartOne.NODES,
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
@@ -91,6 +103,9 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...ReImplementTurnRight.CHOICES,
   ...JournalArrays.CHOICES,
   ...LevelTelepadPartOne.CHOICES,
+  ...LoopsPartTwo.CHOICES,
+  ...GateAndTerminalPartTwo.CHOICES,
+  ...EnemiesPartOne.CHOICES,
 };
 
 export const TREES: DialogTrees = {
@@ -104,4 +119,7 @@ export const TREES: DialogTrees = {
   ...ReImplementTurnRight.TREES,
   ...JournalArrays.TREES,
   ...LevelTelepadPartOne.TREES,
+  ...LoopsPartTwo.TREES,
+  ...GateAndTerminalPartTwo.TREES,
+  ...EnemiesPartOne.TREES,
 };
