@@ -1,7 +1,7 @@
 use super::{make_all_initial_states_for_telepads, std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EvilRoverActor};
 use crate::constants::{HEIGHT, WIDTH};
-use crate::simulation::{Actor, Enemy, Goal, Obstacle, Orientation, Player, Pos, State, Telepad};
+use crate::simulation::{Actor, Enemy, Goal, Orientation, Player, Pos, State, Telepad};
 use crate::state_maker::StateMaker;
 
 // TODO(albrow): Flesh this out into an actual level.

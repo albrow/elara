@@ -3,6 +3,7 @@ mod astroid_strike_part_two;
 mod data_terminal_demo;
 mod data_terminals_part_one;
 mod enemies_part_one;
+mod enemies_part_two;
 mod enemies_with_telepad;
 mod fuel_part_one;
 mod gate_and_terminal;
@@ -139,6 +140,7 @@ lazy_static! {
         m.insert(gate_and_terminal_array::GateAndTerminalArray{}.short_name(), Box::new(gate_and_terminal_array::GateAndTerminalArray{}));
         m.insert(telepad_part_one::TelepadPartOne{}.short_name(), Box::new(telepad_part_one::TelepadPartOne{}));
         m.insert(telepad_part_two::TelepadPartTwo{}.short_name(), Box::new(telepad_part_two::TelepadPartTwo{}));
+        m.insert(enemies_part_two::EnemiesPartTwo{}.short_name(), Box::new(enemies_part_two::EnemiesPartTwo{}));
         m.insert(enemies_with_telepad::EnemiesWithTelepad{}.short_name(), Box::new(enemies_with_telepad::EnemiesWithTelepad{}));
 
         m

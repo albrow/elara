@@ -1,7 +1,10 @@
 mod evil_rover_actor;
 mod player_actor;
 
-use crate::simulation::{Pos, State, Telepad};
+use crate::{
+    constants::{HEIGHT, WIDTH},
+    simulation::{Pos, State, Telepad},
+};
 
 pub use crate::actors::evil_rover_actor::EvilRoverActor;
 pub use player_actor::PlayerChannelActor;
@@ -31,6 +34,26 @@ pub struct Bounds {
     pub max_x: i32,
     pub min_y: i32,
     pub max_y: i32,
+}
+
+impl Bounds {
+    pub fn new(min_x: i32, max_x: i32, min_y: i32, max_y: i32) -> Bounds {
+        Bounds {
+            min_x,
+            max_x,
+            min_y,
+            max_y,
+        }
+    }
+
+    pub fn default() -> Bounds {
+        Bounds {
+            min_x: 0,
+            max_x: (WIDTH - 1) as i32,
+            min_y: 0,
+            max_y: (HEIGHT - 1) as i32,
+        }
+    }
 }
 
 fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
