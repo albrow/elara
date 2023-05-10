@@ -242,9 +242,28 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
-  levelScene("enemies_part_one"),
-  levelScene("enemies_part_two"),
-  levelScene("enemies_with_telepad"),
+  levelScene(
+    "enemies_part_one",
+    [],
+    [
+      "This level doesn't require any fancy code, just the basic movement functions: `move_forward`, `turn_right`, and `turn_left`.",
+      "The malfunctioning rover will chase G.R.O.V.E.R. around, but it's not very smart and can be easily outmaneuvered.",
+    ]
+  ),
+  levelScene(
+    "enemies_part_two",
+    [],
+    ["If you're not sure where to go, try moving toward the fuel spot first."]
+  ),
+  levelScene(
+    "enemies_with_telepad",
+    [],
+    [
+      "The first thing you should do is move G.R.O.V.E.R. to the telepad entrance.",
+      "Malfunctioning rovers can get stuck in corners or dead ends. Try using this to your advantage!",
+      "After going through a telepad, you will need to use the `get_orientation` function to figure out which way to turn. (You can go back and look at previous levels for examples).",
+    ]
+  ),
 ];
 
 const getLevelIndexFromScene = (
