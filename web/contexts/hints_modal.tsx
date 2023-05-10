@@ -129,6 +129,13 @@ export function HintsModalProvider(props: PropsWithChildren<{}>) {
                     )}
                   </Text>
                 </Box>
+                {currScene?.level?.challenge && (
+                  <Box>
+                    <Text align="center" fontSize="0.9rem" fontStyle="italic">
+                      (Hints do not necessarily apply to optional challenges.)
+                    </Text>
+                  </Box>
+                )}
                 <Flex mt={10} mb={3} justifyContent="right" w="100%">
                   <Button colorScheme="blue" onClick={handleClose}>
                     Got it!
