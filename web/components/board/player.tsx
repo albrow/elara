@@ -25,7 +25,10 @@ interface PlayerProps {
   facing: string;
 }
 
-function speechBubblePlacement(pos: Pos): PlacementWithLogical {
+function speechBubblePlacement(pos: Pos | undefined): PlacementWithLogical {
+  if (!pos) {
+    return "auto";
+  }
   return pos.x <= 4 ? "right" : "auto";
 }
 

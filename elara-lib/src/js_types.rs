@@ -177,9 +177,36 @@ impl TeleAnimData {
     }
 }
 
-fn get_js_player_anim_data(anim_state: &PlayerAnimState) -> Option<TeleAnimData> {
+/// Special metadata which can be used for teleportation animations in the UI.
+/// Includes:
+///    - pos: The position of the rover.
+///    - obstacle_pos: The position of the obstacle which the rover is bumping into.
+#[derive(Clone, PartialEq, Debug)]
+#[wasm_bindgen(getter_with_clone)]
+pub struct BumpAnimData {
+    pub pos: Pos,
+    pub obstacle_pos: Pos,
+}
+
+impl BumpAnimData {
+    pub fn from(data: &simulation::BumpAnimData) -> Self {
+        Self {
+            pos: Pos {
+                x: data.pos.x as i32,
+                y: data.pos.y as i32,
+            },
+            obstacle_pos: Pos {
+                x: data.obstacle_pos.x as i32,
+                y: data.obstacle_pos.y as i32,
+            },
+        }
+    }
+}
+
+fn get_js_player_anim_data(anim_state: &PlayerAnimState) -> Option<JsValue> {
     match anim_state {
         PlayerAnimState::Teleporting(data) => Some(TeleAnimData::from(data).into()),
+        PlayerAnimState::Bumping(data) => Some(BumpAnimData::from(data).into()),
         _ => None,
     }
 }
@@ -226,6 +253,7 @@ impl FuzzyState {
                 PlayerAnimState::Moving => "moving",
                 PlayerAnimState::Turning => "turning",
                 PlayerAnimState::Teleporting(_) => "teleporting",
+                PlayerAnimState::Bumping(_) => "bumping",
             };
             let facing = match fuzzy_player.obj.facing {
                 Orientation::Up => "up",
@@ -233,6 +261,8 @@ impl FuzzyState {
                 Orientation::Left => "left",
                 Orientation::Right => "right",
             };
+            let anim_data =
+                get_js_player_anim_data(&fuzzy_player.obj.anim_state).unwrap_or(JsValue::UNDEFINED);
             let player = &fuzzy_player.obj;
             players.set(
                 i as u32,
@@ -244,7 +274,7 @@ impl FuzzyState {
                     fuel: player.fuel as i32,
                     message: player.message.clone(),
                     anim_state: anim_state.to_string(),
-                    anim_data: get_js_player_anim_data(&player.anim_state),
+                    anim_data: anim_data,
                     facing: facing.to_string(),
                     fuzzy: fuzzy_player.fuzzy,
                 }),
@@ -418,9 +448,9 @@ pub struct FuzzyPlayer {
     pub pos: Pos,
     pub fuel: i32,
     pub message: String,
-    pub anim_state: String,              // PlayerAnimState
-    pub anim_data: Option<TeleAnimData>, // TeleAnimData | (other animation data types) | undefined
-    pub facing: String,                  // Orientation
+    pub anim_state: String, // PlayerAnimState
+    pub anim_data: JsValue, // TeleAnimData | BumpAnimData |(other animation data types) | undefined
+    pub facing: String,     // Orientation
     pub fuzzy: bool,
 }
 

@@ -7,15 +7,21 @@ export function range(size: number): ReadonlyArray<number> {
 }
 
 export interface Offset {
-  pos: Pos;
+  pos?: Pos;
   top: string;
   left: string;
+  topNum: number;
+  leftNum: number;
 }
 
 export function posToOffset(pos: Pos): Offset {
+  const leftNum = pos.x * (TILE_SIZE + 1) + AXIS_WIDTH + 2;
+  const topNum = pos.y * (TILE_SIZE + 1) + AXIS_HEIGHT + 2;
   return {
     pos,
-    left: `${pos.x * (TILE_SIZE + 1) + AXIS_WIDTH + 2}px`,
-    top: `${pos.y * (TILE_SIZE + 1) + AXIS_HEIGHT + 2}px`,
+    left: `${leftNum}px`,
+    top: `${topNum}px`,
+    leftNum,
+    topNum,
   };
 }

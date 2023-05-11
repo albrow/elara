@@ -1,6 +1,8 @@
-import { TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
+import { v4 as uuidv4 } from "uuid";
+
+import { BumpAnimData, TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
 import { CSS_ANIM_DURATION } from "../../lib/constants";
-import { posToOffset } from "../../lib/utils";
+import { Offset, posToOffset } from "../../lib/utils";
 
 export interface CSSAnimation {
   // A style object to be applied to the sprite (e.g. in the style prop).
@@ -9,18 +11,36 @@ export interface CSSAnimation {
   definitions?: React.ReactNode;
 }
 
+function computeInBetween(
+  startOffset: Offset,
+  endOffset: Offset,
+  percent: number
+): Offset {
+  const leftNum =
+    startOffset.leftNum + (endOffset.leftNum - startOffset.leftNum) * percent;
+  const topNum =
+    startOffset.topNum + (endOffset.topNum - startOffset.topNum) * percent;
+  return {
+    left: `${leftNum}px`,
+    top: `${topNum}px`,
+    leftNum,
+    topNum,
+  };
+}
+
 // A helper function for generating CSS keyframe animations for various animation
 // states (e.g. for the teloprtation animation). It returns a style tag containing
 // the keyframe definitions based on the given animation state and animation data.
 function getSpriteAnimationDefinitions(
   animState: string,
-  animData: TeleAnimData | undefined,
+  animData: TeleAnimData | BumpAnimData | undefined,
   animId: string
 ) {
   if (animState === "teleporting") {
-    const startOffset = posToOffset(animData!.start_pos);
-    const enterOffset = posToOffset(animData!.enter_pos);
-    const exitOffset = posToOffset(animData!.exit_pos);
+    const data = animData as TeleAnimData;
+    const startOffset = posToOffset(data!.start_pos);
+    const enterOffset = posToOffset(data!.enter_pos);
+    const exitOffset = posToOffset(data!.exit_pos);
     return (
       <style>
         {`@keyframes ${animId} {
@@ -56,6 +76,36 @@ function getSpriteAnimationDefinitions(
       </style>
     );
   }
+  if (animState === "bumping") {
+    // For the bumping animation, we animate 10% of the way to the obstacle,
+    // then back.
+    const data = animData as BumpAnimData;
+    const startOffset = posToOffset(data!.pos);
+    const obsOffset = posToOffset(data!.obstacle_pos);
+    const endOffset = computeInBetween(startOffset, obsOffset, 0.1);
+    return (
+      <style>
+        {`@keyframes ${animId} {
+          0% {
+            left: ${startOffset.left};
+            top: ${startOffset.top};
+          }
+          25% {
+            left: ${endOffset.left};
+            top: ${endOffset.top};
+          }
+          50% {
+            left: ${startOffset.left};
+            top: ${startOffset.top};
+          }
+          100% {
+            left: ${startOffset.left};
+            top: ${startOffset.top};
+          }
+        }`}
+      </style>
+    );
+  }
   return null;
 }
 
@@ -64,7 +114,7 @@ function getSpriteAnimationDefinitions(
 export function getSpriteAnimations(
   enableAnimations: boolean,
   animState: string,
-  animData: TeleAnimData | undefined,
+  animData: TeleAnimData | BumpAnimData | undefined,
   delaySeconds?: number
 ): CSSAnimation {
   if (!enableAnimations || animState === "idle") {
@@ -72,16 +122,23 @@ export function getSpriteAnimations(
   }
   if (animState === "teleporting") {
     // Use a unique animation ID to avoid conflicts with other teleport animations.
-    const animId = `teleport-${animData!.start_pos.x}-${
-      animData!.start_pos.y
-    }-${animData!.enter_pos.x}-${animData!.enter_pos.y}-${
-      animData!.exit_pos.x
-    }-${animData!.exit_pos.y}`;
+    const animId = `teleport-${uuidv4()}`;
     return {
       style: { animation: `${CSS_ANIM_DURATION}s ease-in-out ${animId}` },
       definitions: getSpriteAnimationDefinitions(animState, animData, animId),
     };
   }
+  if (animState === "bumping") {
+    // Use a unique animation ID to avoid conflicts with other bump animations.
+    const animId = `bump-${uuidv4()}`;
+    return {
+      style: {
+        animation: `${CSS_ANIM_DURATION}s ease-in-out ${animId}`,
+      },
+      definitions: getSpriteAnimationDefinitions(animState, animData, animId),
+    };
+  }
+
   return {
     style: {
       transition:

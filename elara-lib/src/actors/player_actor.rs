@@ -4,7 +4,8 @@ use std::sync::mpsc;
 
 use crate::constants::FUEL_SPOT_AMOUNT;
 use crate::simulation::{
-    get_adjacent_terminal, Actor, Orientation, PlayerAnimState, Pos, State, TeleAnimData,
+    get_adjacent_terminal, Actor, BumpAnimData, Orientation, PlayerAnimState, Pos, State,
+    TeleAnimData,
 };
 
 use super::{
@@ -149,12 +150,13 @@ impl PlayerChannelActor {
                 PlayerAnimState::Moving,
             )
         } else {
-            // TODO(albrow): Use a different animation state to indicate that the player
-            // is trying to move but can't. E.g., a bumping animation.
             (
                 state.player.pos.clone(),
                 state.player.facing.clone(),
-                PlayerAnimState::Idle,
+                PlayerAnimState::Bumping(BumpAnimData {
+                    pos: state.player.pos.clone(),
+                    obstacle_pos: desired_pos,
+                }),
             )
         }
     }
