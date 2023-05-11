@@ -211,9 +211,10 @@ fn get_js_player_anim_data(anim_state: &PlayerAnimState) -> Option<JsValue> {
     }
 }
 
-fn get_js_enemy_anim_data(anim_state: &EnemyAnimState) -> Option<TeleAnimData> {
+fn get_js_enemy_anim_data(anim_state: &EnemyAnimState) -> Option<JsValue> {
     match anim_state {
         EnemyAnimState::Teleporting(data) => Some(TeleAnimData::from(data).into()),
+        EnemyAnimState::Bumping(data) => Some(BumpAnimData::from(data).into()),
         _ => None,
     }
 }
@@ -320,6 +321,7 @@ impl FuzzyState {
                 EnemyAnimState::Moving => "moving",
                 EnemyAnimState::Turning => "turning",
                 EnemyAnimState::Teleporting(_) => "teleporting",
+                EnemyAnimState::Bumping(_) => "bumping",
             };
             let facing = match enemy.facing {
                 Orientation::Up => "up",
@@ -327,6 +329,7 @@ impl FuzzyState {
                 Orientation::Left => "left",
                 Orientation::Right => "right",
             };
+            let anim_data = get_js_enemy_anim_data(&enemy.anim_state).unwrap_or(JsValue::UNDEFINED);
             enemies.set(
                 i as u32,
                 JsValue::from(FuzzyEnemy {
@@ -335,7 +338,7 @@ impl FuzzyState {
                         y: enemy.pos.y as i32,
                     },
                     anim_state: anim_state.to_string(),
-                    anim_data: get_js_enemy_anim_data(&enemy.anim_state),
+                    anim_data: anim_data,
                     facing: facing.to_string(),
                     fuzzy: fuzzy_enemy.fuzzy,
                 }),
@@ -473,9 +476,9 @@ pub struct FuzzyFuelSpot {
 #[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyEnemy {
     pub pos: Pos,
-    pub anim_state: String,              // EnemyAnimState
-    pub anim_data: Option<TeleAnimData>, // TeleAnimData | (other animation data types) | undefined
-    pub facing: String,                  // Orientation
+    pub anim_state: String, // EnemyAnimState
+    pub anim_data: JsValue, // TeleAnimData | BumpAnimData | (other animation data types) | undefined
+    pub facing: String,     // Orientation
     pub fuzzy: bool,
 }
 

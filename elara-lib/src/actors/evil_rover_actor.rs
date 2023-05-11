@@ -1,4 +1,6 @@
-use crate::simulation::{Actor, EnemyAnimState, Orientation, Pos, State, TeleAnimData};
+use crate::simulation::{
+    Actor, BumpAnimData, EnemyAnimState, Orientation, Pos, State, TeleAnimData,
+};
 
 use super::{can_move_to, get_telepad_at, Bounds, MoveDirection, TurnDirection};
 
@@ -16,11 +18,76 @@ pub struct EvilRoverActor {
 enum EvilRoverAction {
     Move(MoveDirection),
     Turn(TurnDirection),
+    Bump(Pos),
 }
 
 impl EvilRoverActor {
     pub fn new(index: usize, bounds: Bounds) -> EvilRoverActor {
         EvilRoverActor { index, bounds }
+    }
+
+    /// Returns the position that is one space in front of the enemy.
+    fn forward_pos(&self, state: &State) -> Pos {
+        match state.enemies[self.index].facing {
+            Orientation::Up => Pos::new(
+                state.enemies[self.index].pos.x,
+                state.enemies[self.index].pos.y - 1,
+            ),
+            Orientation::Down => Pos::new(
+                state.enemies[self.index].pos.x,
+                state.enemies[self.index].pos.y + 1,
+            ),
+            Orientation::Left => Pos::new(
+                state.enemies[self.index].pos.x - 1,
+                state.enemies[self.index].pos.y,
+            ),
+            Orientation::Right => Pos::new(
+                state.enemies[self.index].pos.x + 1,
+                state.enemies[self.index].pos.y,
+            ),
+        }
+    }
+
+    /// Returns the position that is one space behind the enemy.
+    fn backward_pos(&self, state: &State) -> Pos {
+        match state.enemies[self.index].facing {
+            Orientation::Up => Pos::new(
+                state.enemies[self.index].pos.x,
+                state.enemies[self.index].pos.y + 1,
+            ),
+            Orientation::Down => Pos::new(
+                state.enemies[self.index].pos.x,
+                state.enemies[self.index].pos.y - 1,
+            ),
+            Orientation::Left => Pos::new(
+                state.enemies[self.index].pos.x + 1,
+                state.enemies[self.index].pos.y,
+            ),
+            Orientation::Right => Pos::new(
+                state.enemies[self.index].pos.x - 1,
+                state.enemies[self.index].pos.y,
+            ),
+        }
+    }
+
+    /// Returns the direction that the rover would be facing if it turned right.
+    fn right_direction(&self, curr_orientation: Orientation) -> Orientation {
+        match curr_orientation {
+            Orientation::Up => Orientation::Right,
+            Orientation::Down => Orientation::Left,
+            Orientation::Left => Orientation::Up,
+            Orientation::Right => Orientation::Down,
+        }
+    }
+
+    /// Returns the direction that the rover would be facing if it turned left.
+    fn left_direction(&self, curr_orientation: Orientation) -> Orientation {
+        match curr_orientation {
+            Orientation::Up => Orientation::Left,
+            Orientation::Down => Orientation::Right,
+            Orientation::Left => Orientation::Down,
+            Orientation::Right => Orientation::Up,
+        }
     }
 
     /// Returns an action to either move forward or turn to face the desired
@@ -33,22 +100,31 @@ impl EvilRoverActor {
         if curr_orientation == desired_direction {
             return EvilRoverAction::Move(MoveDirection::Forward);
         }
-        let left_direction = match curr_orientation {
-            Orientation::Up => Orientation::Left,
-            Orientation::Down => Orientation::Right,
-            Orientation::Left => Orientation::Down,
-            Orientation::Right => Orientation::Up,
-        };
-        let right_direction = match curr_orientation {
-            Orientation::Up => Orientation::Right,
-            Orientation::Down => Orientation::Left,
-            Orientation::Left => Orientation::Up,
-            Orientation::Right => Orientation::Down,
-        };
-        if desired_direction == left_direction {
+        if desired_direction == self.left_direction(curr_orientation) {
             return EvilRoverAction::Turn(TurnDirection::Left);
         }
-        if desired_direction == right_direction {
+        if desired_direction == self.right_direction(curr_orientation) {
+            return EvilRoverAction::Turn(TurnDirection::Right);
+        }
+        // If we get here, we're facing the opposite direction.
+        return EvilRoverAction::Turn(TurnDirection::Left);
+    }
+
+    /// Returns an action to turn to face the desired direction, or
+    /// if we are already facing that direction, to do a bump animation.
+    fn bump_or_turn(
+        &self,
+        state: &State,
+        curr_orientation: Orientation,
+        desired_direction: Orientation,
+    ) -> EvilRoverAction {
+        if curr_orientation == desired_direction {
+            return EvilRoverAction::Bump(self.forward_pos(state));
+        }
+        if desired_direction == self.left_direction(curr_orientation) {
+            return EvilRoverAction::Turn(TurnDirection::Left);
+        }
+        if desired_direction == self.right_direction(curr_orientation) {
             return EvilRoverAction::Turn(TurnDirection::Right);
         }
         // If we get here, we're facing the opposite direction.
@@ -81,7 +157,18 @@ impl EvilRoverActor {
                     return self.move_or_turn(enemy.facing, Orientation::Right);
                 }
             }
+            // If we get here, we can't move toward the player. This means we should at least
+            // turn toward the player (if we are not already facing them). If we are facing them,
+            // we should do a bump animation. Note that we only need to check the y-axis here
+            // since we know that is the axis in which the player is furthest away.
+            if player_pos.y < enemy.pos.y {
+                return self.bump_or_turn(state, enemy.facing, Orientation::Up);
+            } else {
+                return self.bump_or_turn(state, enemy.facing, Orientation::Down);
+            }
         } else {
+            // The player is further away in the x-axis, so we prioritize that while checking
+            // movement options.
             if player_pos.x < enemy.pos.x {
                 if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x - 1, enemy.pos.y)) {
                     return self.move_or_turn(enemy.facing, Orientation::Left);
@@ -100,8 +187,14 @@ impl EvilRoverActor {
                     return self.move_or_turn(enemy.facing, Orientation::Down);
                 }
             }
+            // If we get here, we can't move toward the player. Bump or turn while prioritizing
+            // the x-axis.
+            if player_pos.x < enemy.pos.x {
+                return self.bump_or_turn(state, enemy.facing, Orientation::Left);
+            } else {
+                return self.bump_or_turn(state, enemy.facing, Orientation::Right);
+            }
         }
-        return EvilRoverAction::Turn(TurnDirection::Left);
     }
 }
 
@@ -118,42 +211,8 @@ impl Actor for EvilRoverActor {
         match action {
             EvilRoverAction::Move(direction) => {
                 let desired_pos = match direction {
-                    MoveDirection::Forward => match state.enemies[self.index].facing {
-                        Orientation::Up => Pos::new(
-                            state.enemies[self.index].pos.x,
-                            state.enemies[self.index].pos.y - 1,
-                        ),
-                        Orientation::Down => Pos::new(
-                            state.enemies[self.index].pos.x,
-                            state.enemies[self.index].pos.y + 1,
-                        ),
-                        Orientation::Left => Pos::new(
-                            state.enemies[self.index].pos.x - 1,
-                            state.enemies[self.index].pos.y,
-                        ),
-                        Orientation::Right => Pos::new(
-                            state.enemies[self.index].pos.x + 1,
-                            state.enemies[self.index].pos.y,
-                        ),
-                    },
-                    MoveDirection::Backward => match state.enemies[self.index].facing {
-                        Orientation::Up => Pos::new(
-                            state.enemies[self.index].pos.x,
-                            state.enemies[self.index].pos.y + 1,
-                        ),
-                        Orientation::Down => Pos::new(
-                            state.enemies[self.index].pos.x,
-                            state.enemies[self.index].pos.y - 1,
-                        ),
-                        Orientation::Left => Pos::new(
-                            state.enemies[self.index].pos.x + 1,
-                            state.enemies[self.index].pos.y,
-                        ),
-                        Orientation::Right => Pos::new(
-                            state.enemies[self.index].pos.x - 1,
-                            state.enemies[self.index].pos.y,
-                        ),
-                    },
+                    MoveDirection::Forward => self.forward_pos(&state),
+                    MoveDirection::Backward => self.backward_pos(&state),
                 };
                 // If there is a telepad at the desired position, teleport.
                 if let Some(telepad) = get_telepad_at(&state, &desired_pos) {
@@ -175,23 +234,21 @@ impl Actor for EvilRoverActor {
             EvilRoverAction::Turn(direction) => match direction {
                 TurnDirection::Left => {
                     state.enemies[self.index].anim_state = EnemyAnimState::Turning;
-                    state.enemies[self.index].facing = match state.enemies[self.index].facing {
-                        Orientation::Up => Orientation::Left,
-                        Orientation::Down => Orientation::Right,
-                        Orientation::Left => Orientation::Down,
-                        Orientation::Right => Orientation::Up,
-                    };
+                    state.enemies[self.index].facing =
+                        self.left_direction(state.enemies[self.index].facing)
                 }
                 TurnDirection::Right => {
                     state.enemies[self.index].anim_state = EnemyAnimState::Turning;
-                    state.enemies[self.index].facing = match state.enemies[self.index].facing {
-                        Orientation::Up => Orientation::Right,
-                        Orientation::Down => Orientation::Left,
-                        Orientation::Left => Orientation::Up,
-                        Orientation::Right => Orientation::Down,
-                    };
+                    state.enemies[self.index].facing =
+                        self.right_direction(state.enemies[self.index].facing)
                 }
             },
+            EvilRoverAction::Bump(obstacle_pos) => {
+                state.enemies[self.index].anim_state = EnemyAnimState::Bumping(BumpAnimData {
+                    pos: state.enemies[self.index].pos.clone(),
+                    obstacle_pos,
+                });
+            }
         }
 
         state

@@ -262,6 +262,7 @@ pub enum EnemyAnimState {
     Moving,
     Turning,
     Teleporting(TeleAnimData),
+    Bumping(BumpAnimData),
 }
 
 #[derive(Clone, PartialEq, Debug)]
