@@ -141,6 +141,7 @@ export function getSpriteAnimations(
 
   return {
     style: {
+      animation: "none",
       transition:
         `left ${CSS_ANIM_DURATION}s ${delaySeconds || 0}s, ` +
         `top ${CSS_ANIM_DURATION}s ${delaySeconds || 0}s`,

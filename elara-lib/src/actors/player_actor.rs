@@ -88,6 +88,7 @@ impl Actor for PlayerChannelActor {
                         }
                     });
 
+                state.player.anim_state = PlayerAnimState::Idle;
                 state.player.message = message;
             }
             Ok(Action::ReadData) => {
