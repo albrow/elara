@@ -14,7 +14,7 @@ impl Level for GateAndTerminalPartThree {
         "gate_and_terminal_part_three"
     }
     fn objective(&self) -> &'static str {
-        "Try the other data terminals ({terminal}) to find the right password, then move the rover ({robot}) to the goal ({goal})."
+        "Move the rover ({robot}) to the goal ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
         &AVAIL_FUNCS_WITH_READ

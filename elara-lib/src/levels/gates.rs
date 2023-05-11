@@ -15,7 +15,7 @@ impl Level for Gates {
         "gates"
     }
     fn objective(&self) -> &'static str {
-        "Open the locked gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
+        "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"move_forward(2);

@@ -17,7 +17,6 @@ impl Level for EnemiesPartTwo {
     }
     fn initial_code(&self) -> &'static str {
         r"// Try to reach the goal while avoiding the malfunctioning rovers.
-// This might require some clever maneuvering.
 "
     }
     fn initial_states(&self) -> Vec<State> {

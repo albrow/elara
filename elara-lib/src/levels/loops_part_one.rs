@@ -12,7 +12,7 @@ impl Level for LoopsPartOne {
         "loops_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal}) using a loop."
+        "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"loop {

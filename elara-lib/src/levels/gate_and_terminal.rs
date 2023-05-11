@@ -14,7 +14,7 @@ impl Level for GateAndTerminal {
         "gate_and_terminal"
     }
     fn objective(&self) -> &'static str {
-        "Get the password from the data terminal ({terminal}), unlock the gate ({gate}), then move the rover ({robot}) to the goal ({goal})."
+        "Move the rover ({robot}) to the goal ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
         &AVAIL_FUNCS_WITH_READ
