@@ -1,6 +1,6 @@
 import { Tooltip, PlacementWithLogical, Box } from "@chakra-ui/react";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Offset } from "../../lib/utils";
 import {
   TILE_SIZE,
@@ -12,6 +12,7 @@ import groverDownUrl from "../../images/grover_down.png";
 import groverLeftUrl from "../../images/grover_left.png";
 import groverRightUrl from "../../images/grover_right.png";
 import { Pos, TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
+import { useSoundManager } from "../../contexts/sound_manager";
 import SpriteLabel from "./sprite_label";
 import { getSpriteAnimations } from "./anim_utils";
 
@@ -57,6 +58,32 @@ export default function Player(props: PlayerProps) {
         throw new Error(`Unknown orientation: + ${props.facing}`);
     }
   }, [props.facing]);
+
+  const [_, getSound, stopAllSoundEffects] = useSoundManager();
+  const moveSound = useMemo(() => getSound("move"), [getSound]);
+  const turnSound = useMemo(() => getSound("turn"), [getSound]);
+
+  useEffect(() => {
+    if (props.animState === "idle" || !props.enableAnimations) {
+      stopAllSoundEffects();
+    } else if (props.animState === "moving") {
+      moveSound.replay();
+    } else if (props.animState === "turning") {
+      turnSound.replay();
+    } else if (props.animState === "bumping") {
+      console.log("play bump sound");
+    } else if (props.animState === "teleporting") {
+      console.log("play teleport sound");
+    } else {
+      stopAllSoundEffects();
+    }
+    return () => {
+      stopAllSoundEffects();
+    };
+    // Note: We intentially include *all* props in the deps array here, because
+    // we want to correctly replay the sound effect when the rover is moving, turning,
+    // etc. even if the animation state has not changed.
+  }, [props, moveSound, stopAllSoundEffects, turnSound]);
 
   return (
     <>

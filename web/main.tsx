@@ -40,6 +40,7 @@ const elaraTheme = extendTheme({
   const Root = (await import("./routes/root")).default;
   const { ScenesProvider } = await import("./contexts/scenes");
   const { HintsModalProvider } = await import("./contexts/hints_modal");
+  const { SoundProvider } = await import("./contexts/sound_manager");
 
   const routes: Route[] = [
     {
@@ -83,7 +84,9 @@ const elaraTheme = extendTheme({
               <ShortsModalProvider>
                 <ErrorModalProvider>
                   <HintsModalProvider>
-                    <Root />
+                    <SoundProvider>
+                      <Root />
+                    </SoundProvider>
                   </HintsModalProvider>
                 </ErrorModalProvider>
               </ShortsModalProvider>
