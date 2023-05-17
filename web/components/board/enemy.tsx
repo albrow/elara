@@ -28,7 +28,7 @@ export default function Enemy(props: EnemyProps) {
         props.enableAnimations,
         props.animState,
         props.animData,
-        0.1
+        0.2
       ),
     [props.animData, props.animState, props.enableAnimations]
   );

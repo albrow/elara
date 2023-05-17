@@ -39,7 +39,8 @@ export default function Player(props: PlayerProps) {
       getSpriteAnimations(
         props.enableAnimations,
         props.animState,
-        props.animData
+        props.animData,
+        0.1
       ),
     [props.animData, props.animState, props.enableAnimations]
   );
