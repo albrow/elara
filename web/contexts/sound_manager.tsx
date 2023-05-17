@@ -67,8 +67,8 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const speakRef2 = useRef<HTMLAudioElement>(null);
   const speakRef3 = useRef<HTMLAudioElement>(null);
 
-  // TODO(albrow): Start working on volume controls. Eventually need to expose this as a setting
-  // in the UI.
+  // TODO(albrow): Sfx for reading data, collecting fuel,
+  // opening gates, being destroyed/attacked by malfunctioning rover.
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
       move: new RoundRobinSoundGroup("move", [
