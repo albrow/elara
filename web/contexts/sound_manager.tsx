@@ -58,16 +58,16 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
       move: new RoundRobinSoundGroup("move", [
-        new Sound("move_0", moveRef0),
-        new Sound("move_1", moveRef1),
-        new Sound("move_2", moveRef2),
-        new Sound("move_3", moveRef3),
+        new Sound("move_0", moveRef0, 0.3),
+        new Sound("move_1", moveRef1, 0.3),
+        new Sound("move_2", moveRef2, 0.3),
+        new Sound("move_3", moveRef3, 0.3),
       ]),
       turn: new RoundRobinSoundGroup("turn", [
-        new Sound("turn_0", turnRef0),
-        new Sound("turn_1", turnRef1),
-        new Sound("turn_2", turnRef2),
-        new Sound("turn_3", turnRef3),
+        new Sound("turn_0", turnRef0, 0.3),
+        new Sound("turn_1", turnRef1, 0.3),
+        new Sound("turn_2", turnRef2, 0.3),
+        new Sound("turn_3", turnRef3, 0.3),
       ]),
     }),
     [moveRef0]

@@ -5,6 +5,8 @@ export class Sound implements Playable {
 
   private _ref: React.RefObject<HTMLAudioElement>;
 
+  private _volume: number;
+
   private _audioContext: AudioContext | undefined;
 
   private _source: MediaElementAudioSourceNode | undefined;
@@ -14,10 +16,16 @@ export class Sound implements Playable {
    *
    * @param id A unique identifier for the sound.
    * @param ref A reference to the HTML audio element.
+   * @param volume The volume of the sound, from 0.0 to 1.0 (default 1.0).
    */
-  constructor(id: string, ref: React.RefObject<HTMLAudioElement>) {
+  constructor(
+    id: string,
+    ref: React.RefObject<HTMLAudioElement>,
+    volume: number = 1.0
+  ) {
     this._id = id;
     this._ref = ref;
+    this._volume = volume;
   }
 
   isLoaded() {
@@ -35,7 +43,9 @@ export class Sound implements Playable {
     this._source = this._audioContext.createMediaElementSource(
       this._ref.current
     );
-    this._source.connect(this._audioContext.destination);
+    const gainNode = this._audioContext.createGain();
+    gainNode.gain.value = this._volume;
+    this._source.connect(gainNode).connect(this._audioContext.destination);
   }
 
   play() {
