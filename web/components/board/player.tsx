@@ -63,18 +63,25 @@ export default function Player(props: PlayerProps) {
   const [_, getSound, stopAllSoundEffects] = useSoundManager();
   const moveSound = useMemo(() => getSound("move"), [getSound]);
   const turnSound = useMemo(() => getSound("turn"), [getSound]);
+  const teleportSound = useMemo(() => getSound("teleport"), [getSound]);
+  const bumpSound = useMemo(() => getSound("bump"), [getSound]);
+  const speakSound = useMemo(() => getSound("speak"), [getSound]);
 
   useEffect(() => {
-    if (props.animState === "idle" || !props.enableAnimations) {
+    if (!props.enableAnimations) {
       stopAllSoundEffects();
     } else if (props.animState === "moving") {
       moveSound.replay();
     } else if (props.animState === "turning") {
       turnSound.replay();
     } else if (props.animState === "bumping") {
-      console.log("play bump sound");
+      bumpSound.replay();
     } else if (props.animState === "teleporting") {
-      console.log("play teleport sound");
+      moveSound.replay();
+      teleportSound.replay();
+    } else if (props.message !== "") {
+      console.log("playing speak sound");
+      speakSound.replay();
     } else {
       stopAllSoundEffects();
     }
@@ -84,7 +91,15 @@ export default function Player(props: PlayerProps) {
     // Note: We intentially include *all* props in the deps array here, because
     // we want to correctly replay the sound effect when the rover is moving, turning,
     // etc. even if the animation state has not changed.
-  }, [props, moveSound, stopAllSoundEffects, turnSound]);
+  }, [
+    props,
+    stopAllSoundEffects,
+    moveSound,
+    turnSound,
+    teleportSound,
+    bumpSound,
+    speakSound,
+  ]);
 
   return (
     <>
