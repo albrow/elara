@@ -9,6 +9,12 @@ export class Sound implements Playable {
 
   private _source: MediaElementAudioSourceNode | undefined;
 
+  /**
+   * This is the most basic implementation of Playable.
+   *
+   * @param id A unique identifier for the sound.
+   * @param ref A reference to the HTML audio element.
+   */
   constructor(id: string, ref: React.RefObject<HTMLAudioElement>) {
     this._id = id;
     this._ref = ref;
