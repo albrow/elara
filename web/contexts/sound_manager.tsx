@@ -7,6 +7,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import { useRouteNode } from "react-router5";
 
@@ -30,25 +31,38 @@ import speakSound1 from "../audio/speak_1.ogg";
 import speakSound2 from "../audio/speak_2.ogg";
 import speakSound3 from "../audio/speak_3.ogg";
 
-export const SoundManagerContext = createContext<
-  readonly [(name: string) => void, (name: string) => Playable, () => void]
->([
-  () => {
-    throw new Error("useSound must be used within a SoundManagerContext");
+interface SoundManager {
+  getSound: (id: string) => Playable;
+  playSound: (id: string) => void;
+  stopAllSoundEffects: () => void;
+  setMasterGain: (gain: number) => void;
+  setSoundEffectsGain: (gain: number) => void;
+}
+
+export const SoundManagerContext = createContext<SoundManager>({
+  getSound: () => {
+    throw new Error("SoundManagerContext not initialized");
   },
-  () => {
-    throw new Error("useSound must be used within a SoundManagerContext");
+  playSound: () => {
+    throw new Error("SoundManagerContext not initialized");
   },
-  () => {
-    throw new Error("useSound must be used within a SoundManagerContext");
+  stopAllSoundEffects: () => {
+    throw new Error("SoundManagerContext not initialized");
   },
-] as const);
+  setMasterGain: () => {
+    throw new Error("SoundManagerContext not initialized");
+  },
+  setSoundEffectsGain: () => {
+    throw new Error("SoundManagerContext not initialized");
+  },
+});
+
+const audioContext = new AudioContext({
+  sampleRate: 48000,
+  latencyHint: "interactive",
+});
 
 export const useSoundManager = () => useContext(SoundManagerContext);
-export const useSound = (name: string) => {
-  const [_, directGetSound] = useSoundManager();
-  return directGetSound(name);
-};
 
 export function SoundProvider(props: PropsWithChildren<{}>) {
   const bumpRef0 = useRef<HTMLAudioElement>(null);
@@ -67,45 +81,51 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const speakRef2 = useRef<HTMLAudioElement>(null);
   const speakRef3 = useRef<HTMLAudioElement>(null);
 
+  // Create master and group gain controls
+  const [masterGain, setMasterGain] = useState(1.0);
+  const [relSfxGain, setRelSfxGain] = useState(1.0);
+  const sfxGain = useMemo(
+    () => masterGain * relSfxGain,
+    [masterGain, relSfxGain]
+  );
+
   // TODO(albrow): Sfx for reading data, collecting fuel,
   // opening gates, being destroyed/attacked by malfunctioning rover.
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
       move: new RoundRobinSoundGroup("move", [
-        new Sound("move_0", moveRef0, 0.3),
-        new Sound("move_1", moveRef1, 0.3),
-        new Sound("move_2", moveRef2, 0.3),
-        new Sound("move_3", moveRef3, 0.3),
+        new Sound(audioContext, "move_0", moveRef0, 0.3, sfxGain),
+        new Sound(audioContext, "move_1", moveRef1, 0.3, sfxGain),
+        new Sound(audioContext, "move_2", moveRef2, 0.3, sfxGain),
+        new Sound(audioContext, "move_3", moveRef3, 0.3, sfxGain),
       ]),
       turn: new RoundRobinSoundGroup("turn", [
-        new Sound("turn_0", turnRef0, 0.3),
-        new Sound("turn_1", turnRef1, 0.3),
-        new Sound("turn_2", turnRef2, 0.3),
-        new Sound("turn_3", turnRef3, 0.3),
+        new Sound(audioContext, "turn_0", turnRef0, 0.3, sfxGain),
+        new Sound(audioContext, "turn_1", turnRef1, 0.3, sfxGain),
+        new Sound(audioContext, "turn_2", turnRef2, 0.3, sfxGain),
+        new Sound(audioContext, "turn_3", turnRef3, 0.3, sfxGain),
       ]),
       bump: new RoundRobinSoundGroup("bump", [
-        new Sound("bump_0", bumpRef0, 0.3),
-        new Sound("bump_1", bumpRef1, 0.3),
+        new Sound(audioContext, "bump_0", bumpRef0, 0.3, sfxGain),
+        new Sound(audioContext, "bump_1", bumpRef1, 0.3, sfxGain),
       ]),
-      teleport: new Sound("teleport", teleportRef, 0.7),
+      teleport: new Sound(audioContext, "teleport", teleportRef, 0.7, sfxGain),
       speak: new RoundRobinSoundGroup("speak", [
-        new Sound("speak_0", speakRef0, 0.25),
-        new Sound("speak_3", speakRef3, 0.25),
-        new Sound("speak_1", speakRef1, 0.25),
-        new Sound("speak_2", speakRef2, 0.25),
+        new Sound(audioContext, "speak_0", speakRef0, 0.25, sfxGain),
+        new Sound(audioContext, "speak_3", speakRef3, 0.25, sfxGain),
+        new Sound(audioContext, "speak_1", speakRef1, 0.25, sfxGain),
+        new Sound(audioContext, "speak_2", speakRef2, 0.25, sfxGain),
       ]),
     }),
-    [moveRef0]
+    [sfxGain]
   );
 
-  // Unload all sounds when the component unmounts.
-  useEffect(() => () => {
+  // Attempt to preemptively load all sounds.
+  useEffect(() => {
     Object.values(soundDict).forEach((sound) => {
-      if (sound.isLoaded()) {
-        sound.unload();
-      }
+      sound.load();
     });
-  });
+  }, [soundDict]);
 
   // getSound is used when you need more control over the sound (e.g. need
   // to play, pause, stop, or add effects).
@@ -144,27 +164,33 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   }, [route, stopAllSoundEffects]);
 
   const providerValue = useMemo(
-    () => [playSound, getSound, stopAllSoundEffects] as const,
-    [playSound, getSound, stopAllSoundEffects]
+    () => ({
+      getSound,
+      playSound,
+      stopAllSoundEffects,
+      setMasterGain,
+      setSoundEffectsGain: setRelSfxGain,
+    }),
+    [getSound, playSound, stopAllSoundEffects, setMasterGain, setRelSfxGain]
   );
 
   return (
     <SoundManagerContext.Provider value={providerValue}>
-      <audio src={bumpSound0} ref={bumpRef0} />
-      <audio src={bumpSound1} ref={bumpRef1} />
-      <audio src={moveSound0} ref={moveRef0} />
-      <audio src={moveSound1} ref={moveRef1} />
-      <audio src={moveSound2} ref={moveRef2} />
-      <audio src={moveSound3} ref={moveRef3} />
-      <audio src={turnSound0} ref={turnRef0} />
-      <audio src={turnSound1} ref={turnRef1} />
-      <audio src={turnSound2} ref={turnRef2} />
-      <audio src={turnSound3} ref={turnRef3} />
-      <audio src={teleportSound} ref={teleportRef} />
-      <audio src={speakSound0} ref={speakRef0} />
-      <audio src={speakSound1} ref={speakRef1} />
-      <audio src={speakSound2} ref={speakRef2} />
-      <audio src={speakSound3} ref={speakRef3} />
+      <audio src={bumpSound0} ref={bumpRef0} preload="auto" />
+      <audio src={bumpSound1} ref={bumpRef1} preload="auto" />
+      <audio src={moveSound0} ref={moveRef0} preload="auto" />
+      <audio src={moveSound1} ref={moveRef1} preload="auto" />
+      <audio src={moveSound2} ref={moveRef2} preload="auto" />
+      <audio src={moveSound3} ref={moveRef3} preload="auto" />
+      <audio src={turnSound0} ref={turnRef0} preload="auto" />
+      <audio src={turnSound1} ref={turnRef1} preload="auto" />
+      <audio src={turnSound2} ref={turnRef2} preload="auto" />
+      <audio src={turnSound3} ref={turnRef3} preload="auto" />
+      <audio src={teleportSound} ref={teleportRef} preload="auto" />
+      <audio src={speakSound0} ref={speakRef0} preload="auto" />
+      <audio src={speakSound1} ref={speakRef1} preload="auto" />
+      <audio src={speakSound2} ref={speakRef2} preload="auto" />
+      <audio src={speakSound3} ref={speakRef3} preload="auto" />
 
       {props.children}
     </SoundManagerContext.Provider>

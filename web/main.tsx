@@ -78,21 +78,21 @@ const elaraTheme = extendTheme({
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
       <RouterProvider router={router}>
-        <ChakraProvider theme={elaraTheme} resetCSS>
-          <SaveDataProvider>
-            <ScenesProvider>
-              <ShortsModalProvider>
-                <ErrorModalProvider>
-                  <HintsModalProvider>
-                    <SoundProvider>
+        <SoundProvider>
+          <ChakraProvider theme={elaraTheme} resetCSS>
+            <SaveDataProvider>
+              <ScenesProvider>
+                <ShortsModalProvider>
+                  <ErrorModalProvider>
+                    <HintsModalProvider>
                       <Root />
-                    </SoundProvider>
-                  </HintsModalProvider>
-                </ErrorModalProvider>
-              </ShortsModalProvider>
-            </ScenesProvider>
-          </SaveDataProvider>
-        </ChakraProvider>
+                    </HintsModalProvider>
+                  </ErrorModalProvider>
+                </ShortsModalProvider>
+              </ScenesProvider>
+            </SaveDataProvider>
+          </ChakraProvider>
+        </SoundProvider>
       </RouterProvider>
     </React.StrictMode>
   );

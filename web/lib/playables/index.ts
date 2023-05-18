@@ -3,6 +3,7 @@ export interface Playable {
   replay(): void;
   pause(): void;
   stop(): void;
-  unload(): void;
+  setGroupGain(gain: number): void;
+  load(): void;
   isLoaded(): boolean;
 }

@@ -30,6 +30,10 @@ export class RoundRobinSoundGroup implements Playable {
     this._currentSoundIndex = 0;
   }
 
+  setGroupGain(gain: number): void {
+    this._sounds.forEach((sound) => sound.setGroupGain(gain));
+  }
+
   play(): void {
     this._sounds[this._currentSoundIndex].play();
     this._currentSoundIndex =
@@ -50,11 +54,11 @@ export class RoundRobinSoundGroup implements Playable {
     this._sounds.forEach((sound) => sound.stop());
   }
 
-  isLoaded(): boolean {
-    return this._sounds.every((sound) => sound.isLoaded());
+  load(): void {
+    this._sounds.forEach((sound) => sound.load());
   }
 
-  unload(): void {
-    this._sounds.forEach((sound) => sound.unload());
+  isLoaded(): boolean {
+    return this._sounds.every((sound) => sound.isLoaded());
   }
 }
