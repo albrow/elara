@@ -84,7 +84,7 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const speakRef2 = useRef<HTMLAudioElement>(null);
   const speakRef3 = useRef<HTMLAudioElement>(null);
 
-  // Create master and group gain controls
+  // Load master and group volume from settings.
   const [masterGain, setMasterGain] = useState(saveData.settings.masterVolume);
   const [relSfxGain, setRelSfxGain] = useState(
     saveData.settings.soundEffectsVolume
@@ -104,31 +104,36 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
       move: new RoundRobinSoundGroup("move", [
-        new Sound(audioContext, "move_0", moveRef0, 0.3, sfxGain),
-        new Sound(audioContext, "move_1", moveRef1, 0.3, sfxGain),
-        new Sound(audioContext, "move_2", moveRef2, 0.3, sfxGain),
-        new Sound(audioContext, "move_3", moveRef3, 0.3, sfxGain),
+        new Sound(audioContext, "move_0", moveRef0, 0.3),
+        new Sound(audioContext, "move_1", moveRef1, 0.3),
+        new Sound(audioContext, "move_2", moveRef2, 0.3),
+        new Sound(audioContext, "move_3", moveRef3, 0.3),
       ]),
       turn: new RoundRobinSoundGroup("turn", [
-        new Sound(audioContext, "turn_0", turnRef0, 0.3, sfxGain),
-        new Sound(audioContext, "turn_1", turnRef1, 0.3, sfxGain),
-        new Sound(audioContext, "turn_2", turnRef2, 0.3, sfxGain),
-        new Sound(audioContext, "turn_3", turnRef3, 0.3, sfxGain),
+        new Sound(audioContext, "turn_0", turnRef0, 0.3),
+        new Sound(audioContext, "turn_1", turnRef1, 0.3),
+        new Sound(audioContext, "turn_2", turnRef2, 0.3),
+        new Sound(audioContext, "turn_3", turnRef3, 0.3),
       ]),
       bump: new RoundRobinSoundGroup("bump", [
-        new Sound(audioContext, "bump_0", bumpRef0, 0.3, sfxGain),
-        new Sound(audioContext, "bump_1", bumpRef1, 0.3, sfxGain),
+        new Sound(audioContext, "bump_0", bumpRef0, 0.3),
+        new Sound(audioContext, "bump_1", bumpRef1, 0.3),
       ]),
-      teleport: new Sound(audioContext, "teleport", teleportRef, 0.7, sfxGain),
+      teleport: new Sound(audioContext, "teleport", teleportRef, 0.7),
       speak: new RoundRobinSoundGroup("speak", [
-        new Sound(audioContext, "speak_0", speakRef0, 0.25, sfxGain),
-        new Sound(audioContext, "speak_3", speakRef3, 0.25, sfxGain),
-        new Sound(audioContext, "speak_1", speakRef1, 0.25, sfxGain),
-        new Sound(audioContext, "speak_2", speakRef2, 0.25, sfxGain),
+        new Sound(audioContext, "speak_0", speakRef0, 0.25),
+        new Sound(audioContext, "speak_3", speakRef3, 0.25),
+        new Sound(audioContext, "speak_1", speakRef1, 0.25),
+        new Sound(audioContext, "speak_2", speakRef2, 0.25),
       ]),
     }),
-    [sfxGain]
+    []
   );
+  useEffect(() => {
+    Object.values(soundDict).forEach((sound) => {
+      sound.setGroupGain(sfxGain);
+    });
+  }, [sfxGain, soundDict]);
 
   // Attempt to preemptively load all sounds.
   useEffect(() => {
