@@ -173,6 +173,7 @@ export default function Level() {
       }
 
       setSaveData(pendingSaveData);
+      setEditorState("editing");
     },
     [
       currLevel,
