@@ -30,6 +30,7 @@ import speakSound0 from "../audio/speak_0.ogg";
 import speakSound1 from "../audio/speak_1.ogg";
 import speakSound2 from "../audio/speak_2.ogg";
 import speakSound3 from "../audio/speak_3.ogg";
+import { useSaveData } from "./save_data";
 
 interface SoundManager {
   getSound: (id: string) => Playable;
@@ -65,6 +66,8 @@ const audioContext = new AudioContext({
 export const useSoundManager = () => useContext(SoundManagerContext);
 
 export function SoundProvider(props: PropsWithChildren<{}>) {
+  const [saveData, _] = useSaveData();
+
   const bumpRef0 = useRef<HTMLAudioElement>(null);
   const bumpRef1 = useRef<HTMLAudioElement>(null);
   const moveRef0 = useRef<HTMLAudioElement>(null);
@@ -82,8 +85,15 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const speakRef3 = useRef<HTMLAudioElement>(null);
 
   // Create master and group gain controls
-  const [masterGain, setMasterGain] = useState(1.0);
-  const [relSfxGain, setRelSfxGain] = useState(1.0);
+  const [masterGain, setMasterGain] = useState(saveData.settings.masterVolume);
+  const [relSfxGain, setRelSfxGain] = useState(
+    saveData.settings.soundEffectsVolume
+  );
+  useEffect(() => {
+    // Automatically update gains when the settings change.
+    setMasterGain(saveData.settings.masterVolume);
+    setRelSfxGain(saveData.settings.soundEffectsVolume);
+  }, [saveData.settings.masterVolume, saveData.settings.soundEffectsVolume]);
   const sfxGain = useMemo(
     () => masterGain * relSfxGain,
     [masterGain, relSfxGain]
@@ -176,21 +186,46 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
 
   return (
     <SoundManagerContext.Provider value={providerValue}>
-      <audio src={bumpSound0} ref={bumpRef0} preload="auto" />
-      <audio src={bumpSound1} ref={bumpRef1} preload="auto" />
-      <audio src={moveSound0} ref={moveRef0} preload="auto" />
-      <audio src={moveSound1} ref={moveRef1} preload="auto" />
-      <audio src={moveSound2} ref={moveRef2} preload="auto" />
-      <audio src={moveSound3} ref={moveRef3} preload="auto" />
-      <audio src={turnSound0} ref={turnRef0} preload="auto" />
-      <audio src={turnSound1} ref={turnRef1} preload="auto" />
-      <audio src={turnSound2} ref={turnRef2} preload="auto" />
-      <audio src={turnSound3} ref={turnRef3} preload="auto" />
-      <audio src={teleportSound} ref={teleportRef} preload="auto" />
-      <audio src={speakSound0} ref={speakRef0} preload="auto" />
-      <audio src={speakSound1} ref={speakRef1} preload="auto" />
-      <audio src={speakSound2} ref={speakRef2} preload="auto" />
-      <audio src={speakSound3} ref={speakRef3} preload="auto" />
+      <audio src={bumpSound0} ref={bumpRef0} preload="auto" autoPlay={false} />
+      <audio src={bumpSound1} ref={bumpRef1} preload="auto" autoPlay={false} />
+      <audio src={moveSound0} ref={moveRef0} preload="auto" autoPlay={false} />
+      <audio src={moveSound1} ref={moveRef1} preload="auto" autoPlay={false} />
+      <audio src={moveSound2} ref={moveRef2} preload="auto" autoPlay={false} />
+      <audio src={moveSound3} ref={moveRef3} preload="auto" autoPlay={false} />
+      <audio src={turnSound0} ref={turnRef0} preload="auto" autoPlay={false} />
+      <audio src={turnSound1} ref={turnRef1} preload="auto" autoPlay={false} />
+      <audio src={turnSound2} ref={turnRef2} preload="auto" autoPlay={false} />
+      <audio src={turnSound3} ref={turnRef3} preload="auto" autoPlay={false} />
+      <audio
+        src={teleportSound}
+        ref={teleportRef}
+        preload="auto"
+        autoPlay={false}
+      />
+      <audio
+        src={speakSound0}
+        ref={speakRef0}
+        preload="auto"
+        autoPlay={false}
+      />
+      <audio
+        src={speakSound1}
+        ref={speakRef1}
+        preload="auto"
+        autoPlay={false}
+      />
+      <audio
+        src={speakSound2}
+        ref={speakRef2}
+        preload="auto"
+        autoPlay={false}
+      />
+      <audio
+        src={speakSound3}
+        ref={speakRef3}
+        preload="auto"
+        autoPlay={false}
+      />
 
       {props.children}
     </SoundManagerContext.Provider>

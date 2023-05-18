@@ -70,12 +70,16 @@ export class Sound implements Playable {
     }
   }
 
-  play() {
-    this.load();
+  private resume() {
     if (this._audioContext.state === "suspended") {
       // See: https://developer.chrome.com/blog/autoplay/#web-audio
       this._audioContext.resume();
     }
+  }
+
+  play() {
+    this.load();
+    this.resume();
     this._ref.current?.play();
   }
 
@@ -91,10 +95,7 @@ export class Sound implements Playable {
 
   replay() {
     this.load();
-    if (this._audioContext.state === "suspended") {
-      // See: https://developer.chrome.com/blog/autoplay/#web-audio
-      this._audioContext.resume();
-    }
+    this.resume();
     this.seek(0);
     this._ref.current?.play();
   }

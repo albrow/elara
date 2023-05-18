@@ -13,7 +13,7 @@ import clone from "clone";
 import { ShortId } from "../lib/tutorial_shorts";
 import { LevelData } from "../../elara-lib/pkg/elara_lib";
 
-export const VERSION = 7;
+export const VERSION = 8;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 export interface LevelState {
@@ -24,6 +24,18 @@ export interface LevelState {
   // Whether or not the challenge was completed.
   challengeCompleted?: boolean;
 }
+
+export interface Settings {
+  masterVolume: number;
+  musicVolume: number;
+  soundEffectsVolume: number;
+}
+
+const DEFUALT_SETTINGS: Settings = {
+  masterVolume: 1,
+  musicVolume: 1,
+  soundEffectsVolume: 1,
+};
 
 // The macro state of the game, including which levels have been
 // completed, user settings, dialog options, etc.
@@ -36,6 +48,8 @@ export interface SaveData {
   seenDialogTrees: string[];
   // Tracks which tutorial shorts have been seen.
   seenTutorialShorts: ShortId[];
+  // Stores various user settings (e.g. sound volume, etc.)
+  settings: Settings;
 }
 
 export function save(saveData: SaveData): void {
@@ -53,6 +67,7 @@ function migrateSaveData(saveData: SaveData): SaveData {
       levelStates: {},
       seenDialogTrees: [],
       seenTutorialShorts: [],
+      settings: DEFUALT_SETTINGS,
     };
   }
 
@@ -76,6 +91,13 @@ function migrateSaveData(saveData: SaveData): SaveData {
     }
   }
 
+  // Migrate from version 7 to 8.
+  if (newData.version === 7) {
+    newData.version = 8;
+    // Version 8 added user settings.
+    newData.settings = DEFUALT_SETTINGS;
+  }
+
   return newData;
 }
 
@@ -93,6 +115,7 @@ export function load(): SaveData {
     levelStates: {},
     seenDialogTrees: [],
     seenTutorialShorts: [],
+    settings: DEFUALT_SETTINGS,
   };
 }
 
@@ -157,6 +180,12 @@ export function markTutorialShortSeen(
   if (!newSaveData.seenTutorialShorts.includes(shortId)) {
     newSaveData.seenTutorialShorts.push(shortId);
   }
+  return newSaveData;
+}
+
+export function updateSettings(saveData: SaveData, settings: Settings) {
+  const newSaveData = clone(saveData);
+  newSaveData.settings = settings;
   return newSaveData;
 }
 
@@ -248,6 +277,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
         };
         const newSaveData = markLevelCompleted(saveData, "First Steps");
         expect(newSaveData).toStrictEqual({
@@ -266,6 +296,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
         });
       });
     });
@@ -287,6 +318,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
         };
         const newSaveData = updateLevelCode(
           saveData,
@@ -309,6 +341,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
         });
       });
     });
@@ -329,6 +362,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
         };
         const newSaveData = markDialogSeen(saveData, "fuel_part_one");
         expect(newSaveData).toStrictEqual({
@@ -345,6 +379,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement", "fuel_part_one"],
           seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
         });
       });
     });
@@ -365,6 +400,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
         };
         const newSaveData = markTutorialShortSeen(
           saveData,
@@ -384,6 +420,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code", "how_to_see_errors"],
+          settings: DEFUALT_SETTINGS,
         });
       });
     });
@@ -404,6 +441,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
         };
         save(saveData);
         expect(
@@ -419,6 +457,7 @@ if (import.meta.vitest) {
           levelStates: {},
           seenDialogTrees: [],
           seenTutorialShorts: [],
+          settings: DEFUALT_SETTINGS,
         });
       });
 
@@ -437,6 +476,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
         };
         window.localStorage.setItem(
           LOCAL_STORAGE_KEY,
