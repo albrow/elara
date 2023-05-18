@@ -14,6 +14,7 @@ import { useSaveData } from "../../contexts/save_data";
 import NavbarLink from "./navbar_link";
 import NavbarDropdown from "./navbar_dropdown";
 import SettingsModal from "./settings_modal";
+import NavbarButton from "./navbar_button";
 
 export default function Navbar() {
   const router = useRouter();
@@ -61,22 +62,10 @@ export default function Navbar() {
         <Container maxW="container.xl" p={2} height={`${NAVBAR_HEIGHT}px`}>
           <Flex height="100%" align="center">
             <NavbarLink routeName="home" text="Home" />
-            <Button
-              mr="18px"
-              background="none"
-              fontWeight="bold"
-              color="gray.300"
-              _hover={{
-                background: "var(--chakra-colors-gray-700)",
-              }}
-              _active={{
-                background: "var(--chakra-colors-gray-700)",
-              }}
-              onClick={() => setSettingsVisible(true)}
-            >
+            <NavbarButton onClick={() => setSettingsVisible(true)}>
               <MdSettings size="0.9em" style={{ marginRight: "0.2rem" }} />
               Settings
-            </Button>
+            </NavbarButton>
             <NavbarDropdown name="Journal" scenes={JOURNAL_PAGES} />
             <NavbarDropdown name="Levels" scenes={LEVELS} />
 
