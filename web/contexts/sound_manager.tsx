@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/media-has-caption */
 import {
   createContext,
   PropsWithChildren,
@@ -14,6 +13,7 @@ import { useRouteNode } from "react-router5";
 import { Sound } from "../lib/playables/sound";
 import { Playable } from "../lib/playables";
 import { RoundRobinSoundGroup } from "../lib/playables/round_robin";
+import { AudioWithFallback } from "../components/audio_with_fallback";
 
 import bumpSound0 from "../audio/bump_0.ogg";
 import bumpSound1 from "../audio/bump_1.ogg";
@@ -25,11 +25,26 @@ import turnSound0 from "../audio/turn_0.ogg";
 import turnSound1 from "../audio/turn_1.ogg";
 import turnSound2 from "../audio/turn_2.ogg";
 import turnSound3 from "../audio/turn_3.ogg";
+import bumpSound0Fallback from "../audio/bump_0.mp3";
+import bumpSound1Fallback from "../audio/bump_1.mp3";
+import moveSound0Fallback from "../audio/move_0.mp3";
+import moveSound1Fallback from "../audio/move_1.mp3";
+import moveSound2Fallback from "../audio/move_2.mp3";
+import moveSound3Fallback from "../audio/move_3.mp3";
+import turnSound0Fallback from "../audio/turn_0.mp3";
+import turnSound1Fallback from "../audio/turn_1.mp3";
+import turnSound2Fallback from "../audio/turn_2.mp3";
+import turnSound3Fallback from "../audio/turn_3.mp3";
 import teleportSound from "../audio/teleport.ogg";
+import teleportSoundFallback from "../audio/teleport.mp3";
 import speakSound0 from "../audio/speak_0.ogg";
 import speakSound1 from "../audio/speak_1.ogg";
 import speakSound2 from "../audio/speak_2.ogg";
 import speakSound3 from "../audio/speak_3.ogg";
+import speakSound0Fallback from "../audio/speak_0.mp3";
+import speakSound1Fallback from "../audio/speak_1.mp3";
+import speakSound2Fallback from "../audio/speak_2.mp3";
+import speakSound3Fallback from "../audio/speak_3.mp3";
 import { useSaveData } from "./save_data";
 
 interface SoundManager {
@@ -191,45 +206,80 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
 
   return (
     <SoundManagerContext.Provider value={providerValue}>
-      <audio src={bumpSound0} ref={bumpRef0} preload="auto" autoPlay={false} />
-      <audio src={bumpSound1} ref={bumpRef1} preload="auto" autoPlay={false} />
-      <audio src={moveSound0} ref={moveRef0} preload="auto" autoPlay={false} />
-      <audio src={moveSound1} ref={moveRef1} preload="auto" autoPlay={false} />
-      <audio src={moveSound2} ref={moveRef2} preload="auto" autoPlay={false} />
-      <audio src={moveSound3} ref={moveRef3} preload="auto" autoPlay={false} />
-      <audio src={turnSound0} ref={turnRef0} preload="auto" autoPlay={false} />
-      <audio src={turnSound1} ref={turnRef1} preload="auto" autoPlay={false} />
-      <audio src={turnSound2} ref={turnRef2} preload="auto" autoPlay={false} />
-      <audio src={turnSound3} ref={turnRef3} preload="auto" autoPlay={false} />
-      <audio
-        src={teleportSound}
+      <AudioWithFallback
+        ref={moveRef0}
+        oggSrc={moveSound0}
+        mp3Src={moveSound0Fallback}
+      />
+      <AudioWithFallback
+        ref={moveRef1}
+        oggSrc={moveSound1}
+        mp3Src={moveSound1Fallback}
+      />
+      <AudioWithFallback
+        ref={moveRef2}
+        oggSrc={moveSound2}
+        mp3Src={moveSound2Fallback}
+      />
+      <AudioWithFallback
+        ref={moveRef3}
+        oggSrc={moveSound3}
+        mp3Src={moveSound3Fallback}
+      />
+      <AudioWithFallback
+        ref={turnRef0}
+        oggSrc={turnSound0}
+        mp3Src={turnSound0Fallback}
+      />
+      <AudioWithFallback
+        ref={turnRef1}
+        oggSrc={turnSound1}
+        mp3Src={turnSound1Fallback}
+      />
+      <AudioWithFallback
+        ref={turnRef2}
+        oggSrc={turnSound2}
+        mp3Src={turnSound2Fallback}
+      />
+      <AudioWithFallback
+        ref={turnRef3}
+        oggSrc={turnSound3}
+        mp3Src={turnSound3Fallback}
+      />
+      <AudioWithFallback
+        ref={bumpRef0}
+        oggSrc={bumpSound0}
+        mp3Src={bumpSound0Fallback}
+      />
+      <AudioWithFallback
+        ref={bumpRef1}
+        oggSrc={bumpSound1}
+        mp3Src={bumpSound1Fallback}
+      />
+      <AudioWithFallback
         ref={teleportRef}
-        preload="auto"
-        autoPlay={false}
+        oggSrc={teleportSound}
+        mp3Src={teleportSoundFallback}
       />
-      <audio
-        src={speakSound0}
+      <AudioWithFallback
         ref={speakRef0}
-        preload="auto"
-        autoPlay={false}
+        oggSrc={speakSound0}
+        mp3Src={speakSound0Fallback}
       />
-      <audio
-        src={speakSound1}
+      <AudioWithFallback
         ref={speakRef1}
-        preload="auto"
-        autoPlay={false}
+        oggSrc={speakSound1}
+        mp3Src={speakSound1Fallback}
       />
-      <audio
-        src={speakSound2}
+      <AudioWithFallback
         ref={speakRef2}
-        preload="auto"
-        autoPlay={false}
+        oggSrc={speakSound2}
+        mp3Src={speakSound2Fallback}
       />
-      <audio
-        src={speakSound3}
+      <AudioWithFallback
         ref={speakRef3}
-        preload="auto"
-        autoPlay={false}
+        oggSrc={speakSound3}
+        mp3Src={speakSound3Fallback}
       />
 
       {props.children}
