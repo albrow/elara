@@ -121,10 +121,10 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
       ]),
       teleport: new Sound(audioContext, "teleport", teleportRef, 0.7),
       speak: new RoundRobinSoundGroup("speak", [
-        new Sound(audioContext, "speak_0", speakRef0, 0.25),
-        new Sound(audioContext, "speak_3", speakRef3, 0.25),
-        new Sound(audioContext, "speak_1", speakRef1, 0.25),
-        new Sound(audioContext, "speak_2", speakRef2, 0.25),
+        new Sound(audioContext, "speak_0", speakRef0, 0.15),
+        new Sound(audioContext, "speak_3", speakRef3, 0.3),
+        new Sound(audioContext, "speak_1", speakRef1, 0.15),
+        new Sound(audioContext, "speak_2", speakRef2, 0.3),
       ]),
     }),
     []
