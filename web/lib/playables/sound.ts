@@ -45,7 +45,12 @@ export class Sound implements Playable {
     // TODO(albrow): Fade instead of instant change?
     this._groupGain = gain;
     if (this._howl) {
-      this._howl.volume(this._baseGain * this._groupGain);
+      // this._howl.volume(this._baseGain * this._groupGain);
+      this._howl.fade(
+        this._howl.volume(),
+        this._baseGain * this._groupGain,
+        500
+      );
     }
   }
 

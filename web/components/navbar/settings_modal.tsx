@@ -9,6 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
+import debounce from "lodash.debounce";
 
 import { useSaveData, updateSettings } from "../../contexts/save_data";
 import VolumeSlider from "./volume_slider";
@@ -25,30 +26,38 @@ export default function SettingsModal(props: SettingsModalProps) {
     () => saveData.settings.masterVolume,
     [saveData.settings.masterVolume]
   );
-  const setMasterVolume = useCallback(
-    (percentValue: number) => {
-      const newSaveData = updateSettings(saveData, {
-        ...saveData.settings,
-        masterVolume: percentValue / 100,
-      });
-      setSaveData(newSaveData);
-    },
-    [saveData, setSaveData]
+  const setMasterVolume = debounce(
+    useCallback(
+      (percentValue: number) => {
+        const newSaveData = updateSettings(saveData, {
+          ...saveData.settings,
+          masterVolume: percentValue / 100,
+        });
+        setSaveData(newSaveData);
+      },
+      [saveData, setSaveData]
+    ),
+    100,
+    { maxWait: 1000 }
   );
 
   const soundEffectsVolume = useMemo(
     () => saveData.settings.soundEffectsVolume,
     [saveData.settings.soundEffectsVolume]
   );
-  const setSoundEffectsVolume = useCallback(
-    (percentValue: number) => {
-      const newSaveData = updateSettings(saveData, {
-        ...saveData.settings,
-        soundEffectsVolume: percentValue / 100,
-      });
-      setSaveData(newSaveData);
-    },
-    [saveData, setSaveData]
+  const setSoundEffectsVolume = debounce(
+    useCallback(
+      (percentValue: number) => {
+        const newSaveData = updateSettings(saveData, {
+          ...saveData.settings,
+          soundEffectsVolume: percentValue / 100,
+        });
+        setSaveData(newSaveData);
+      },
+      [saveData, setSaveData]
+    ),
+    100,
+    { maxWait: 1000 }
   );
 
   return (
