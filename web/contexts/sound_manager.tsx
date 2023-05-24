@@ -5,7 +5,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { useRouteNode } from "react-router5";
@@ -13,7 +12,6 @@ import { useRouteNode } from "react-router5";
 import { Sound } from "../lib/playables/sound";
 import { Playable } from "../lib/playables";
 import { RoundRobinSoundGroup } from "../lib/playables/round_robin";
-import { AudioWithFallback } from "../components/audio_with_fallback";
 
 import bumpSound0 from "../audio/bump_0.ogg";
 import bumpSound1 from "../audio/bump_1.ogg";
@@ -73,31 +71,10 @@ export const SoundManagerContext = createContext<SoundManager>({
   },
 });
 
-const audioContext = new AudioContext({
-  sampleRate: 48000,
-  latencyHint: "interactive",
-});
-
 export const useSoundManager = () => useContext(SoundManagerContext);
 
 export function SoundProvider(props: PropsWithChildren<{}>) {
   const [saveData, _] = useSaveData();
-
-  const bumpRef0 = useRef<HTMLAudioElement>(null);
-  const bumpRef1 = useRef<HTMLAudioElement>(null);
-  const moveRef0 = useRef<HTMLAudioElement>(null);
-  const moveRef1 = useRef<HTMLAudioElement>(null);
-  const moveRef2 = useRef<HTMLAudioElement>(null);
-  const moveRef3 = useRef<HTMLAudioElement>(null);
-  const turnRef0 = useRef<HTMLAudioElement>(null);
-  const turnRef1 = useRef<HTMLAudioElement>(null);
-  const turnRef2 = useRef<HTMLAudioElement>(null);
-  const turnRef3 = useRef<HTMLAudioElement>(null);
-  const teleportRef = useRef<HTMLAudioElement>(null);
-  const speakRef0 = useRef<HTMLAudioElement>(null);
-  const speakRef1 = useRef<HTMLAudioElement>(null);
-  const speakRef2 = useRef<HTMLAudioElement>(null);
-  const speakRef3 = useRef<HTMLAudioElement>(null);
 
   // Load master and group volume from settings.
   const [masterGain, setMasterGain] = useState(saveData.settings.masterVolume);
@@ -119,27 +96,31 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
       move: new RoundRobinSoundGroup("move", [
-        new Sound(audioContext, "move_0", moveRef0, 0.3),
-        new Sound(audioContext, "move_1", moveRef1, 0.3),
-        new Sound(audioContext, "move_2", moveRef2, 0.3),
-        new Sound(audioContext, "move_3", moveRef3, 0.3),
+        new Sound("move_0", [moveSound0, moveSound0Fallback], 0.3),
+        new Sound("move_1", [moveSound1, moveSound1Fallback], 0.3),
+        new Sound("move_2", [moveSound2, moveSound2Fallback], 0.3),
+        new Sound("move_3", [moveSound3, moveSound3Fallback], 0.3),
       ]),
       turn: new RoundRobinSoundGroup("turn", [
-        new Sound(audioContext, "turn_0", turnRef0, 0.3),
-        new Sound(audioContext, "turn_1", turnRef1, 0.3),
-        new Sound(audioContext, "turn_2", turnRef2, 0.3),
-        new Sound(audioContext, "turn_3", turnRef3, 0.3),
+        new Sound("turn_0", [turnSound0, turnSound0Fallback], 0.3),
+        new Sound("turn_1", [turnSound1, turnSound1Fallback], 0.3),
+        new Sound("turn_2", [turnSound2, turnSound2Fallback], 0.3),
+        new Sound("turn_3", [turnSound3, turnSound3Fallback], 0.3),
       ]),
       bump: new RoundRobinSoundGroup("bump", [
-        new Sound(audioContext, "bump_0", bumpRef0, 0.3),
-        new Sound(audioContext, "bump_1", bumpRef1, 0.3),
+        new Sound("bump_0", [bumpSound0, bumpSound0Fallback], 0.3),
+        new Sound("bump_1", [bumpSound1, bumpSound1Fallback], 0.3),
       ]),
-      teleport: new Sound(audioContext, "teleport", teleportRef, 0.7),
+      teleport: new Sound(
+        "teleport",
+        [teleportSound, teleportSoundFallback],
+        0.7
+      ),
       speak: new RoundRobinSoundGroup("speak", [
-        new Sound(audioContext, "speak_0", speakRef0, 0.15),
-        new Sound(audioContext, "speak_3", speakRef3, 0.3),
-        new Sound(audioContext, "speak_1", speakRef1, 0.15),
-        new Sound(audioContext, "speak_2", speakRef2, 0.3),
+        new Sound("speak_0", [speakSound0, speakSound0Fallback], 0.3),
+        new Sound("speak_1", [speakSound1, speakSound1Fallback], 0.3),
+        new Sound("speak_2", [speakSound2, speakSound2Fallback], 0.3),
+        new Sound("speak_3", [speakSound3, speakSound3Fallback], 0.3),
       ]),
     }),
     []
@@ -149,13 +130,6 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
       sound.setGroupGain(sfxGain);
     });
   }, [sfxGain, soundDict]);
-
-  // Attempt to preemptively load all sounds.
-  useEffect(() => {
-    Object.values(soundDict).forEach((sound) => {
-      sound.load();
-    });
-  }, [soundDict]);
 
   // getSound is used when you need more control over the sound (e.g. need
   // to play, pause, stop, or add effects).
@@ -181,9 +155,7 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
 
   const stopAllSoundEffects = useCallback(() => {
     Object.values(soundDict).forEach((sound) => {
-      if (sound.isLoaded()) {
-        sound.stop();
-      }
+      sound.stop();
     });
   }, [soundDict]);
 
@@ -206,82 +178,6 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
 
   return (
     <SoundManagerContext.Provider value={providerValue}>
-      <AudioWithFallback
-        ref={moveRef0}
-        oggSrc={moveSound0}
-        mp3Src={moveSound0Fallback}
-      />
-      <AudioWithFallback
-        ref={moveRef1}
-        oggSrc={moveSound1}
-        mp3Src={moveSound1Fallback}
-      />
-      <AudioWithFallback
-        ref={moveRef2}
-        oggSrc={moveSound2}
-        mp3Src={moveSound2Fallback}
-      />
-      <AudioWithFallback
-        ref={moveRef3}
-        oggSrc={moveSound3}
-        mp3Src={moveSound3Fallback}
-      />
-      <AudioWithFallback
-        ref={turnRef0}
-        oggSrc={turnSound0}
-        mp3Src={turnSound0Fallback}
-      />
-      <AudioWithFallback
-        ref={turnRef1}
-        oggSrc={turnSound1}
-        mp3Src={turnSound1Fallback}
-      />
-      <AudioWithFallback
-        ref={turnRef2}
-        oggSrc={turnSound2}
-        mp3Src={turnSound2Fallback}
-      />
-      <AudioWithFallback
-        ref={turnRef3}
-        oggSrc={turnSound3}
-        mp3Src={turnSound3Fallback}
-      />
-      <AudioWithFallback
-        ref={bumpRef0}
-        oggSrc={bumpSound0}
-        mp3Src={bumpSound0Fallback}
-      />
-      <AudioWithFallback
-        ref={bumpRef1}
-        oggSrc={bumpSound1}
-        mp3Src={bumpSound1Fallback}
-      />
-      <AudioWithFallback
-        ref={teleportRef}
-        oggSrc={teleportSound}
-        mp3Src={teleportSoundFallback}
-      />
-      <AudioWithFallback
-        ref={speakRef0}
-        oggSrc={speakSound0}
-        mp3Src={speakSound0Fallback}
-      />
-      <AudioWithFallback
-        ref={speakRef1}
-        oggSrc={speakSound1}
-        mp3Src={speakSound1Fallback}
-      />
-      <AudioWithFallback
-        ref={speakRef2}
-        oggSrc={speakSound2}
-        mp3Src={speakSound2Fallback}
-      />
-      <AudioWithFallback
-        ref={speakRef3}
-        oggSrc={speakSound3}
-        mp3Src={speakSound3Fallback}
-      />
-
       {props.children}
     </SoundManagerContext.Provider>
   );

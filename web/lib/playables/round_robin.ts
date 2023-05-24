@@ -40,25 +40,11 @@ export class RoundRobinSoundGroup implements Playable {
       (this._currentSoundIndex + 1) % this._sounds.length;
   }
 
-  replay(): void {
-    this._sounds[this._currentSoundIndex].replay();
-    this._currentSoundIndex =
-      (this._currentSoundIndex + 1) % this._sounds.length;
-  }
-
   pause(): void {
     this._sounds[this._currentSoundIndex].pause();
   }
 
   stop(): void {
     this._sounds.forEach((sound) => sound.stop());
-  }
-
-  load(): void {
-    this._sounds.forEach((sound) => sound.load());
-  }
-
-  isLoaded(): boolean {
-    return this._sounds.every((sound) => sound.isLoaded());
   }
 }

@@ -71,16 +71,16 @@ export default function Player(props: PlayerProps) {
     if (!props.enableAnimations) {
       stopAllSoundEffects();
     } else if (props.animState === "moving") {
-      moveSound.replay();
+      moveSound.play();
     } else if (props.animState === "turning") {
-      turnSound.replay();
+      turnSound.play();
     } else if (props.animState === "bumping") {
-      bumpSound.replay();
+      bumpSound.play();
     } else if (props.animState === "teleporting") {
-      moveSound.replay();
-      teleportSound.replay();
+      moveSound.play();
+      teleportSound.play();
     } else if (props.message !== "") {
-      speakSound.replay();
+      speakSound.play();
     } else {
       stopAllSoundEffects();
     }
@@ -88,15 +88,12 @@ export default function Player(props: PlayerProps) {
       stopAllSoundEffects();
     };
   }, [
-    // Note: We intentially include *all* props in the deps array here, because
-    // we want to correctly replay the sound effect when the rover is moving, turning,
-    // etc. even if the animation state has not changed.
     props,
     stopAllSoundEffects,
     moveSound,
     turnSound,
-    teleportSound,
     bumpSound,
+    teleportSound,
     speakSound,
   ]);
 

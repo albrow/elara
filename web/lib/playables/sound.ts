@@ -1,26 +1,23 @@
+import { Howl } from "howler";
+
 import { Playable } from ".";
 
 export class Sound implements Playable {
-  private _audioContext: AudioContext;
-
   private _id: string;
 
-  private _ref: React.RefObject<HTMLAudioElement>;
+  private _sources: string[];
 
   private _baseGain: number;
 
   private _groupGain: number;
 
-  private _source: MediaElementAudioSourceNode | undefined;
-
-  private _gainNode: GainNode | undefined;
+  private _howl: Howl;
 
   /**
    * This is the most basic implementation of Playable.
    *
-   * @param audioContext The AudioContext to use for playing the sound.
    * @param id A unique identifier for the sound.
-   * @param ref A reference to the HTML audio element.
+   * @param sources An array of source URLs for the sound
    * @param baseGain The "base" or "internal" gain of the sound, from 0.0 to 1.0 (default 1.0).
    *    Independent of other volume controls. This is useful for adjusting specific sounds that
    *    are too loud or too quiet.
@@ -29,85 +26,38 @@ export class Sound implements Playable {
    *    controls for sound effects, music, etc.
    */
   constructor(
-    audioContext: AudioContext,
     id: string,
-    ref: React.RefObject<HTMLAudioElement>,
+    sources: string[],
     baseGain: number = 1.0,
     groupGain: number = 1.0
   ) {
-    this._audioContext = audioContext;
     this._id = id;
-    this._ref = ref;
+    this._sources = sources;
     this._baseGain = baseGain;
     this._groupGain = groupGain;
-  }
-
-  isLoaded() {
-    return this._source != null;
-  }
-
-  load() {
-    if (this.isLoaded()) {
-      return;
-    }
-    if (!this._ref.current) {
-      throw new Error(`Audio element for sound "${this._id}" not found`);
-    }
-    this._source = new MediaElementAudioSourceNode(this._audioContext, {
-      mediaElement: this._ref.current,
+    this._howl = new Howl({
+      src: this._sources,
+      volume: this._baseGain * this._groupGain,
     });
-    this._gainNode = this._audioContext.createGain();
-    this._gainNode.gain.value = this._baseGain * this._groupGain;
-    this._source
-      .connect(this._gainNode)
-      .connect(this._audioContext.destination);
   }
 
   setGroupGain(gain: number): void {
+    // TODO(albrow): Fade instead of instant change?
     this._groupGain = gain;
-    if (this._gainNode) {
-      this._gainNode.gain.value = this._baseGain * this._groupGain;
-    }
-  }
-
-  private resume() {
-    if (this._audioContext.state === "suspended") {
-      // See: https://developer.chrome.com/blog/autoplay/#web-audio
-      this._audioContext.resume();
+    if (this._howl) {
+      this._howl.volume(this._baseGain * this._groupGain);
     }
   }
 
   play() {
-    this.load();
-    this.resume();
-    this._ref.current?.play();
-  }
-
-  private seek(time: number) {
-    if (this._ref.current) {
-      if (this._ref.current.fastSeek) {
-        this._ref.current.fastSeek(time);
-      } else {
-        this._ref.current.currentTime = time;
-      }
-    }
-  }
-
-  replay() {
-    this.load();
-    this.resume();
-    this.seek(0);
-    this._ref.current?.play();
+    this._howl?.play();
   }
 
   pause() {
-    this.load();
-    this._ref.current?.pause();
+    this._howl?.pause();
   }
 
   stop() {
-    this.load();
-    this._ref.current?.pause();
-    this.seek(0);
+    this._howl?.stop();
   }
 }
