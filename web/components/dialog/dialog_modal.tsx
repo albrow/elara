@@ -6,7 +6,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import React, { useCallback } from "react";
-import { markDialogSeen, useSaveData } from "../../contexts/save_data";
+import { useSaveData } from "../../contexts/save_data";
 
 import { DIALOG_MODAL_Z_INDEX } from "../../lib/constants";
 import DialogTree from "./dialog_tree";
@@ -21,19 +21,18 @@ interface DialogModalProps {
 }
 
 export default function DialogModal(props: DialogModalProps) {
-  const [saveData, setSaveData] = useSaveData();
+  const [_, { markDialogSeen }] = useSaveData();
 
   const handleClose = useCallback(() => {
     if (props.treeName != null) {
-      const newSaveData = markDialogSeen(saveData, props.treeName);
-      setSaveData(newSaveData);
+      markDialogSeen(props.treeName);
     }
 
     props.setVisible(false);
     if (props.onClose) {
       props.onClose();
     }
-  }, [props, saveData, setSaveData]);
+  }, [props, markDialogSeen]);
 
   return (
     <Box hidden={!props.visible} zIndex={DIALOG_MODAL_Z_INDEX}>

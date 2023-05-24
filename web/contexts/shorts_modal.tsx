@@ -22,7 +22,7 @@ import { MdCheck } from "react-icons/md";
 
 import { TUTORIAL_MODAL_Z_INDEX } from "../lib/constants";
 import { SHORTS, ShortId } from "../lib/tutorial_shorts";
-import { useSaveData, markTutorialShortSeen } from "./save_data";
+import { useSaveData } from "./save_data";
 
 export const ShortsModalContext = createContext<
   readonly [(shortsList: ShortId[]) => void, () => void]
@@ -41,7 +41,7 @@ export const useShortsModal = () => useContext(ShortsModalContext);
 export function ShortsModalProvider(props: PropsWithChildren<{}>) {
   const [shortsList, setShortsList] = useState<Array<ShortId>>([]);
   const [currIndex, setCurrIndex] = useState<number>(0);
-  const [saveData, setSaveData] = useSaveData();
+  const [saveData, { markTutorialShortSeen }] = useSaveData();
 
   const currShortId = useCallback(
     () => shortsList[currIndex],
@@ -70,12 +70,10 @@ export function ShortsModalProvider(props: PropsWithChildren<{}>) {
   }, []);
 
   const markAllShortsAsSeen = useCallback(() => {
-    let newSaveData = { ...saveData };
     shortsList.forEach((shortId) => {
-      newSaveData = markTutorialShortSeen(newSaveData, shortId);
+      markTutorialShortSeen(shortId);
     });
-    setSaveData(newSaveData);
-  }, [saveData, setSaveData, shortsList]);
+  }, [markTutorialShortSeen, shortsList]);
 
   const nextShort = useCallback(() => {
     if (currIndex === shortsList.length - 1) {

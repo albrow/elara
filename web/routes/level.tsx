@@ -7,12 +7,7 @@ import { FuzzyStateWithLines, Game, RunResult } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
 import ObjectiveText from "../components/level/objective_text";
-import {
-  markLevelChallengeCompleted,
-  markLevelCompleted,
-  updateLevelCode,
-  useSaveData,
-} from "../contexts/save_data";
+import { useSaveData } from "../contexts/save_data";
 import DialogModal from "../components/dialog/dialog_modal";
 import { TREES } from "../lib/dialog_trees";
 import { useShortsModal } from "../contexts/shorts_modal";
@@ -27,7 +22,10 @@ import { useHintsModal } from "../contexts/hints_modal";
 const game = Game.new();
 
 export default function Level() {
-  const [saveData, setSaveData] = useSaveData();
+  const [
+    saveData,
+    { markLevelCompleted, markLevelChallengeCompleted, updateLevelCode },
+  ] = useSaveData();
   const currScene = useCurrScene();
   const [editorState, setEditorState] = useState<EditorState>("editing");
   const [showErrorModal, _hidErrorModal, setErrorModalOnClose] =
@@ -115,17 +113,12 @@ export default function Level() {
   const runScript = useCallback(
     (script: string) => {
       // Store the latest code in the save data.
-      const newSaveData = updateLevelCode(
-        saveData,
-        currLevel().short_name,
-        script
-      );
-      setSaveData(newSaveData);
+      updateLevelCode(currLevel().short_name, script);
 
       // Then run the script using the current level name.
       return game.run_player_script(script, currLevel().short_name);
     },
-    [currLevel, saveData, setSaveData]
+    [currLevel, updateLevelCode]
   );
 
   const onEditorStep = useCallback((step: FuzzyStateWithLines) => {
@@ -141,27 +134,16 @@ export default function Level() {
   const onReplayDone = useCallback(
     (script: string, result: RunResult) => {
       // Store the latest code in the save data.
-      // We need to do this again to prevent race conditions.
-      let pendingSaveData = updateLevelCode(
-        saveData,
-        currLevel().short_name,
-        script
-      );
+      updateLevelCode(currLevel().short_name, script);
       if (result.outcome === "success") {
         // Show the success modal.
         setModalVisible(true);
         setLastResult(result);
 
         // Update the level status in local storage.
-        pendingSaveData = markLevelCompleted(
-          pendingSaveData,
-          currLevel().short_name
-        );
+        markLevelCompleted(currLevel().short_name);
         if (result.passes_challenge) {
-          pendingSaveData = markLevelChallengeCompleted(
-            pendingSaveData,
-            currLevel().short_name
-          );
+          markLevelChallengeCompleted(currLevel().short_name);
         }
       } else {
         // Show the failure modal.
@@ -172,29 +154,24 @@ export default function Level() {
         );
       }
 
-      setSaveData(pendingSaveData);
       setEditorState("editing");
     },
     [
       currLevel,
+      markLevelChallengeCompleted,
+      markLevelCompleted,
       resetLevelState,
-      saveData,
       setErrorModalOnClose,
-      setSaveData,
       showErrorModal,
+      updateLevelCode,
     ]
   );
 
   const persistCode = useCallback(
     (script: string) => {
-      const pendingSaveData = updateLevelCode(
-        saveData,
-        currLevel().short_name,
-        script
-      );
-      setSaveData(pendingSaveData);
+      updateLevelCode(currLevel().short_name, script);
     },
-    [currLevel, saveData, setSaveData]
+    [currLevel, updateLevelCode]
   );
 
   const onScriptError = useCallback(

@@ -28,7 +28,7 @@ export default function VolumeSlider(props: VolumeSliderProps) {
   return (
     <Flex p="3px">
       <Box minW="56px" p="3px">
-        <Text fontSize="0.9em">{`${sliderValue}%`}</Text>
+        <Text fontSize="0.9em">{`${sliderValue.toFixed(0)}%`}</Text>
       </Box>
       <Slider
         aria-label="slider-master-volume"

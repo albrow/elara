@@ -11,7 +11,7 @@ import {
 import { useCallback, useMemo } from "react";
 import debounce from "lodash.debounce";
 
-import { useSaveData, updateSettings } from "../../contexts/save_data";
+import { useSaveData } from "../../contexts/save_data";
 import VolumeSlider from "./volume_slider";
 
 export interface SettingsModalProps {
@@ -20,7 +20,8 @@ export interface SettingsModalProps {
 }
 
 export default function SettingsModal(props: SettingsModalProps) {
-  const [saveData, setSaveData] = useSaveData();
+  const [saveData, { saveMasterVolume, saveSoundEffectsVolume }] =
+    useSaveData();
 
   const masterVolume = useMemo(
     () => saveData.settings.masterVolume,
@@ -29,13 +30,9 @@ export default function SettingsModal(props: SettingsModalProps) {
   const setMasterVolume = debounce(
     useCallback(
       (percentValue: number) => {
-        const newSaveData = updateSettings(saveData, {
-          ...saveData.settings,
-          masterVolume: percentValue / 100,
-        });
-        setSaveData(newSaveData);
+        saveMasterVolume(percentValue / 100);
       },
-      [saveData, setSaveData]
+      [saveMasterVolume]
     ),
     100,
     { maxWait: 1000 }
@@ -48,13 +45,9 @@ export default function SettingsModal(props: SettingsModalProps) {
   const setSoundEffectsVolume = debounce(
     useCallback(
       (percentValue: number) => {
-        const newSaveData = updateSettings(saveData, {
-          ...saveData.settings,
-          soundEffectsVolume: percentValue / 100,
-        });
-        setSaveData(newSaveData);
+        saveSoundEffectsVolume(percentValue / 100);
       },
-      [saveData, setSaveData]
+      [saveSoundEffectsVolume]
     ),
     100,
     { maxWait: 1000 }

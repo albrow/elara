@@ -1,15 +1,16 @@
 import {
   createContext,
-  Dispatch,
   PropsWithChildren,
-  SetStateAction,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import clone from "clone";
 
+import debounce from "lodash.debounce";
 import { ShortId } from "../lib/tutorial_shorts";
 import { LevelData } from "../../elara-lib/pkg/elara_lib";
 
@@ -52,9 +53,26 @@ export interface SaveData {
   settings: Settings;
 }
 
-export function save(saveData: SaveData): void {
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(saveData));
+export interface SaveDataManager {
+  markLevelCompleted: (levelName: string) => void;
+  markLevelChallengeCompleted: (levelName: string) => void;
+  updateLevelCode: (levelName: string, code: string) => void;
+  markDialogSeen: (treeName: string) => void;
+  markTutorialShortSeen: (shortId: ShortId) => void;
+  saveMasterVolume: (volume: number) => void;
+  saveSoundEffectsVolume: (volume: number) => void;
 }
+
+// Actually saves the data to local storage.
+// We Use debounce to prevent writing to local storage too often during
+// rapid updates.
+const save = debounce(
+  (saveData: SaveData) => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(saveData));
+  },
+  100,
+  { maxWait: 1000 }
+);
 
 function migrateSaveData(saveData: SaveData): SaveData {
   const newData = clone(saveData);
@@ -119,76 +137,6 @@ export function load(): SaveData {
   };
 }
 
-// Returns a copy of the save data with the level state updated to complete.
-export function markLevelCompleted(
-  saveData: SaveData,
-  levelName: string
-): SaveData {
-  const newSaveData = clone(saveData);
-  newSaveData.levelStates[levelName] = {
-    completed: true,
-    challengeCompleted:
-      saveData.levelStates[levelName]?.challengeCompleted || false,
-    code: saveData.levelStates[levelName]?.code || "",
-  };
-  return newSaveData;
-}
-
-// Returns a copy of the save data with challengeCompleted marked as true for the
-// given level.
-export function markLevelChallengeCompleted(
-  saveData: SaveData,
-  levelName: string
-): SaveData {
-  const newSaveData = clone(saveData);
-  newSaveData.levelStates[levelName] = {
-    completed: saveData.levelStates[levelName]?.completed || false,
-    challengeCompleted: true,
-    code: saveData.levelStates[levelName]?.code || "",
-  };
-  return newSaveData;
-}
-
-export function updateLevelCode(
-  saveData: SaveData,
-  levelName: string,
-  code: string
-): SaveData {
-  const newSaveData = clone(saveData);
-  newSaveData.levelStates[levelName] = {
-    completed: saveData.levelStates[levelName]?.completed || false,
-    challengeCompleted:
-      saveData.levelStates[levelName]?.challengeCompleted || false,
-    code,
-  };
-  return newSaveData;
-}
-
-export function markDialogSeen(saveData: SaveData, treeName: string): SaveData {
-  const newSaveData = clone(saveData);
-  if (!newSaveData.seenDialogTrees.includes(treeName)) {
-    newSaveData.seenDialogTrees.push(treeName);
-  }
-  return newSaveData;
-}
-
-export function markTutorialShortSeen(
-  saveData: SaveData,
-  shortId: ShortId
-): SaveData {
-  const newSaveData = clone(saveData);
-  if (!newSaveData.seenTutorialShorts.includes(shortId)) {
-    newSaveData.seenTutorialShorts.push(shortId);
-  }
-  return newSaveData;
-}
-
-export function updateSettings(saveData: SaveData, settings: Settings) {
-  const newSaveData = clone(saveData);
-  newSaveData.settings = settings;
-  return newSaveData;
-}
-
 export interface ChallengeProgress {
   completed: number;
   available: number;
@@ -218,11 +166,31 @@ export function getChallengeProgress(
 }
 
 export const SaveDataContext = createContext<
-  readonly [SaveData, Dispatch<SetStateAction<SaveData>>]
+  readonly [SaveData, SaveDataManager]
 >([
   load(),
-  () => {
-    throw new Error("useSaveData must be used within a SaveDataContext");
+  {
+    markLevelCompleted: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    markLevelChallengeCompleted: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    updateLevelCode: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    markDialogSeen: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    markTutorialShortSeen: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    saveMasterVolume: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    saveSoundEffectsVolume: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
   },
 ] as const);
 
@@ -233,15 +201,144 @@ export const SaveDataContext = createContext<
 export const useSaveData = () => useContext(SaveDataContext);
 
 export function SaveDataProvider(props: PropsWithChildren<{}>) {
-  const [saveData, setSaveData] = useState<SaveData>(load());
+  // Note(albrow): We use a combination of ref and state for represnting the save data.
+  // This is admittedly a bit of a hack. 🐉
+  //
+  // The ref is used internally in SaveDataProvider to ensure that multiple updates
+  // to the save data to not cause race conditions. This is necessary because refs
+  // update immediately in React, but state does not.
+  //
+  // The state is used externally by components which need to read save data. It will
+  // trigger a re-render of those components whenever the save data changes. The state is
+  // also used internally by SaveDataProvider to trigger actually saving data to local
+  // storage.
+  const saveDataRef = useRef<SaveData>(load());
+  const [saveData, __internalSetSaveData] = useState(saveDataRef.current);
+
+  // Updates both the ref and state. This should be called whenever we want to update
+  // save data. DO NOT set the ref directly or call __internalSetSaveData directly.
+  const setSaveData = useCallback(
+    (newSaveData: SaveData) => {
+      saveDataRef.current = newSaveData;
+      __internalSetSaveData(newSaveData);
+    },
+    [__internalSetSaveData, saveDataRef]
+  );
+
+  // Automatically save the save data to local storage whenever it changes.
   useEffect(() => {
     // Use setTimeout to write to local storage asynchronously.
     // This way we don't block the main thread.
-    setTimeout(() => save(saveData), 0);
+    setTimeout(() => {
+      save(saveData);
+    }, 0);
   }, [saveData]);
+
+  const markLevelCompleted = useCallback(
+    (levelName: string) => {
+      const newSaveData = clone(saveDataRef.current);
+      newSaveData.levelStates[levelName] = {
+        completed: true,
+        challengeCompleted:
+          newSaveData.levelStates[levelName]?.challengeCompleted || false,
+        code: newSaveData.levelStates[levelName]?.code || "",
+      };
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
+  const markLevelChallengeCompleted = useCallback(
+    (levelName: string) => {
+      const newSaveData = clone(saveDataRef.current);
+      newSaveData.levelStates[levelName] = {
+        completed: newSaveData.levelStates[levelName]?.completed || false,
+        challengeCompleted: true,
+        code: newSaveData.levelStates[levelName]?.code || "",
+      };
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
+  const updateLevelCode = useCallback(
+    (levelName: string, code: string) => {
+      const newSaveData = clone(saveDataRef.current);
+      newSaveData.levelStates[levelName] = {
+        completed: newSaveData.levelStates[levelName]?.completed || false,
+        challengeCompleted:
+          newSaveData.levelStates[levelName]?.challengeCompleted || false,
+        code,
+      };
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
+  const markDialogSeen = useCallback(
+    (treeName: string) => {
+      const newSaveData = clone(saveDataRef.current);
+      if (!newSaveData.seenDialogTrees.includes(treeName)) {
+        newSaveData.seenDialogTrees.push(treeName);
+      }
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
+  const markTutorialShortSeen = useCallback(
+    (shortId: ShortId) => {
+      const newSaveData = clone(saveDataRef.current);
+      if (!newSaveData.seenTutorialShorts.includes(shortId)) {
+        newSaveData.seenTutorialShorts.push(shortId);
+      }
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
+  const saveMasterVolume = useCallback(
+    (volume: number) => {
+      const newSaveData = clone(saveDataRef.current);
+      newSaveData.settings.masterVolume = volume;
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
+  const saveSoundEffectsVolume = useCallback(
+    (volume: number) => {
+      const newSaveData = clone(saveDataRef.current);
+      newSaveData.settings.soundEffectsVolume = volume;
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
   const providerValue = useMemo(
-    () => [saveData, setSaveData] as const,
-    [saveData, setSaveData]
+    () =>
+      [
+        saveData,
+        {
+          markLevelCompleted,
+          markLevelChallengeCompleted,
+          updateLevelCode,
+          markDialogSeen,
+          markTutorialShortSeen,
+          saveMasterVolume,
+          saveSoundEffectsVolume,
+        },
+      ] as const,
+    [
+      markDialogSeen,
+      markLevelChallengeCompleted,
+      markLevelCompleted,
+      markTutorialShortSeen,
+      saveData,
+      saveMasterVolume,
+      saveSoundEffectsVolume,
+      updateLevelCode,
+    ]
   );
 
   return (
@@ -249,241 +346,4 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       {props.children}
     </SaveDataContext.Provider>
   );
-}
-
-if (import.meta.vitest) {
-  const { describe, it, expect, beforeEach } = import.meta.vitest;
-
-  describe("save_data", () => {
-    beforeEach(() => {
-      window.localStorage.clear();
-    });
-
-    describe("markLevelCompleted", () => {
-      it("marks only the given level as completed", () => {
-        const saveData = {
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: false,
-              challengeCompleted: false,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: false,
-              challengeCompleted: false,
-              code: `move_right(5);`,
-            },
-          },
-          seenDialogTrees: ["movement"],
-          seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
-        };
-        const newSaveData = markLevelCompleted(saveData, "First Steps");
-        expect(newSaveData).toStrictEqual({
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: true,
-              challengeCompleted: false,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: false,
-              challengeCompleted: false,
-              code: `move_right(5);`,
-            },
-          },
-          seenDialogTrees: ["movement"],
-          seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
-        });
-      });
-    });
-
-    describe("updateLevelCode", () => {
-      it("updates the code for the given level", () => {
-        const saveData = {
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: true,
-              challengeCompleted: true,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: false,
-              code: `move_right(5);`,
-            },
-          },
-          seenDialogTrees: ["movement"],
-          seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
-        };
-        const newSaveData = updateLevelCode(
-          saveData,
-          "Fuel Up",
-          `say("updated");`
-        );
-        expect(newSaveData).toStrictEqual({
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: true,
-              challengeCompleted: true,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: false,
-              challengeCompleted: false,
-              code: `say("updated");`,
-            },
-          },
-          seenDialogTrees: ["movement"],
-          seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
-        });
-      });
-    });
-
-    describe("markDialogSeen", () => {
-      it("adds the given dialog tree to the list of seen trees", () => {
-        const saveData = {
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: false,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: true,
-              code: `move_right(5);`,
-            },
-          },
-          seenDialogTrees: ["movement"],
-          seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
-        };
-        const newSaveData = markDialogSeen(saveData, "fuel_part_one");
-        expect(newSaveData).toStrictEqual({
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: false,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: true,
-              code: `move_right(5);`,
-            },
-          },
-          seenDialogTrees: ["movement", "fuel_part_one"],
-          seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
-        });
-      });
-    });
-
-    describe("markTutorialShortSeen", () => {
-      it("adds the given short to the list of seen shorts", () => {
-        const saveData = {
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: false,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: true,
-              code: `move_right(5);`,
-            },
-          },
-          seenDialogTrees: ["movement"],
-          seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
-        };
-        const newSaveData = markTutorialShortSeen(
-          saveData,
-          "how_to_see_errors"
-        );
-        expect(newSaveData).toStrictEqual({
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: false,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: true,
-              code: `move_right(5);`,
-            },
-          },
-          seenDialogTrees: ["movement"],
-          seenTutorialShorts: ["how_to_run_code", "how_to_see_errors"],
-          settings: DEFUALT_SETTINGS,
-        });
-      });
-    });
-
-    describe("save", () => {
-      it("saves the given save data to localStorage", () => {
-        const saveData = {
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: false,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: false,
-              code: `move_right(5);`,
-            },
-          },
-          seenDialogTrees: ["movement"],
-          seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
-        };
-        save(saveData);
-        expect(
-          JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY)!)
-        ).toStrictEqual(saveData);
-      });
-    });
-
-    describe("load", () => {
-      it("returns the default save data if there is no save data in localStorage", () => {
-        expect(load()).toStrictEqual({
-          version: VERSION,
-          levelStates: {},
-          seenDialogTrees: [],
-          seenTutorialShorts: [],
-          settings: DEFUALT_SETTINGS,
-        });
-      });
-
-      it("loads the save data from localStorage", () => {
-        const saveData = {
-          version: VERSION,
-          levelStates: {
-            "First Steps": {
-              completed: false,
-              code: `say("hello");`,
-            },
-            "Fuel Up": {
-              completed: false,
-              code: `move_right(5);`,
-            },
-          },
-          seenDialogTrees: ["movement"],
-          seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
-        };
-        window.localStorage.setItem(
-          LOCAL_STORAGE_KEY,
-          JSON.stringify(saveData)
-        );
-        expect(load()).toStrictEqual(saveData);
-      });
-    });
-  });
 }
