@@ -278,7 +278,7 @@ pub fn convert_err(
     script: String,
     err: Box<EvalAltResult>,
 ) -> BetterError {
-    // log!("{:?}", err);
+    log!("{:?}", err);
     match *err {
         EvalAltResult::ErrorTooManyOperations(ref pos) => {
             return BetterError {
@@ -306,6 +306,16 @@ pub fn convert_err(
             ref pos,
         ) => {
             return convert_var_not_found_error(avail_funcs, var_name, pos);
+        }
+        EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::BadInput(rhai::LexError::UnterminatedString),
+            ref pos,
+        ) => {
+            return BetterError {
+                message: String::from("Error: String is missing a quotation mark at the end."),
+                line: pos.line(),
+                col: pos.position(),
+            };
         }
         _ => {}
     }
