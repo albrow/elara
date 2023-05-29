@@ -97,6 +97,7 @@ impl Actor for PlayerChannelActor {
                 if let Some(terminal_index) = get_adjacent_terminal(&state, &state.player.pos) {
                     state.data_terminals[terminal_index].reading = true;
                 }
+                state.player.anim_state = PlayerAnimState::Idle;
             }
             Err(_) => {}
         }
