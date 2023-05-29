@@ -178,6 +178,7 @@ const RAW_SCENES: RawScene[] = [
     [],
     [
       "This is very similar to the previous level, but the positions of the data terminal and gate are different.",
+      "Remember: G.R.O.V.E.R. needs to be next to the data terminal before you call `read_data`.",
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
