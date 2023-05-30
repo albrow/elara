@@ -32,9 +32,9 @@ impl Level for LoopsPartTwo {
         let mut state = State::new();
         state.player = Player::new(0, 0, 10, Orientation::Right);
         state.fuel_spots = vec![FuelSpot::new(7, 3)];
-        state.goal = Some(Goal {
-            pos: Pos::new(10, 5),
-        });
+        state.goals = vec![Goal {
+            pos: Pos { x: 10, y: 5 },
+        }];
         state.obstacles = vec![
             Obstacle::new(0, 1),
             Obstacle::new(1, 1),

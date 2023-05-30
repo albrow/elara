@@ -1,7 +1,7 @@
 use super::{std_check_win, Level, Outcome};
 use crate::{
     script_runner::ScriptStats,
-    simulation::{Actor, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State},
+    simulation::{Actor, Goal, Obstacle, Orientation, PasswordGate, Player, State},
 };
 
 #[derive(Copy, Clone)]
@@ -27,9 +27,7 @@ impl Level for Gates {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(0, 3, 10, Orientation::Right);
-        state.goal = Some(Goal {
-            pos: Pos { x: 7, y: 3 },
-        });
+        state.goals = vec![Goal::new(7, 3)];
         state.obstacles = vec![
             Obstacle::new(3, 0),
             Obstacle::new(3, 1),

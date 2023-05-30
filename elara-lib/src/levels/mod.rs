@@ -157,11 +157,12 @@ fn is_destroyed_by_enemy(state: &State) -> bool {
 }
 
 fn did_reach_goal(state: &State) -> bool {
-    if state.goal.is_some() && state.player.pos == state.goal.as_ref().unwrap().pos {
-        true
-    } else {
-        false
+    for goal in state.goals.iter() {
+        if state.player.pos == goal.pos {
+            return true;
+        }
     }
+    false
 }
 
 /// A representation of multiple possible initial states in which any
@@ -182,11 +183,6 @@ pub struct FuzzyState {
 
 impl FuzzyState {
     pub fn from_single_state(state: &State) -> Self {
-        let goals = if let Some(goal) = state.goal.clone() {
-            vec![Fuzzy::new(goal, false)]
-        } else {
-            vec![]
-        };
         Self {
             players: vec![Fuzzy::new(state.player.clone(), false)],
             fuel_spots: state
@@ -195,7 +191,12 @@ impl FuzzyState {
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
                 .collect(),
-            goals: goals,
+            goals: state
+                .goals
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
             enemies: state
                 .enemies
                 .clone()
@@ -255,12 +256,15 @@ impl FuzzyState {
                     .players
                     .push(Fuzzy::new(state.player.clone(), true));
             }
-            if let Some(goal) = state.goal.clone() {
+            // If a goal is present in one state but not the other, mark it as fuzzy.
+            for goal in fuzzy_state.goals.iter_mut() {
+                if !state.goals.contains(&goal.obj) && !goal.fuzzy {
+                    goal.fuzzy = true;
+                }
+            }
+            for goal in state.goals.iter() {
                 if !fuzzy_state.goals.contains(&Fuzzy::new(goal.clone(), false)) {
-                    for goal in fuzzy_state.goals.iter_mut() {
-                        goal.fuzzy = true;
-                    }
-                    fuzzy_state.goals.push(Fuzzy::new(goal, true));
+                    fuzzy_state.goals.push(Fuzzy::new(goal.clone(), true));
                 }
             }
             // If an obstacle is present in one state but not the other, mark it as fuzzy.
@@ -386,27 +390,14 @@ mod tests {
     fn to_fuzzy_state() {
         // Given one possible initial state, the fuzzy state should be identical,
         // with all objects marked as non-fuzzy.
-        let states = vec![State {
-            player: Player::new(0, 0, 10, Orientation::Down),
-            fuel_spots: vec![],
-            goal: Some(Goal {
-                pos: Pos::new(1, 1),
-            }),
-            enemies: vec![],
-            obstacles: vec![],
-            password_gates: vec![],
-            data_terminals: vec![],
-            telepads: vec![],
-        }];
+        let states = vec![StateMaker::new()
+            .with_player(Player::new(0, 0, 10, Orientation::Down))
+            .with_goals(vec![Goal::new(2, 2)])
+            .build()];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), false)],
             fuel_spots: vec![],
-            goals: vec![Fuzzy::new(
-                Goal {
-                    pos: Pos::new(1, 1),
-                },
-                false,
-            )],
+            goals: vec![Fuzzy::new(Goal::new(2, 2), false)],
             enemies: vec![],
             obstacles: vec![],
             password_gates: vec![],
@@ -418,30 +409,14 @@ mod tests {
 
         // Given two possible player positions, both should be marked as fuzzy.
         let states = vec![
-            State {
-                player: Player::new(0, 0, 10, Orientation::Down),
-                fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos::new(2, 2),
-                }),
-                enemies: vec![],
-                obstacles: vec![],
-                password_gates: vec![],
-                data_terminals: vec![],
-                telepads: vec![],
-            },
-            State {
-                player: Player::new(1, 1, 10, Orientation::Down),
-                fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos::new(2, 2),
-                }),
-                enemies: vec![],
-                obstacles: vec![],
-                password_gates: vec![],
-                data_terminals: vec![],
-                telepads: vec![],
-            },
+            StateMaker::new()
+                .with_player(Player::new(0, 0, 10, Orientation::Down))
+                .with_goals(vec![Goal::new(2, 2)])
+                .build(),
+            StateMaker::new()
+                .with_player(Player::new(1, 1, 10, Orientation::Down))
+                .with_goals(vec![Goal::new(2, 2)])
+                .build(),
         ];
         let expected = FuzzyState {
             players: vec![
@@ -466,30 +441,14 @@ mod tests {
 
         // Given two possible goal positions, both should be marked as fuzzy.
         let states = vec![
-            State {
-                player: Player::new(0, 0, 10, Orientation::Down),
-                fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos::new(2, 2),
-                }),
-                enemies: vec![],
-                obstacles: vec![],
-                password_gates: vec![],
-                data_terminals: vec![],
-                telepads: vec![],
-            },
-            State {
-                player: Player::new(0, 0, 10, Orientation::Down),
-                fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos::new(3, 3),
-                }),
-                enemies: vec![],
-                obstacles: vec![],
-                password_gates: vec![],
-                data_terminals: vec![],
-                telepads: vec![],
-            },
+            StateMaker::new()
+                .with_player(Player::new(0, 0, 10, Orientation::Down))
+                .with_goals(vec![Goal::new(2, 2)])
+                .build(),
+            StateMaker::new()
+                .with_player(Player::new(0, 0, 10, Orientation::Down))
+                .with_goals(vec![Goal::new(3, 3)])
+                .build(),
         ];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), false)],
@@ -517,33 +476,8 @@ mod tests {
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
 
-        // If goal is None, FuzzyState.goals should be an empty vector.
-        let states = vec![State {
-            player: Player::new(0, 0, 10, Orientation::Down),
-            fuel_spots: vec![],
-            goal: None,
-            enemies: vec![],
-            obstacles: vec![],
-            password_gates: vec![],
-            data_terminals: vec![],
-            telepads: vec![],
-        }];
-        let expected = FuzzyState {
-            players: vec![Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), false)],
-            fuel_spots: vec![],
-            goals: vec![],
-            enemies: vec![],
-            obstacles: vec![],
-            password_gates: vec![],
-            data_terminals: vec![],
-            telepads: vec![],
-        };
-        let actual = FuzzyState::from(states);
-        assert_eq!(actual, expected);
-
         // TODO(albrow): Expand on tests when we support fuzziness for
-        // fuel_spots, enemies, obstacles, etc. Right now we don't
-        // support fuzziness for arrays/vectors.
+        // fuel_spots, enemies, obstacles, etc.
     }
 
     #[test]

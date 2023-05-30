@@ -34,9 +34,9 @@ impl Level for GateAndTerminalPartTwo {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(11, 1, 10, Orientation::Left);
-        state.goal = Some(Goal {
+        state.goals = vec![Goal {
             pos: Pos { x: 9, y: 4 },
-        });
+        }];
         state.obstacles = vec![
             Obstacle::new(8, 0),
             Obstacle::new(8, 1),

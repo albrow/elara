@@ -2,7 +2,7 @@ use super::{make_all_initial_states_for_telepads, std_check_win, Level, Outcome}
 use crate::actors::{Bounds, EvilRoverActor};
 use crate::constants::{HEIGHT, WIDTH};
 use crate::simulation::{
-    Actor, Enemy, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State, Telepad,
+    Actor, Enemy, FuelSpot, Goal, Obstacle, Orientation, Player, State, Telepad,
 };
 use crate::state_maker::StateMaker;
 
@@ -41,9 +41,7 @@ impl Level for EnemiesWithTelepad {
     fn initial_states(&self) -> Vec<State> {
         let base_state = StateMaker::new()
             .with_player(Player::new(11, 7, 10, Orientation::Left))
-            .with_goal(Some(Goal {
-                pos: Pos { x: 7, y: 7 },
-            }))
+            .with_goals(vec![Goal::new(7, 7)])
             .with_obstacles(vec![
                 Obstacle::new(0, 3),
                 Obstacle::new(1, 3),

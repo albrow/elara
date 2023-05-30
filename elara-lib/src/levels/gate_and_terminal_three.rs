@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
 use crate::simulation::{
-    Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
+    Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, State,
 };
 
 #[derive(Copy, Clone)]
@@ -33,9 +33,7 @@ say(password);
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(1, 0, 20, Orientation::Down);
-        state.goal = Some(Goal {
-            pos: Pos { x: 4, y: 1 },
-        });
+        state.goals = vec![Goal::new(4, 1)];
         state.obstacles = vec![
             Obstacle::new(2, 0),
             Obstacle::new(2, 2),

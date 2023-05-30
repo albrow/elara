@@ -136,7 +136,7 @@ impl Simulation {
 pub struct State {
     pub player: Player,
     pub fuel_spots: Vec<FuelSpot>,
-    pub goal: Option<Goal>,
+    pub goals: Vec<Goal>,
     pub enemies: Vec<Enemy>,
     pub obstacles: Vec<Obstacle>,
     pub password_gates: Vec<PasswordGate>,
@@ -149,7 +149,7 @@ impl State {
         State {
             player: Player::new(0, 0, MAX_FUEL, Orientation::Right),
             fuel_spots: vec![],
-            goal: None,
+            goals: vec![],
             enemies: vec![],
             obstacles: vec![],
             password_gates: vec![],
@@ -164,7 +164,7 @@ impl fmt::Debug for State {
         f.debug_struct("State")
             .field("player", &self.player)
             .field("fuel_spots", &self.fuel_spots)
-            .field("goal", &self.goal)
+            .field("goal", &self.goals)
             .field("enemies", &self.enemies)
             .field("password_gates", &self.password_gates)
             .field("password_terminals", &self.data_terminals)

@@ -28,8 +28,8 @@ impl StateMaker {
         self
     }
 
-    pub fn with_goal(&mut self, goal: Option<Goal>) -> &mut Self {
-        self.state.goal = goal;
+    pub fn with_goals(&mut self, goals: Vec<Goal>) -> &mut Self {
+        self.state.goals = goals;
         self
     }
 

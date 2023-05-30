@@ -37,7 +37,6 @@ impl Level for DataTerminalsPartOne {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(0, 3, 10, Orientation::Right);
-        state.goal = None;
         state.obstacles = vec![
             Obstacle::new(0, 2),
             Obstacle::new(1, 2),

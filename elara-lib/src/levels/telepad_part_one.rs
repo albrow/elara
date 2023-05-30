@@ -1,7 +1,7 @@
 use rhai::Engine;
 
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State, Telepad};
+use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, State, Telepad};
 
 #[derive(Copy, Clone)]
 pub struct TelepadPartOne {}
@@ -74,9 +74,7 @@ if get_orientation() == "up" {
             State {
                 player: Player::new(0, 4, 10, Orientation::Right),
                 fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos { x: 11, y: 4 },
-                }),
+                goals: vec![Goal::new(11, 4)],
                 enemies: vec![],
                 obstacles: self.obstacles().clone(),
                 password_gates: vec![],
@@ -86,9 +84,7 @@ if get_orientation() == "up" {
             State {
                 player: Player::new(0, 4, 10, Orientation::Right),
                 fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos { x: 11, y: 4 },
-                }),
+                goals: vec![Goal::new(11, 4)],
                 enemies: vec![],
                 obstacles: self.obstacles().clone(),
                 password_gates: vec![],
@@ -98,9 +94,7 @@ if get_orientation() == "up" {
             State {
                 player: Player::new(0, 4, 10, Orientation::Right),
                 fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos { x: 11, y: 4 },
-                }),
+                goals: vec![Goal::new(11, 4)],
                 enemies: vec![],
                 obstacles: self.obstacles().clone(),
                 password_gates: vec![],
@@ -110,9 +104,7 @@ if get_orientation() == "up" {
             State {
                 player: Player::new(0, 4, 10, Orientation::Right),
                 fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos { x: 11, y: 4 },
-                }),
+                goals: vec![Goal::new(11, 4)],
                 enemies: vec![],
                 obstacles: self.obstacles().clone(),
                 password_gates: vec![],

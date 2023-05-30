@@ -3,7 +3,7 @@ use rhai::Engine;
 use super::{std_check_win, Level, Outcome};
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Orientation};
-use crate::simulation::{Goal, Obstacle, Player, Pos, State};
+use crate::simulation::{Goal, Obstacle, Player, State};
 
 #[derive(Copy, Clone)]
 pub struct AstroidStrikePartTwo {}
@@ -85,9 +85,7 @@ impl Level for AstroidStrikePartTwo {
             State {
                 player: Player::new(1, 3, 10, Orientation::Right),
                 fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos { x: 4, y: 0 },
-                }),
+                goals: vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)],
                 enemies: vec![],
                 obstacles: [
                     self.obstacles().clone(),
@@ -101,9 +99,7 @@ impl Level for AstroidStrikePartTwo {
             State {
                 player: Player::new(1, 3, 10, Orientation::Right),
                 fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos { x: 7, y: 3 },
-                }),
+                goals: vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)],
                 enemies: vec![],
                 obstacles: [
                     self.obstacles().clone(),
@@ -117,9 +113,7 @@ impl Level for AstroidStrikePartTwo {
             State {
                 player: Player::new(1, 3, 10, Orientation::Right),
                 fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos { x: 4, y: 6 },
-                }),
+                goals: vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)],
                 enemies: vec![],
                 obstacles: [
                     self.obstacles().clone(),

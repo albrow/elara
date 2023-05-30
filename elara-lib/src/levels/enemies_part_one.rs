@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EvilRoverActor};
-use crate::simulation::{Actor, Enemy, Goal, Obstacle, Orientation, Player, Pos, State};
+use crate::simulation::{Actor, Enemy, Goal, Obstacle, Orientation, Player, State};
 
 #[derive(Copy, Clone)]
 pub struct EnemiesPartOne {}
@@ -27,9 +27,7 @@ move_forward(3);
         let mut state = State::new();
         state.player = Player::new(8, 2, 20, Orientation::Down);
         state.fuel_spots = vec![];
-        state.goal = Some(Goal {
-            pos: Pos { x: 8, y: 5 },
-        });
+        state.goals = vec![Goal::new(8, 5)];
         state.enemies = vec![Enemy::new(8, 6, Orientation::Up)];
         state.obstacles = vec![
             Obstacle::new(3, 3),

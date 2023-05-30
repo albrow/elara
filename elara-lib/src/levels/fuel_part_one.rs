@@ -33,9 +33,7 @@ move_forward(4);
             pos: Pos { x: 0, y: 5 },
             collected: false,
         }];
-        state.goal = Some(Goal {
-            pos: Pos::new(4, 4),
-        });
+        state.goals = vec![Goal::new(4, 4)];
         state.obstacles = vec![
             // Obstacles enclose the player, goal, and fuel with a few different
             // branching paths.

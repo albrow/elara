@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State};
+use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, State};
 
 #[derive(Copy, Clone)]
 pub struct PartlyDisabledMovement {}
@@ -31,9 +31,7 @@ impl Level for PartlyDisabledMovement {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(0, 7, 10, Orientation::Right);
-        state.goal = Some(Goal {
-            pos: Pos { x: 3, y: 4 },
-        });
+        state.goals = vec![Goal::new(3, 4)];
         state.obstacles = vec![
             Obstacle::new(0, 3),
             Obstacle::new(1, 3),

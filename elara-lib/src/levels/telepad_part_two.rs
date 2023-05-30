@@ -1,6 +1,6 @@
 use super::{make_all_initial_states_for_telepads, std_check_win, Level, Outcome};
 use crate::{
-    simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State, Telepad},
+    simulation::{Actor, Goal, Obstacle, Orientation, Player, State, Telepad},
     state_maker::StateMaker,
 };
 
@@ -41,9 +41,7 @@ impl Level for TelepadPartTwo {
     fn initial_states(&self) -> Vec<State> {
         let base_state = StateMaker::new()
             .with_player(Player::new(4, 1, 20, Orientation::Right))
-            .with_goal(Some(Goal {
-                pos: Pos { x: 1, y: 5 },
-            }))
+            .with_goals(vec![Goal::new(1, 5)])
             .with_obstacles(vec![
                 Obstacle::new(0, 5),
                 Obstacle::new(1, 4),

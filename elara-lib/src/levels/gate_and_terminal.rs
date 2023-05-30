@@ -35,9 +35,9 @@ let password = read_data();
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(5, 0, 10, Orientation::Down);
-        state.goal = Some(Goal {
+        state.goals = vec![Goal {
             pos: Pos { x: 5, y: 5 },
-        });
+        }];
         state.obstacles = vec![
             Obstacle::new(4, 0),
             Obstacle::new(4, 2),

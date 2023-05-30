@@ -28,7 +28,6 @@ say(data);
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(1, 0, 10, Orientation::Down);
-        state.goal = None;
         state.obstacles = vec![
             Obstacle::new(0, 0),
             Obstacle::new(0, 2),

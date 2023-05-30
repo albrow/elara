@@ -3,7 +3,7 @@ use rhai::Engine;
 use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Orientation};
-use crate::simulation::{Goal, Obstacle, Player, Pos, State};
+use crate::simulation::{Goal, Obstacle, Player, State};
 
 #[derive(Copy, Clone)]
 pub struct AstroidStrike {}
@@ -75,9 +75,7 @@ if safe_direction == "right" {
             State {
                 player: Player::new(5, 7, 12, Orientation::Up),
                 fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos { x: 2, y: 5 },
-                }),
+                goals: vec![Goal::new(2, 5), Goal::new(8, 5)],
                 enemies: vec![],
                 obstacles: [self.obstacles().clone(), vec![Obstacle::new(6, 5)]].concat(),
                 password_gates: vec![],
@@ -87,9 +85,7 @@ if safe_direction == "right" {
             State {
                 player: Player::new(5, 7, 12, Orientation::Up),
                 fuel_spots: vec![],
-                goal: Some(Goal {
-                    pos: Pos { x: 8, y: 5 },
-                }),
+                goals: vec![Goal::new(2, 5), Goal::new(8, 5)],
                 enemies: vec![],
                 obstacles: [self.obstacles().clone(), vec![Obstacle::new(4, 5)]].concat(),
                 password_gates: vec![],

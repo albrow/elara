@@ -1,7 +1,7 @@
 use super::{std_check_win, Level, Outcome};
 use crate::{
     script_runner::ScriptStats,
-    simulation::{Actor, Goal, Obstacle, Orientation, Player, Pos, State},
+    simulation::{Actor, Goal, Obstacle, Orientation, Player, State},
 };
 
 #[derive(Copy, Clone)]
@@ -27,9 +27,7 @@ impl Level for MovementPartTwo {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(8, 7, 20, Orientation::Right);
-        state.goal = Some(Goal {
-            pos: Pos { x: 8, y: 4 },
-        });
+        state.goals = vec![Goal::new(8, 4)];
         state.obstacles = vec![
             Obstacle::new(7, 3),
             Obstacle::new(7, 4),

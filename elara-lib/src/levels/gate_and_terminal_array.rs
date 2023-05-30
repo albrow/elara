@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
 use crate::simulation::{
-    Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
+    Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, State,
 };
 
 #[derive(Copy, Clone)]
@@ -33,9 +33,7 @@ let array = read_data();
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(10, 6, 10, Orientation::Left);
-        state.goal = Some(Goal {
-            pos: Pos { x: 5, y: 6 },
-        });
+        state.goals = vec![Goal::new(5, 6)];
         state.obstacles = vec![
             Obstacle::new(7, 5),
             Obstacle::new(7, 7),

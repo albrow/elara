@@ -1,7 +1,7 @@
 use super::{std_check_win, Level, Outcome};
 use crate::{
     script_runner::ScriptStats,
-    simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State},
+    simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, State},
 };
 
 #[derive(Copy, Clone)]
@@ -47,9 +47,7 @@ move_backward(1);
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(0, 0, 10, Orientation::Left);
-        state.goal = Some(Goal {
-            pos: Pos { x: 2, y: 2 },
-        });
+        state.goals = vec![Goal::new(2, 2)];
         state.obstacles = vec![
             Obstacle::new(0, 1),
             Obstacle::new(0, 2),

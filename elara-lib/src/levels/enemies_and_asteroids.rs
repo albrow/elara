@@ -4,7 +4,7 @@ use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EvilRoverActor};
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Enemy, Orientation};
-use crate::simulation::{Goal, Obstacle, Player, Pos, State};
+use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
 #[derive(Copy, Clone)]
@@ -56,8 +56,6 @@ impl EnemiesAndAsteroids {
             Obstacle::new(7, 5),
             Obstacle::new(7, 7),
             Obstacle::new(8, 1),
-            // Obstacle::new(8, 3),
-            // Obstacle::new(8, 5),
             Obstacle::new(8, 7),
             Obstacle::new(9, 1),
             Obstacle::new(9, 3),
@@ -88,11 +86,16 @@ impl Level for EnemiesAndAsteroids {
         r#"
 "#
     }
+    // TODO(albrow):
+    //
+    //  1. Change levels to support an array of goals.
+    //  2. Change malfunctioning rover behavior so they don't run into each other.
+    //
     fn initial_states(&self) -> Vec<State> {
         let mut state_maker = StateMaker::new();
         let base_state = state_maker
             .with_player(Player::new(5, 6, 50, Orientation::Up))
-            .with_goal(Some(Goal::new(7, 6)))
+            .with_goals(vec![Goal::new(7, 6), Goal::new(3, 6)])
             .with_enemies(vec![
                 Enemy::new(8, 2, Orientation::Left),
                 Enemy::new(2, 2, Orientation::Right),
