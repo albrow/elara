@@ -2,6 +2,7 @@ mod astroid_strike;
 mod astroid_strike_part_two;
 mod data_terminal_demo;
 mod data_terminals_part_one;
+mod enemies_and_asteroids;
 mod enemies_part_one;
 mod enemies_part_two;
 mod enemies_with_telepad;
@@ -142,6 +143,7 @@ lazy_static! {
         m.insert(telepad_part_two::TelepadPartTwo{}.short_name(), Box::new(telepad_part_two::TelepadPartTwo{}));
         m.insert(enemies_part_two::EnemiesPartTwo{}.short_name(), Box::new(enemies_part_two::EnemiesPartTwo{}));
         m.insert(enemies_with_telepad::EnemiesWithTelepad{}.short_name(), Box::new(enemies_with_telepad::EnemiesWithTelepad{}));
+        m.insert(enemies_and_asteroids::EnemiesAndAsteroids{}.short_name(), Box::new(enemies_and_asteroids::EnemiesAndAsteroids{}));
 
         m
     };

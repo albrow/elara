@@ -265,6 +265,7 @@ const RAW_SCENES: RawScene[] = [
       "After going through a telepad, you will need to use the `get_orientation` function to figure out which way to turn. (You can go back and look at previous levels for examples).",
     ]
   ),
+  levelScene("enemies_and_asteroids", [], []),
 ];
 
 const getLevelIndexFromScene = (

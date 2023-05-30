@@ -255,6 +255,17 @@ pub struct Goal {
     pub pos: Pos,
 }
 
+impl Goal {
+    pub fn new(x: u32, y: u32) -> Goal {
+        Goal {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+        }
+    }
+}
+
 /// The animation state of the enemy sprite.
 #[derive(Clone, PartialEq, Debug)]
 pub enum EnemyAnimState {
