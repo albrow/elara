@@ -236,76 +236,74 @@ mod tests {
         );
     }
 
-    // #[test]
-    // fn challenge() {
-    //     let mut game = crate::Game::new();
-    //     const LEVEL: &'static dyn Level = &EnemiesAndAsteroids {};
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &EnemiesAndAsteroids {};
 
-    //     // This code beats the level, but doesn't satisfy the challenge conditions.
-    //     let script = r#"
-    //         let safe_direction = read_data();
-    //         move_forward(3);
-    //         if safe_direction == "top" {
-    //             turn_left();
-    //         }
-    //         if safe_direction == "bottom" {
-    //             turn_right();
-    //         }
-    //         move_forward(3);
-    //     "#;
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(result.outcome, Outcome::Success);
-    //     assert_eq!(result.passes_challenge, false);
+        // This code beats the level, but doesn't satisfy the challenge conditions.
+        let script = r#"
+            let safe_direction = read_data();
 
-    //     // This code doesn't beat the level because the rover runs out
-    //     // of fuel.
-    //     let script = r"
-    //         move_forward(6);
-    //         turn_left();
-    //         move_forward(3);
-    //         turn_right();
-    //         turn_right();
-    //         move_forward(3);";
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(
-    //         result.outcome,
-    //         Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
-    //     );
-    //     assert_eq!(result.passes_challenge, false);
+            if safe_direction == "right" { 
+                move_forward(6);
+                turn_right();
+                move_forward(6);
+                turn_right();
+                move_forward(6);
+                turn_right();
+                move_forward(4);
+            }
+            if safe_direction == "left" {
+                move_forward(6);
+                turn_left();
+                move_forward(5);
+                turn_left();
+                move_forward(6);
+                turn_left();
+                move_forward(3);
+            }
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
 
-    //     // This code should beat the level and pass the challenge.
-    //     let script = r"
-    //         fn try_move_forward(n) {
-    //             // Record the current position and try moving forward one space.
-    //             let pos = get_position();
-    //             move_forward(1);
-    //             // Check the new position. If we're blocked, then the new position
-    //             // will be the same as the old.
-    //             let new_pos = get_position();
-    //             if pos == new_pos {
-    //             // In this case, return early (i.e. don't keep trying to move).
-    //             return;
-    //             }
-    //             // Otherwise, we're not blocked. Keep moving the remaining
-    //             // number of spaces.
-    //             move_forward(n-1);
-    //         }
+        // Here is the "clever way" which involves using the say function to
+        // wait for one or two steps then moving in the "unsafe" direction with
+        // a specific path to narrowly avoid the enemies.
+        //
+        // This code should beat the level and pass the challenge.
+        let script = r#"
+            let safe_direction = read_data();
 
-    //         move_forward(3);
-    //         try_move_forward(3);
-    //         turn_left();
-    //         try_move_forward(3);
-    //         turn_right();
-    //         turn_right();
-    //         try_move_forward(3);";
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(result.outcome, Outcome::Success);
-    //     assert_eq!(result.passes_challenge, true);
-    // }
+            if safe_direction == "right" {
+                say("waiting");
+                move_forward(4);
+                turn_left();
+                move_forward(5);
+                turn_left();
+                move_forward(4);
+                turn_left();
+                move_forward(3);
+            }
+            if safe_direction == "left" {
+                say("waiting");
+                say("waiting");
+                move_forward(4);
+                turn_right();
+                move_forward(2);
+                turn_right();
+                move_forward(4);
+                turn_right();
+                move_forward(2);
+            }
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
+    }
 }
