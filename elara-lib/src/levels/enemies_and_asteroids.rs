@@ -86,11 +86,6 @@ impl Level for EnemiesAndAsteroids {
         r#"
 "#
     }
-    // TODO(albrow):
-    //
-    //  1. Change levels to support an array of goals.
-    //  2. Change malfunctioning rover behavior so they don't run into each other.
-    //
     fn initial_states(&self) -> Vec<State> {
         let mut state_maker = StateMaker::new();
         let base_state = state_maker

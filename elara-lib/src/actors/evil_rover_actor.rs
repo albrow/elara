@@ -21,6 +21,13 @@ enum EvilRoverAction {
     Bump(Pos),
 }
 
+/// Returns true if we can move to the desired position *and* it is not currently occupied
+/// by another enemy.
+fn can_move_and_is_empty(state: &State, bounds: &Bounds, desired_pos: &Pos) -> bool {
+    return can_move_to(state, bounds, desired_pos)
+        && !state.enemies.iter().any(|enemy| enemy.pos == *desired_pos);
+}
+
 impl EvilRoverActor {
     pub fn new(index: usize, bounds: Bounds) -> EvilRoverActor {
         EvilRoverActor { index, bounds }
@@ -140,20 +147,36 @@ impl EvilRoverActor {
         let y_dist = player_pos.y.abs_diff(enemy.pos.y);
         if y_dist >= x_dist {
             if player_pos.y < enemy.pos.y {
-                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x, enemy.pos.y - 1)) {
+                if can_move_and_is_empty(
+                    state,
+                    &self.bounds,
+                    &Pos::new(enemy.pos.x, enemy.pos.y - 1),
+                ) {
                     return self.move_or_turn(enemy.facing, Orientation::Up);
                 }
             } else if player_pos.y > enemy.pos.y {
-                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x, enemy.pos.y + 1)) {
+                if can_move_and_is_empty(
+                    state,
+                    &self.bounds,
+                    &Pos::new(enemy.pos.x, enemy.pos.y + 1),
+                ) {
                     return self.move_or_turn(enemy.facing, Orientation::Down);
                 }
             }
             if player_pos.x < enemy.pos.x {
-                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x - 1, enemy.pos.y)) {
+                if can_move_and_is_empty(
+                    state,
+                    &self.bounds,
+                    &Pos::new(enemy.pos.x - 1, enemy.pos.y),
+                ) {
                     return self.move_or_turn(enemy.facing, Orientation::Left);
                 }
             } else if player_pos.x > enemy.pos.x {
-                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x + 1, enemy.pos.y)) {
+                if can_move_and_is_empty(
+                    state,
+                    &self.bounds,
+                    &Pos::new(enemy.pos.x + 1, enemy.pos.y),
+                ) {
                     return self.move_or_turn(enemy.facing, Orientation::Right);
                 }
             }
@@ -170,20 +193,36 @@ impl EvilRoverActor {
             // The player is further away in the x-axis, so we prioritize that while checking
             // movement options.
             if player_pos.x < enemy.pos.x {
-                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x - 1, enemy.pos.y)) {
+                if can_move_and_is_empty(
+                    state,
+                    &self.bounds,
+                    &Pos::new(enemy.pos.x - 1, enemy.pos.y),
+                ) {
                     return self.move_or_turn(enemy.facing, Orientation::Left);
                 }
             } else if player_pos.x > enemy.pos.x {
-                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x + 1, enemy.pos.y)) {
+                if can_move_and_is_empty(
+                    state,
+                    &self.bounds,
+                    &Pos::new(enemy.pos.x + 1, enemy.pos.y),
+                ) {
                     return self.move_or_turn(enemy.facing, Orientation::Right);
                 }
             }
             if player_pos.y < enemy.pos.y {
-                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x, enemy.pos.y - 1)) {
+                if can_move_and_is_empty(
+                    state,
+                    &self.bounds,
+                    &Pos::new(enemy.pos.x, enemy.pos.y - 1),
+                ) {
                     return self.move_or_turn(enemy.facing, Orientation::Up);
                 }
             } else if player_pos.y > enemy.pos.y {
-                if can_move_to(state, &self.bounds, &Pos::new(enemy.pos.x, enemy.pos.y + 1)) {
+                if can_move_and_is_empty(
+                    state,
+                    &self.bounds,
+                    &Pos::new(enemy.pos.x, enemy.pos.y + 1),
+                ) {
                     return self.move_or_turn(enemy.facing, Orientation::Down);
                 }
             }
