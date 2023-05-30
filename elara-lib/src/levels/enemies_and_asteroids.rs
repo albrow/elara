@@ -35,10 +35,11 @@ impl EnemiesAndAsteroids {
             Obstacle::new(1, 5),
             Obstacle::new(1, 7),
             Obstacle::new(2, 1),
+            Obstacle::new(2, 5),
             Obstacle::new(2, 7),
             Obstacle::new(3, 1),
             Obstacle::new(3, 3),
-            Obstacle::new(3, 5),
+            // Obstacle::new(3, 5),
             Obstacle::new(3, 7),
             Obstacle::new(4, 1),
             Obstacle::new(4, 3),
@@ -53,9 +54,10 @@ impl EnemiesAndAsteroids {
             Obstacle::new(6, 7),
             Obstacle::new(7, 1),
             Obstacle::new(7, 3),
-            Obstacle::new(7, 5),
+            // Obstacle::new(7, 5),
             Obstacle::new(7, 7),
             Obstacle::new(8, 1),
+            Obstacle::new(8, 5),
             Obstacle::new(8, 7),
             Obstacle::new(9, 1),
             Obstacle::new(9, 3),
@@ -92,8 +94,8 @@ impl Level for EnemiesAndAsteroids {
             .with_player(Player::new(5, 6, 50, Orientation::Up))
             .with_goals(vec![Goal::new(7, 6), Goal::new(3, 6)])
             .with_enemies(vec![
-                Enemy::new(8, 2, Orientation::Left),
-                Enemy::new(2, 2, Orientation::Right),
+                Enemy::new(8, 2, Orientation::Down),
+                Enemy::new(2, 2, Orientation::Down),
             ]);
         vec![
             base_state
@@ -101,11 +103,7 @@ impl Level for EnemiesAndAsteroids {
                 .with_obstacles(
                     [
                         self.obstacles().clone(),
-                        vec![
-                            Obstacle::new(4, 0),
-                            Obstacle::new(4, 4),
-                            Obstacle::new(6, 2),
-                        ],
+                        vec![Obstacle::new(4, 0), Obstacle::new(4, 4)],
                     ]
                     .concat(),
                 )
@@ -116,11 +114,7 @@ impl Level for EnemiesAndAsteroids {
                 .with_obstacles(
                     [
                         self.obstacles().clone(),
-                        vec![
-                            Obstacle::new(4, 2),
-                            Obstacle::new(6, 0),
-                            Obstacle::new(6, 4),
-                        ],
+                        vec![Obstacle::new(6, 0), Obstacle::new(6, 4)],
                     ]
                     .concat(),
                 )
@@ -141,62 +135,80 @@ impl Level for EnemiesAndAsteroids {
 
 #[cfg(test)]
 mod tests {
-    // use super::*;
-    // use crate::{constants::ERR_OUT_OF_FUEL, levels::Outcome};
+    use super::*;
+    use crate::{
+        constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_FUEL},
+        levels::Outcome,
+    };
 
-    // #[test]
-    // fn level() {
-    //     let mut game = crate::Game::new();
-    //     const LEVEL: &'static dyn Level = &EnemiesAndAsteroids {};
+    #[test]
+    fn level() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &EnemiesAndAsteroids {};
 
-    //     // Running the initial code should result in Outcome::Continue.
-    //     let script = LEVEL.initial_code();
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(result.outcome, Outcome::Continue);
+        // Running the initial code should result in Outcome::Continue.
+        let script = LEVEL.initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
 
-    //     // Running this code should result in Outcome::Success because we
-    //     // are accounting for all three possible directions.
-    //     let script = r#"
-    //         let safe_direction = read_data();
-    //         move_forward(3);
-    //         if safe_direction == "top" {
-    //             turn_left();
-    //         }
-    //         if safe_direction == "bottom" {
-    //             turn_right();
-    //         }
-    //         move_forward(3);
-    //     "#;
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(result.outcome, Outcome::Success);
+        // Running this code should result in Outcome::Success because we
+        // are accounting for all three possible directions.
+        let script = r#"
+            let safe_direction = read_data();
 
-    //     // Hard-coding the movement direction should always result in failure.
-    //     // In this specific case, it should be Outcome::Continue because we didn't
-    //     // run out of fuel, but we didn't reach the goal either.
-    //     let script = r"move_forward(6);";
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(result.outcome, Outcome::Continue);
-    //     let script = r"move_forward(3);
-    //         turn_right();
-    //         move_forward(3);";
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(result.outcome, Outcome::Continue);
-    //     let script = r"move_forward(3);
-    //     turn_left();
-    //     move_forward(3);";
-    //     let result = game
-    //         .run_player_script_internal(script.to_string(), LEVEL)
-    //         .unwrap();
-    //     assert_eq!(result.outcome, Outcome::Continue);
-    // }
+            if safe_direction == "right" { 
+                move_forward(6);
+                turn_right();
+                move_forward(5);
+                turn_right();
+                move_forward(6);
+                turn_right();
+                move_forward(3);
+            }
+            if safe_direction == "left" {
+                move_forward(6);
+                turn_left();
+                move_forward(5);
+                turn_left();
+                move_forward(6);
+                turn_left();
+                move_forward(3);
+            }
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
+        // Trying to take the shortest path should result in failure.
+        let script = r#"
+            let safe_direction = read_data();
+
+            if safe_direction == "right" { 
+                move_forward(2);
+                turn_right();
+                move_forward(2);
+                turn_right();
+                move_forward(2);
+            }
+            if safe_direction == "left" {
+                move_forward(2);
+                turn_left();
+                move_forward(2);
+                turn_left();
+                move_forward(2);
+            }
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(
+            result.outcome,
+            Outcome::Failure(ERR_DESTROYED_BY_ENEMY.into())
+        );
+    }
 
     // #[test]
     // fn challenge() {
