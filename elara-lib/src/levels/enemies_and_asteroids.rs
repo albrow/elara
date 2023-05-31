@@ -8,10 +8,6 @@ use crate::state_maker::StateMaker;
 #[derive(Copy, Clone)]
 pub struct EnemiesAndAsteroids {}
 
-// TODO(albrow): Add hints and dialog. Also consider changing starting code.
-// TODO(albrow): Sort script results by time taken to prevent someone from
-//   beating the challenge by just getting lucky.
-
 impl EnemiesAndAsteroids {
     // Note: We make obstacles a method so we can re-use the same set of
     // obstacles for each possible state.
@@ -73,7 +69,9 @@ impl Level for EnemiesAndAsteroids {
         &AVAIL_FUNCS_WITH_READ
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Add your code below:
+        r#"// The data terminal will output "right" or "left" depending on which
+// direction is safe from falling asteroids. However, it can't detect malfunctioning
+// rovers. You'll need to avoid those on your own!
 "#
     }
     fn initial_states(&self) -> Vec<State> {
