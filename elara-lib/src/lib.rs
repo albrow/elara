@@ -108,7 +108,7 @@ impl Game {
         // Run the simulation multiple times, once for each possible initial
         // state. Return the first result that fails (if any), otherwise return
         // a random successful result.
-        let mut last_success: Option<ScriptResult> = None;
+        let mut successes: Vec<ScriptResult> = vec![];
 
         // Shuffle the seeds to keep up the illusion that the game behavior is
         // random.
@@ -127,13 +127,28 @@ impl Game {
                 .run(level.available_functions(), script.as_str())?;
             match result.outcome {
                 Outcome::Success => {
-                    last_success = Some(result);
+                    successes.push(result);
                 }
                 // Return the first failure.
                 _ => return Ok(result),
             }
         }
-        Ok(last_success.unwrap())
+
+        // If we've reached here, it means the main objective for the level was met.
+        // Now we need to check for the optional challenge. If there is a challenge
+        // for this level, return the first result which did not pass the challenge
+        // (if any).
+        if level.challenge().is_some() {
+            for result in successes.iter() {
+                if !result.passes_challenge {
+                    return Ok(result.clone());
+                }
+            }
+        }
+
+        // Otherwise, return the first successful result. (This is effectively
+        // a random result since the seeds were shuffled above.)
+        Ok(successes.first().unwrap().clone())
     }
 }
 

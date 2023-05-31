@@ -25,7 +25,7 @@ pub struct ScriptRunner {
     pending_trace: Rc<RefCell<Vec<Vec<usize>>>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ScriptResult {
     /// The state corresponding to each step in the simulation.
     pub states: Vec<State>,
@@ -646,7 +646,7 @@ impl ScriptRunner {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ScriptStats {
     // Length of the script in bytes.
     pub code_len: usize,

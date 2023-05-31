@@ -1,11 +1,16 @@
 use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
 use crate::actors::{Bounds, EvilRoverActor};
+use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Enemy, FuelSpot, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
 #[derive(Copy, Clone)]
 pub struct EnemiesAndAsteroids {}
+
+// TODO(albrow): Add hints and dialog. Also consider changing starting code.
+// TODO(albrow): Sort script results by time taken to prevent someone from
+//   beating the challenge by just getting lucky.
 
 impl EnemiesAndAsteroids {
     // Note: We make obstacles a method so we can re-use the same set of
@@ -118,12 +123,7 @@ impl Level for EnemiesAndAsteroids {
     fn challenge(&self) -> Option<&'static str> {
         Some("Complete the objective in 22 or fewer steps.")
     }
-    fn check_challenge(
-        &self,
-        _states: &Vec<State>,
-        _script: &str,
-        stats: &crate::script_runner::ScriptStats,
-    ) -> bool {
+    fn check_challenge(&self, _states: &Vec<State>, _script: &str, stats: &ScriptStats) -> bool {
         stats.time_taken <= 22
     }
 }
@@ -305,5 +305,74 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, true);
+
+        // The challenge should not be considered passed if any possible initial state
+        // results in taking too many steps. In other words we need to find a clever
+        // solution for both the "right" and "left" cases in order to pass the challenge.
+        // Considering just one or the other should not work.
+        let script = r#"
+            let safe_direction = read_data();
+
+            // On "right" we use the clever solution.
+            if safe_direction == "right" {
+                say("waiting");
+                move_forward(4);
+                turn_left();
+                move_forward(5);
+                turn_left();
+                move_forward(4);
+                turn_left();
+                move_forward(3);
+            }
+
+            // On "left", we take the long way around.
+            if safe_direction == "left" {
+                move_forward(6);
+                turn_left();
+                move_forward(5);
+                turn_left();
+                move_forward(6);
+                turn_left();
+                move_forward(3);
+            }
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        let script = r#"
+            let safe_direction = read_data();
+
+            // On "right" we take the long way around.
+            if safe_direction == "right" {
+                move_forward(6);
+                turn_right();
+                move_forward(6);
+                turn_right();
+                move_forward(6);
+                turn_right();
+                move_forward(4);
+            }
+
+            // On "left" we use the clever solution.
+            if safe_direction == "left" {
+                say("waiting");
+                say("waiting");
+                move_forward(4);
+                turn_right();
+                move_forward(2);
+                turn_right();
+                move_forward(4);
+                turn_right();
+                move_forward(2);
+            }
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
     }
 }
