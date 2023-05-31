@@ -70,8 +70,8 @@ impl Level for EnemiesAndAsteroids {
     }
     fn initial_code(&self) -> &'static str {
         r#"// The data terminal will output "right" or "left" depending on which
-// direction is safe from falling asteroids. However, it can't detect malfunctioning
-// rovers. You'll need to avoid those on your own!
+// direction is safe from falling asteroids. However, it can't detect
+// malfunctioning rovers. You'll need to avoid those on your own!
 "#
     }
     fn initial_states(&self) -> Vec<State> {
