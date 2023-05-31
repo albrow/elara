@@ -117,10 +117,10 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         0.7
       ),
       speak: new RoundRobinSoundGroup("speak", [
-        new Sound("speak_0", [speakSound0, speakSound0Fallback], 0.3),
-        new Sound("speak_1", [speakSound1, speakSound1Fallback], 0.3),
-        new Sound("speak_2", [speakSound2, speakSound2Fallback], 0.3),
-        new Sound("speak_3", [speakSound3, speakSound3Fallback], 0.3),
+        new Sound("speak_0", [speakSound0, speakSound0Fallback], 0.15),
+        new Sound("speak_1", [speakSound1, speakSound1Fallback], 0.15),
+        new Sound("speak_2", [speakSound2, speakSound2Fallback], 0.15),
+        new Sound("speak_3", [speakSound3, speakSound3Fallback], 0.15),
       ]),
     }),
     []
