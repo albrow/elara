@@ -40,7 +40,7 @@ impl Level for EnemiesWithTelepad {
     }
     fn initial_states(&self) -> Vec<State> {
         let base_state = StateMaker::new()
-            .with_player(Player::new(11, 7, 10, Orientation::Left))
+            .with_player(Player::new(11, 7, 12, Orientation::Left))
             .with_goals(vec![Goal::new(7, 7)])
             .with_obstacles(vec![
                 Obstacle::new(0, 3),
@@ -75,7 +75,7 @@ impl Level for EnemiesWithTelepad {
                 Obstacle::new(11, 2),
             ])
             .with_fuel_spots(vec![FuelSpot::new(3, 4)])
-            .with_enemies(vec![Enemy::new(5, 7, Orientation::Right)])
+            .with_enemies(vec![Enemy::new(4, 7, Orientation::Right)])
             .with_telepads(vec![Telepad::new((9, 6), (0, 7), Orientation::Up)])
             .build();
         make_all_initial_states_for_telepads(vec![base_state])
@@ -203,7 +203,22 @@ mod tests {
         // This code satisfies the challenge conditions.
         let script = r#"
             turn_right();
+            move_forward(4);
+            move_backward(4);
+            turn_left();
+            move_forward(4);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
+
+        // This code should work too.
+        let script = r#"
+            turn_right();
             move_forward(3);
+            say("waiting");
             say("waiting");
             move_backward(3);
             turn_left();

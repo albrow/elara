@@ -293,12 +293,12 @@ impl FuzzyState {
 /// success and failure cases. Some levels may need to implement
 /// their own logic on top of this.
 pub fn std_check_win(state: &State) -> Outcome {
-    if did_reach_goal(state) {
+    if is_destroyed_by_enemy(state) {
+        Outcome::Failure(ERR_DESTROYED_BY_ENEMY.to_string())
+    } else if did_reach_goal(state) {
         Outcome::Success
     } else if state.player.fuel == 0 {
         Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
-    } else if is_destroyed_by_enemy(state) {
-        Outcome::Failure(ERR_DESTROYED_BY_ENEMY.to_string())
     } else {
         Outcome::Continue
     }
