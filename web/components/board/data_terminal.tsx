@@ -29,8 +29,8 @@ export default function DataTerminal(props: DataTerminalProps) {
     <div
       className="data-terminal sprite"
       style={{
-        width: `${TILE_SIZE}px`,
-        height: `${TILE_SIZE}px`,
+        width: `${TILE_SIZE - 1}px`,
+        height: `${TILE_SIZE - 1}px`,
         zIndex: TERMINAL_Z_INDEX,
         left: props.offset.left,
         top: props.offset.top,
