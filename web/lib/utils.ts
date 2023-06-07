@@ -22,8 +22,8 @@ export interface Offset {
 }
 
 export function posToOffset(pos: Pos): Offset {
-  const leftNum = pos.x * (TILE_SIZE + 1) + AXIS_WIDTH + 2;
-  const topNum = pos.y * (TILE_SIZE + 1) + AXIS_HEIGHT + 2;
+  const leftNum = pos.x * TILE_SIZE + AXIS_WIDTH + 1;
+  const topNum = pos.y * TILE_SIZE + AXIS_HEIGHT + 1;
   return {
     pos,
     left: `${leftNum}px`,

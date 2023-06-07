@@ -11,14 +11,7 @@ import {
   FuzzyState,
   FuzzyTelepad,
 } from "../../../elara-lib/pkg";
-import {
-  AXIS_HEIGHT,
-  AXIS_WIDTH,
-  CANVAS_HEIGHT,
-  CANVAS_WIDTH,
-  HEIGHT,
-  WIDTH,
-} from "../../lib/constants";
+import { AXIS_HEIGHT, AXIS_WIDTH, HEIGHT, WIDTH } from "../../lib/constants";
 import { posToOffset, range } from "../../lib/utils";
 import "./board.css";
 import lunarSurfaceBgUrl from "../../images/lunar_surface_bg.png";
@@ -29,7 +22,6 @@ import Gate from "./gate";
 import Goal from "./goal";
 import Obstacle from "./obstacle";
 import Player from "./player";
-import Square from "./square";
 import Telepad from "./telepad";
 
 interface BoardProps {
@@ -44,13 +36,7 @@ export default function Board(props: BoardProps) {
         id="board"
         style={{ backgroundImage: `url("${lunarSurfaceBgUrl}")` }}
       >
-        <table
-          style={{
-            cursor: "crosshair",
-            width: `${CANVAS_WIDTH + AXIS_WIDTH + 1}px`,
-            height: `${CANVAS_HEIGHT + AXIS_HEIGHT + 1}px`,
-          }}
-        >
+        <table>
           <tbody>
             <tr
               id="x-axis-labels"
@@ -85,8 +71,11 @@ export default function Board(props: BoardProps) {
                 >
                   {y}
                 </td>
-                {range(WIDTH).map((x) => (
+                {/* {range(WIDTH).map((x) => (
                   <Square key={`${x},${y}`} x={x} y={y} />
+                ))} */}
+                {range(WIDTH).map((x) => (
+                  <td key={`${x},${y}`} />
                 ))}
               </tr>
             ))}
