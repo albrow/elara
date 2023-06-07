@@ -27,7 +27,7 @@
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
-    "@vitejs/plugin-react": "^2.1.0",
+    "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.12",
     "eslint": "^8.29.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -42,9 +42,9 @@
     "prettier": "^2.8.1",
     "rimraf": "^3.0.0",
     "typescript": "^4.8.2",
-    "vite": "^3.1.7",
+    "vite": "^4.3.9",
     "vite-plugin-wasm-pack": "^0.1.12",
-    "vitest": "^0.26.3"
+    "vitest": "^0.28.5"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.1",
