@@ -12,10 +12,10 @@ interface GateProps {
 export default function Gate(props: GateProps) {
   return (
     <img
-      className="gate sprite"
       alt={props.open ? "locked gate" : "unlocked gate"}
       src={props.open ? unlockedImgUrl : lockedImgUrl}
       style={{
+        position: "absolute",
         width: `${TILE_SIZE - 1}px`,
         height: `${TILE_SIZE - 1}px`,
         zIndex: GATE_Z_INDEX,

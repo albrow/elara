@@ -19,8 +19,8 @@ export default function FuelSpot(props: FuelSpotProps) {
   const fuelAmount = props.fuel || DEFAULT_FUEL_GAIN;
   return props.collected ? null : (
     <div
-      className="fuel sprite"
       style={{
+        position: "absolute",
         width: `${TILE_SIZE - 1}px`,
         height: `${TILE_SIZE - 1}px`,
         zIndex: FUEL_Z_INDEX,

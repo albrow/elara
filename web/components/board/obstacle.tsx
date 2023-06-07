@@ -50,6 +50,7 @@ export default function Obstacle(props: ObstacleProps) {
       alt="rock"
       src={rockImgUrl}
       style={{
+        position: "absolute",
         width: `${TILE_SIZE - 1}px`,
         height: `${TILE_SIZE - 1}px`,
         zIndex: WALL_Z_INDEX,

@@ -120,7 +120,6 @@ export default function Player(props: PlayerProps) {
           fontFamily="monospace"
         >
           <div
-            className="player sprite"
             style={{
               width: `${TILE_SIZE - 2}px`,
               height: `${TILE_SIZE - 2}px`,

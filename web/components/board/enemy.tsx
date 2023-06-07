@@ -73,7 +73,6 @@ export default function Enemy(props: EnemyProps) {
         style={animation.style}
       >
         <div
-          className="enemy sprite"
           style={{
             width: `${TILE_SIZE - 2}px`,
             height: `${TILE_SIZE - 2}px`,
@@ -83,12 +82,12 @@ export default function Enemy(props: EnemyProps) {
         >
           <img
             alt="enemy"
-            className="enemy sprite"
             src={getRobotImgUrl()}
             // We use the same image as for G.R.O.V.E.R. but with a filter
             // that makes the malfunctioning rover look darker and more red in hue.
             // TODO(albrow): Replace this with a separate sprite.
             style={{
+              position: "absolute",
               filter:
                 "drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3)) hue-rotate(180deg) " +
                 "brightness(80%) sepia(20%) contrast(120%) saturate(200%)",

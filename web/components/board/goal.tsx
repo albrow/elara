@@ -9,10 +9,10 @@ interface GoalProps {
 export default function Goal(props: GoalProps) {
   return (
     <img
-      className="flag sprite"
       alt="goal"
       src={flagImgUrl}
       style={{
+        position: "absolute",
         width: `${TILE_SIZE - 1}px`,
         height: `${TILE_SIZE - 1}px`,
         zIndex: GOAL_Z_INDEX,
