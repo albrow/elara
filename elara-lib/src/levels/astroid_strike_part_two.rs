@@ -134,7 +134,7 @@ impl Level for AstroidStrikePartTwo {
     }
     fn challenge(&self) -> Option<&'static str> {
         Some(
-            "Don't use the read_data function. (Check the function list for a new function that might help).",
+            "Don't use the read_data function. (Check the function list for something that might help).",
         )
     }
     fn check_challenge(&self, _states: &Vec<State>, script: &str, _stats: &ScriptStats) -> bool {
