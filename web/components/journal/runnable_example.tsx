@@ -9,7 +9,7 @@ import {
   RunResult,
   LevelData,
 } from "../../../elara-lib/pkg/elara_lib";
-import { useErrorModal } from "../../contexts/error_modal";
+import { useErrorModal } from "../../hooks/error_modal_hooks";
 import MiniBoard from "./mini_board";
 
 export interface RunnableExampleProps {

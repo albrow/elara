@@ -1,8 +1,8 @@
 // Shared constants go here. Other constants should be
 // defined in their respective components.
 
-export const NAVBAR_HEIGHT = 56; // In pixels
-export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
+// Save data and settings
+export const SAVE_DATA_VERSION = 8;
 
 // Constants related to the game board and game logic.
 export const WIDTH = 12;
@@ -15,6 +15,11 @@ export const DEFAULT_FUEL_GAIN = 10;
 // Game speed and animations.
 export const DEFAULT_GAME_SPEED = 1; // steps per second
 export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
+
+// Constants related to the game's UI.
+export const FUNCTION_LIST_WIDTH = 160;
+export const NAVBAR_HEIGHT = 56; // In pixels
+export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
 
 // Z-indexes are all defined here so we can make sure
 // elements are in the correct order.

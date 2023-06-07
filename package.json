@@ -36,6 +36,7 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "gh-pages": "^4.0.0",
     "jsdom": "^20.0.3",
@@ -86,7 +87,8 @@
     "plugins": [
       "react",
       "@typescript-eslint",
-      "unused-imports"
+      "unused-imports",
+      "react-refresh"
     ],
     "ignorePatterns": [
       "node_modules/",
@@ -162,7 +164,8 @@
       ],
       "no-undef": "off",
       "no-underscore-dangle": "off",
-      "jsx-a11y/anchor-is-valid": "off"
+      "jsx-a11y/anchor-is-valid": "off",
+      "react-refresh/only-export-components": "warn"
     }
   }
 }

@@ -7,17 +7,17 @@ import { FuzzyStateWithLines, Game, RunResult } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
 import ObjectiveText from "../components/level/objective_text";
-import { useSaveData } from "../contexts/save_data";
+import { useSaveData } from "../hooks/save_data_hooks";
 import DialogModal from "../components/dialog/dialog_modal";
 import { TREES } from "../lib/dialog_trees";
-import { useShortsModal } from "../contexts/shorts_modal";
+import { useShortsModal } from "../hooks/shorts_modal_hooks";
 import LevelSuccessModal from "../components/level/success_modal";
-import { useCurrScene } from "../contexts/scenes";
+import { useCurrScene } from "../hooks/scenes_hooks";
 import ChallengeText from "../components/level/challenge_text";
-import { useErrorModal } from "../contexts/error_modal";
+import { useErrorModal } from "../hooks/error_modal_hooks";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import ShowHintButton from "../components/level/show_hint_button";
-import { useHintsModal } from "../contexts/hints_modal";
+import { useHintsModal } from "../hooks/hints_modal_hooks";
 
 const game = Game.new();
 

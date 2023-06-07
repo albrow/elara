@@ -13,14 +13,13 @@ import {
   createContext,
   PropsWithChildren,
   useCallback,
-  useContext,
   useMemo,
   useState,
 } from "react";
 import { FaThumbsUp } from "react-icons/fa";
 
 import { HINTS_MODAL_Z_INDEX } from "../lib/constants";
-import { useCurrScene } from "./scenes";
+import { useCurrScene } from "../hooks/scenes_hooks";
 
 export const HintsModalContext = createContext<
   readonly [() => void, (onClose: () => void) => void]
@@ -32,9 +31,6 @@ export const HintsModalContext = createContext<
     throw new Error("useHintsModal must be used within a HintsModalContext");
   },
 ] as const);
-
-// A custom hook for showing and hiding the error modal.
-export const useHintsModal = () => useContext(HintsModalContext);
 
 // Helper for parsing hints. The raw strings may contain code surrounded
 // in backticks. This function will replace the backticks with <code> tags.

@@ -13,7 +13,6 @@ import {
   createContext,
   PropsWithChildren,
   useCallback,
-  useContext,
   useMemo,
   useState,
 } from "react";
@@ -39,9 +38,6 @@ export const ErrorModalContext = createContext<
     throw new Error("useErrorModal must be used within a ErrorModalContext");
   },
 ] as const);
-
-// A custom hook for showing and hiding the error modal.
-export const useErrorModal = () => useContext(ErrorModalContext);
 
 export function ErrorModalProvider(props: PropsWithChildren<{}>) {
   const [visible, setVisible] = useState<boolean>(false);

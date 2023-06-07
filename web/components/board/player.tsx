@@ -12,7 +12,7 @@ import groverDownUrl from "../../images/grover_down.png";
 import groverLeftUrl from "../../images/grover_left.png";
 import groverRightUrl from "../../images/grover_right.png";
 import { Pos, TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
-import { useSoundManager } from "../../contexts/sound_manager";
+import { useSoundManager } from "../../hooks/sound_manager_hooks";
 import SpriteLabel from "./sprite_label";
 import { getSpriteAnimations } from "./anim_utils";
 

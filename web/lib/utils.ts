@@ -1,4 +1,5 @@
-import { Pos } from "../../elara-lib/pkg/elara_lib";
+import { LevelData, Pos } from "../../elara-lib/pkg/elara_lib";
+import { SaveData } from "../contexts/save_data";
 import { TILE_SIZE, AXIS_HEIGHT, AXIS_WIDTH } from "./constants";
 
 // Returns a read-only array of the given size.
@@ -29,5 +30,33 @@ export function posToOffset(pos: Pos): Offset {
     top: `${topNum}px`,
     leftNum,
     topNum,
+  };
+}
+
+export interface ChallengeProgress {
+  completed: number;
+  available: number;
+}
+
+export function getChallengeProgress(
+  levels: Map<string, LevelData>,
+  saveData: SaveData
+): ChallengeProgress {
+  let completed = 0;
+  let available = 0;
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [levelName, levelState] of Object.entries(saveData.levelStates)) {
+    if (levels.get(levelName)?.challenge !== "") {
+      available += 1;
+      if (levelState.challengeCompleted) {
+        completed += 1;
+      }
+    }
+  }
+
+  return {
+    completed,
+    available,
   };
 }

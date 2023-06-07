@@ -4,7 +4,7 @@ import { useEffect, useCallback } from "react";
 
 import { TREES } from "../lib/dialog_trees";
 import { NAVBAR_HEIGHT } from "../lib/constants";
-import { useSceneNavigator } from "../contexts/scenes";
+import { useSceneNavigator } from "../hooks/scenes_hooks";
 import DialogTree from "../components/dialog/dialog_tree";
 
 export default function DialogOverBg() {

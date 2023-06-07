@@ -1,13 +1,12 @@
 import { Menu, MenuButton, MenuList, Tooltip } from "@chakra-ui/react";
 import { BsJournalCode } from "react-icons/bs";
 
+import { FUNCTION_LIST_WIDTH } from "../../../lib/constants";
 import FunctionListItem from "./function_list_item";
 
 export interface FunctionListProps {
   funcNames: string[];
 }
-
-export const FUNCTION_LIST_WIDTH = 160;
 
 export default function FunctionList(props: FunctionListProps) {
   return (

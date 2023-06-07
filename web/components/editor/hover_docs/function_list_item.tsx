@@ -1,7 +1,7 @@
 import { Box, MenuItem, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { FUNCTION_LIST_WIDTH } from "./function_list";
+import { FUNCTION_LIST_WIDTH } from "../../../lib/constants";
 import { docPages, HoverWord } from ".";
 
 export interface FunctionListItemProps {

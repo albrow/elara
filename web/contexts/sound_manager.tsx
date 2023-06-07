@@ -2,7 +2,6 @@ import {
   createContext,
   PropsWithChildren,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -43,7 +42,7 @@ import speakSound0Fallback from "../audio/speak_0.mp3";
 import speakSound1Fallback from "../audio/speak_1.mp3";
 import speakSound2Fallback from "../audio/speak_2.mp3";
 import speakSound3Fallback from "../audio/speak_3.mp3";
-import { useSaveData } from "./save_data";
+import { useSaveData } from "../hooks/save_data_hooks";
 
 interface SoundManager {
   getSound: (id: string) => Playable;
@@ -70,8 +69,6 @@ export const SoundManagerContext = createContext<SoundManager>({
     throw new Error("SoundManagerContext not initialized");
   },
 });
-
-export const useSoundManager = () => useContext(SoundManagerContext);
 
 export function SoundProvider(props: PropsWithChildren<{}>) {
   const [saveData, _] = useSaveData();

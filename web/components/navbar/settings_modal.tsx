@@ -11,7 +11,7 @@ import {
 import { useCallback, useMemo } from "react";
 import debounce from "lodash.debounce";
 
-import { useSaveData } from "../../contexts/save_data";
+import { useSaveData } from "../../hooks/save_data_hooks";
 import VolumeSlider from "./volume_slider";
 
 export interface SettingsModalProps {

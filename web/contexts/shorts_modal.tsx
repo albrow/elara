@@ -13,7 +13,6 @@ import {
   createContext,
   PropsWithChildren,
   useCallback,
-  useContext,
   useMemo,
   useState,
 } from "react";
@@ -22,7 +21,7 @@ import { MdCheck } from "react-icons/md";
 
 import { TUTORIAL_MODAL_Z_INDEX } from "../lib/constants";
 import { SHORTS, ShortId } from "../lib/tutorial_shorts";
-import { useSaveData } from "./save_data";
+import { useSaveData } from "../hooks/save_data_hooks";
 
 export const ShortsModalContext = createContext<
   readonly [(shortsList: ShortId[]) => void, () => void]
@@ -34,9 +33,6 @@ export const ShortsModalContext = createContext<
     throw new Error("useShortsModal must be used within a ShortsModalContext");
   },
 ] as const);
-
-// A custom hook for showing and hiding the tutorial shorts modal.
-export const useShortsModal = () => useContext(ShortsModalContext);
 
 export function ShortsModalProvider(props: PropsWithChildren<{}>) {
   const [shortsList, setShortsList] = useState<Array<ShortId>>([]);

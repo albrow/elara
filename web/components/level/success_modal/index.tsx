@@ -16,7 +16,7 @@ import { Animate, AnimateGroup } from "react-simple-animate";
 import { useRouter } from "react-router5";
 import type { RunResult } from "../../../../elara-lib/pkg/elara_lib";
 import { LEVEL_END_MODAL_Z_INDEX } from "../../../lib/constants";
-import { useCurrScene, useSceneNavigator } from "../../../contexts/scenes";
+import { useCurrScene, useSceneNavigator } from "../../../hooks/scenes_hooks";
 import ModalStats from "./modal_stats";
 import ModalObjective from "./modal_objective";
 import ModalChallenge from "./modal_challenge";

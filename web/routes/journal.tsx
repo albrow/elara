@@ -1,12 +1,10 @@
 import { useRouteNode } from "react-router5";
 import { useCallback, useEffect, useState } from "react";
 import { Container, Flex, Box } from "@chakra-ui/react";
-import { useSaveData } from "../contexts/save_data";
 
-import JournalSection, {
-  sections,
-  SectionName,
-} from "../components/journal/journal_section";
+import { useSaveData } from "../hooks/save_data_hooks";
+import { JOURNAL_SECTIONS, SectionName } from "../components/journal/sections";
+import JournalSection from "../components/journal/journal_section";
 import { TREES } from "../lib/dialog_trees";
 import DialogModal from "../components/dialog/dialog_modal";
 
@@ -16,8 +14,8 @@ export default function Journal() {
   const [saveData, _] = useSaveData();
 
   // Default to the first section.
-  sectionName ||= Object.keys(sections)[0] as SectionName;
-  if (sectionName !== undefined && !(sectionName in sections)) {
+  sectionName ||= Object.keys(JOURNAL_SECTIONS)[0] as SectionName;
+  if (sectionName !== undefined && !(sectionName in JOURNAL_SECTIONS)) {
     throw new Error(`Unknown section: ${sectionName}`);
   }
 

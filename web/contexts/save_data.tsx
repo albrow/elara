@@ -2,7 +2,6 @@ import {
   createContext,
   PropsWithChildren,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -12,10 +11,9 @@ import clone from "clone";
 
 import debounce from "lodash.debounce";
 import { ShortId } from "../lib/tutorial_shorts";
-import { LevelData } from "../../elara-lib/pkg/elara_lib";
 import { sleep } from "../lib/utils";
+import { SAVE_DATA_VERSION } from "../lib/constants";
 
-export const VERSION = 8;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 // Amount of time (in milliseconds) to wait for further updates before
@@ -90,7 +88,7 @@ function migrateSaveData(saveData: SaveData): SaveData {
     // For older versions, just log a warning and return the default save data.
     console.warn("Save data too old to migrate. Falling back to default.");
     return {
-      version: VERSION,
+      version: SAVE_DATA_VERSION,
       levelStates: {},
       seenDialogTrees: [],
       seenTutorialShorts: [],
@@ -128,49 +126,21 @@ function migrateSaveData(saveData: SaveData): SaveData {
   return newData;
 }
 
-export function load(): SaveData {
+function load(): SaveData {
   const rawData = localStorage.getItem(LOCAL_STORAGE_KEY);
   if (rawData) {
     const saveData = JSON.parse(rawData);
-    if (saveData.version === VERSION) {
+    if (saveData.version === SAVE_DATA_VERSION) {
       return saveData;
     }
     return migrateSaveData(saveData);
   }
   return {
-    version: VERSION,
+    version: SAVE_DATA_VERSION,
     levelStates: {},
     seenDialogTrees: [],
     seenTutorialShorts: [],
     settings: DEFUALT_SETTINGS,
-  };
-}
-
-export interface ChallengeProgress {
-  completed: number;
-  available: number;
-}
-
-export function getChallengeProgress(
-  levels: Map<string, LevelData>,
-  saveData: SaveData
-): ChallengeProgress {
-  let completed = 0;
-  let available = 0;
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [levelName, levelState] of Object.entries(saveData.levelStates)) {
-    if (levels.get(levelName)?.challenge !== "") {
-      available += 1;
-      if (levelState.challengeCompleted) {
-        completed += 1;
-      }
-    }
-  }
-
-  return {
-    completed,
-    available,
   };
 }
 
@@ -202,12 +172,6 @@ export const SaveDataContext = createContext<
     },
   },
 ] as const);
-
-// A custom hook for loading and saving save data from localStorage.
-// Can be used in any component where the save data needs to be referenced
-// or updated. Under the hood, this uses a context so that updates to the
-// save data will trigger a re-render of all components that use this hook.
-export const useSaveData = () => useContext(SaveDataContext);
 
 export function SaveDataProvider(props: PropsWithChildren<{}>) {
   // Note(albrow): We use a combination of ref and state for represnting the save data.
@@ -368,7 +332,7 @@ if (import.meta.vitest) {
     describe("save", async () => {
       it("saves the given save data to localStorage", async () => {
         const saveData = {
-          version: VERSION,
+          version: SAVE_DATA_VERSION,
           levelStates: {
             movement_part_one: {
               completed: false,
@@ -395,7 +359,7 @@ if (import.meta.vitest) {
     describe("load", () => {
       it("returns the default save data if there is no save data in localStorage", () => {
         expect(load()).toStrictEqual({
-          version: VERSION,
+          version: SAVE_DATA_VERSION,
           levelStates: {},
           seenDialogTrees: [],
           seenTutorialShorts: [],
@@ -405,7 +369,7 @@ if (import.meta.vitest) {
 
       it("loads the save data from localStorage", () => {
         const saveData = {
-          version: VERSION,
+          version: SAVE_DATA_VERSION,
           levelStates: {
             movement_part_one: {
               completed: false,

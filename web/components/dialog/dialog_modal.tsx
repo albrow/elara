@@ -6,8 +6,8 @@ import {
   Box,
 } from "@chakra-ui/react";
 import React, { useCallback } from "react";
-import { useSaveData } from "../../contexts/save_data";
 
+import { useSaveData } from "../../hooks/save_data_hooks";
 import { DIALOG_MODAL_Z_INDEX } from "../../lib/constants";
 import DialogTree from "./dialog_tree";
 

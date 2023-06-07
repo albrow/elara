@@ -5,7 +5,7 @@ import { BsStarFill, BsStar } from "react-icons/bs";
 
 import { RunResult } from "../../../../elara-lib/pkg/elara_lib";
 import ChallengeText from "../challenge_text";
-import { useCurrScene } from "../../../contexts/scenes";
+import { useCurrScene } from "../../../hooks/scenes_hooks";
 
 export interface ModalChallengeProps {
   result: RunResult;

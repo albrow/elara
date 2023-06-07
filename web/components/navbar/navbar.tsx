@@ -9,8 +9,8 @@ import {
   useJournalPages,
   useLevels,
   useSceneNavigator,
-} from "../../contexts/scenes";
-import { useSaveData } from "../../contexts/save_data";
+} from "../../hooks/scenes_hooks";
+import { useSaveData } from "../../hooks/save_data_hooks";
 import NavbarLink from "./navbar_link";
 import NavbarDropdown from "./navbar_dropdown";
 import SettingsModal from "./settings_modal";
