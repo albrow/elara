@@ -16,6 +16,18 @@ import { ShortsModalProvider } from "./contexts/shorts_modal";
 
 import { ErrorModalProvider } from "./contexts/error_modal";
 
+// This file doesn't play nicely with HMR/Fast refresh, so we just reload the page
+// if any changes are detected.
+// @refresh reset
+// @vite-ignore
+// @ts-ignore
+if (import.meta.hot) {
+  import.meta.hot.accept((_: any) => {
+    // eslint-disable-next-line no-restricted-globals
+    location.reload();
+  });
+}
+
 const elaraTheme = extendTheme({
   fonts: {
     heading: "Nunito, sans-serif",
