@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Container, Flex, Text, Box } from "@chakra-ui/react";
+import { Container, Flex, Text, Box, Stack } from "@chakra-ui/react";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 
@@ -253,7 +253,7 @@ export default function Level() {
         setVisible={setDialogVisible}
         treeName={getDialogTree()}
       />
-      <Container maxW="container.xl" mt={6}>
+      <Container minW="container.xl" maxW="container.xl" mt={6}>
         <Box>
           <Flex>
             <Text fontSize="2xl" fontWeight="bold" mb={1}>
@@ -289,8 +289,8 @@ export default function Level() {
             </Text>
           )}
         </Box>
-        <Flex direction="row" mt={4}>
-          <Box id="editor-section" mr={2} flexGrow={1}>
+        <Stack direction="row" mt={4} overflow="auto">
+          <Box id="editor-section" mr={0} flexGrow={1}>
             <Box w="608px">
               <Editor
                 type="level"
@@ -316,7 +316,7 @@ export default function Level() {
               enableAnimations={editorState === "running"}
             />
           </Box>
-        </Flex>
+        </Stack>
       </Container>
     </>
   );

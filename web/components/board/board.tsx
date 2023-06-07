@@ -11,7 +11,13 @@ import {
   FuzzyState,
   FuzzyTelepad,
 } from "../../../elara-lib/pkg";
-import { AXIS_HEIGHT, AXIS_WIDTH, HEIGHT, WIDTH } from "../../lib/constants";
+import {
+  AXIS_HEIGHT,
+  AXIS_WIDTH,
+  HEIGHT,
+  TILE_SIZE,
+  WIDTH,
+} from "../../lib/constants";
 import { posToOffset, range } from "../../lib/utils";
 import "./board.css";
 import lunarSurfaceBgUrl from "../../images/lunar_surface_bg.png";
@@ -34,9 +40,16 @@ export default function Board(props: BoardProps) {
     <>
       <div
         id="board"
-        style={{ backgroundImage: `url("${lunarSurfaceBgUrl}")` }}
+        style={{
+          backgroundImage: `url("${lunarSurfaceBgUrl}")`,
+        }}
       >
-        <table>
+        <table
+          style={{
+            width: `${AXIS_WIDTH + TILE_SIZE * WIDTH + 1}px`,
+            height: `${AXIS_HEIGHT + TILE_SIZE * HEIGHT + 2}px`,
+          }}
+        >
           <tbody>
             <tr
               id="x-axis-labels"

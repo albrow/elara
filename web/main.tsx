@@ -1,3 +1,5 @@
+// @refresh reset
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
@@ -32,6 +34,16 @@ const elaraTheme = extendTheme({
   fonts: {
     heading: "Nunito, sans-serif",
     body: "Nunito, sans-serif",
+  },
+  breakpoints: {
+    sm: "30em", // 480px (default)
+    md: "48em", // 768px (default)
+    lg: "62em", // 992px (default)
+    xl: "1268px", // (customized)
+    "2xl": "1500px", // (customized)
+  },
+  sizes: {
+    "container.xl": "1268px",
   },
   zIndices: {
     // NOTE(albrow): Below code breaks tooltips inside of modals, so I commented

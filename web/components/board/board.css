@@ -1,31 +1,12 @@
 #board table {
   border: 1px solid black;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 #board table td,
 table th {
   border: 1px solid #000;
   padding: 0;
-}
-#board table th,
-td {
-  width: 50px;
-  height: 50px;
-  border: 1px solid #000;
-}
-#board table tr:first-child th {
-  border-top: 0;
-}
-#board table tr:last-child td {
-  border-bottom: 0;
-}
-#board table tr td:first-child,
-#board table tr th:first-child {
-  border-left: 0;
-}
-#board table tr td:last-child,
-#board table tr th:last-child {
-  border-right: 0;
 }
 .sprite {
   position: absolute;

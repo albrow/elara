@@ -208,7 +208,7 @@ export default function Editor(props: EditorProps) {
   );
 
   const { setContainer, view } = useCodeMirror({
-    height: props.type === "level" ? "377px" : "auto",
+    height: props.type === "level" ? "370px" : "auto",
     editable: state === "editing",
     readOnly: state !== "editing",
     indentWithTab: false,
@@ -503,7 +503,7 @@ export default function Editor(props: EditorProps) {
       />
       <Box
         id="editor-wrapper"
-        height={props.type === "level" ? "381px" : undefined}
+        height={props.type === "level" ? "373px" : undefined}
         borderWidth="2px"
         borderTop="0px"
         paddingBottom="2px"
