@@ -13,9 +13,18 @@ import clone from "clone";
 import debounce from "lodash.debounce";
 import { ShortId } from "../lib/tutorial_shorts";
 import { LevelData } from "../../elara-lib/pkg/elara_lib";
+import { sleep } from "../lib/utils";
 
 export const VERSION = 8;
 const LOCAL_STORAGE_KEY = "elara.save";
+
+// Amount of time (in milliseconds) to wait for further updates before
+// saving data to local storage. Used as a parameter for the "debounce"
+// function to help prevent writing to local storage too often.
+const SAVE_DEBOUNCE_INTERVAL = 100;
+// Max amount of time (in milliseconds) to wait before writing to local
+// storage. Used as a parameter for the "debounce" function.
+const SAVE_MAX_WAIT = 1000;
 
 export interface LevelState {
   // Has the objective of the level been completed?
@@ -70,8 +79,8 @@ const save = debounce(
   (saveData: SaveData) => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(saveData));
   },
-  100,
-  { maxWait: 1000 }
+  SAVE_DEBOUNCE_INTERVAL,
+  { maxWait: SAVE_MAX_WAIT }
 );
 
 function migrateSaveData(saveData: SaveData): SaveData {
@@ -346,4 +355,78 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       {props.children}
     </SaveDataContext.Provider>
   );
+}
+
+if (import.meta.vitest) {
+  const { describe, it, expect, beforeEach } = import.meta.vitest;
+
+  describe("save_data", () => {
+    beforeEach(() => {
+      window.localStorage.clear();
+    });
+
+    describe("save", async () => {
+      it("saves the given save data to localStorage", async () => {
+        const saveData = {
+          version: VERSION,
+          levelStates: {
+            movement_part_one: {
+              completed: false,
+              code: `say("hello");`,
+            },
+            fuel_part_two: {
+              completed: false,
+              code: `move_right(5);`,
+            },
+          },
+          seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
+        };
+        save(saveData);
+        // Wait for debounce
+        await sleep(SAVE_DEBOUNCE_INTERVAL + 10);
+        expect(
+          JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY)!)
+        ).toStrictEqual(saveData);
+      });
+    });
+
+    describe("load", () => {
+      it("returns the default save data if there is no save data in localStorage", () => {
+        expect(load()).toStrictEqual({
+          version: VERSION,
+          levelStates: {},
+          seenDialogTrees: [],
+          seenTutorialShorts: [],
+          settings: DEFUALT_SETTINGS,
+        });
+      });
+
+      it("loads the save data from localStorage", () => {
+        const saveData = {
+          version: VERSION,
+          levelStates: {
+            movement_part_one: {
+              completed: false,
+              code: `say("hello");`,
+            },
+            fuel_part_two: {
+              completed: false,
+              code: `move_right(5);`,
+            },
+          },
+          seenDialogTrees: ["movement"],
+          seenTutorialShorts: ["how_to_run_code"],
+          settings: DEFUALT_SETTINGS,
+        };
+        window.localStorage.setItem(
+          LOCAL_STORAGE_KEY,
+          JSON.stringify(saveData)
+        );
+
+        expect(load()).toStrictEqual(saveData);
+      });
+    });
+  });
 }

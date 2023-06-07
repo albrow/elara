@@ -6,6 +6,12 @@ export function range(size: number): ReadonlyArray<number> {
   return [...Array(size).keys()].map((i) => i);
 }
 
+// Async function which resolves after the given number of milliseconds.
+export async function sleep(ms: number) {
+  // eslint-disable-next-line no-promise-executor-return
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export interface Offset {
   pos?: Pos;
   top: string;
