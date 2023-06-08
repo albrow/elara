@@ -37,7 +37,13 @@ impl Level for Gates {
             Obstacle::new(3, 6),
             Obstacle::new(3, 7),
         ];
-        state.password_gates = vec![PasswordGate::new(3, 3, "lovelace".to_string(), false)];
+        state.password_gates = vec![PasswordGate::new_with_info(
+            3,
+            3,
+            "lovelace".to_string(),
+            false,
+            r#"The password for this gate is `"lovelace"`."#.to_string(),
+        )];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {

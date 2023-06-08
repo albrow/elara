@@ -5,6 +5,8 @@ use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 
+const DATA_TERMINAL_INFO: &'static str = r#"This data terminal will output either `"top"`, `"middle"`, or `"bottom"` depending on which way is safe to go."#;
+
 #[derive(Copy, Clone)]
 pub struct AstroidStrikePartTwo {}
 
@@ -93,7 +95,12 @@ impl Level for AstroidStrikePartTwo {
                 ]
                 .concat(),
                 password_gates: vec![],
-                data_terminals: vec![DataTerminal::new(0, 3, "top".into())],
+                data_terminals: vec![DataTerminal::new_with_info(
+                    0,
+                    3,
+                    "top".into(),
+                    DATA_TERMINAL_INFO.into(),
+                )],
                 telepads: vec![],
             },
             State {
@@ -107,7 +114,12 @@ impl Level for AstroidStrikePartTwo {
                 ]
                 .concat(),
                 password_gates: vec![],
-                data_terminals: vec![DataTerminal::new(0, 3, "middle".into())],
+                data_terminals: vec![DataTerminal::new_with_info(
+                    0,
+                    3,
+                    "middle".into(),
+                    DATA_TERMINAL_INFO.into(),
+                )],
                 telepads: vec![],
             },
             State {
@@ -121,7 +133,12 @@ impl Level for AstroidStrikePartTwo {
                 ]
                 .concat(),
                 password_gates: vec![],
-                data_terminals: vec![DataTerminal::new(0, 3, "bottom".into())],
+                data_terminals: vec![DataTerminal::new_with_info(
+                    0,
+                    3,
+                    "bottom".into(),
+                    DATA_TERMINAL_INFO.into(),
+                )],
                 telepads: vec![],
             },
         ]

@@ -372,6 +372,7 @@ impl FuzzyState {
                     },
                     password: password_gate.password.clone(),
                     open: password_gate.open,
+                    additional_info: password_gate.additional_info.clone(),
                     fuzzy: fuzzy_password_gate.fuzzy,
                 }),
             );
@@ -389,6 +390,7 @@ impl FuzzyState {
                     },
                     data: term_data_to_js(&data_terminal.data),
                     reading: data_terminal.reading,
+                    additional_info: data_terminal.additional_info.clone(),
                     fuzzy: fuzzy_data_terminal.fuzzy,
                 }),
             );
@@ -495,6 +497,7 @@ pub struct FuzzyPasswordGate {
     pub pos: Pos,
     pub password: String,
     pub open: bool,
+    pub additional_info: String,
     pub fuzzy: bool,
 }
 
@@ -504,6 +507,7 @@ pub struct FuzzyDataTerminal {
     pub pos: Pos,
     pub data: JsValue, // string | string[]
     pub reading: bool,
+    pub additional_info: String,
     pub fuzzy: bool,
 }
 

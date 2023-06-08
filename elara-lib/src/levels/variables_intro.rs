@@ -7,6 +7,8 @@ use crate::simulation::{
 pub struct VariablesIntro {}
 
 const PASSWORD: &'static str = "supercalifragilisticexpialidocious";
+const GATE_INFO: &'static str =
+    r#"The starting code includes the password for this gate as a variable named `password`."#;
 
 impl Level for VariablesIntro {
     fn name(&self) -> &'static str {
@@ -72,9 +74,9 @@ let password = "supercalifragilisticexpialidocious";
             FuelSpot::new(5, 0),
         ];
         state.password_gates = vec![
-            PasswordGate::new(5, 6, PASSWORD.to_string(), false),
-            PasswordGate::new(5, 4, PASSWORD.to_string(), false),
-            PasswordGate::new(4, 3, PASSWORD.to_string(), false),
+            PasswordGate::new_with_info(5, 6, PASSWORD.to_string(), false, GATE_INFO.into()),
+            PasswordGate::new_with_info(5, 4, PASSWORD.to_string(), false, GATE_INFO.into()),
+            PasswordGate::new_with_info(4, 3, PASSWORD.to_string(), false, GATE_INFO.into()),
         ];
         vec![state]
     }

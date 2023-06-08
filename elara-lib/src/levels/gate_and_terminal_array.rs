@@ -46,8 +46,14 @@ let array = read_data();
             Obstacle::new(11, 5),
             Obstacle::new(11, 7),
         ];
-        state.password_gates = vec![PasswordGate::new(7, 6, "vaughan".to_string(), false)];
-        state.data_terminals = vec![DataTerminal::new(
+        state.password_gates = vec![PasswordGate::new_with_info(
+            7,
+            6,
+            "vaughan".to_string(),
+            false,
+            "The nearby data terminal holds an array. The password for this gate is stored at index `2` of the array.".into(),
+        )];
+        state.data_terminals = vec![DataTerminal::new_with_info(
             11,
             6,
             vec![
@@ -57,6 +63,7 @@ let array = read_data();
                 "42",
             ]
             .into(),
+            "This data terminal holds an array. The password is stored at index `2` of the array.".into(),
         )];
         vec![state]
     }

@@ -5,6 +5,8 @@ use crate::simulation::{Actor, DataTerminal, Enemy, FuelSpot, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
+const DATA_TERMINAL_INFO: &'static str = r#"This data terminal will output either `"left"` or `"right"` depending on which way is safe to go."#;
+
 #[derive(Copy, Clone)]
 pub struct EnemiesAndAsteroids {}
 
@@ -94,7 +96,12 @@ impl Level for EnemiesAndAsteroids {
                     ]
                     .concat(),
                 )
-                .with_data_terminal(vec![DataTerminal::new(5, 7, "right".into())])
+                .with_data_terminal(vec![DataTerminal::new_with_info(
+                    5,
+                    7,
+                    "right".into(),
+                    DATA_TERMINAL_INFO.into(),
+                )])
                 .build(),
             base_state
                 .clone()
@@ -105,7 +112,12 @@ impl Level for EnemiesAndAsteroids {
                     ]
                     .concat(),
                 )
-                .with_data_terminal(vec![DataTerminal::new(5, 7, "left".into())])
+                .with_data_terminal(vec![DataTerminal::new_with_info(
+                    5,
+                    7,
+                    "left".into(),
+                    DATA_TERMINAL_INFO.into(),
+                )])
                 .build(),
         ]
     }

@@ -51,8 +51,19 @@ impl Level for GateAndTerminalPartTwo {
             Obstacle::new(11, 0),
             Obstacle::new(11, 2),
         ];
-        state.password_gates = vec![PasswordGate::new(9, 2, "hopper".into(), false)];
-        state.data_terminals = vec![DataTerminal::new(10, 0, "hopper".into())];
+        state.password_gates = vec![PasswordGate::new_with_info(
+            9,
+            2,
+            "hopper".into(),
+            false,
+            "The password for this gate is stored in the nearby data terminal.".into(),
+        )];
+        state.data_terminals = vec![DataTerminal::new_with_info(
+            10,
+            0,
+            "hopper".into(),
+            "This data terminal contains the password you need.".into(),
+        )];
         state.enemies = vec![Enemy::new(5, 0, Orientation::Right)];
         vec![state]
     }

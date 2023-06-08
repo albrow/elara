@@ -13,7 +13,8 @@ export interface BoardHoverInfoProps {
   offset: Offset;
   // Note the page prop *is* actually used.
   // eslint-disable-next-line react/no-unused-prop-types
-  page: (props: MDXProps) => JSX.Element;
+  page: <T extends MDXProps>(props: T) => JSX.Element;
+  additionalInfo?: string;
 }
 
 export default function BoardHoverInfo(props: BoardHoverInfoProps) {
@@ -87,7 +88,7 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
             _hover={{ cursor: "text" }}
           >
             <Box className="md-content hover-doc">
-              <props.page />
+              <props.page additionalInfo={props.additionalInfo} />
             </Box>
           </Box>
         </>

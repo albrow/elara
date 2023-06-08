@@ -155,17 +155,19 @@ export default function Board(props: BoardProps) {
             key={i}
             offset={posToOffset(gate.pos)}
             open={gate.open}
+            additionalInfo={gate.additional_info}
             // fuzzy={gate.fuzzy}
           />
         )
       )}
       {(props.gameState.data_terminals as FuzzyDataTerminal[]).map(
-        (gate, i) => (
+        (terminal, i) => (
           <DataTerminal
             // eslint-disable-next-line react/no-array-index-key
             key={i}
-            offset={posToOffset(gate.pos)}
-            reading={gate.reading}
+            offset={posToOffset(terminal.pos)}
+            reading={terminal.reading}
+            additionalInfo={terminal.additional_info}
             // fuzzy={gate.fuzzy}
           />
         )

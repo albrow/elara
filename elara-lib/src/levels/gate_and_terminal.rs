@@ -47,8 +47,19 @@ let password = read_data();
             Obstacle::new(6, 1),
             Obstacle::new(6, 2),
         ];
-        state.password_gates = vec![PasswordGate::new(5, 3, "turing".to_string(), false)];
-        state.data_terminals = vec![DataTerminal::new(4, 1, "turing".into())];
+        state.password_gates = vec![PasswordGate::new_with_info(
+            5,
+            3,
+            "turing".to_string(),
+            false,
+            "The password for this gate is stored in the nearby data terminal.".into(),
+        )];
+        state.data_terminals = vec![DataTerminal::new_with_info(
+            4,
+            1,
+            "turing".into(),
+            "This data terminal contains the password you need.".into(),
+        )];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {

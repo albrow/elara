@@ -1,5 +1,13 @@
+import { compiler } from "markdown-to-jsx";
+
 ##### Data Terminal
 
 Can hold all kinds of information. If you
-move G.R.O.V.E.R. next to one and call the `read_data` function, it
+move G.R.O.V.E.R. next to this and call the `read_data` function, it
 will output whatever the data terminal holds.
+
+{
+props.additionalInfo && (
+compiler("##### Additional Info\n\n" + props.additionalInfo)
+)
+}
