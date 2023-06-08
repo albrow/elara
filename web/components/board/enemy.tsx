@@ -90,6 +90,8 @@ export default function Enemy(props: EnemyProps) {
             // that makes the malfunctioning rover look darker and more red in hue.
             // TODO(albrow): Replace this with a separate sprite.
             style={{
+              width: `${TILE_SIZE - 2}px`,
+              height: `${TILE_SIZE - 2}px`,
               position: "absolute",
               filter:
                 "drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3)) hue-rotate(180deg) " +
