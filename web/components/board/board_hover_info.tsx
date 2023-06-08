@@ -19,19 +19,33 @@ export interface BoardHoverInfoProps {
 export default function BoardHoverInfo(props: BoardHoverInfoProps) {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Width of the hover info in pixels.
   const pixelWidth = 400;
 
   // If the hover info is too close to the right or left edge of the screen, we
   // offset it so that it doesn't hang off the edge.
   const rightOffset = useMemo(() => {
     if (props.offset.leftNum + pixelWidth > BOARD_INNER_WIDTH) {
+      // Would hang off the right.
       if (props.offset.leftNum - pixelWidth < 0) {
-        return `${BOARD_INNER_WIDTH - pixelWidth}px`;
+        // Would hang off the left too. Position in the middle.
+        return `${props.offset.leftNum - pixelWidth}px`;
       }
-      return `${pixelWidth - TILE_SIZE}px`;
+      // Would hang off the right, but not the left.
+      return "0px";
     }
-    return "0px";
+    return "auto";
   }, [props.offset.leftNum]);
+
+  // Bottom offset is used to make sure the hover info doesn't hang off the top or
+  // bottom of the screen.
+  const bottomOffset = useMemo(() => {
+    if (props.offset.pos && props.offset.pos.y <= 4) {
+      return `auto`;
+    }
+
+    return `100%`;
+  }, [props.offset.pos]);
 
   return (
     <Box
@@ -59,17 +73,18 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
           {/* Actual hover info */}
           <Box
             overflow="visible"
-            zIndex={BOARD_HOVER_INFO_Z_INDEX}
+            zIndex={BOARD_HOVER_INFO_Z_INDEX + 1}
             bg="gray.200"
             border="1px"
             borderColor="gray.500"
-            position="relative"
-            top="0px"
+            position="absolute"
+            bottom={bottomOffset}
             right={rightOffset}
             w={`${pixelWidth}px`}
             py="5px"
             px="12px"
             boxShadow="2px 2px 10px"
+            _hover={{ cursor: "text" }}
           >
             <Box className="md-content hover-doc">
               <props.page />

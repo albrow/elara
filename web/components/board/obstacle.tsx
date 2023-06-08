@@ -6,6 +6,7 @@ import { Offset } from "../../lib/utils";
 import { TILE_SIZE, WALL_Z_INDEX } from "../../lib/constants";
 import rockImgUrl from "../../images/rock.png";
 import RockPage from "./hover_info_pages/rock.mdx";
+import AsteroidWarningPage from "./hover_info_pages/asteroid_warning.mdx";
 import BoardHoverInfo from "./board_hover_info";
 
 interface ObstacleProps {
@@ -19,31 +20,34 @@ export default function Obstacle(props: ObstacleProps) {
     // astroid strike at this location. Use a flashing warning icon to
     // indicate this.
     return (
-      <Box
-        position="absolute"
-        left={props.offset.left}
-        top={props.offset.top}
-        w={`${TILE_SIZE - 1}px`}
-        h={`${TILE_SIZE - 1}px`}
-        zIndex={WALL_Z_INDEX}
-        pt="5px"
-      >
-        <AnimateKeyframes
-          play
-          duration={0.85}
-          direction="alternate"
-          iterationCount="infinite"
-          keyframes={["opacity: 0", "opacity: 1"]}
+      <>
+        <BoardHoverInfo page={AsteroidWarningPage} offset={props.offset} />
+        <Box
+          position="absolute"
+          left={props.offset.left}
+          top={props.offset.top}
+          w={`${TILE_SIZE - 1}px`}
+          h={`${TILE_SIZE - 1}px`}
+          zIndex={WALL_Z_INDEX}
+          pt="5px"
         >
-          <MdOutlineWarningAmber
-            size="40px"
-            color="var(--chakra-colors-red-500)"
-            style={{
-              margin: "auto",
-            }}
-          />
-        </AnimateKeyframes>
-      </Box>
+          <AnimateKeyframes
+            play
+            duration={0.85}
+            direction="alternate"
+            iterationCount="infinite"
+            keyframes={["opacity: 0", "opacity: 1"]}
+          >
+            <MdOutlineWarningAmber
+              size="40px"
+              color="var(--chakra-colors-red-500)"
+              style={{
+                margin: "auto",
+              }}
+            />
+          </AnimateKeyframes>
+        </Box>
+      </>
     );
   }
   return (

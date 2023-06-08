@@ -8,6 +8,8 @@ import {
   CSS_ANIM_DURATION,
 } from "../../lib/constants";
 import tvImageUrl from "../../images/tv.png";
+import BoardHoverInfo from "./board_hover_info";
+import DataTerminalPage from "./hover_info_pages/data_terminal.mdx";
 
 interface DataTerminalProps {
   offset: Offset;
@@ -26,25 +28,33 @@ export default function DataTerminal(props: DataTerminalProps) {
   }, [props.animatePos]);
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        width: `${TILE_SIZE - 1}px`,
-        height: `${TILE_SIZE - 1}px`,
-        zIndex: TERMINAL_Z_INDEX,
-        left: props.offset.left,
-        top: props.offset.top,
-        transition: getCssTransition(),
-      }}
-    >
-      <img src={tvImageUrl} alt="data terminal" />
+    <>
+      <BoardHoverInfo page={DataTerminalPage} offset={props.offset} />
+      <div
+        style={{
+          position: "absolute",
+          width: `${TILE_SIZE - 1}px`,
+          height: `${TILE_SIZE - 1}px`,
+          zIndex: TERMINAL_Z_INDEX,
+          left: props.offset.left,
+          top: props.offset.top,
+          transition: getCssTransition(),
+        }}
+      >
+        <img src={tvImageUrl} alt="data terminal" />
 
-      {props.reading && (
-        <Box position="absolute" left={3} top={2} zIndex={TERMINAL_Z_INDEX + 1}>
-          <Spinner color="blue.400" thickness="4px" speed="0.65s" />
-        </Box>
-      )}
-    </div>
+        {props.reading && (
+          <Box
+            position="absolute"
+            left={3}
+            top={2}
+            zIndex={TERMINAL_Z_INDEX + 1}
+          >
+            <Spinner color="blue.400" thickness="4px" speed="0.65s" />
+          </Box>
+        )}
+      </div>
+    </>
   );
 }
 
