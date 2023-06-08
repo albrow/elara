@@ -5,7 +5,7 @@ import { AnimateKeyframes } from "react-simple-animate";
 import { Offset } from "../../lib/utils";
 import { TILE_SIZE, WALL_Z_INDEX } from "../../lib/constants";
 import rockImgUrl from "../../images/rock.png";
-import RockPage from "./hover_info_pages/rock.mdx";
+// import RockPage from "./hover_info_pages/rock.mdx";
 import AsteroidWarningPage from "./hover_info_pages/asteroid_warning.mdx";
 import BoardHoverInfo from "./board_hover_info";
 
@@ -52,7 +52,8 @@ export default function Obstacle(props: ObstacleProps) {
   }
   return (
     <>
-      <BoardHoverInfo page={RockPage} offset={props.offset} />
+      {/* Removing hover info for now because it can clutter the UI. Might reconsider later. */}
+      {/* <BoardHoverInfo page={RockPage} offset={props.offset} /> */}
       <Box
         position="absolute"
         left={props.offset.left}
