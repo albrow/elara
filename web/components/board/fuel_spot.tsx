@@ -7,6 +7,8 @@ import {
 import fuelImgUrl from "../../images/fuel.png";
 import glitchyFuelImgUrl from "../../images/fuel_glitchy.gif";
 import SpriteLabel from "./sprite_label";
+import FuelSpotPage from "./hover_info_pages/fuel_spot.mdx";
+import BoardHoverInfo from "./board_hover_info";
 
 interface FuelSpotProps {
   offset: Offset;
@@ -18,22 +20,25 @@ interface FuelSpotProps {
 export default function FuelSpot(props: FuelSpotProps) {
   const fuelAmount = props.fuel || DEFAULT_FUEL_GAIN;
   return props.collected ? null : (
-    <div
-      style={{
-        position: "absolute",
-        width: `${TILE_SIZE - 1}px`,
-        height: `${TILE_SIZE - 1}px`,
-        zIndex: FUEL_Z_INDEX,
-        left: props.offset.left,
-        top: props.offset.top,
-      }}
-    >
-      <img
-        className="fuelImage"
-        alt="fuel"
-        src={props.fuzzy ? glitchyFuelImgUrl : fuelImgUrl}
-      />
-      <SpriteLabel zIndex={FUEL_Z_INDEX + 1} value={`+${fuelAmount}`} />
-    </div>
+    <>
+      <BoardHoverInfo page={FuelSpotPage} offset={props.offset} />
+      <div
+        style={{
+          position: "absolute",
+          width: `${TILE_SIZE - 1}px`,
+          height: `${TILE_SIZE - 1}px`,
+          zIndex: FUEL_Z_INDEX,
+          left: props.offset.left,
+          top: props.offset.top,
+        }}
+      >
+        <img
+          className="fuelImage"
+          alt="fuel"
+          src={props.fuzzy ? glitchyFuelImgUrl : fuelImgUrl}
+        />
+        <SpriteLabel zIndex={FUEL_Z_INDEX + 1} value={`+${fuelAmount}`} />
+      </div>
+    </>
   );
 }

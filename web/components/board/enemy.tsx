@@ -9,6 +9,8 @@ import groverRightUrl from "../../images/grover_right.png";
 import lightningEffectUrl from "../../images/lightning.gif";
 import { TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
 import { getSpriteAnimations } from "./anim_utils";
+import BoardHoverInfo from "./board_hover_info";
+import MalfunctioningRoverPage from "./hover_info_pages/malfunctioning_rover.mdx";
 
 interface EnemyProps {
   offset: Offset;
@@ -62,6 +64,7 @@ export default function Enemy(props: EnemyProps) {
 
   return (
     <>
+      <BoardHoverInfo page={MalfunctioningRoverPage} offset={props.offset} />
       {animation.definitions}
       <Box
         position="absolute"
