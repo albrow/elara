@@ -15,6 +15,8 @@ import { Pos, TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
 import SpriteLabel from "./sprite_label";
 import { getSpriteAnimations } from "./anim_utils";
+import BoardHoverInfo from "./board_hover_info";
+import GroverPage from "./hover_info_pages/grover.mdx";
 
 interface PlayerProps {
   offset: Offset;
@@ -99,6 +101,7 @@ export default function Player(props: PlayerProps) {
 
   return (
     <>
+      <BoardHoverInfo page={GroverPage} offset={props.offset} />
       {animation.definitions}
       <Box
         position="absolute"

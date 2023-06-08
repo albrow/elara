@@ -5,6 +5,8 @@ import { AnimateKeyframes } from "react-simple-animate";
 import { Offset } from "../../lib/utils";
 import { TILE_SIZE, WALL_Z_INDEX } from "../../lib/constants";
 import rockImgUrl from "../../images/rock.png";
+import RockPage from "./hover_info_pages/rock.mdx";
+import BoardHoverInfo from "./board_hover_info";
 
 interface ObstacleProps {
   offset: Offset;
@@ -45,18 +47,25 @@ export default function Obstacle(props: ObstacleProps) {
     );
   }
   return (
-    <img
-      className="rock sprite"
-      alt="rock"
-      src={rockImgUrl}
-      style={{
-        position: "absolute",
-        width: `${TILE_SIZE - 1}px`,
-        height: `${TILE_SIZE - 1}px`,
-        zIndex: WALL_Z_INDEX,
-        left: props.offset.left,
-        top: props.offset.top,
-      }}
-    />
+    <>
+      <BoardHoverInfo page={RockPage} offset={props.offset} />
+      <Box
+        position="absolute"
+        left={props.offset.left}
+        top={props.offset.top}
+        w={`${TILE_SIZE}px`}
+        h={`${TILE_SIZE}px`}
+        zIndex={WALL_Z_INDEX}
+      >
+        <img
+          alt="rock"
+          src={rockImgUrl}
+          style={{
+            width: `${TILE_SIZE - 2}px`,
+            height: `${TILE_SIZE - 2}px`,
+          }}
+        />
+      </Box>
+    </>
   );
 }

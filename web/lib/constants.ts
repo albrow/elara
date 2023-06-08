@@ -8,8 +8,8 @@ export const SAVE_DATA_VERSION = 8;
 export const WIDTH = 12;
 export const HEIGHT = 8;
 export const TILE_SIZE = 50;
-export const CANVAS_WIDTH = (TILE_SIZE + 1) * WIDTH + 1;
-export const CANVAS_HEIGHT = (TILE_SIZE + 1) * HEIGHT + 1;
+export const BOARD_INNER_WIDTH = TILE_SIZE * WIDTH;
+export const BOARD_INNER_HEIGHT = TILE_SIZE * HEIGHT;
 export const DEFAULT_FUEL_GAIN = 10;
 
 // Game speed and animations.
@@ -37,6 +37,7 @@ export const NAVBAR_DROPDOWN_Z_INDEX = 1100;
 export const CHAKRA_TOOL_TIP_Z_INDEX = 900; // Used for Chakra tooltips (not including rover messages).
 export const CM_TOOL_TIP_Z_INDEX = 800; // Used for Codemirror tooltips (e.g. hover docs).
 export const AXIS_LABEL_Z_INDEX = 700;
+export const BOARD_HOVER_INFO_Z_INDEX = 600;
 export const PLAYER_MESSAGE_Z_INDEX = 400;
 export const ENEMY_Z_INDEX = 300;
 export const PLAYER_Z_INDEX = 200;
