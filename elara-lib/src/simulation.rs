@@ -317,6 +317,9 @@ pub struct PasswordGate {
     pub pos: Pos,
     pub open: bool,
     pub password: String,
+    /// Additional information that will be displayed in the UI.
+    /// (e.g. explain what the password is or how to get it)
+    pub additional_info: String,
 }
 
 impl PasswordGate {
@@ -328,6 +331,25 @@ impl PasswordGate {
             },
             open,
             password,
+            additional_info: String::new(),
+        }
+    }
+    pub fn new_with_info(
+        x: u32,
+        y: u32,
+        password: String,
+        open: bool,
+
+        additional_info: String,
+    ) -> PasswordGate {
+        PasswordGate {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            open,
+            password,
+            additional_info,
         }
     }
 }
@@ -370,6 +392,9 @@ pub struct DataTerminal {
     pub pos: Pos,
     pub data: TermData,
     pub reading: bool,
+    /// Additional information that will be displayed in the UI.
+    /// (e.g. explain what the data terminal will output)
+    pub additional_info: String,
 }
 
 impl DataTerminal {
@@ -381,6 +406,18 @@ impl DataTerminal {
             },
             data,
             reading: false,
+            additional_info: String::new(),
+        }
+    }
+    pub fn new_with_info(x: u32, y: u32, data: TermData, additional_info: String) -> DataTerminal {
+        DataTerminal {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            data,
+            reading: false,
+            additional_info,
         }
     }
 }
