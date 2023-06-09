@@ -4,8 +4,8 @@ use std::sync::mpsc;
 
 use crate::constants::FUEL_SPOT_AMOUNT;
 use crate::simulation::{
-    get_adjacent_terminal, Actor, BumpAnimData, Orientation, PlayerAnimState, Pos, State,
-    TeleAnimData,
+    get_adjacent_button, get_adjacent_terminal, Actor, BumpAnimData, Orientation, PlayerAnimState,
+    Pos, State, TeleAnimData,
 };
 
 use super::{
@@ -38,6 +38,11 @@ impl Actor for PlayerChannelActor {
         // Reset the reading state of all data terminals.
         for terminal in state.data_terminals.iter_mut() {
             terminal.reading = false;
+        }
+
+        // Reset the pressed state of all buttons.
+        for button in state.buttons.iter_mut() {
+            button.currently_pressed = false;
         }
 
         let rx = self.rx.clone();
@@ -96,6 +101,13 @@ impl Actor for PlayerChannelActor {
                 // (The reading state only affects the UI).
                 if let Some(terminal_index) = get_adjacent_terminal(&state, &state.player.pos) {
                     state.data_terminals[terminal_index].reading = true;
+                }
+                state.player.anim_state = PlayerAnimState::Idle;
+            }
+            Ok(Action::PressButton) => {
+                // If we're next to a button, mark it as being currently pressed.
+                if let Some(button_index) = get_adjacent_button(&state, &state.player.pos) {
+                    state.buttons[button_index].currently_pressed = true;
                 }
                 state.player.anim_state = PlayerAnimState::Idle;
             }

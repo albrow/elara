@@ -45,6 +45,7 @@ export const FUEL_Z_INDEX = 100;
 export const GOAL_Z_INDEX = 100;
 export const TELEPAD_Z_INDEX = 100;
 export const WALL_Z_INDEX = 100;
+export const BUTTON_Z_INDEX = 100;
 export const GATE_Z_INDEX = 100;
 export const TERMINAL_Z_INDEX = 100;
 

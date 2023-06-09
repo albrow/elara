@@ -27,6 +27,7 @@ pub enum Action {
     Turn(TurnDirection),
     Say(String),
     ReadData,
+    PressButton,
 }
 
 pub struct Bounds {

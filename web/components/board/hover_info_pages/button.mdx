@@ -1,0 +1,12 @@
+import { compiler } from "markdown-to-jsx";
+
+##### Button
+
+You can interact with a button by moving G.R.O.V.E.R. next to it
+and calling the `press_button` function.
+
+{
+props.additionalInfo && (
+compiler("##### Additional Info\n\n" + props.additionalInfo)
+)
+}

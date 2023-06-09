@@ -10,6 +10,7 @@ import {
   FuzzyPlayer,
   FuzzyState,
   FuzzyTelepad,
+  FuzzyButton,
 } from "../../../elara-lib/pkg";
 import {
   AXIS_HEIGHT,
@@ -29,6 +30,7 @@ import Goal from "./goal";
 import Obstacle from "./obstacle";
 import Player from "./player";
 import Telepad from "./telepad";
+import Button from "./button";
 
 interface BoardProps {
   gameState: FuzzyState;
@@ -146,6 +148,16 @@ export default function Board(props: BoardProps) {
           key={i}
           offset={posToOffset(obstacle.pos)}
           fuzzy={obstacle.fuzzy}
+        />
+      ))}
+      {(props.gameState.buttons as FuzzyButton[]).map((button, i) => (
+        <Button
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          offset={posToOffset(button.pos)}
+          currentlyPressed={button.currently_pressed}
+          additionalInfo={button.additional_info}
+          // fuzzy={button.fuzzy}
         />
       ))}
       {(props.gameState.password_gates as FuzzyPasswordGate[]).map(

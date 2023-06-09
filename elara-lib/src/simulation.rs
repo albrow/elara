@@ -551,6 +551,26 @@ pub fn get_adjacent_terminal(state: &State, pos: &Pos) -> Option<usize> {
     None
 }
 
+/// Returns the index of the button adjacent to the given
+/// position. Returns None if there is no adjacent button.
+pub fn get_adjacent_button(state: &State, pos: &Pos) -> Option<usize> {
+    for (i, button) in state.buttons.iter().enumerate() {
+        if button.pos.x == pos.x && button.pos.y == pos.y + 1 {
+            return Some(i);
+        }
+        if pos.y != 0 && button.pos.x == pos.x && button.pos.y == pos.y - 1 {
+            return Some(i);
+        }
+        if button.pos.x == pos.x + 1 && button.pos.y == pos.y {
+            return Some(i);
+        }
+        if pos.x != 0 && button.pos.x == pos.x - 1 && button.pos.y == pos.y {
+            return Some(i);
+        }
+    }
+    None
+}
+
 /// Teleportation pads instantly move a rover from one location to another.
 /// As a side-effect, telepads may also change which direction the rover is
 /// facing.
