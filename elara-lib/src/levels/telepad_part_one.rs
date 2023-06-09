@@ -2,6 +2,7 @@ use rhai::Engine;
 
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, State, Telepad};
+use crate::state_maker::StateMaker;
 
 #[derive(Copy, Clone)]
 pub struct TelepadPartOne {}
@@ -71,46 +72,30 @@ if get_orientation() == "up" {
 
     fn initial_states(&self) -> Vec<State> {
         vec![
-            State {
-                player: Player::new(0, 4, 10, Orientation::Right),
-                fuel_spots: vec![],
-                goals: vec![Goal::new(11, 4)],
-                enemies: vec![],
-                obstacles: self.obstacles().clone(),
-                password_gates: vec![],
-                data_terminals: vec![],
-                telepads: vec![Telepad::new((3, 4), (8, 4), Orientation::Up)],
-            },
-            State {
-                player: Player::new(0, 4, 10, Orientation::Right),
-                fuel_spots: vec![],
-                goals: vec![Goal::new(11, 4)],
-                enemies: vec![],
-                obstacles: self.obstacles().clone(),
-                password_gates: vec![],
-                data_terminals: vec![],
-                telepads: vec![Telepad::new((3, 4), (8, 4), Orientation::Down)],
-            },
-            State {
-                player: Player::new(0, 4, 10, Orientation::Right),
-                fuel_spots: vec![],
-                goals: vec![Goal::new(11, 4)],
-                enemies: vec![],
-                obstacles: self.obstacles().clone(),
-                password_gates: vec![],
-                data_terminals: vec![],
-                telepads: vec![Telepad::new((3, 4), (8, 4), Orientation::Left)],
-            },
-            State {
-                player: Player::new(0, 4, 10, Orientation::Right),
-                fuel_spots: vec![],
-                goals: vec![Goal::new(11, 4)],
-                enemies: vec![],
-                obstacles: self.obstacles().clone(),
-                password_gates: vec![],
-                data_terminals: vec![],
-                telepads: vec![Telepad::new((3, 4), (8, 4), Orientation::Right)],
-            },
+            StateMaker::new()
+                .with_player(Player::new(0, 4, 10, Orientation::Right))
+                .with_obstacles(self.obstacles().clone())
+                .with_goals(vec![Goal::new(11, 4)])
+                .with_telepads(vec![Telepad::new((3, 4), (8, 4), Orientation::Up)])
+                .build(),
+            StateMaker::new()
+                .with_player(Player::new(0, 4, 10, Orientation::Right))
+                .with_obstacles(self.obstacles().clone())
+                .with_goals(vec![Goal::new(11, 4)])
+                .with_telepads(vec![Telepad::new((3, 4), (8, 4), Orientation::Down)])
+                .build(),
+            StateMaker::new()
+                .with_player(Player::new(0, 4, 10, Orientation::Right))
+                .with_obstacles(self.obstacles().clone())
+                .with_goals(vec![Goal::new(11, 4)])
+                .with_telepads(vec![Telepad::new((3, 4), (8, 4), Orientation::Left)])
+                .build(),
+            StateMaker::new()
+                .with_player(Player::new(0, 4, 10, Orientation::Right))
+                .with_obstacles(self.obstacles().clone())
+                .with_goals(vec![Goal::new(11, 4)])
+                .with_telepads(vec![Telepad::new((3, 4), (8, 4), Orientation::Right)])
+                .build(),
         ]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {

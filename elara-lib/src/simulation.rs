@@ -135,26 +135,30 @@ impl Simulation {
 #[derive(Clone, PartialEq)]
 pub struct State {
     pub player: Player,
-    pub fuel_spots: Vec<FuelSpot>,
     pub goals: Vec<Goal>,
-    pub enemies: Vec<Enemy>,
     pub obstacles: Vec<Obstacle>,
-    pub password_gates: Vec<PasswordGate>,
+    pub fuel_spots: Vec<FuelSpot>,
+    pub buttons: Vec<Button>,
+    pub gates: Vec<Gate>,
     pub data_terminals: Vec<DataTerminal>,
+    pub password_gates: Vec<PasswordGate>,
     pub telepads: Vec<Telepad>,
+    pub enemies: Vec<Enemy>,
 }
 
 impl State {
     pub fn new() -> State {
         State {
             player: Player::new(0, 0, MAX_FUEL, Orientation::Right),
-            fuel_spots: vec![],
             goals: vec![],
-            enemies: vec![],
             obstacles: vec![],
+            fuel_spots: vec![],
+            buttons: vec![],
+            gates: vec![],
             password_gates: vec![],
             data_terminals: vec![],
             telepads: vec![],
+            enemies: vec![],
         }
     }
 }
@@ -163,15 +167,17 @@ impl fmt::Debug for State {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("State")
             .field("player", &self.player)
-            .field("fuel_spots", &self.fuel_spots)
             .field("goal", &self.goals)
-            .field("enemies", &self.enemies)
-            .field("password_gates", &self.password_gates)
-            .field("password_terminals", &self.data_terminals)
             // Omitting obstacles field since it can be very long and
             // the obstacles never move.
             // .field("obstacles", &self.obstacles)
+            .field("fuel_spots", &self.fuel_spots)
+            .field("buttons", &self.buttons)
+            .field("gates", &self.gates)
+            .field("data_terminals", &self.data_terminals)
+            .field("password_gates", &self.password_gates)
             .field("telepads", &self.telepads)
+            .field("enemies", &self.enemies)
             .finish()
     }
 }
@@ -251,6 +257,38 @@ impl FuelSpot {
 }
 
 #[derive(Clone, PartialEq, Debug)]
+pub struct Button {
+    pub pos: Pos,
+    pub pressed_count: u32,
+    /// Additional information that will be displayed in the UI.
+    /// (e.g. explain what the password is or how to get it)
+    pub additional_info: String,
+}
+
+impl Button {
+    pub fn new(x: u32, y: u32) -> Button {
+        Button {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            pressed_count: 0,
+            additional_info: String::new(),
+        }
+    }
+    pub fn new_with_info(x: u32, y: u32, additional_info: String) -> Button {
+        Button {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            pressed_count: 0,
+            additional_info,
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug)]
 pub struct Goal {
     pub pos: Pos,
 }
@@ -308,6 +346,38 @@ impl Obstacle {
                 x: x as i32,
                 y: y as i32,
             },
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct Gate {
+    pub pos: Pos,
+    pub open: bool,
+    /// Additional information that will be displayed in the UI.
+    /// (e.g. explain what the password is or how to get it)
+    pub additional_info: String,
+}
+
+impl Gate {
+    pub fn new(x: u32, y: u32, open: bool) -> Gate {
+        Gate {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            open,
+            additional_info: String::new(),
+        }
+    }
+    pub fn new_with_info(x: u32, y: u32, open: bool, additional_info: String) -> Gate {
+        Gate {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            open,
+            additional_info,
         }
     }
 }

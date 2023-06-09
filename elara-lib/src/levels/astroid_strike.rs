@@ -4,6 +4,7 @@ use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
+use crate::state_maker::StateMaker;
 
 const DATA_TERMINAL_INFO: &'static str = r#"This data terminal will output either `"left"` or `"right"` depending on which way is safe to go."#;
 
@@ -74,36 +75,28 @@ if safe_direction == "right" {
     }
     fn initial_states(&self) -> Vec<State> {
         vec![
-            State {
-                player: Player::new(5, 7, 12, Orientation::Up),
-                fuel_spots: vec![],
-                goals: vec![Goal::new(2, 5), Goal::new(8, 5)],
-                enemies: vec![],
-                obstacles: [self.obstacles().clone(), vec![Obstacle::new(6, 5)]].concat(),
-                password_gates: vec![],
-                data_terminals: vec![DataTerminal::new_with_info(
+            StateMaker::new()
+                .with_player(Player::new(5, 7, 12, Orientation::Up))
+                .with_obstacles([self.obstacles().clone(), vec![Obstacle::new(6, 5)]].concat())
+                .with_goals(vec![Goal::new(2, 5), Goal::new(8, 5)])
+                .with_data_terminal(vec![DataTerminal::new_with_info(
                     5,
                     4,
                     "left".into(),
                     DATA_TERMINAL_INFO.into(),
-                )],
-                telepads: vec![],
-            },
-            State {
-                player: Player::new(5, 7, 12, Orientation::Up),
-                fuel_spots: vec![],
-                goals: vec![Goal::new(2, 5), Goal::new(8, 5)],
-                enemies: vec![],
-                obstacles: [self.obstacles().clone(), vec![Obstacle::new(4, 5)]].concat(),
-                password_gates: vec![],
-                data_terminals: vec![DataTerminal::new_with_info(
+                )])
+                .build(),
+            StateMaker::new()
+                .with_player(Player::new(5, 7, 12, Orientation::Up))
+                .with_obstacles([self.obstacles().clone(), vec![Obstacle::new(4, 5)]].concat())
+                .with_goals(vec![Goal::new(2, 5), Goal::new(8, 5)])
+                .with_data_terminal(vec![DataTerminal::new_with_info(
                     5,
                     4,
                     "right".into(),
                     DATA_TERMINAL_INFO.into(),
-                )],
-                telepads: vec![],
-            },
+                )])
+                .build(),
         ]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {

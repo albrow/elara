@@ -4,6 +4,7 @@ use super::{std_check_win, Level, Outcome};
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
+use crate::state_maker::StateMaker;
 
 const DATA_TERMINAL_INFO: &'static str = r#"This data terminal will output either `"top"`, `"middle"`, or `"bottom"` depending on which way is safe to go."#;
 
@@ -84,63 +85,76 @@ impl Level for AstroidStrikePartTwo {
     }
     fn initial_states(&self) -> Vec<State> {
         vec![
-            State {
-                player: Player::new(1, 3, 10, Orientation::Right),
-                fuel_spots: vec![],
-                goals: vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)],
-                enemies: vec![],
-                obstacles: [
-                    self.obstacles().clone(),
-                    vec![Obstacle::new(5, 3), Obstacle::new(4, 4)],
-                ]
-                .concat(),
-                password_gates: vec![],
-                data_terminals: vec![DataTerminal::new_with_info(
+            // State {
+            //     player: Player::new(1, 3, 10, Orientation::Right),
+            //     fuel_spots: vec![],
+            //     goals: vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)],
+            //     enemies: vec![],
+            //     obstacles: [
+            //         self.obstacles().clone(),
+            //         vec![Obstacle::new(5, 3), Obstacle::new(4, 4)],
+            //     ]
+            //     .concat(),
+            //     password_gates: vec![],
+            //     data_terminals: vec![DataTerminal::new_with_info(
+            //         0,
+            //         3,
+            //         "top".into(),
+            //         DATA_TERMINAL_INFO.into(),
+            //     )],
+            //     telepads: vec![],
+            // },
+            StateMaker::new()
+                .with_player(Player::new(1, 3, 10, Orientation::Right))
+                .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])
+                .with_obstacles(
+                    [
+                        self.obstacles().clone(),
+                        vec![Obstacle::new(5, 3), Obstacle::new(4, 4)],
+                    ]
+                    .concat(),
+                )
+                .with_data_terminal(vec![DataTerminal::new_with_info(
                     0,
                     3,
                     "top".into(),
                     DATA_TERMINAL_INFO.into(),
-                )],
-                telepads: vec![],
-            },
-            State {
-                player: Player::new(1, 3, 10, Orientation::Right),
-                fuel_spots: vec![],
-                goals: vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)],
-                enemies: vec![],
-                obstacles: [
-                    self.obstacles().clone(),
-                    vec![Obstacle::new(4, 2), Obstacle::new(4, 4)],
-                ]
-                .concat(),
-                password_gates: vec![],
-                data_terminals: vec![DataTerminal::new_with_info(
+                )])
+                .build(),
+            StateMaker::new()
+                .with_player(Player::new(1, 3, 10, Orientation::Right))
+                .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])
+                .with_obstacles(
+                    [
+                        self.obstacles().clone(),
+                        vec![Obstacle::new(4, 2), Obstacle::new(4, 4)],
+                    ]
+                    .concat(),
+                )
+                .with_data_terminal(vec![DataTerminal::new_with_info(
                     0,
                     3,
                     "middle".into(),
                     DATA_TERMINAL_INFO.into(),
-                )],
-                telepads: vec![],
-            },
-            State {
-                player: Player::new(1, 3, 10, Orientation::Right),
-                fuel_spots: vec![],
-                goals: vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)],
-                enemies: vec![],
-                obstacles: [
-                    self.obstacles().clone(),
-                    vec![Obstacle::new(4, 2), Obstacle::new(5, 3)],
-                ]
-                .concat(),
-                password_gates: vec![],
-                data_terminals: vec![DataTerminal::new_with_info(
+                )])
+                .build(),
+            StateMaker::new()
+                .with_player(Player::new(1, 3, 10, Orientation::Right))
+                .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])
+                .with_obstacles(
+                    [
+                        self.obstacles().clone(),
+                        vec![Obstacle::new(4, 2), Obstacle::new(5, 3)],
+                    ]
+                    .concat(),
+                )
+                .with_data_terminal(vec![DataTerminal::new_with_info(
                     0,
                     3,
                     "bottom".into(),
                     DATA_TERMINAL_INFO.into(),
-                )],
-                telepads: vec![],
-            },
+                )])
+                .build(),
         ]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
