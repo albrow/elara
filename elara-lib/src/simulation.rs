@@ -259,6 +259,8 @@ impl FuelSpot {
 // Indicates what the button is connected to.
 #[derive(Clone, PartialEq, Debug)]
 pub enum ButtonConnection {
+    /// The button is not connected to anything.
+    None,
     /// The button is connected to a gate. The usize is the index of the gate.
     Gate(usize),
 }

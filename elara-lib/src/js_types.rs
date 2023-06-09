@@ -230,6 +230,8 @@ pub struct FuzzyState {
     pub password_gates: Array, // Array<FuzzyPasswordGate>
     pub data_terminals: Array, // Array<FuzzyDataTerminal>
     pub telepads: Array,       // Array<FuzzyTelepad>
+    pub buttons: Array,        // Array<FuzzyButton>
+    pub gates: Array,          // Array<FuzzyGate>
 }
 
 impl FuzzyState {
@@ -243,6 +245,8 @@ impl FuzzyState {
             password_gates: Array::new(),
             data_terminals: Array::new(),
             telepads: Array::new(),
+            buttons: Array::new(),
+            gates: Array::new(),
         }
     }
 
@@ -421,6 +425,48 @@ impl FuzzyState {
             );
         }
 
+        let buttons = Array::new_with_length(state.buttons.len() as u32);
+        for (i, fuzzy_button) in state.buttons.iter().enumerate() {
+            let button = &fuzzy_button.obj;
+            buttons.set(
+                i as u32,
+                JsValue::from(FuzzyButton {
+                    pos: Pos {
+                        x: button.pos.x as i32,
+                        y: button.pos.y as i32,
+                    },
+                    connection_type: match button.connection {
+                        simulation::ButtonConnection::None => "none".to_string(),
+                        simulation::ButtonConnection::Gate(_) => "gate".to_string(),
+                    },
+                    connection_index: match button.connection {
+                        simulation::ButtonConnection::None => 0,
+                        simulation::ButtonConnection::Gate(index) => index as i32,
+                    },
+                    currently_pressed: button.currently_pressed,
+                    additional_info: button.additional_info.clone(),
+                    fuzzy: fuzzy_button.fuzzy,
+                }),
+            );
+        }
+
+        let gates = Array::new_with_length(state.gates.len() as u32);
+        for (i, fuzzy_gate) in state.gates.iter().enumerate() {
+            let gate = &fuzzy_gate.obj;
+            gates.set(
+                i as u32,
+                JsValue::from(FuzzyGate {
+                    pos: Pos {
+                        x: gate.pos.x as i32,
+                        y: gate.pos.y as i32,
+                    },
+                    open: gate.open,
+                    additional_info: gate.additional_info.clone(),
+                    fuzzy: fuzzy_gate.fuzzy,
+                }),
+            );
+        }
+
         FuzzyState {
             players,
             fuel_spots,
@@ -430,6 +476,8 @@ impl FuzzyState {
             password_gates,
             data_terminals,
             telepads,
+            buttons,
+            gates,
         }
     }
 }
@@ -517,5 +565,25 @@ pub struct FuzzyTelepad {
     pub start_pos: Pos,
     pub end_pos: Pos,
     pub end_facing: String, // Orientation
+    pub fuzzy: bool,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct FuzzyButton {
+    pub pos: Pos,
+    pub currently_pressed: bool,
+    pub additional_info: String,
+    pub connection_type: String, // ButtonConnection
+    pub connection_index: i32,   // E.g., for ButtonConnection::Gate, the index of the gate.
+    pub fuzzy: bool,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct FuzzyGate {
+    pub pos: Pos,
+    pub open: bool,
+    pub additional_info: String,
     pub fuzzy: bool,
 }

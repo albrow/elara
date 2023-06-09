@@ -1,7 +1,10 @@
-use super::{std_check_win, Level, Outcome};
+use super::{Level, Outcome};
 use crate::{
+    constants::ERR_OUT_OF_FUEL,
     script_runner::ScriptStats,
-    simulation::{Actor, Goal, Obstacle, Orientation, PasswordGate, Player, State},
+    simulation::{
+        Actor, Button, ButtonConnection, Goal, Obstacle, Orientation, PasswordGate, Player, State,
+    },
 };
 
 #[derive(Copy, Clone)]
@@ -15,7 +18,7 @@ impl Level for ButtonsPartOne {
         "buttons_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Move the rover ({robot}) next to the button and press it."
     }
     fn initial_code(&self) -> &'static str {
         r#"
@@ -23,15 +26,28 @@ impl Level for ButtonsPartOne {
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(0, 3, 10, Orientation::Right);
-        state.goals = vec![Goal::new(7, 3)];
+        state.player = Player::new(6, 7, 10, Orientation::Up);
+        state.buttons = vec![Button::new_with_info(
+            6,
+            4,
+            ButtonConnection::None,
+            "If you press this button, you win the level!".into(),
+        )];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        std_check_win(state)
+        // Note that this level uses a different check_win function. There is not
+        // goal to reach. Instead you beat the level by pressing the button.
+        if state.player.fuel == 0 {
+            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        } else if state.buttons[0].currently_pressed {
+            Outcome::Success
+        } else {
+            Outcome::Continue
+        }
     }
 }
 

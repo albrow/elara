@@ -30,7 +30,7 @@ use std::collections::HashMap;
 use crate::actors::Bounds;
 use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, Orientation, Telepad};
+use crate::simulation::{Actor, Button, Gate, Orientation, Telepad};
 use crate::simulation::{
     DataTerminal, Enemy, FuelSpot, Goal, Obstacle, PasswordGate, Player, State,
 };
@@ -181,6 +181,8 @@ pub struct FuzzyState {
     pub password_gates: Vec<Fuzzy<PasswordGate>>,
     pub data_terminals: Vec<Fuzzy<DataTerminal>>,
     pub telepads: Vec<Fuzzy<Telepad>>,
+    pub buttons: Vec<Fuzzy<Button>>,
+    pub gates: Vec<Fuzzy<Gate>>,
 }
 
 impl FuzzyState {
@@ -225,6 +227,18 @@ impl FuzzyState {
                 .collect(),
             telepads: state
                 .telepads
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
+            buttons: state
+                .buttons
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
+            gates: state
+                .gates
                 .clone()
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
@@ -285,6 +299,10 @@ impl FuzzyState {
                         .push(Fuzzy::new(obstacle.clone(), true));
                 }
             }
+
+            // TODO(albrow): Some vectors inside State (e.g., buttons, gates) are not currently
+            // marked as fuzzy since there is no level which has different states for them. We
+            // might need this later on though!
         }
 
         fuzzy_state
@@ -405,6 +423,8 @@ mod tests {
             password_gates: vec![],
             data_terminals: vec![],
             telepads: vec![],
+            buttons: vec![],
+            gates: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -437,6 +457,8 @@ mod tests {
             password_gates: vec![],
             data_terminals: vec![],
             telepads: vec![],
+            buttons: vec![],
+            gates: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -474,6 +496,8 @@ mod tests {
             password_gates: vec![],
             data_terminals: vec![],
             telepads: vec![],
+            buttons: vec![],
+            gates: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);

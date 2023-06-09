@@ -129,6 +129,7 @@ const RAW_SCENES: RawScene[] = [
       "You don't need a semicolon (`;`) after the closing curly brace (`}`).",
     ]
   ),
+  levelScene("buttons_part_one", [], []),
   journalScene("function_outputs"),
   levelScene(
     "data_terminals_part_one",
