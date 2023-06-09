@@ -256,33 +256,48 @@ impl FuelSpot {
     }
 }
 
+// Indicates what the button is connected to.
+#[derive(Clone, PartialEq, Debug)]
+pub enum ButtonConnection {
+    /// The button is connected to a gate. The usize is the index of the gate.
+    Gate(usize),
+}
+
 #[derive(Clone, PartialEq, Debug)]
 pub struct Button {
     pub pos: Pos,
-    pub pressed_count: u32,
+    pub currently_pressed: bool,
+    pub connection: ButtonConnection,
     /// Additional information that will be displayed in the UI.
-    /// (e.g. explain what the password is or how to get it)
+    /// (e.g. explain what the button will do when pressed)
     pub additional_info: String,
 }
 
 impl Button {
-    pub fn new(x: u32, y: u32) -> Button {
+    pub fn new(x: u32, y: u32, connection: ButtonConnection) -> Button {
         Button {
             pos: Pos {
                 x: x as i32,
                 y: y as i32,
             },
-            pressed_count: 0,
+            connection,
+            currently_pressed: false,
             additional_info: String::new(),
         }
     }
-    pub fn new_with_info(x: u32, y: u32, additional_info: String) -> Button {
+    pub fn new_with_info(
+        x: u32,
+        y: u32,
+        connection: ButtonConnection,
+        additional_info: String,
+    ) -> Button {
         Button {
             pos: Pos {
                 x: x as i32,
                 y: y as i32,
             },
-            pressed_count: 0,
+            connection: connection,
+            currently_pressed: false,
             additional_info,
         }
     }
