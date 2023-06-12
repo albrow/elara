@@ -11,9 +11,11 @@ use std::vec;
 
 use crate::actors::{Action, MoveDirection, TurnDirection};
 use crate::better_errors::{convert_err, BetterError};
-use crate::constants::{ERR_NO_DATA_TERMINAL, ERR_SIMULATION_END};
+use crate::constants::{ERR_NO_BUTTON, ERR_NO_DATA_TERMINAL, ERR_SIMULATION_END};
 use crate::levels::Outcome;
-use crate::simulation::{get_adjacent_terminal, Orientation, Pos, Simulation, State};
+use crate::simulation::{
+    get_adjacent_button, get_adjacent_terminal, Orientation, Pos, Simulation, State,
+};
 
 /// Responsible for running user scripts and coordinating communication
 /// between the Rhai Engine and the Simulation.
@@ -350,6 +352,11 @@ impl ScriptRunner {
                 pending_trace.borrow_mut().push(trace_lines.clone());
                 Ok(DebuggerCommand::StepInto)
             }
+            "press_button" => {
+                // The press_button function always has a duration of one step.
+                pending_trace.borrow_mut().push(trace_lines.clone());
+                Ok(DebuggerCommand::StepInto)
+            }
             _ => Ok(DebuggerCommand::StepInto),
         }
     }
@@ -628,6 +635,24 @@ impl ScriptRunner {
                     }
                 },
             );
+        }
+        if avail_funcs.contains(&"press_button") {
+            // press_button presses an adjacent button. If there is no button
+            // adjacent to the player, it returns an error.
+            let tx = self.player_action_tx.clone();
+            let simulation = self.simulation.clone();
+            engine.register_fn("press_button", move || -> Result<(), Box<EvalAltResult>> {
+                let state = simulation.borrow().curr_state();
+                let pos = &state.player.pos;
+                if let Some(_) = get_adjacent_button(&state, pos) {
+                    tx.borrow().send(Action::PressButton).unwrap();
+                    simulation.borrow_mut().step_forward();
+                    Ok(())
+                } else {
+                    // TODO(albrow): Can we determine the line number for the error message?
+                    Err(ERR_NO_BUTTON.into())
+                }
+            });
         }
         // Our debugger hook *always* needs a way to get the current orientation, so
         // we use this special function even it if the get_orientation function is not

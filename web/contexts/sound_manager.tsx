@@ -42,6 +42,10 @@ import speakSound0Fallback from "../audio/speak_0.mp3";
 import speakSound1Fallback from "../audio/speak_1.mp3";
 import speakSound2Fallback from "../audio/speak_2.mp3";
 import speakSound3Fallback from "../audio/speak_3.mp3";
+import buttonPressOn from "../audio/button_press_on.ogg";
+import buttonPressOff from "../audio/button_press_off.ogg";
+import buttonPressOnFallback from "../audio/button_press_on.mp3";
+import buttonPressOffFallback from "../audio/button_press_off.mp3";
 import { useSaveData } from "../hooks/save_data_hooks";
 
 interface SoundManager {
@@ -119,6 +123,16 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         new Sound("speak_2", [speakSound2, speakSound2Fallback], 0.15),
         new Sound("speak_3", [speakSound3, speakSound3Fallback], 0.15),
       ]),
+      button_press_on: new Sound(
+        "button_press_on",
+        [buttonPressOn, buttonPressOnFallback],
+        1.0
+      ),
+      button_press_off: new Sound(
+        "button_press_off",
+        [buttonPressOff, buttonPressOffFallback],
+        1.0
+      ),
     }),
     []
   );

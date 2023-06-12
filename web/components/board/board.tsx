@@ -157,6 +157,7 @@ export default function Board(props: BoardProps) {
           offset={posToOffset(button.pos)}
           currentlyPressed={button.currently_pressed}
           additionalInfo={button.additional_info}
+          enableAnimations={props.enableAnimations}
           // fuzzy={button.fuzzy}
         />
       ))}

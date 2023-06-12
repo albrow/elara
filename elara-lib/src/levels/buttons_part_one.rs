@@ -7,6 +7,19 @@ use crate::{
     },
 };
 
+lazy_static! {
+    // This list adds the "press_button" function.
+    // TODO(albrow): Consolidate this/add it to more levels.
+    static ref AVAIL_FUNCS: Vec<&'static str> = vec![
+        "move_forward",
+        "move_backward",
+        "turn_left",
+        "turn_right",
+        "say",
+        "press_button",
+    ];
+}
+
 #[derive(Copy, Clone)]
 pub struct ButtonsPartOne {}
 
@@ -19,6 +32,9 @@ impl Level for ButtonsPartOne {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) next to the button and press it."
+    }
+    fn available_functions(&self) -> &'static Vec<&'static str> {
+        &AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"

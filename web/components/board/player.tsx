@@ -83,12 +83,7 @@ export default function Player(props: PlayerProps) {
       teleportSound.play();
     } else if (props.message !== "") {
       speakSound.play();
-    } else {
-      stopAllSoundEffects();
     }
-    return () => {
-      stopAllSoundEffects();
-    };
   }, [
     props,
     stopAllSoundEffects,

@@ -21,6 +21,8 @@ pub static ERR_DESTROYED_BY_ENEMY: &str =
 pub static ERR_SIMULATION_END: &str = "SIMULATION_END";
 /// Returned from read_data if you call it when not adjacent to a data terminal.
 pub static ERR_NO_DATA_TERMINAL: &str = "read_data only works if you are next to a data terminal.";
+/// Returned from press_button if you call it when not adjacent to a button.
+pub static ERR_NO_BUTTON: &str = "press_button only works if you are next to a button.";
 
 pub struct BuiltinFunction {
     pub name: &'static str,
@@ -134,6 +136,13 @@ lazy_static! {
             BuiltinFunction {
                 name: "push",
                 arg_types: &["array", "any"],
+            },
+        );
+        m.insert(
+            "press_button",
+            BuiltinFunction {
+                name: "press_button",
+                arg_types: &[],
             },
         );
 
