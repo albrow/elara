@@ -6,18 +6,6 @@ use crate::simulation::{
 };
 use crate::state_maker::StateMaker;
 
-lazy_static! {
-    static ref TELEPAD_FUNCS: Vec<&'static str> = vec![
-        "move_forward",
-        "move_backward",
-        "turn_left",
-        "turn_right",
-        "say",
-        "read_data",
-        "get_orientation"
-    ];
-}
-
 #[derive(Copy, Clone)]
 pub struct EnemiesWithTelepad {}
 
@@ -30,9 +18,6 @@ impl Level for EnemiesWithTelepad {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &TELEPAD_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r"// Try using the telepad to get around the malfunctioning rover.

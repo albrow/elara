@@ -1,6 +1,6 @@
 use rhai::Engine;
 
-use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
+use super::{std_check_win, Level, Outcome, ALL_AVAIL_FUNCS};
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
@@ -51,7 +51,7 @@ impl Level for AstroidStrike {
         "Move the rover ({robot}) to either the left or the right goal ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAIL_FUNCS_WITH_READ
+        &ALL_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// This code reads the safe direction from the data terminal

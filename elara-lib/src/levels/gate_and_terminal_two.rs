@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
+use super::{std_check_win, Level, Outcome, ALL_AVAIL_FUNCS};
 use crate::{
     actors::{Bounds, EvilRoverActor},
     constants::{HEIGHT, WIDTH},
@@ -21,7 +21,7 @@ impl Level for GateAndTerminalPartTwo {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAIL_FUNCS_WITH_READ
+        &ALL_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// Yet another locked gate! Just like before, the password is

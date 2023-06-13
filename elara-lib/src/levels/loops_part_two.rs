@@ -1,6 +1,6 @@
 use rhai::Engine;
 
-use super::{std_check_win, Level, Outcome};
+use super::{std_check_win, Level, Outcome, STARTING_AVAIL_FUNCS};
 use crate::{
     actors::{Bounds, EvilRoverActor},
     constants::{HEIGHT, WIDTH},
@@ -20,6 +20,9 @@ impl Level for LoopsPartTwo {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
+    }
+    fn available_functions(&self) -> &'static Vec<&'static str> {
+        &STARTING_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// Try writing a loop on your own this time.

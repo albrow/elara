@@ -1,6 +1,7 @@
 use rhai::Engine;
 
 use super::{std_check_win, Level, Outcome};
+use crate::levels::ALL_AVAIL_FUNCS;
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
@@ -15,14 +16,9 @@ lazy_static! {
     // This list includes the get_position function which is necessary
     // for beating the bonus challenge.
     static ref AVAIL_FUNCS: Vec<&'static str> = vec![
-        "move_forward",
-        "move_backward",
-        "turn_left",
-        "turn_right",
-        "say",
-        "read_data",
-        "get_position",
-    ];
+        ALL_AVAIL_FUNCS.clone(),
+        vec!["get_position"],
+    ].concat();
 }
 
 impl AstroidStrikePartTwo {
@@ -85,25 +81,6 @@ impl Level for AstroidStrikePartTwo {
     }
     fn initial_states(&self) -> Vec<State> {
         vec![
-            // State {
-            //     player: Player::new(1, 3, 10, Orientation::Right),
-            //     fuel_spots: vec![],
-            //     goals: vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)],
-            //     enemies: vec![],
-            //     obstacles: [
-            //         self.obstacles().clone(),
-            //         vec![Obstacle::new(5, 3), Obstacle::new(4, 4)],
-            //     ]
-            //     .concat(),
-            //     password_gates: vec![],
-            //     data_terminals: vec![DataTerminal::new_with_info(
-            //         0,
-            //         3,
-            //         "top".into(),
-            //         DATA_TERMINAL_INFO.into(),
-            //     )],
-            //     telepads: vec![],
-            // },
             StateMaker::new()
                 .with_player(Player::new(1, 3, 10, Orientation::Right))
                 .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])

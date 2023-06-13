@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome};
+use super::{std_check_win, Level, Outcome, STARTING_AVAIL_FUNCS};
 use crate::{
     script_runner::ScriptStats,
     simulation::{Actor, Goal, Obstacle, Orientation, Player, State},
@@ -16,6 +16,9 @@ impl Level for MovementPartTwo {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
+    }
+    fn available_functions(&self) -> &'static Vec<&'static str> {
+        &STARTING_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// G.R.O.V.E.R. can't move through obstacles (like rocks and walls).

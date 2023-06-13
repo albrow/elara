@@ -7,18 +7,6 @@ use crate::{
 #[derive(Copy, Clone)]
 pub struct TelepadPartTwo {}
 
-lazy_static! {
-    static ref TELEPAD_FUNCS: Vec<&'static str> = vec![
-        "move_forward",
-        "move_backward",
-        "turn_left",
-        "turn_right",
-        "say",
-        "read_data",
-        "get_orientation"
-    ];
-}
-
 impl Level for TelepadPartTwo {
     fn name(&self) -> &'static str {
         "All Mixed Up"
@@ -28,9 +16,6 @@ impl Level for TelepadPartTwo {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &TELEPAD_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// There are two sets of telepads this time. Can you make

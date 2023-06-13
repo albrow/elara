@@ -1,21 +1,8 @@
-use super::{Level, Outcome};
+use super::{Level, Outcome, AVAIL_FUNCS_WITH_PRESS};
 use crate::{
     constants::ERR_OUT_OF_FUEL,
     simulation::{Actor, Button, ButtonConnection, Orientation, Player, State},
 };
-
-lazy_static! {
-    // This list adds the "press_button" function.
-    // TODO(albrow): Consolidate this/add it to more levels.
-    static ref AVAIL_FUNCS: Vec<&'static str> = vec![
-        "move_forward",
-        "move_backward",
-        "turn_left",
-        "turn_right",
-        "say",
-        "press_button",
-    ];
-}
 
 #[derive(Copy, Clone)]
 pub struct ButtonsPartOne {}
@@ -31,7 +18,7 @@ impl Level for ButtonsPartOne {
         "Move the rover ({robot}) next to the button ({button}) and press it."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAIL_FUNCS
+        &AVAIL_FUNCS_WITH_PRESS
     }
     fn initial_code(&self) -> &'static str {
         r#"// The press_button function can be used to press buttons,

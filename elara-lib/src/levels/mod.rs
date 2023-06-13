@@ -47,11 +47,8 @@ pub enum Outcome {
     NoObjective,
 }
 lazy_static! {
-    // These are the starting functions available by default.
-    // Each level can override these, but note that due to
-    // the requirements of the Rhai debugger they must always
-    // be wrapped in lazy_static.
-    static ref DEFAULT_AVAIL_FUNCS: Vec<&'static str> = vec![
+    // These are the functions available at the start of the game.
+    static ref STARTING_AVAIL_FUNCS: Vec<&'static str> = vec![
         "move_forward",
         "move_backward",
         "turn_left",
@@ -59,15 +56,28 @@ lazy_static! {
         "say",
     ];
 
-    // This list adds the "read_data" function and is used for
-    // any levels that have a data terminal.
-    static ref AVAIL_FUNCS_WITH_READ: Vec<&'static str> = vec![
+    // This list adds the "press_button" function and is used for
+    // levels that contain buttons.
+    static ref AVAIL_FUNCS_WITH_PRESS: Vec<&'static str> = vec![
         "move_forward",
         "move_backward",
         "turn_left",
         "turn_right",
         "say",
+        "press_button",
+    ];
+
+    // This list includes all the functions that are available in the game.
+    // It includes the "read_data" and "get_orientation" functions.
+    static ref ALL_AVAIL_FUNCS: Vec<&'static str> = vec![
+        "move_forward",
+        "move_backward",
+        "turn_left",
+        "turn_right",
+        "say",
+        "press_button",
         "read_data",
+        "get_orientation",
     ];
 }
 
@@ -91,7 +101,7 @@ pub trait Level {
         }
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
-        &DEFAULT_AVAIL_FUNCS
+        &ALL_AVAIL_FUNCS
     }
     fn challenge(&self) -> Option<&'static str> {
         None

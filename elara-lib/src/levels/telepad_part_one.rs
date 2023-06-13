@@ -7,18 +7,6 @@ use crate::state_maker::StateMaker;
 #[derive(Copy, Clone)]
 pub struct TelepadPartOne {}
 
-lazy_static! {
-    static ref TELEPAD_FUNCS: Vec<&'static str> = vec![
-        "move_forward",
-        "move_backward",
-        "turn_left",
-        "turn_right",
-        "say",
-        "read_data",
-        "get_orientation"
-    ];
-}
-
 impl TelepadPartOne {
     // Note: We make obstacles a method so we can re-use the same set of
     // obstacles for each possible state.
@@ -48,9 +36,6 @@ impl Level for TelepadPartOne {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &TELEPAD_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// This code uses the get_orientation function to figure out which

@@ -1,4 +1,4 @@
-use super::{Level, Outcome, AVAIL_FUNCS_WITH_READ};
+use super::{Level, Outcome, ALL_AVAIL_FUNCS};
 use crate::{
     constants::ERR_OUT_OF_FUEL,
     simulation::{Actor, DataTerminal, Obstacle, Orientation, Player, State},
@@ -21,7 +21,7 @@ impl Level for DataTerminalsPartOne {
         "Use the say function to find out what the data terminal ({terminal}) holds."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAIL_FUNCS_WITH_READ
+        &ALL_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// The read_data function outputs the data from a terminal, but only

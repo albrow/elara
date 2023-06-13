@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_READ};
+use super::{std_check_win, Level, Outcome, ALL_AVAIL_FUNCS};
 use crate::simulation::{
     Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, State,
 };
@@ -17,7 +17,7 @@ impl Level for GateAndTerminalPartThree {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAIL_FUNCS_WITH_READ
+        &ALL_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// This code reads the data from the closest data terminal and
