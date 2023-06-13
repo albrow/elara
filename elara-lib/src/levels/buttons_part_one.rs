@@ -1,10 +1,7 @@
 use super::{Level, Outcome};
 use crate::{
     constants::ERR_OUT_OF_FUEL,
-    script_runner::ScriptStats,
-    simulation::{
-        Actor, Button, ButtonConnection, Goal, Obstacle, Orientation, PasswordGate, Player, State,
-    },
+    simulation::{Actor, Button, ButtonConnection, Orientation, Player, State},
 };
 
 lazy_static! {
