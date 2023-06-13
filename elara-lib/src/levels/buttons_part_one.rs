@@ -31,13 +31,15 @@ impl Level for ButtonsPartOne {
         "buttons_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) next to the button and press it."
+        "Move the rover ({robot}) next to the button ({button}) and press it."
     }
     fn available_functions(&self) -> &'static Vec<&'static str> {
         &AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
-        r#"
+        r#"// The press_button function can be used to press buttons,
+// but only if the rover is right next to one. Move the rover
+// next to the button and call the press_button function.
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -70,26 +72,28 @@ impl Level for ButtonsPartOne {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::constants::ERR_OUT_OF_FUEL;
     use crate::levels::Outcome;
 
     #[test]
     fn level() {
-        // let mut game = crate::Game::new();
-        // const LEVEL: &'static dyn Level = &Gates {};
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &ButtonsPartOne {};
 
-        // // Running the initial code should result in Outcome::Continue.
-        // let script = LEVEL.initial_code();
-        // let result = game
-        //     .run_player_script_internal(script.to_string(), LEVEL)
-        //     .unwrap();
-        // assert_eq!(result.outcome, Outcome::Continue);
+        // Running the initial code should result in Outcome::Continue.
+        let script = LEVEL.initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
 
-        // // Running this code should result in Outcome::Success.
-        // let script = r#"move_forward(2); say("lovelace"); move_forward(5);"#;
-        // let result = game
-        //     .run_player_script_internal(script.to_string(), LEVEL)
-        //     .unwrap();
-        // assert_eq!(result.outcome, Outcome::Success);
+        // Running this code should result in Outcome::Success.
+        let script = r#"
+            move_forward(2);
+            press_button();
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
     }
 }

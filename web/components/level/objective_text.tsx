@@ -4,6 +4,7 @@ import groverDownUrl from "../../images/grover_down.png";
 import fuelImgUrl from "../../images/fuel.png";
 import lockedImgUrl from "../../images/locked.png";
 import tvImgUrl from "../../images/tv.png";
+import buttonImgUrl from "../../images/button.png";
 import MiniSprite from "./mini_sprite";
 
 export interface ObjectiveTextProps {
@@ -16,6 +17,7 @@ const imgUrlMappping = {
   "{fuel}": fuelImgUrl,
   "{gate}": lockedImgUrl,
   "{terminal}": tvImgUrl,
+  "{button}": buttonImgUrl,
 };
 
 function splitText(text: string) {
