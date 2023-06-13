@@ -9,7 +9,7 @@ pub struct Gates {}
 
 impl Level for Gates {
     fn name(&self) -> &'static str {
-        "Let Me In"
+        "Open Sesame"
     }
     fn short_name(&self) -> &'static str {
         "gates"

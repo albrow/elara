@@ -1,5 +1,6 @@
 mod astroid_strike;
 mod astroid_strike_part_two;
+mod button_and_gate;
 mod buttons_part_one;
 mod data_terminal_demo;
 mod data_terminals_part_one;
@@ -156,6 +157,7 @@ lazy_static! {
         m.insert(enemies_with_telepad::EnemiesWithTelepad{}.short_name(), Box::new(enemies_with_telepad::EnemiesWithTelepad{}));
         m.insert(enemies_and_asteroids::EnemiesAndAsteroids{}.short_name(), Box::new(enemies_and_asteroids::EnemiesAndAsteroids{}));
         m.insert(buttons_part_one::ButtonsPartOne{}.short_name(), Box::new(buttons_part_one::ButtonsPartOne{}));
+        m.insert(button_and_gate::ButtonAndGate{}.short_name(), Box::new(button_and_gate::ButtonAndGate{}));
 
         m
     };

@@ -130,6 +130,7 @@ const RAW_SCENES: RawScene[] = [
     ]
   ),
   levelScene("buttons_part_one", [], []),
+  levelScene("button_and_gate", [], []),
   journalScene("function_outputs"),
   levelScene(
     "data_terminals_part_one",
