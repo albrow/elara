@@ -1,0 +1,12 @@
+import { compiler } from "markdown-to-jsx";
+
+##### Gate
+
+Gates will block your way until they are unlocked. Different gates may have
+different ways to unlock them.
+
+{
+props.additionalInfo && (
+compiler("##### Additional Info\n\n" + props.additionalInfo)
+)
+}

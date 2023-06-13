@@ -41,7 +41,7 @@ move_forward(4);
             9,
             7,
             false,
-            "This gate is locked. To unlock it, press the nearby button.".into(),
+            "This gate can be unlocked by pressing the nearby button.".into(),
         )];
         state.obstacles = vec![
             Obstacle::new(6, 6),
@@ -115,7 +115,7 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
-        // Pressing the button twice should re-lock it. That means
+        // Pressing the button twice should re-lock the gate. That means
         // running this code should result in Outcome::Continue.
         let script = r#"
             turn_right();

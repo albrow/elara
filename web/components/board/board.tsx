@@ -11,6 +11,7 @@ import {
   FuzzyState,
   FuzzyTelepad,
   FuzzyButton,
+  FuzzyGate,
 } from "../../../elara-lib/pkg";
 import {
   AXIS_HEIGHT,
@@ -25,12 +26,13 @@ import lunarSurfaceBgUrl from "../../images/lunar_surface_bg.png";
 import DataTerminal from "./data_terminal";
 import Enemy from "./enemy";
 import FuelSpot from "./fuel_spot";
-import Gate from "./gate";
+import PasswordGate from "./password_gate";
 import Goal from "./goal";
 import Obstacle from "./obstacle";
 import Player from "./player";
 import Telepad from "./telepad";
 import Button from "./button";
+import Gate from "./gate";
 
 interface BoardProps {
   gameState: FuzzyState;
@@ -161,9 +163,19 @@ export default function Board(props: BoardProps) {
           // fuzzy={button.fuzzy}
         />
       ))}
+      {(props.gameState.gates as FuzzyGate[]).map((gate, i) => (
+        <Gate
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          offset={posToOffset(gate.pos)}
+          open={gate.open}
+          additionalInfo={gate.additional_info}
+          // fuzzy={gate.fuzzy}
+        />
+      ))}
       {(props.gameState.password_gates as FuzzyPasswordGate[]).map(
         (gate, i) => (
-          <Gate
+          <PasswordGate
             // eslint-disable-next-line react/no-array-index-key
             key={i}
             offset={posToOffset(gate.pos)}

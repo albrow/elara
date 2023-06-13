@@ -3,20 +3,20 @@ import { GATE_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 import lockedImgUrl from "../../images/locked.png";
 import unlockedImgUrl from "../../images/unlocked.png";
 import BoardHoverInfo from "./board_hover_info";
-import GatePage from "./hover_info_pages/gate.mdx";
+import PasswordGatePage from "./hover_info_pages/password_gate.mdx";
 
-export interface GateProps {
+export interface PasswordGateProps {
   offset: Offset;
   open: boolean;
   additionalInfo: string;
   // fuzzy: boolean;
 }
 
-export default function Gate(props: GateProps) {
+export default function PasswordGate(props: PasswordGateProps) {
   return (
     <>
       <BoardHoverInfo
-        page={GatePage}
+        page={PasswordGatePage}
         offset={props.offset}
         additionalInfo={props.additionalInfo}
       />
