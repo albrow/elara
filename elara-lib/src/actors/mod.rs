@@ -74,6 +74,15 @@ fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
 }
 
 fn is_closed_gate_at(state: &State, pos: &Pos) -> bool {
+    for gate in &state.gates {
+        if gate.pos == *pos && !gate.open {
+            return true;
+        }
+    }
+    false
+}
+
+fn is_closed_password_gate_at(state: &State, pos: &Pos) -> bool {
     for gate in &state.password_gates {
         if gate.pos == *pos && !gate.open {
             return true;
@@ -102,11 +111,12 @@ fn can_move_to(state: &State, bounds: &Bounds, desired_pos: &Pos) -> bool {
     !is_obstacle_at(state, desired_pos)
         && !is_outside_bounds(bounds, desired_pos)
         && !is_closed_gate_at(state, desired_pos)
+        && !is_closed_password_gate_at(state, desired_pos)
 }
 
 /// Returns the index of any password gates adjacent to the given position.
 /// Returns an empty vector if there is no adjacent gate.
-fn get_adjacent_gates(state: &State, pos: &Pos) -> Vec<usize> {
+fn get_adjacent_password_gates(state: &State, pos: &Pos) -> Vec<usize> {
     let mut gate_indexes = vec![];
     for (i, gate) in state.password_gates.iter().enumerate() {
         if gate.pos.x == pos.x && gate.pos.y == pos.y + 1 {

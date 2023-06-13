@@ -1,9 +1,6 @@
-use super::{Level, Outcome, AVAIL_FUNCS_WITH_PRESS};
-use crate::{
-    constants::ERR_OUT_OF_FUEL,
-    simulation::{
-        Actor, Button, ButtonConnection, Gate, Goal, Obstacle, Orientation, Player, State,
-    },
+use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_PRESS};
+use crate::simulation::{
+    Actor, Button, ButtonConnection, Gate, Goal, Obstacle, Orientation, Player, State,
 };
 
 #[derive(Copy, Clone)]
@@ -23,12 +20,17 @@ impl Level for ButtonAndGate {
         &AVAIL_FUNCS_WITH_PRESS
     }
     fn initial_code(&self) -> &'static str {
-        r#"
+        r#"// This code tries to move the rover to the goal, but
+// there's a locked gate blocking the way. Try pressing the
+// button first to unlock the gate.
+//
+// CHANGE THE CODE BELOW:
+move_forward(4);
 "#
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(11, 7, 15, Orientation::Up);
+        state.player = Player::new(11, 7, 15, Orientation::Left);
         state.buttons = vec![Button::new_with_info(
             11,
             3,
@@ -61,43 +63,72 @@ impl Level for ButtonAndGate {
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        // Note that this level uses a different check_win function. There is not
-        // goal to reach. Instead you beat the level by pressing the button.
-        if state.player.fuel == 0 {
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
-        } else if state.buttons[0].currently_pressed {
-            Outcome::Success
-        } else {
-            Outcome::Continue
-        }
+        std_check_win(state)
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//     use crate::levels::Outcome;
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::levels::Outcome;
 
-//     #[test]
-//     fn level() {
-//         let mut game = crate::Game::new();
-//         const LEVEL: &'static dyn Level = &ButtonAndGate {};
+    #[test]
+    fn level() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &ButtonAndGate {};
 
-//         // Running the initial code should result in Outcome::Continue.
-//         let script = LEVEL.initial_code();
-//         let result = game
-//             .run_player_script_internal(script.to_string(), LEVEL)
-//             .unwrap();
-//         assert_eq!(result.outcome, Outcome::Continue);
+        // Running the initial code should result in Outcome::Continue.
+        let script = LEVEL.initial_code();
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
 
-//         // Running this code should result in Outcome::Success.
-//         let script = r#"
-//             move_forward(2);
-//             press_button();
-//         "#;
-//         let result = game
-//             .run_player_script_internal(script.to_string(), LEVEL)
-//             .unwrap();
-//         assert_eq!(result.outcome, Outcome::Success);
-//     }
-// }
+        // Running this code should result in Outcome::Success.
+        let script = r#"
+            turn_right();
+            move_forward(3);
+            press_button();
+            turn_left();
+            turn_left();
+            move_forward(3);
+            turn_right();
+            move_forward(4);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
+        // Running this code should also result in Outcome::Success. It just
+        // uses fewer steps by moving backward.
+        let script = r#"
+            turn_right();
+            move_forward(3);
+            press_button();
+            move_backward(3);
+            turn_left();
+            move_forward(4);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+
+        // Pressing the button twice should re-lock it. That means
+        // running this code should result in Outcome::Continue.
+        let script = r#"
+            turn_right();
+            move_forward(3);
+            press_button();
+            press_button();
+            move_backward(3);
+            turn_left();
+            move_forward(4);
+        "#;
+        let result = game
+            .run_player_script_internal(script.to_string(), LEVEL)
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Continue);
+    }
+}

@@ -4,12 +4,13 @@ use std::sync::mpsc;
 
 use crate::constants::FUEL_SPOT_AMOUNT;
 use crate::simulation::{
-    get_adjacent_button, get_adjacent_terminal, Actor, BumpAnimData, Orientation, PlayerAnimState,
-    Pos, State, TeleAnimData,
+    get_adjacent_button, get_adjacent_terminal, Actor, BumpAnimData, ButtonConnection, Orientation,
+    PlayerAnimState, Pos, State, TeleAnimData,
 };
 
 use super::{
-    can_move_to, get_adjacent_gates, get_telepad_at, Action, Bounds, MoveDirection, TurnDirection,
+    can_move_to, get_adjacent_password_gates, get_telepad_at, Action, Bounds, MoveDirection,
+    TurnDirection,
 };
 
 pub struct PlayerChannelActor {
@@ -84,7 +85,7 @@ impl Actor for PlayerChannelActor {
             }
             Ok(Action::Say(message)) => {
                 // If we're next to any password gates and we said the password, toggle the gate.
-                get_adjacent_gates(&state, &state.player.pos)
+                get_adjacent_password_gates(&state, &state.player.pos)
                     .iter()
                     .for_each(|&gate_index| {
                         let gate = &state.password_gates[gate_index];
@@ -105,9 +106,8 @@ impl Actor for PlayerChannelActor {
                 state.player.anim_state = PlayerAnimState::Idle;
             }
             Ok(Action::PressButton) => {
-                // If we're next to a button, mark it as being currently pressed.
                 if let Some(button_index) = get_adjacent_button(&state, &state.player.pos) {
-                    state.buttons[button_index].currently_pressed = true;
+                    self.handle_button_press(&mut state, button_index);
                 }
                 state.player.anim_state = PlayerAnimState::Idle;
             }
@@ -172,6 +172,21 @@ impl PlayerChannelActor {
                     obstacle_pos: desired_pos,
                 }),
             )
+        }
+    }
+
+    // Update the state based on a button press.
+    fn handle_button_press(&self, state: &mut State, button_index: usize) {
+        state.buttons[button_index].currently_pressed = true;
+        let button = &state.buttons[button_index];
+        match button.connection {
+            ButtonConnection::None => {
+                // Don't do anything.
+            }
+            ButtonConnection::Gate(gate_index) => {
+                // Toggle the open status of the gate.
+                state.gates[gate_index].open = !state.gates[gate_index].open;
+            }
         }
     }
 }
