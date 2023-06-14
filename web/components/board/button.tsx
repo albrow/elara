@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { Offset } from "../../lib/utils";
 import {
@@ -25,7 +25,15 @@ interface ButtonProps {
 }
 
 export default function Button(props: ButtonProps) {
-  const [wasPressed, setWasPressed] = useState(props.currentlyPressed);
+  // Amount of time to wait before we play the "unpress" animation and
+  // sound effect.
+  const BUTTON_PRESS_OFF_DELAY_MS = 500;
+
+  // Refs used to access the wire and image elements. Used for
+  // the "unpress" animation.
+  const animatedWireRef = useRef<SVGPolylineElement | null>(null);
+  const animationTimerRef = useRef<number | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
 
   const { getSound, stopAllSoundEffects } = useSoundManager();
   const buttonPressOnSound = useMemo(
@@ -51,21 +59,38 @@ export default function Button(props: ButtonProps) {
   useEffect(() => {
     if (!props.enableAnimations) {
       stopAllSoundEffects();
-      setWasPressed(false);
-    } else if (props.currentlyPressed && !wasPressed) {
-      setWasPressed(true);
-      buttonPressOnSound.play();
-    } else if (!props.currentlyPressed && wasPressed) {
-      setWasPressed(false);
-      buttonPressOffSound.play();
     }
-  }, [
-    props,
-    stopAllSoundEffects,
-    wasPressed,
-    buttonPressOnSound,
-    buttonPressOffSound,
-  ]);
+    if (props.currentlyPressed) {
+      // If the button is pressed, we always want to update the wire and image
+      // to reflect this. We do this regardless of whether animations are enabled.
+      animatedWireRef.current?.setAttribute(
+        "stroke",
+        "var(--chakra-colors-blue-400)"
+      );
+      imgRef.current?.setAttribute("src", buttonPressedImgUrl);
+      if (props.enableAnimations) {
+        // If the button is pressed *and* animations are enabled, we play a "press on"
+        // sound effect, then after 500ms we play a "press off" sound effect and update
+        // the wire and image to reflect that the button is no longer pressed.
+        buttonPressOnSound.play();
+        if (animationTimerRef.current) {
+          clearTimeout(animationTimerRef.current);
+        }
+        animationTimerRef.current = window.setTimeout(() => {
+          buttonPressOnSound.stop();
+          buttonPressOffSound.play();
+          animatedWireRef.current?.setAttribute("stroke", "transparent");
+          imgRef.current?.setAttribute("src", buttonImgUrl);
+        }, BUTTON_PRESS_OFF_DELAY_MS);
+      }
+    }
+
+    return () => {
+      if (animationTimerRef.current) {
+        clearTimeout(animationTimerRef.current);
+      }
+    };
+  }, [props, stopAllSoundEffects, buttonPressOnSound, buttonPressOffSound]);
 
   return (
     <>
@@ -93,6 +118,7 @@ export default function Button(props: ButtonProps) {
             />
             {props.currentlyPressed && (
               <polyline
+                ref={animatedWireRef}
                 stroke="var(--chakra-colors-blue-400)"
                 strokeDasharray="5 5"
                 strokeWidth="2px"
@@ -125,29 +151,17 @@ export default function Button(props: ButtonProps) {
         zIndex={BUTTON_Z_INDEX}
         filter="drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3))"
       >
-        {props.currentlyPressed ? (
-          <img
-            alt="button_pressed"
-            src={buttonPressedImgUrl}
-            style={{
-              width: `${TILE_SIZE - 2}px`,
-              height: `${TILE_SIZE - 2}px`,
-              marginTop: "1px",
-              marginLeft: "1px",
-            }}
-          />
-        ) : (
-          <img
-            alt="button"
-            src={buttonImgUrl}
-            style={{
-              width: `${TILE_SIZE - 2}px`,
-              height: `${TILE_SIZE - 2}px`,
-              marginTop: "1px",
-              marginLeft: "1px",
-            }}
-          />
-        )}
+        <img
+          ref={imgRef}
+          alt="button"
+          src={props.currentlyPressed ? buttonPressedImgUrl : buttonImgUrl}
+          style={{
+            width: `${TILE_SIZE - 2}px`,
+            height: `${TILE_SIZE - 2}px`,
+            marginTop: "1px",
+            marginLeft: "1px",
+          }}
+        />
       </Box>
     </>
   );
