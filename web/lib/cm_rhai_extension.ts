@@ -95,13 +95,6 @@ const builtInFuncs: PartialFuncOption[] = [
     info: "Outputs whatever direction G.R.O.V.E.R. is facing.",
     apply: applyFuncWithoutArgs,
   },
-  // The add function is just for teaching purposes, so we
-  // don't want to autocomplete it.
-  // {
-  //   label: "add",
-  //   info: "Add two numbers together and return the result.",
-  //   apply: applyFuncWithArgs,
-  // },
   {
     label: "read_data",
     info: "Read data from a nearby data terminal.",
@@ -111,6 +104,11 @@ const builtInFuncs: PartialFuncOption[] = [
     label: "say",
     info: "Cause G.R.O.V.E.R. to say something.",
     apply: applyFuncWithArgs,
+  },
+  {
+    label: "press_button",
+    info: "Press a nearby button.",
+    apply: applyFuncWithoutArgs,
   },
   {
     label: "push",
