@@ -12,6 +12,7 @@ export interface PasswordGateProps {
   // fuzzy: boolean;
 }
 
+// TODO(albrow): Differentiate PasswordGate from Gate in the UI.
 export default function PasswordGate(props: PasswordGateProps) {
   return (
     <>

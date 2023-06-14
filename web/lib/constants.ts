@@ -8,8 +8,12 @@ export const SAVE_DATA_VERSION = 8;
 export const WIDTH = 12;
 export const HEIGHT = 8;
 export const TILE_SIZE = 50;
+export const AXIS_HEIGHT = 18; // Width of the axis labels at left of the game board.
+export const AXIS_WIDTH = 18; // Width of the axis labels at top of the game board.
 export const BOARD_INNER_WIDTH = TILE_SIZE * WIDTH;
 export const BOARD_INNER_HEIGHT = TILE_SIZE * HEIGHT;
+export const BOARD_TOTAL_WIDTH = BOARD_INNER_WIDTH + AXIS_WIDTH + 2;
+export const BOARD_TOTAL_HEIGHT = BOARD_INNER_HEIGHT + AXIS_HEIGHT + 2;
 export const DEFAULT_FUEL_GAIN = 10;
 
 // Game speed and animations.
@@ -48,11 +52,7 @@ export const WALL_Z_INDEX = 100;
 export const BUTTON_Z_INDEX = 100;
 export const GATE_Z_INDEX = 100;
 export const TERMINAL_Z_INDEX = 100;
-
-// Width and hight of the axis labels at the top and left of the
-// game board.
-export const AXIS_HEIGHT = 18;
-export const AXIS_WIDTH = 18;
+export const BUTTON_WIRE_INDEX = 50;
 
 // Various messages that are displayed to the user.
 export const CODE_LEN_EXPLANATION =

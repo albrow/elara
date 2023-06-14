@@ -20,7 +20,7 @@ import {
   TILE_SIZE,
   WIDTH,
 } from "../../lib/constants";
-import { posToOffset, range } from "../../lib/utils";
+import { Offset, posToOffset, range } from "../../lib/utils";
 import "./board.css";
 import lunarSurfaceBgUrl from "../../images/lunar_surface_bg.png";
 import DataTerminal from "./data_terminal";
@@ -37,6 +37,28 @@ import Gate from "./gate";
 interface BoardProps {
   gameState: FuzzyState;
   enableAnimations: boolean;
+}
+
+// Returns the offset for whatever the button is connected to.
+function getConnectionOffset(
+  state: FuzzyState,
+  buttonIndex: number
+): Offset | null {
+  if (buttonIndex >= state.buttons.length) {
+    throw new Error(`Button index ${buttonIndex} is out of range.`);
+  }
+  const button = state.buttons[buttonIndex];
+  switch (button.connection_type) {
+    case "gate":
+      if (button.connection_index >= state.gates.length) {
+        throw new Error(
+          `Gate index ${button.connection_index} is out of range.`
+        );
+      }
+      return posToOffset(state.gates[button.connection_index].pos);
+    default:
+      return null;
+  }
 }
 
 export default function Board(props: BoardProps) {
@@ -158,6 +180,7 @@ export default function Board(props: BoardProps) {
           key={i}
           offset={posToOffset(button.pos)}
           currentlyPressed={button.currently_pressed}
+          connectionOffset={getConnectionOffset(props.gameState, i)}
           additionalInfo={button.additional_info}
           enableAnimations={props.enableAnimations}
           // fuzzy={button.fuzzy}
