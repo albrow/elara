@@ -27,8 +27,8 @@ fn face_up() {
   }
 }
 
-// You can use the face_up function to help you navigate
-// to the goal. Here's an example:
+// You can use the face_up function after G.R.O.V.E.R. goes
+// through a telepad. Here's an example to help you get started:
 move_forward(2);
 face_up();
 move_forward(3);
@@ -107,9 +107,9 @@ mod tests {
             // up no matter which orientation he starts in. You DON'T
             // need to change this code.
             fn face_up() {
-            while get_orientation() != "up" {
-                turn_left();
-            }
+                while get_orientation() != "up" {
+                    turn_left();
+                }
             }
             
             // You can use the face_up function to help you navigate

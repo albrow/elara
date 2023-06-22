@@ -258,7 +258,8 @@ const RAW_SCENES: RawScene[] = [
     "telepads_and_while_loop",
     [],
     [
-      "The starting code already does most of the work for you. You only need to add a few more lines of code at the end.",
+      "You only need to add a few more lines of code at the end.",
+      "You don't need to write any if statements. You can just use the `face_up` function instead.",
       'If you\'re feeling lost, go back and look at the "While Loops" and "Creating Functions" journal pages.',
     ]
   ),
