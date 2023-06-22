@@ -1,5 +1,6 @@
 use super::{make_all_initial_states_for_telepads, std_check_win, Level, Outcome};
 use crate::{
+    script_runner::ScriptStats,
     simulation::{Actor, Goal, Obstacle, Orientation, Player, State, Telepad},
     state_maker::StateMaker,
 };
@@ -32,8 +33,6 @@ fn face_up() {
 move_forward(2);
 face_up();
 move_forward(3);
-
-// ADD YOUR CODE BELOW:
 
 "#
     }
@@ -82,6 +81,12 @@ move_forward(3);
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
+    fn challenge(&self) -> Option<&'static str> {
+        Some("Complete the objective in 18 or fewer steps.")
+    }
+    fn check_challenge(&self, _states: &Vec<State>, _script: &str, stats: &ScriptStats) -> bool {
+        stats.time_taken <= 18
+    }
 }
 
 #[cfg(test)]
@@ -103,22 +108,15 @@ mod tests {
 
         // Running this code should result in Outcome::Success.
         let script = r#"
-            // This function uses a while loop to make G.R.O.V.E.R. face
-            // up no matter which orientation he starts in. You DON'T
-            // need to change this code.
             fn face_up() {
                 while get_orientation() != "up" {
                     turn_left();
                 }
             }
             
-            // You can use the face_up function to help you navigate
-            // to the goal. Here's an example:
             move_forward(2);
             face_up();
             move_forward(3);
-            
-            // ADD YOUR CODE BELOW:
             face_up();
             move_forward(4);
             face_up();
@@ -129,4 +127,65 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
     }
+}
+
+#[test]
+fn challenge() {
+    let mut game = crate::Game::new();
+    const LEVEL: &'static dyn Level = &TelepadsAndWhileLoop {};
+
+    // This code beats the level, but doesn't satisfy the challenge conditions.
+    let script = r#"
+        fn face_up() {
+            while get_orientation() != "up" {
+                turn_left();
+            }
+        }
+        
+        move_forward(2);
+        face_up();
+        move_forward(3);
+        face_up();
+        move_forward(4);
+        face_up();
+        move_forward(5);
+    "#;
+    let result = game
+        .run_player_script_internal(script.to_string(), LEVEL)
+        .unwrap();
+    assert_eq!(result.outcome, Outcome::Success);
+    assert_eq!(result.passes_challenge, false);
+
+    // This code should beat the level and pass the challenge.
+    let script = r#"
+        // This function will cause G.R.O.V.E.R. to move up in as few
+        // steps as possible, regardless of which direction he is currently
+        // facing.
+        fn move_up(spaces) {
+            let facing = get_orientation();
+            // If facing down, move backward.
+            if facing == "down" {
+                move_backward(spaces);
+                return;
+            }
+            // Otherwise turn to face up, then move forward.
+            if facing == "left" {
+                turn_right();
+            }
+            if facing == "right" {
+                turn_left();
+            }
+            move_forward(spaces);
+        }
+        
+        move_up(2);
+        move_up(3);
+        move_up(4);
+        move_up(5);
+    "#;
+    let result = game
+        .run_player_script_internal(script.to_string(), LEVEL)
+        .unwrap();
+    assert_eq!(result.outcome, Outcome::Success);
+    assert_eq!(result.passes_challenge, true);
 }
