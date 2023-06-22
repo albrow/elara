@@ -222,16 +222,19 @@ const RAW_SCENES: RawScene[] = [
       "You just need to finish the body of the `new_turn_right` function. Then the rest of the code should work.",
     ]
   ),
-  journalScene("arrays"),
-  levelScene(
-    "gate_and_terminal_array",
-    [],
-    [
-      "The starting code already reads the data from the terminal and stores it in a variable called `array`. You just need to add some code after the comment that says `// ADD YOUR CODE BELOW`.",
-      "As an example, to make the rover say the element at index `0` you could write `say(array[0]);`. What do you need to change to make it say the element at index `2` instead?",
-      `The "Arrays" journal page has more information and examples.`,
-    ]
-  ),
+  // Temporarily disable arrays because the concept is not super fleshed out yet.
+  // May decide to re-enable later.
+  //
+  // journalScene("arrays"),
+  // levelScene(
+  //   "gate_and_terminal_array",
+  //   [],
+  //   [
+  //     "The starting code already reads the data from the terminal and stores it in a variable called `array`. You just need to add some code after the comment that says `// ADD YOUR CODE BELOW`.",
+  //     "As an example, to make the rover say the element at index `0` you could write `say(array[0]);`. What do you need to change to make it say the element at index `2` instead?",
+  //     `The "Arrays" journal page has more information and examples.`,
+  //   ]
+  // ),
   levelScene(
     "telepad_part_one",
     [],
