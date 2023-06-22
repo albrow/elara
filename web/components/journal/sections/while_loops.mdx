@@ -1,32 +1,39 @@
+import RunnableExample from "../runnable_example";
+
 ### While Loops
 
-A while loop allows you to perform repeated actions. Everything inside the curly
-brackets (`{` and `}`) will be repeated as long as the "condition" is true. The
-"condition" is a boolean expression (i.e., an expression that evaluates to
-`true` or `false`).
+A "while loop" is sort of like a combination between an if statement and a loop.
 
-⚠️ Elara has safeguards in place to prevent infinite loops.
+A while loop looks similar to an if statement, but has some important differences:
 
-#### Examples
+1. A while loop uses the `while` keyword instead of `if`.
+2. In a while loop, the code inside the curly brackets will be **_repeated_** as long
+    as the condition is true. Whereas in an if statement, the code inside the curly brackets
+    will only be run **_once_** if the condition is true.
 
-This while loop will run forever (or at least until the end of the level)
-because the condition is always `true`:
-
-```rhai
-while true {
-    move_down(1);
-}
-```
-
-This while loop uses the condition `x < 5`, so that means it will run as long
+The while loop below uses the comparison expression `x < 5`, so that means it will run as long
 as the variable `x` is less than 5. Since we increase the value of `x` on each
 iteration of the loop, the loop will run 5 times:
 
-```rhai
-let x = 0;
+<RunnableExample
+  code={`let x = 0;
 
 while x < 5 {
-    x = x + 1;
-    say(x);
+  x = x + 1;
+  say(x);
+}`}
+/>
+
+This while loop will keep turning the rover until it is facing left. It works by using a
+comparison expression `get_orientation() != left` (remember, the `!=` symbol means "not equal").
+Once the rover is facing left, the condition will be false, and the loop will stop.
+
+<RunnableExample
+  code={`while get_orientation() != "left" {
+  turn_left();
 }
-```
+
+say("Now I'm facing left!");
+`}
+/>
+

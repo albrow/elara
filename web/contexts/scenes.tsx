@@ -253,6 +253,7 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
+  journalScene("while_loops"),
   levelScene(
     "enemies_part_one",
     [],
