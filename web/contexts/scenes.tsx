@@ -254,7 +254,14 @@ const RAW_SCENES: RawScene[] = [
     ]
   ),
   journalScene("while_loops"),
-  levelScene("telepads_and_while_loop", [], []),
+  levelScene(
+    "telepads_and_while_loop",
+    [],
+    [
+      "The starting code already does most of the work for you. You only need to add a few more lines of code at the end.",
+      'If you\'re feeling lost, go back and look at the "While Loops" and "Creating Functions" journal pages.',
+    ]
+  ),
   levelScene(
     "enemies_part_one",
     [],

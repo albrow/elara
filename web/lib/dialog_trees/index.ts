@@ -17,6 +17,7 @@ import * as LevelTelepadPartOne from "./level_telepad_part_one";
 import * as LoopsPartTwo from "./level_loops_part_two";
 import * as GateAndTerminalPartTwo from "./level_gate_and_terminal_part_two";
 import * as EnemiesPartOne from "./level_enemies_part_one";
+import * as LevelTelepadsAndWhileLoop from "./level_telepads_and_while_loop";
 
 // NodeIds and ChoiceIds must be unique and declared ahead of time. This ensures
 // that the compiler will catch any incorrect or missing references.
@@ -33,7 +34,8 @@ type NodeIds =
   | LevelTelepadPartOne.NodeIds
   | LoopsPartTwo.NodeIds
   | GateAndTerminalPartTwo.NodeIds
-  | EnemiesPartOne.NodeIds;
+  | EnemiesPartOne.NodeIds
+  | LevelTelepadsAndWhileLoop.NodeIds;
 type ChoiceIds =
   | Intro.ChoiceIds
   | DataTerminalsPartOne.ChoiceIds
@@ -47,7 +49,8 @@ type ChoiceIds =
   | LevelTelepadPartOne.ChoiceIds
   | LoopsPartTwo.ChoiceIds
   | GateAndTerminalPartTwo.ChoiceIds
-  | EnemiesPartOne.ChoiceIds;
+  | EnemiesPartOne.ChoiceIds
+  | LevelTelepadsAndWhileLoop.ChoiceIds;
 
 export interface DialogNode {
   text: string;
@@ -90,6 +93,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   ...LoopsPartTwo.NODES,
   ...GateAndTerminalPartTwo.NODES,
   ...EnemiesPartOne.NODES,
+  ...LevelTelepadsAndWhileLoop.NODES,
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
@@ -106,6 +110,7 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...LoopsPartTwo.CHOICES,
   ...GateAndTerminalPartTwo.CHOICES,
   ...EnemiesPartOne.CHOICES,
+  ...LevelTelepadsAndWhileLoop.CHOICES,
 };
 
 export const TREES: DialogTrees = {
@@ -122,4 +127,5 @@ export const TREES: DialogTrees = {
   ...LoopsPartTwo.TREES,
   ...GateAndTerminalPartTwo.TREES,
   ...EnemiesPartOne.TREES,
+  ...LevelTelepadsAndWhileLoop.TREES,
 };
