@@ -2,6 +2,8 @@ import { Box } from "@chakra-ui/react";
 import { Offset } from "../../lib/utils";
 import { TELEPAD_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 
+import telepadBlueEntranceUrl from "../../images/telepad_blue_entrance.png";
+import telepadBlueExitUrl from "../../images/telepad_blue_exit.png";
 import telepadGreenEntranceUrl from "../../images/telepad_green_entrance.png";
 import telepadGreenExitUrl from "../../images/telepad_green_exit.png";
 import telepadPurpleEntranceUrl from "../../images/telepad_purple_entrance.png";
@@ -26,6 +28,10 @@ const SPRITE_URLS = [
   {
     entrance: telepadPurpleEntranceUrl,
     exit: telepadPurpleExitUrl,
+  },
+  {
+    entrance: telepadBlueEntranceUrl,
+    exit: telepadBlueExitUrl,
   },
 ];
 

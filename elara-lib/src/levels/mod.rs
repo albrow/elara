@@ -24,6 +24,7 @@ mod sandbox;
 mod sandbox_with_data_terminal;
 mod telepad_part_one;
 mod telepad_part_two;
+mod telepads_and_while_loop;
 mod variables_intro;
 
 use std::collections::HashMap;
@@ -158,6 +159,7 @@ lazy_static! {
         m.insert(enemies_and_asteroids::EnemiesAndAsteroids{}.short_name(), Box::new(enemies_and_asteroids::EnemiesAndAsteroids{}));
         m.insert(buttons_part_one::ButtonsPartOne{}.short_name(), Box::new(buttons_part_one::ButtonsPartOne{}));
         m.insert(button_and_gate::ButtonAndGate{}.short_name(), Box::new(button_and_gate::ButtonAndGate{}));
+        m.insert(telepads_and_while_loop::TelepadsAndWhileLoop{}.short_name(), Box::new(telepads_and_while_loop::TelepadsAndWhileLoop{}));
 
         m
     };
@@ -357,15 +359,7 @@ pub fn make_all_initial_states_for_telepads(states: Vec<State>) -> Vec<State> {
         if state.telepads.len() == 0 {
             new_states.push(state.clone());
             continue;
-        } else if state.telepads.len() > 2 {
-            // The total number of initial states grows with 4^n where n is the
-            // number of telepads. When the user runs a script, the simulation is
-            // run once for each possible initial state. Therefore, we need to limit
-            // the number of initial states in order to keep the total script run time
-            // low.
-            panic!(
-                "Error computing initial states for telepads: a max of 2 telepads are supported"
-            );
+        } else if state.telepads.len() > 3 {
         }
         for orientation in vec![
             Orientation::Up,
@@ -375,7 +369,11 @@ pub fn make_all_initial_states_for_telepads(states: Vec<State>) -> Vec<State> {
         ] {
             let mut new_state = state.clone();
             new_state.telepads[0].end_facing = orientation;
-            if state.telepads.len() == 2 {
+            if state.telepads.len() == 1 {
+                // If there is only one telepad, we only need to create a new state
+                // for each possible orientation (i.e. 4 total).
+                new_states.push(new_state);
+            } else if state.telepads.len() == 2 {
                 // If there are two telepads, we need to create a new state for each
                 // *combination* of orientations for the two telepads (i.e. 16 total).
                 for orientation in vec![
@@ -388,10 +386,31 @@ pub fn make_all_initial_states_for_telepads(states: Vec<State>) -> Vec<State> {
                     nested_state.telepads[1].end_facing = orientation;
                     new_states.push(nested_state);
                 }
+            } else if state.telepads.len() == 3 {
+                // For the first two telepads, we need to create a new state for each
+                // *combination* of orientations for the two telepads (i.e. 16 total).
+                for orientation in vec![
+                    Orientation::Up,
+                    Orientation::Down,
+                    Orientation::Left,
+                    Orientation::Right,
+                ] {
+                    let mut nested_state = new_state.clone();
+                    nested_state.telepads[1].end_facing = orientation;
+                    // The third telepad piggybacks off of the second one by simply flipping
+                    // it. This limits the total number of possible initial states that we create.
+                    nested_state.telepads[2].end_facing = orientation.flip();
+                    new_states.push(nested_state);
+                }
             } else {
-                // If there is only one telepad, we only need to create a new state
-                // for each possible orientation (i.e. 4 total).
-                new_states.push(new_state);
+                // The total number of initial states grows with 4^n where n is the
+                // number of telepads. When the user runs a script, the simulation is
+                // run once for each possible initial state. Therefore, we need to limit
+                // the number of initial states in order to keep the total script run time
+                // low.
+                panic!(
+                    "Error computing initial states for telepads: max number of telepads exceeded."
+                );
             }
         }
     }

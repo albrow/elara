@@ -190,6 +190,35 @@ pub enum Orientation {
     Right,
 }
 
+impl Orientation {
+    pub fn flip(&self) -> Orientation {
+        match self {
+            Orientation::Up => Orientation::Down,
+            Orientation::Down => Orientation::Up,
+            Orientation::Left => Orientation::Right,
+            Orientation::Right => Orientation::Left,
+        }
+    }
+
+    pub fn rotate_clockwise(&self) -> Orientation {
+        match self {
+            Orientation::Up => Orientation::Right,
+            Orientation::Down => Orientation::Left,
+            Orientation::Left => Orientation::Up,
+            Orientation::Right => Orientation::Down,
+        }
+    }
+
+    pub fn rotate_counter_clockwise(&self) -> Orientation {
+        match self {
+            Orientation::Up => Orientation::Left,
+            Orientation::Down => Orientation::Right,
+            Orientation::Left => Orientation::Down,
+            Orientation::Right => Orientation::Up,
+        }
+    }
+}
+
 /// The animation state of the player sprite. This is used in
 /// in the UI to give more clarity to the player about what is
 /// happening.
