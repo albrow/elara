@@ -1,0 +1,7 @@
+Copyright © 2022-2023 Alex Browne
+
+The source code for Elara is licensed under *either* MIT or Apache 2.0 (your choice).
+
+The artwork, sound effects, music, and other non-source code assets are licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
+
+See the corresponding license file for more information about each license.
