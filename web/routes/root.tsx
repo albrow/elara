@@ -4,6 +4,7 @@ import { useRouteNode } from "react-router5";
 import { useCallback } from "react";
 import Navbar from "../components/navbar/navbar";
 import About from "./about";
+import Hub from "./hub";
 import Level from "./level";
 import Journal from "./journal";
 import DialogOverBg from "./dialog_over_bg";
@@ -19,6 +20,9 @@ export default function Root() {
   const currPage = useCallback(() => {
     if (route.name === "about") {
       return <About />;
+    }
+    if (route.name === "hub") {
+      return <Hub />;
     }
     if (route.name === "level") {
       return <Level />;

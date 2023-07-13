@@ -53,6 +53,7 @@ export const BUTTON_Z_INDEX = 100;
 export const GATE_Z_INDEX = 100;
 export const TERMINAL_Z_INDEX = 100;
 export const BUTTON_WIRE_INDEX = 50;
+export const BG_INDEX = -100;
 
 // Various messages that are displayed to the user.
 export const CODE_LEN_EXPLANATION =

@@ -72,6 +72,10 @@ const elaraTheme = extendTheme({
       path: "/",
     },
     {
+      name: "hub",
+      path: "/hub",
+    },
+    {
       name: "level",
       path: "/level/:levelId",
     },
