@@ -2,7 +2,7 @@
 // defined in their respective components.
 
 // Save data and settings
-export const SAVE_DATA_VERSION = 8;
+export const SAVE_DATA_VERSION = 9;
 
 // Constants related to the game board and game logic.
 export const WIDTH = 12;

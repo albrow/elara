@@ -11,6 +11,7 @@ import {
 import { ShortId } from "../lib/tutorial_shorts";
 import { TREES } from "../lib/dialog_trees";
 import { useSaveData } from "../hooks/save_data_hooks";
+import { SectionName } from "../components/journal/sections";
 import type { LevelState } from "./save_data";
 
 export type SceneType = "level" | "dialog" | "journal";
@@ -303,46 +304,75 @@ const getLevelIndexFromScene = (
   return levels.indexOf(scene);
 };
 
-// Returns the *scene index* of the last uncompleted level, or the last
-// level index if all levels have been completed.
-function getLastUncompletedLevelIndex(
+function isSceneCompleted(
   levelStates: Record<string, LevelState>,
-  allScenes: RawScene[]
+  seenJournalPages: SectionName[],
+  seenDialogTrees: string[],
+  scene: RawScene
 ) {
-  for (let i = 0; i < allScenes.length; i += 1) {
-    const scene = allScenes[i];
-    if (scene.type === "level") {
-      const levelName = scene.level?.short_name;
-      const levelState = levelStates[levelName as string];
-      if (levelState == null || !levelState.completed) {
-        return i;
-      }
+  if (scene.type === "level") {
+    const levelState = levelStates[scene.level?.short_name!];
+    return levelState?.completed ?? false;
+  }
+  if (scene.type === "journal") {
+    return seenJournalPages.includes(scene.routeParams?.sectionName!);
+  }
+  if (scene.type === "dialog") {
+    return seenDialogTrees.includes(scene.routeParams?.treeName!);
+  }
+  throw new Error(`Unknown scene type: ${scene.type}`);
+}
+
+// Unlock each scene if the scene is completed or the previous scene is completed.
+function unlockScenes(scenes: Scene[]) {
+  // Start by marking all scenes as locked.
+  const result = scenes.map((scene) => ({
+    ...scene,
+    unlocked: false,
+  }));
+
+  // First scene is always unlocked.
+  result[0].unlocked = true;
+
+  // Subsequent scenes are unlocked if all previous
+  // scenes are completed.
+  for (let i = 1; i < result.length; i += 1) {
+    const prevScene = result[i - 1];
+    const currScene = result[i];
+    if (prevScene.completed) {
+      currScene.unlocked = true;
+    }
+    if (!currScene.completed || !prevScene.completed) {
+      // If the current scene is not completed, no later
+      // scenes should be unlocked, so we can break out.
+      break;
     }
   }
-  return allScenes.length - 1;
+  return result;
 }
 
 function processScenes(
   levelStates: Record<string, LevelState>,
+  seenJournalPages: SectionName[],
+  seenDialogTrees: string[],
   scenes: RawScene[]
 ): Scene[] {
-  // The cutoff is the index of the latest uncompleted level.
-  // Everything after the cutoff is locked.
-  const cutoff = getLastUncompletedLevelIndex(levelStates, scenes);
-  const result: Scene[] = scenes.map((scene, index) => ({
+  let result: Scene[] = scenes.map((scene, index) => ({
     ...scene,
     index,
-    completed:
-      scene.type === "level" &&
-      levelStates[scene.level?.short_name!] &&
-      levelStates[scene.level?.short_name!].completed,
+    completed: isSceneCompleted(
+      levelStates,
+      seenJournalPages,
+      seenDialogTrees,
+      scene
+    ),
     challengeCompleted:
       (scene.type === "level" &&
         levelStates[scene.level?.short_name!] &&
         levelStates[scene.level?.short_name!].challengeCompleted) ||
       false,
-    unlocked: index <= cutoff,
     levelIndex: getLevelIndexFromScene(scenes, scene),
+    unlocked: false, // Will update later.
   }));
   // eslint-disable-next-line no-restricted-syntax
   for (const s of result) {
@@ -350,16 +380,19 @@ function processScenes(
       s.nextScene = result[s.index + 1];
     }
   }
+  result = unlockScenes(result);
+
   return result;
 }
 
 export const ScenesContext = createContext<Scene[]>([]);
 
 export function ScenesProvider(props: PropsWithChildren<{}>) {
-  const [saveData, _] = useSaveData();
+  const [{ levelStates, seenJournalPages, seenDialogTrees }, _] = useSaveData();
   const providerValue = useMemo(
-    () => processScenes(saveData.levelStates, RAW_SCENES),
-    [saveData.levelStates]
+    () =>
+      processScenes(levelStates, seenJournalPages, seenDialogTrees, RAW_SCENES),
+    [levelStates, seenDialogTrees, seenJournalPages]
   );
 
   return (

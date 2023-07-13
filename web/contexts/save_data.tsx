@@ -13,6 +13,7 @@ import debounce from "lodash.debounce";
 import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
 import { SAVE_DATA_VERSION } from "../lib/constants";
+import { SectionName } from "../components/journal/sections";
 
 const LOCAL_STORAGE_KEY = "elara.save";
 
@@ -58,6 +59,8 @@ export interface SaveData {
   seenTutorialShorts: ShortId[];
   // Stores various user settings (e.g. sound volume, etc.)
   settings: Settings;
+  // Tracks which journal pages the user has already seen.
+  seenJournalPages: SectionName[];
 }
 
 export interface SaveDataManager {
@@ -68,6 +71,7 @@ export interface SaveDataManager {
   markTutorialShortSeen: (shortId: ShortId) => void;
   saveMasterVolume: (volume: number) => void;
   saveSoundEffectsVolume: (volume: number) => void;
+  markJournalPageSeen: (sectionName: SectionName) => void;
 }
 
 // Actually saves the data to local storage.
@@ -93,6 +97,7 @@ function migrateSaveData(saveData: SaveData): SaveData {
       seenDialogTrees: [],
       seenTutorialShorts: [],
       settings: DEFUALT_SETTINGS,
+      seenJournalPages: [],
     };
   }
 
@@ -123,6 +128,13 @@ function migrateSaveData(saveData: SaveData): SaveData {
     newData.settings = DEFUALT_SETTINGS;
   }
 
+  // Migrate from version 8 to 9.
+  if (newData.version === 8) {
+    newData.version = 9;
+    // Version 9 added seenJournalPages.
+    newData.seenJournalPages = [];
+  }
+
   return newData;
 }
 
@@ -141,6 +153,7 @@ function load(): SaveData {
     seenDialogTrees: [],
     seenTutorialShorts: [],
     settings: DEFUALT_SETTINGS,
+    seenJournalPages: [],
   };
 }
 
@@ -168,6 +181,9 @@ export const SaveDataContext = createContext<
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
     saveSoundEffectsVolume: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    markJournalPageSeen: () => {
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
   },
@@ -288,6 +304,17 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
     [setSaveData]
   );
 
+  const markJournalPageSeen = useCallback(
+    (sectionName: SectionName) => {
+      const newSaveData = clone(saveDataRef.current);
+      if (!newSaveData.seenJournalPages.includes(sectionName)) {
+        newSaveData.seenJournalPages.push(sectionName);
+      }
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
   const providerValue = useMemo(
     () =>
       [
@@ -300,6 +327,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
           markTutorialShortSeen,
           saveMasterVolume,
           saveSoundEffectsVolume,
+          markJournalPageSeen,
         },
       ] as const,
     [
@@ -311,6 +339,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       saveMasterVolume,
       saveSoundEffectsVolume,
       updateLevelCode,
+      markJournalPageSeen,
     ]
   );
 
@@ -331,7 +360,7 @@ if (import.meta.vitest) {
 
     describe("save", async () => {
       it("saves the given save data to localStorage", async () => {
-        const saveData = {
+        const saveData: SaveData = {
           version: SAVE_DATA_VERSION,
           levelStates: {
             movement_part_one: {
@@ -346,6 +375,7 @@ if (import.meta.vitest) {
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
           settings: DEFUALT_SETTINGS,
+          seenJournalPages: ["functions", "comments"],
         };
         save(saveData);
         // Wait for debounce
@@ -364,11 +394,12 @@ if (import.meta.vitest) {
           seenDialogTrees: [],
           seenTutorialShorts: [],
           settings: DEFUALT_SETTINGS,
-        });
+          seenJournalPages: [],
+        } as SaveData);
       });
 
       it("loads the save data from localStorage", () => {
-        const saveData = {
+        const saveData: SaveData = {
           version: SAVE_DATA_VERSION,
           levelStates: {
             movement_part_one: {
@@ -383,6 +414,7 @@ if (import.meta.vitest) {
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
           settings: DEFUALT_SETTINGS,
+          seenJournalPages: ["functions", "comments"],
         };
         window.localStorage.setItem(
           LOCAL_STORAGE_KEY,

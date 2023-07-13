@@ -11,13 +11,18 @@ import DialogModal from "../components/dialog/dialog_modal";
 export default function Journal() {
   const { route } = useRouteNode("");
   let { sectionName } = route.params as { sectionName?: SectionName };
-  const [saveData, _] = useSaveData();
+  const [saveData, { markJournalPageSeen }] = useSaveData();
 
   // Default to the first section.
   sectionName ||= Object.keys(JOURNAL_SECTIONS)[0] as SectionName;
-  if (sectionName !== undefined && !(sectionName in JOURNAL_SECTIONS)) {
+  if (!(sectionName in JOURNAL_SECTIONS)) {
     throw new Error(`Unknown section: ${sectionName}`);
   }
+
+  // Mark the journal page as seen as soon as it loads.
+  useEffect(() => {
+    markJournalPageSeen(sectionName!);
+  }, [markJournalPageSeen, sectionName]);
 
   const dialogTreeName = `journal_${sectionName}`;
 

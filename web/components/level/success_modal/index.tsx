@@ -10,7 +10,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import React, { useCallback, useMemo } from "react";
-import { MdArrowForward, MdReplay } from "react-icons/md";
+import { MdArrowForward, MdHome, MdReplay } from "react-icons/md";
 import { Animate, AnimateGroup } from "react-simple-animate";
 
 import { useRouter } from "react-router5";
@@ -29,7 +29,7 @@ interface LevelSuccessModalProps {
 }
 
 export default function LevelSuccessModal(props: LevelSuccessModalProps) {
-  const { navigateToNextScene } = useSceneNavigator();
+  const { navigateToNextScene, navigateToHub } = useSceneNavigator();
   const router = useRouter();
   const currScene = useCurrScene();
   const currLevel = useMemo(() => currScene?.level, [currScene]);
@@ -107,13 +107,19 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                     Keep Playing
                     <MdReplay size="1.3em" style={{ marginLeft: "0.2rem" }} />
                   </Button>
-                  <Button colorScheme="blue" ml={2} onClick={onNextClick}>
-                    Next
-                    <MdArrowForward
-                      size="1.3em"
-                      style={{ marginLeft: "0.2rem" }}
-                    />
+                  <Button colorScheme="blue" onClick={navigateToHub} ml="5px">
+                    Back to Hub
+                    <MdHome size="1.3em" style={{ marginLeft: "0.2rem" }} />
                   </Button>
+                  {currScene?.nextScene?.type === "level" && (
+                    <Button colorScheme="teal" onClick={onNextClick} ml="5px">
+                      Next Level
+                      <MdArrowForward
+                        size="1.3em"
+                        style={{ marginLeft: "0.2rem" }}
+                      />
+                    </Button>
+                  )}
                 </Flex>
               </Animate>
             </AnimateGroup>

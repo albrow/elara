@@ -53,6 +53,7 @@ export function useCurrScene() {
 export function useSceneNavigator() {
   const currScene = useCurrScene();
   const router = useRouter();
+
   const navigateToNextScene = useCallback(() => {
     if (!currScene) {
       throw new Error("Could not get current scene.");
@@ -63,7 +64,12 @@ export function useSceneNavigator() {
     }
     router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
   }, [currScene, router]);
-  return { navigateToNextScene };
+
+  const navigateToHub = useCallback(() => {
+    router.navigate("hub");
+  }, [router]);
+
+  return { navigateToNextScene, navigateToHub };
 }
 
 // A custom hook that returns the current level or, if the current
