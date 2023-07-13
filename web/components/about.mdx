@@ -19,10 +19,9 @@ Right now, we are focusing on testing the core mechanics of the game, which
 includes writing code to control a rover and solve various puzzles. Click the
 "Start" button to start playing!
 
-export const NextSceneLink = () => {
-  const scenes = useScenes();
+export const StartButton = () => {
   return (
-    <Link routeName={scenes[0].routeName} routeParams={scenes[0].routeParams}>
+    <Link routeName={"hub"}>
       <Button colorScheme="green">
         <span>Start</span>
         <MdArrowForward size="1.3em" style={{ marginLeft: "0.2rem" }} />
@@ -31,7 +30,7 @@ export const NextSceneLink = () => {
   );
 };
 
-<NextSceneLink />
+<StartButton />
 
 ---
 
