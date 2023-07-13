@@ -10,6 +10,8 @@ import Journal from "./journal";
 import DialogOverBg from "./dialog_over_bg";
 import End from "./end";
 
+import "../styles/scrollbars.css";
+
 export default function Root() {
   const { route } = useRouteNode("");
 

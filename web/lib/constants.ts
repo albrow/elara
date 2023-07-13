@@ -32,6 +32,7 @@ export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
 // Some CSS properties need to be manually kept in sync with these values.
 // In such a case, there should be a comment above the CSS property explaining it.
 //
+export const LEVEL_SELECT_MODAL_Z_INDEX = 1200;
 export const HINTS_MODAL_Z_INDEX = 1200;
 export const LEVEL_END_MODAL_Z_INDEX = 1200;
 export const JOURNAL_MODAL_Z_INDEX = 1200;

@@ -1,0 +1,26 @@
+/* 
+    Note: It does not seem to be possible to include these
+    styles in React inline, so we are defining them here.
+*/
+
+.dark-scrollbar {
+  scrollbar-color: var(--chakra-colors-gray-600) transparent;
+}
+
+.dark-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--chakra-colors-gray-600);
+  border-radius: 0.5rem;
+  background-clip: content-box;
+  border: 3px solid transparent;
+}
+
+.dark-scrollbar::-webkit-scrollbar {
+  background: transparent;
+  overflow: auto;
+}
+
+.dark-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+  color: transparent;
+  display: none;
+}
