@@ -31,7 +31,7 @@ export default function Navbar() {
     [currScene]
   );
 
-  const isHome = useCallback(() => route.name === "home", [route.name]);
+  const isAboutPage = useCallback(() => route.name === "about", [route.name]);
 
   const onNextClick = useCallback(() => {
     if (isLastScene()) {
@@ -42,7 +42,7 @@ export default function Navbar() {
   }, [isLastScene, navigateToNextScene, router]);
 
   const shouldRenderNextButton = useCallback(() => {
-    if (isHome() || !currScene) {
+    if (isAboutPage() || !currScene) {
       return false;
     }
     if (currScene.type === "level") {
@@ -50,7 +50,7 @@ export default function Navbar() {
       return saveData.levelStates[levelName as string]?.completed;
     }
     return false;
-  }, [currScene, isHome, saveData.levelStates]);
+  }, [currScene, isAboutPage, saveData.levelStates]);
 
   return (
     <>
@@ -61,7 +61,7 @@ export default function Navbar() {
       <Box bg="gray.800" textColor="white">
         <Container maxW="container.xl" p={2} height={`${NAVBAR_HEIGHT}px`}>
           <Flex height="100%" align="center">
-            <NavbarLink routeName="home" text="Home" />
+            <NavbarLink routeName="about" text="About" />
             <NavbarButton onClick={() => setSettingsVisible(true)}>
               <MdSettings size="0.9em" style={{ marginRight: "0.2rem" }} />
               Settings

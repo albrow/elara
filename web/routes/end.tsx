@@ -9,7 +9,7 @@ import { useSaveData } from "../hooks/save_data_hooks";
 // eslint-disable-next-line camelcase
 import { get_level_data } from "../../elara-lib/pkg/elara_lib";
 
-export default function Home() {
+export default function End() {
   const { route } = useRouteNode("");
   const [saveData] = useSaveData();
   const levelData = new Map(Object.entries(get_level_data()));

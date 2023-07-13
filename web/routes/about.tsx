@@ -2,20 +2,20 @@ import { Container } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useRouteNode } from "react-router5";
 
-import HomeContent from "../components/home.mdx";
+import AboutContent from "../components/about.mdx";
 import "../styles/md_content.css";
 
-export default function Home() {
+export default function About() {
   const { route } = useRouteNode("");
 
   useEffect(() => {
-    document.title = "Elara | Home";
+    document.title = "Elara | About";
   }, [route.name]);
 
   return (
     <Container maxW="container.xl" p={8}>
       <div className="md-content">
-        <HomeContent />
+        <AboutContent />
       </div>
     </Container>
   );

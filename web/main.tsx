@@ -68,7 +68,7 @@ const elaraTheme = extendTheme({
 
   const routes: Route[] = [
     {
-      name: "home",
+      name: "about",
       path: "/",
     },
     {
@@ -94,7 +94,7 @@ const elaraTheme = extendTheme({
   ];
 
   const router = createRouter(routes, {
-    defaultRoute: "home",
+    defaultRoute: "about",
   });
   router.usePlugin(browserPlugin());
   router.start();

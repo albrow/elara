@@ -3,7 +3,7 @@ import { useRouteNode } from "react-router5";
 
 import { useCallback } from "react";
 import Navbar from "../components/navbar/navbar";
-import Home from "./home";
+import About from "./about";
 import Level from "./level";
 import Journal from "./journal";
 import DialogOverBg from "./dialog_over_bg";
@@ -17,8 +17,8 @@ export default function Root() {
   }
 
   const currPage = useCallback(() => {
-    if (route.name === "home") {
-      return <Home />;
+    if (route.name === "about") {
+      return <About />;
     }
     if (route.name === "level") {
       return <Level />;
