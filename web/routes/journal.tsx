@@ -8,6 +8,7 @@ import JournalSection from "../components/journal/journal_section";
 import { TREES } from "../lib/dialog_trees";
 import DialogModal from "../components/dialog/dialog_modal";
 import JournalSidebar from "../components/journal/journal_sidebar";
+import { NAVBAR_HEIGHT } from "../lib/constants";
 
 export default function Journal() {
   const { route } = useRouteNode("");
@@ -57,7 +58,13 @@ export default function Journal() {
   const [dialogVisible, setDialogVisible] = useState(shouldShowDialogTree());
 
   return (
-    <Box id="dark-bg" bg="black" w="100%" h="100%" py="20px">
+    <Box
+      id="dark-bg"
+      bg="black"
+      w="100%"
+      minH={`calc(100vh - ${NAVBAR_HEIGHT}px)`}
+      py="20px"
+    >
       <Container maxW="container.xl">
         <DialogModal
           visible={dialogVisible}
