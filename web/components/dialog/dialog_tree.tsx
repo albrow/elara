@@ -15,8 +15,12 @@ import npcRightImgUrl from "../../images/npc_right.png";
 
 export interface DialogTreeProps {
   treeName: string;
+  showNpcProfile?: boolean;
+  showHistory?: boolean;
   onEnd: () => void;
 }
+
+// TODO(albrow): Show Kalina's name next to her messages.
 
 export default function DialogTree(props: DialogTreeProps) {
   const currTree = useCallback(() => {
@@ -67,7 +71,11 @@ export default function DialogTree(props: DialogTreeProps) {
           newChats.push({ text: nextNode.text, isPlayer: false, id: uuidv4() });
           nextNode = NODES[nextNode.nextId];
         }
-        setChatHistory([...chatHistory, ...newChats]);
+        if (props.showHistory) {
+          setChatHistory([...chatHistory, ...newChats]);
+        } else {
+          setChatHistory([]);
+        }
         setNode(nextNode);
       }
       // Always scroll to the bottom of the chat history.
@@ -83,20 +91,24 @@ export default function DialogTree(props: DialogTreeProps) {
 
   return (
     <Flex direction="row" height="100%">
-      <Box id="img-column" marginTop="auto">
-        <Image
-          src={npcRightImgUrl}
-          alt="profile"
-          width={128}
-          display="inline"
-        />
-      </Box>
+      {props.showNpcProfile && (
+        <Box id="img-column" marginTop="auto">
+          <Image
+            src={npcRightImgUrl}
+            alt="profile"
+            width={128}
+            display="inline"
+          />
+        </Box>
+      )}
       <Box
         id="chat-column"
+        className="darker-scrollbar"
         marginTop="auto"
         width="100%"
-        overflowY="auto"
-        maxH="50%"
+        overflowY="scroll"
+        maxH="100%"
+        px="5px"
       >
         <Flex
           direction="column"
@@ -122,10 +134,16 @@ export default function DialogTree(props: DialogTreeProps) {
               const choice = CHOICES[choiceId as keyof typeof CHOICES];
               return (
                 <Button
-                  ml="1px"
+                  bg="gray.200"
+                  _hover={{ bg: "gray.300" }}
+                  ml="5px"
+                  mt="5px"
                   key={choice.text}
                   fontSize="1.1rem"
                   onClick={() => choiceClickHandler(choice)}
+                  shadow="lg"
+                  borderColor="gray.400"
+                  borderWidth="1px"
                 >
                   {choice.text}
                 </Button>
@@ -140,3 +158,8 @@ export default function DialogTree(props: DialogTreeProps) {
     </Flex>
   );
 }
+
+DialogTree.defaultProps = {
+  showNpcProfile: true,
+  showHistory: true,
+};

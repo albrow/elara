@@ -3,6 +3,28 @@
     styles in React inline, so we are defining them here.
 */
 
+.light-scrollbar {
+  scrollbar-color: var(--chakra-colors-gray-400) transparent;
+}
+
+.light-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--chakra-colors-gray-400);
+  border-radius: 0.5rem;
+  background-clip: content-box;
+  border: 3px solid transparent;
+}
+
+.light-scrollbar::-webkit-scrollbar {
+  background: transparent;
+  overflow: auto;
+}
+
+.light-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+  color: transparent;
+  display: none;
+}
+
 .dark-scrollbar {
   scrollbar-color: var(--chakra-colors-gray-600) transparent;
 }
@@ -20,6 +42,28 @@
 }
 
 .dark-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+  color: transparent;
+  display: none;
+}
+
+.darker-scrollbar {
+  scrollbar-color: var(--chakra-colors-gray-700) transparent;
+}
+
+.darker-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--chakra-colors-gray-700);
+  border-radius: 0.5rem;
+  background-clip: content-box;
+  border: 3px solid transparent;
+}
+
+.darker-scrollbar::-webkit-scrollbar {
+  background: transparent;
+  overflow: auto;
+}
+
+.darker-scrollbar::-webkit-scrollbar-corner {
   background: transparent;
   color: transparent;
   display: none;

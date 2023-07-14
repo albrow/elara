@@ -46,6 +46,7 @@ export default function DialogModal(props: DialogModalProps) {
       >
         <ModalOverlay zIndex={DIALOG_MODAL_Z_INDEX} />
         <ModalContent
+          className="light-scrollbar"
           minW="container.lg"
           zIndex={DIALOG_MODAL_Z_INDEX + 1}
           bottom="16px"
