@@ -7,9 +7,11 @@ import { JOURNAL_SECTIONS, SectionName } from "../components/journal/sections";
 import JournalSection from "../components/journal/journal_section";
 import { TREES } from "../lib/dialog_trees";
 import DialogModal from "../components/dialog/dialog_modal";
+import JournalSidebar from "../components/journal/journal_sidebar";
 
 export default function Journal() {
   const { route } = useRouteNode("");
+
   let { sectionName } = route.params as { sectionName?: SectionName };
   const [saveData, { markJournalPageSeen }] = useSaveData();
 
@@ -55,18 +57,29 @@ export default function Journal() {
   const [dialogVisible, setDialogVisible] = useState(shouldShowDialogTree());
 
   return (
-    <Box>
+    <Box id="dark-bg" bg="black" w="100%" h="100%" py="20px">
       <Container maxW="container.xl">
         <DialogModal
           visible={dialogVisible}
           setVisible={setDialogVisible}
           treeName={getDialogTree()}
         />
-        <Flex direction="row">
-          <Box bg="white" p={8} minH="">
-            <JournalSection section={sectionName as SectionName} />
-          </Box>
-        </Flex>
+        <Box bg="gray.300" p="10px" borderRadius="5px" pl="5px">
+          <Flex>
+            <Box h="100%" w="200px" mr="5px">
+              <JournalSidebar />
+            </Box>
+            <Box
+              bg="white"
+              p="20px"
+              borderRadius="5px"
+              border="1px solid"
+              borderColor="gray.400"
+            >
+              <JournalSection section={sectionName as SectionName} />
+            </Box>
+          </Flex>
+        </Box>
       </Container>
     </Box>
   );

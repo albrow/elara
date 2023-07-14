@@ -3,13 +3,11 @@ import { MdHome, MdSettings } from "react-icons/md";
 import { useState } from "react";
 
 import { NAVBAR_HEIGHT } from "../../lib/constants";
-import { useJournalPages, useSceneNavigator } from "../../hooks/scenes_hooks";
-import NavbarDropdown from "./navbar_dropdown";
+import { useSceneNavigator } from "../../hooks/scenes_hooks";
 import SettingsModal from "./settings_modal";
 import NavbarButton from "./navbar_button";
 
 export default function Navbar() {
-  const JOURNAL_PAGES = useJournalPages();
   const { navigateToHub } = useSceneNavigator();
   const [settingsVisible, setSettingsVisible] = useState(false);
 
@@ -30,7 +28,6 @@ export default function Navbar() {
               <MdSettings size="0.9em" style={{ marginRight: "0.2rem" }} />
               Settings
             </NavbarButton>
-            <NavbarDropdown name="Journal" scenes={JOURNAL_PAGES} />
           </Flex>
         </Container>
       </Box>

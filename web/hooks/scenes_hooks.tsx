@@ -53,6 +53,7 @@ export function useCurrScene() {
 export function useSceneNavigator() {
   const currScene = useCurrScene();
   const router = useRouter();
+  const JOURNAL_PAGES = useJournalPages();
 
   const navigateToNextScene = useCallback(() => {
     if (!currScene) {
@@ -69,7 +70,22 @@ export function useSceneNavigator() {
     router.navigate("hub");
   }, [router]);
 
-  return { navigateToNextScene, navigateToHub };
+  const navigateToNextJournalPage = useCallback(() => {
+    const unlockedPages = JOURNAL_PAGES.filter((page) => page.unlocked);
+    if (unlockedPages.length === 0) {
+      throw new Error("Could not find any unlocked journal pages.");
+    }
+    const unlockedAndUnseenPages = unlockedPages.filter(
+      (page) => !page.completed
+    );
+    const newestPage =
+      unlockedAndUnseenPages.length > 0
+        ? unlockedAndUnseenPages[0]
+        : unlockedPages[unlockedPages.length - 1];
+    router.navigate(newestPage.routeName, newestPage.routeParams ?? {});
+  }, [JOURNAL_PAGES, router]);
+
+  return { navigateToNextScene, navigateToHub, navigateToNextJournalPage };
 }
 
 // A custom hook that returns the current level or, if the current

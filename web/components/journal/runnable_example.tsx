@@ -81,7 +81,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
       mx="auto"
       width="fit-content"
     >
-      <Box width="608px">
+      <Box width="550px">
         <Editor
           type="example"
           code={initialCode}

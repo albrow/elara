@@ -76,7 +76,7 @@ export default function MiniBoard(props: MiniBoardProps) {
       id="mini-board"
       overflow="hidden"
       minH="110px"
-      width={440}
+      width="400px"
       p={4}
       ml={3}
       bgImage={`url("${lunarSurfaceBgUrl}")`}
