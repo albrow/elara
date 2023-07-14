@@ -55,6 +55,13 @@ export function useSceneNavigator() {
   const router = useRouter();
   const JOURNAL_PAGES = useJournalPages();
 
+  const navigateToScene = useCallback(
+    (scene: Scene) => {
+      router.navigate(scene.routeName, scene.routeParams ?? {});
+    },
+    [router]
+  );
+
   const navigateToNextScene = useCallback(() => {
     if (!currScene) {
       throw new Error("Could not get current scene.");
@@ -63,8 +70,8 @@ export function useSceneNavigator() {
     if (nextScene == null) {
       throw new Error("Could not get next scene.");
     }
-    router.navigate(nextScene.routeName, nextScene.routeParams ?? {});
-  }, [currScene, router]);
+    navigateToScene(nextScene);
+  }, [currScene, navigateToScene]);
 
   const navigateToHub = useCallback(() => {
     router.navigate("hub");
@@ -85,7 +92,12 @@ export function useSceneNavigator() {
     router.navigate(newestPage.routeName, newestPage.routeParams ?? {});
   }, [JOURNAL_PAGES, router]);
 
-  return { navigateToNextScene, navigateToHub, navigateToNextJournalPage };
+  return {
+    navigateToScene,
+    navigateToNextScene,
+    navigateToHub,
+    navigateToNextJournalPage,
+  };
 }
 
 // A custom hook that returns the current level or, if the current

@@ -374,13 +374,15 @@ function processScenes(
     levelIndex: getLevelIndexFromScene(scenes, scene),
     unlocked: false, // Will update later.
   }));
+
+  result = unlockScenes(result);
+
   // eslint-disable-next-line no-restricted-syntax
   for (const s of result) {
     if (s.index < result.length - 1) {
       s.nextScene = result[s.index + 1];
     }
   }
-  result = unlockScenes(result);
 
   return result;
 }

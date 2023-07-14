@@ -13,10 +13,11 @@ import React, { useCallback, useMemo } from "react";
 import { MdArrowForward, MdHome, MdReplay } from "react-icons/md";
 import { Animate, AnimateGroup } from "react-simple-animate";
 
-import { useRouter } from "react-router5";
 import type { RunResult } from "../../../../elara-lib/pkg/elara_lib";
 import { LEVEL_END_MODAL_Z_INDEX } from "../../../lib/constants";
 import { useCurrScene, useSceneNavigator } from "../../../hooks/scenes_hooks";
+import { getNextLevel } from "../../../lib/utils";
+import { Scene } from "../../../contexts/scenes";
 import ModalStats from "./modal_stats";
 import ModalObjective from "./modal_objective";
 import ModalChallenge from "./modal_challenge";
@@ -29,15 +30,16 @@ interface LevelSuccessModalProps {
 }
 
 export default function LevelSuccessModal(props: LevelSuccessModalProps) {
-  const { navigateToNextScene, navigateToHub } = useSceneNavigator();
-  const router = useRouter();
+  const { navigateToScene, navigateToHub } = useSceneNavigator();
+  // const router = useRouter();
   const currScene = useCurrScene();
   const currLevel = useMemo(() => currScene?.level, [currScene]);
   if (!currLevel) {
     throw new Error("currLevel must be non-null");
   }
+  const nextLevel = useMemo(() => getNextLevel(currScene!), [currScene]);
 
-  const isLastScene = useMemo(() => currScene?.nextScene == null, [currScene]);
+  // const isLastScene = useMemo(() => currScene?.nextScene == null, [currScene]);
 
   const handleClose = useCallback(() => {
     props.setVisible(false);
@@ -46,14 +48,19 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
     }
   }, [props]);
 
-  const onNextClick = useCallback(() => {
-    handleClose();
-    if (isLastScene) {
-      setTimeout(() => router.navigate("end"), 0);
-    } else {
-      navigateToNextScene();
-    }
-  }, [handleClose, isLastScene, navigateToNextScene, router]);
+  const onNextClick = useCallback(
+    (nextLevelScene: Scene) => {
+      handleClose();
+      // TODO(albrow): Figure out a different way to show the end screen.
+      // if (isLastScene) {
+      //   setTimeout(() => router.navigate("end"), 0);
+      // } else {
+      //   navigateToNextScene();
+      // }
+      navigateToScene(nextLevelScene);
+    },
+    [handleClose, navigateToScene]
+  );
 
   if (!props.visible) {
     return null;
@@ -111,8 +118,12 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                     Back to Hub
                     <MdHome size="1.3em" style={{ marginLeft: "0.2rem" }} />
                   </Button>
-                  {currScene?.nextScene?.type === "level" && (
-                    <Button colorScheme="teal" onClick={onNextClick} ml="5px">
+                  {nextLevel?.unlocked && (
+                    <Button
+                      colorScheme="teal"
+                      onClick={() => onNextClick(nextLevel!)}
+                      ml="5px"
+                    >
                       Next Level
                       <MdArrowForward
                         size="1.3em"

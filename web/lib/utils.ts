@@ -1,5 +1,6 @@
 import { LevelData, Pos } from "../../elara-lib/pkg/elara_lib";
 import { SaveData } from "../contexts/save_data";
+import { Scene } from "../contexts/scenes";
 import { TILE_SIZE, AXIS_HEIGHT, AXIS_WIDTH } from "./constants";
 
 // Returns a read-only array of the given size.
@@ -59,4 +60,30 @@ export function getChallengeProgress(
     completed,
     available,
   };
+}
+
+// Returns the next level that appears after the given scene, or
+// undefined if scene is the last level.
+export function getNextLevel(scene: Scene): Scene | undefined {
+  let ptr = scene;
+  while (ptr.nextScene !== undefined) {
+    if (ptr.nextScene!.type === "level") {
+      return ptr.nextScene;
+    }
+    ptr = ptr.nextScene;
+  }
+  return undefined;
+}
+
+// Returns the next journal page that appears after the given scene, or
+// undefined if scene is the last journal page.
+export function getNextJournalPage(scene: Scene): Scene | undefined {
+  let ptr = scene;
+  while (ptr.nextScene !== undefined) {
+    if (ptr.nextScene!.type === "journal") {
+      return ptr.nextScene;
+    }
+    ptr = ptr.nextScene;
+  }
+  return undefined;
 }
