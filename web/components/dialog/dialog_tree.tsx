@@ -21,6 +21,13 @@ export interface DialogTreeProps {
   onEnd: () => void;
 }
 
+// TODO(albrow):
+//
+// - Add special icons to show which choices have already been chosen and which
+//   will end the current dialog. Maybe also fade out options which have already
+//   been chosen.
+//
+
 export default function DialogTree(props: DialogTreeProps) {
   const currTree = useCallback(() => {
     const tree = TREES[props.treeName];

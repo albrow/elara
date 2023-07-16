@@ -124,7 +124,7 @@ export default function LevelLink(props: LevelLinkProps) {
 
   // TODO(albrow):
   //
-  //    1. Show a preview for each level (thumbnail + brief description).
+  //    1. Show a preview for each level (thumbnail + brief description). Either a screen shot or render of the level at ~50% scale.
   //    2. Automatically select the next level that is unlocked.
   //
   return (

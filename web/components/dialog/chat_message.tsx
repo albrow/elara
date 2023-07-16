@@ -5,6 +5,8 @@ export interface ChatMessageProps {
   fromPlayer: boolean;
 }
 
+// TODO(albrow): Support code in chat messages. Maybe delimitted by backticks?
+
 export default function ChatMessage(props: ChatMessageProps) {
   return (
     <Flex

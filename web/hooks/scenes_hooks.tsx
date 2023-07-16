@@ -49,6 +49,18 @@ export function useCurrScene() {
   return currScene;
 }
 
+// Returns the next/latest unlocked scene. This tells us what scene the
+// player should go to next.
+export function useNextUnlockedScene() {
+  const scenes = useScenes();
+  for (let i = scenes.length - 1; i >= 0; i -= 1) {
+    if (scenes[i].unlocked) {
+      return scenes[i];
+    }
+  }
+  return scenes[0];
+}
+
 // A custom hook that allows for navigating between scenes.
 export function useSceneNavigator() {
   const currScene = useCurrScene();

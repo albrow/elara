@@ -5,7 +5,7 @@ import { AspectRatio, Box, Image } from "@chakra-ui/react";
 import { TREES } from "../lib/dialog_trees";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import { useSaveData } from "../hooks/save_data_hooks";
-import { BG_INDEX as BG_Z_INDEX } from "../lib/constants";
+import { BG_INDEX as BG_Z_INDEX, MIN_BG_WIDTH } from "../lib/constants";
 
 import npcRightImage from "../images/npc_right.png";
 import videoTabletBgImage from "../images/video_tablet_bg.png";
@@ -41,7 +41,7 @@ export default function DialogOverBg() {
   }, [route, currTree]);
 
   return (
-    <Box w="100%" h="100%" position="fixed" bg="black">
+    <Box w="100%" h="100%" minW={MIN_BG_WIDTH} position="fixed" bg="black">
       <Image
         src={videoTabletBgImage}
         zIndex={BG_Z_INDEX}

@@ -1,6 +1,9 @@
 // Shared constants go here. Other constants should be
 // defined in their respective components.
 
+// Screen size.
+export const MIN_BG_WIDTH = "980px";
+
 // Save data and settings
 export const SAVE_DATA_VERSION = 9;
 

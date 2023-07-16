@@ -52,6 +52,7 @@
     "@codemirror/lang-javascript": "^6.1.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@fontsource/caveat": "^5.0.5",
     "@fontsource/nunito": "^4.5.11",
     "@mdx-js/rollup": "^2.1.5",
     "@uiw/codemirror-themes": "^4.13.2",

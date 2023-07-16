@@ -11,11 +11,11 @@ import browserPlugin from "router5-plugin-browser";
 import "@fontsource/nunito/600.css";
 import "@fontsource/nunito/800.css";
 import "@fontsource/nunito/900.css";
+import "@fontsource/caveat/400.css";
 
 import init from "../elara-lib/pkg";
 import { SaveDataProvider } from "./contexts/save_data";
 import { ShortsModalProvider } from "./contexts/shorts_modal";
-
 import { ErrorModalProvider } from "./contexts/error_modal";
 
 // This file doesn't play nicely with HMR/Fast refresh, so we just reload the page
