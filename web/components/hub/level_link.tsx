@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Text } from "@chakra-ui/react";
 import { Fragment, useCallback } from "react";
 
 import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
@@ -105,6 +105,14 @@ export default function LevelLink(props: LevelLinkProps) {
           />
         );
       }
+    }
+
+    if (!props.scene.completed) {
+      icons.push(
+        <Badge colorScheme="green" ml="0.3rem">
+          New
+        </Badge>
+      );
     }
 
     return (
