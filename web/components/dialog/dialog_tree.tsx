@@ -21,8 +21,6 @@ export interface DialogTreeProps {
   onEnd: () => void;
 }
 
-// TODO(albrow): Show Kalina's name next to her messages.
-
 export default function DialogTree(props: DialogTreeProps) {
   const currTree = useCallback(() => {
     const tree = TREES[props.treeName];

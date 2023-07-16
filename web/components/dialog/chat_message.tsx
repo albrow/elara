@@ -25,7 +25,10 @@ export default function ChatMessage(props: ChatMessageProps) {
         borderWidth="1px"
         shadow="lg"
       >
-        <Text fontWeight="bold" fontSize="1.1rem">
+        <Text as="span" fontWeight="bold" mr="8px">
+          {props.fromPlayer ? "You:" : "Kalina:"}
+        </Text>
+        <Text as="span" fontSize="1.1rem">
           {props.text}
         </Text>
       </Box>
