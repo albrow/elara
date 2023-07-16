@@ -12,7 +12,6 @@ import {
   useLevels,
   useNextUnlockedScene,
   useSceneNavigator,
-  useScenes,
 } from "../hooks/scenes_hooks";
 import BlinkingText from "../components/hub/blinking_text";
 
@@ -22,7 +21,6 @@ export default function Hub() {
   >("none");
   const [levelSelectModalVisible, setLevelSelectModalVisible] = useState(false);
   const { navigateToNextJournalPage, navigateToScene } = useSceneNavigator();
-  const SCENES = useScenes();
   const LEVELS = useLevels();
   const JOURNAL_PAGES = useJournalPages();
 
@@ -121,9 +119,7 @@ export default function Hub() {
               }}
               onMouseLeave={() => setHoveringOver("none")}
               onClick={() => {
-                // TODO(albrow): Navigate to the next available dialog scene.
-                // Also disable the video tablet if the next scene is not a dialog scene.
-                navigateToScene(SCENES[0]);
+                navigateToScene(nextUnlockedScene);
               }}
             >
               {nextUnlockedScene.type === "dialog" && (
