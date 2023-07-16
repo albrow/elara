@@ -45,12 +45,12 @@ export default function Hub() {
     if (nextUnlockedScene.type === "dialog") {
       return "drop-shadow(0px 0px 15px var(--chakra-colors-yellow-400)) brightness(0.9)";
     }
-    return "brightness(0.5)";
+    return "brightness(0.4)";
   }, [hoveringOver, nextUnlockedScene.type]);
 
   const monitorImageFilter = useMemo(() => {
     if (!monitorUnlocked) {
-      return "brightness(0.5)";
+      return "brightness(0.4)";
     }
     if (hoveringOver === "monitor") {
       return "drop-shadow(0px 0px 20px white)";
@@ -58,7 +58,7 @@ export default function Hub() {
     if (nextUnlockedScene.type === "level" && !nextUnlockedScene.completed) {
       return "drop-shadow(0px 0px 15px var(--chakra-colors-yellow-400)) brightness(0.9)";
     }
-    return "brightness(0.8)";
+    return "brightness(0.9)";
   }, [
     hoveringOver,
     monitorUnlocked,
@@ -68,7 +68,7 @@ export default function Hub() {
 
   const journalImageFilter = useMemo(() => {
     if (!journalUnlocked) {
-      return "brightness(0.5)";
+      return "brightness(0.4)";
     }
     if (hoveringOver === "journal") {
       return "drop-shadow(0px 0px 20px white)";
@@ -76,7 +76,7 @@ export default function Hub() {
     if (nextUnlockedScene.type === "journal" && !nextUnlockedScene.completed) {
       return "drop-shadow(0px 0px 15px var(--chakra-colors-yellow-400)) brightness(0.9)";
     }
-    return "brightness(0.8)";
+    return "brightness(0.9)";
   }, [
     hoveringOver,
     journalUnlocked,
@@ -130,6 +130,7 @@ export default function Hub() {
                 <Box
                   position="relative"
                   bottom="24%"
+                  height="24%"
                   w="140%"
                   left="-30%"
                   zIndex={BG_Z_INDEX + 5}
@@ -160,6 +161,7 @@ export default function Hub() {
                 !nextUnlockedScene.completed && (
                   <Box
                     position="relative"
+                    height="24%"
                     bottom="24%"
                     w="100%"
                     zIndex={BG_Z_INDEX + 5}
@@ -192,6 +194,7 @@ export default function Hub() {
                   <Box
                     position="relative"
                     bottom="50%"
+                    height="50%"
                     w="150%"
                     left="-25%"
                     zIndex={BG_Z_INDEX + 5}

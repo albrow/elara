@@ -20,6 +20,20 @@ export default function JournalSection(props: JournalProps) {
     [currScene]
   );
 
+  const shouldShowNextButton = useMemo(() => {
+    // Show the "next" button if the next journal page is unlocked
+    // or if the next scene is a journal page (meaning it would be
+    // unlocked right after we're done viewing this page).
+    if (nextJournalPage?.unlocked) {
+      return true;
+    }
+    if (currScene?.nextScene?.type === "journal") {
+      return true;
+    }
+
+    return false;
+  }, [currScene?.nextScene?.type, nextJournalPage?.unlocked]);
+
   return (
     <>
       <div className="md-content">
@@ -30,7 +44,7 @@ export default function JournalSection(props: JournalProps) {
           Back to Hub
           <MdHome size="1.3em" style={{ marginLeft: "0.2rem" }} />
         </Button>
-        {nextJournalPage?.unlocked && (
+        {shouldShowNextButton && (
           <Button
             colorScheme="blue"
             onClick={() => navigateToScene(nextJournalPage!)}
