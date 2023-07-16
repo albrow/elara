@@ -102,7 +102,7 @@ const RAW_SCENES: RawScene[] = [
   journalScene("comments"),
   levelScene(
     "movement_part_two",
-    ["how_to_navigate_scenes", "how_to_view_function_list", "extra_challenges"],
+    ["back_to_hub", "how_to_view_function_list", "extra_challenges"],
     [
       "Use the `move_forward` and `turn_left` functions to move the rover to the goal.",
       "Don't forget to put a semicolon (`;`) at the end of each function call.",

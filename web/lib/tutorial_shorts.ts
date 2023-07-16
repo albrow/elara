@@ -2,7 +2,7 @@ import howToRunCodeUrl from "../images/shorts/how_to_run_code.gif";
 import howToPauseAndStepUrl from "../images/shorts/how_to_pause_and_step.gif";
 import howToSeeErrorsUrl from "../images/shorts/how_to_see_errors.gif";
 import whereToFindObjectivesUrl from "../images/shorts/where_to_find_objectives.gif";
-import howToNavigateScenesUrl from "../images/shorts/how_to_navigate_scenes.gif";
+import backToHubUrl from "../images/shorts/back_to_hub.gif";
 import movingTakesFuelUrl from "../images/shorts/moving_takes_fuel.gif";
 import howToGetMoreFuelUrl from "../images/shorts/how_to_get_more_fuel.gif";
 import howToUseDataTerminalsUrl from "../images/shorts/how_to_use_data_terminals.gif";
@@ -36,10 +36,10 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     text: "You can find the current objective near the top of the screen. Usually you will need to move the rover to the goal, but sometimes you may need to do something else.",
     imageUrl: whereToFindObjectivesUrl,
   },
-  how_to_navigate_scenes: {
-    title: "Going back to a previous page",
-    text: 'You can use the "journal" and "levels" dropdowns near the top of the screen to go back to a previous page at any time.',
-    imageUrl: howToNavigateScenesUrl,
+  back_to_hub: {
+    title: "Going back to the hub",
+    text: 'You can go back to the hub at anytime by pressing the "Hub" button. From there, you can revisit previous levels or look at the journal.',
+    imageUrl: backToHubUrl,
   },
   moving_takes_fuel: {
     title: "Fuel",
