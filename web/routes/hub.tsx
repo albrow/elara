@@ -1,5 +1,6 @@
 import { AspectRatio, Box, Image } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouteNode } from "react-router5";
 import { BG_INDEX as BG_Z_INDEX, MIN_BG_WIDTH } from "../lib/constants";
 import LevelSlectModal from "../components/hub/level_select_modal";
 
@@ -23,8 +24,12 @@ export default function Hub() {
   const { navigateToNextJournalPage, navigateToScene } = useSceneNavigator();
   const LEVELS = useLevels();
   const JOURNAL_PAGES = useJournalPages();
-
   const nextUnlockedScene = useNextUnlockedScene();
+  const { route } = useRouteNode("");
+
+  useEffect(() => {
+    document.title = "Elara | Hub";
+  }, [route.name]);
 
   const journalUnlocked = useMemo(
     () => JOURNAL_PAGES[0].unlocked,
