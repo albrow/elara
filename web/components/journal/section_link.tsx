@@ -4,7 +4,7 @@ import { Fragment, useCallback } from "react";
 
 import { MdLock } from "react-icons/md";
 import { Scene } from "../../contexts/scenes";
-import DisablableLink from "../navbar/disablable_link";
+import DisablableLink from "../disablable_link";
 
 interface SceneLinkProps {
   scene: Scene;

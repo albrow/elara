@@ -4,7 +4,7 @@ import { Fragment, useCallback } from "react";
 import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { Scene } from "../../contexts/scenes";
-import DisablableLink from "../navbar/disablable_link";
+import DisablableLink from "../disablable_link";
 
 interface LevelLinkProps {
   scene: Scene;
