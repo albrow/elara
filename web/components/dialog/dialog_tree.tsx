@@ -1,17 +1,18 @@
-import { Button, Box, Image, Flex } from "@chakra-ui/react";
-import { useState, useCallback } from "react";
+import { Box, Image, Flex } from "@chakra-ui/react";
+import { useState, useCallback, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Animate, AnimateGroup } from "react-simple-animate";
 
 import {
   DialogChoice,
   TREES,
   NODES,
-  CHOICES,
   MsgData,
+  CHOICES,
 } from "../../lib/dialog_trees";
 import ChatMessage from "../../components/dialog/chat_message";
-
 import npcRightImgUrl from "../../images/npc_right.png";
+import Choices from "./choices";
 
 export interface DialogTreeProps {
   treeName: string;
@@ -33,20 +34,23 @@ export default function DialogTree(props: DialogTreeProps) {
 
   // Special initialization logic to account for the fact that there
   // can be more than one NPC message in a row.
-  let initialNode = NODES[currTree().startId];
-  const initialMessages: MsgData[] = [];
-  while (initialNode.choiceIds.length === 0) {
-    // No choices. Continue immediately to the next node.
-    if (initialNode.nextId == null) {
-      throw new Error("nextId should not be null if there are no choices.");
+  const [initialMessages, initialNode] = useMemo(() => {
+    const messages = [];
+    let node = NODES[currTree().startId];
+    while (node.choiceIds.length === 0) {
+      // No choices. Continue immediately to the next node.
+      if (node.nextId == null) {
+        throw new Error("nextId should not be null if there are no choices.");
+      }
+      messages.push({
+        text: node.text,
+        isPlayer: false,
+        id: uuidv4(),
+      });
+      node = NODES[node.nextId];
     }
-    initialMessages.push({
-      text: initialNode.text,
-      isPlayer: false,
-      id: uuidv4(),
-    });
-    initialNode = NODES[initialNode.nextId];
-  }
+    return [messages, node];
+  }, [currTree]);
 
   const [node, setNode] = useState(initialNode);
   const [chatHistory, setChatHistory] = useState<MsgData[]>(initialMessages);
@@ -60,6 +64,7 @@ export default function DialogTree(props: DialogTreeProps) {
           { text: node.text, isPlayer: false, id: uuidv4() },
           { text: choice.text, isPlayer: true, id: uuidv4() },
         ];
+        const newNpcMessages = [];
         let nextNode = NODES[choice.nextId];
         while (nextNode.choiceIds.length === 0) {
           // No choices. Continue immediately to the next node.
@@ -68,13 +73,17 @@ export default function DialogTree(props: DialogTreeProps) {
               "nextId should not be null if there are no choices."
             );
           }
-          newChats.push({ text: nextNode.text, isPlayer: false, id: uuidv4() });
+          newNpcMessages.push({
+            text: nextNode.text,
+            isPlayer: false,
+            id: uuidv4(),
+          });
           nextNode = NODES[nextNode.nextId];
         }
         if (props.showHistory) {
-          setChatHistory([...chatHistory, ...newChats]);
+          setChatHistory([...chatHistory, ...newChats, ...newNpcMessages]);
         } else {
-          setChatHistory([]);
+          setChatHistory(newNpcMessages);
         }
         setNode(nextNode);
       }
@@ -87,6 +96,25 @@ export default function DialogTree(props: DialogTreeProps) {
       }, 0);
     },
     [chatHistory, node.text, props]
+  );
+
+  // New messages from the NPC (not including the most recent one).
+  const newNpcMessages = useMemo(() => {
+    let messages: MsgData[] = [];
+    for (let i = chatHistory.length - 1; i >= 0; i -= 1) {
+      if (chatHistory[i].isPlayer) {
+        break;
+      } else {
+        messages = [chatHistory[i], ...messages];
+      }
+    }
+    return messages;
+  }, [chatHistory]);
+
+  // Older messages from the NPC or player.
+  const oldMessages = useMemo(
+    () => chatHistory.slice(0, chatHistory.length - newNpcMessages.length),
+    [chatHistory, newNpcMessages]
   );
 
   return (
@@ -116,40 +144,70 @@ export default function DialogTree(props: DialogTreeProps) {
           alignContent="bottom"
           justifyContent="bottom"
         >
-          {chatHistory.map((msg) => (
+          {oldMessages.map((msg) => (
             <ChatMessage
               key={msg.id}
               text={msg.text}
               fromPlayer={msg.isPlayer}
             />
           ))}
-          <ChatMessage text={node.text} fromPlayer={false} />
-          <Flex
-            direction="row"
-            flexWrap="wrap"
-            alignContent="right"
-            justifyContent="right"
-          >
-            {node.choiceIds.map((choiceId) => {
-              const choice = CHOICES[choiceId as keyof typeof CHOICES];
-              return (
-                <Button
-                  bg="gray.200"
-                  _hover={{ bg: "gray.300" }}
-                  ml="5px"
-                  mt="5px"
-                  key={choice.text}
-                  fontSize="1.1rem"
-                  onClick={() => choiceClickHandler(choice)}
-                  shadow="lg"
-                  borderColor="gray.400"
-                  borderWidth="1px"
+          <AnimateGroup play>
+            {newNpcMessages.map((msg, i) => (
+              <Animate
+                key={msg.id}
+                sequenceIndex={i}
+                delay={0.3}
+                start={{ opacity: 0 }}
+                end={{ opacity: 1 }}
+              >
+                <ChatMessage
+                  key={msg.id}
+                  text={msg.text}
+                  fromPlayer={msg.isPlayer}
+                />
+              </Animate>
+            ))}
+            <Animate
+              key={`${node.text}__${uuidv4()}`}
+              sequenceIndex={newNpcMessages.length}
+              delay={0.3}
+              start={{ opacity: 0 }}
+              end={{ opacity: 1 }}
+            >
+              <ChatMessage text={node.text} fromPlayer={false} />
+            </Animate>
+            <Animate
+              key={`choices_${uuidv4()}`}
+              sequenceIndex={newNpcMessages.length + 1}
+              delay={0.3}
+              start={{ opacity: 0 }}
+              end={{ opacity: 1 }}
+              render={({ style }) => (
+                <Flex
+                  direction="row"
+                  flexWrap="wrap"
+                  alignContent="right"
+                  justifyContent="right"
+                  style={style}
                 >
-                  {choice.text}
-                </Button>
-              );
-            })}
-          </Flex>
+                  <Choices
+                    choices={node.choiceIds.map((id) => CHOICES[id])}
+                    onSelection={choiceClickHandler}
+                  />
+                </Flex>
+              )}
+            />
+            {/* 
+              NOTE(albrow): This empty Animate element is a workaround for an
+              apparent bug in react-simple-animate. Without this here, the dialog
+              choices will not appear if there is more than 1 message from the NPC
+              at a time. I have no idea why.
+
+              DO NOT REMOVE THIS.
+            */}
+            <Animate sequenceIndex={newNpcMessages.length + 2} delay={0.3} />
+          </AnimateGroup>
+
           {/* A dummy div used for automatically scrolling to the bottom whenever new messages
       are added */}
           <div id="dialog-bottom" />
