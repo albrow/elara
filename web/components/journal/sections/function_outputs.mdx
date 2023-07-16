@@ -22,11 +22,12 @@ right, the `get_orientation` function will output `"right"`.
 of `get_orientation` changes.
 
 <RunnableExample
-  code={`// The get_orientation function outputs the direction the rover
-// is facing.
+  code={`// The get_orientation function outputs the direction the
+// rover is facing.
 say("I am facing " + get_orientation());
 
-// If we turn to the right, the output of the function will change.
+// If we turn to the right, the output of the function will
+// change.
 turn_right();
 say("Now I am facing " + get_orientation());
 `}
@@ -40,9 +41,9 @@ data was stored in the data terminal.
 terminal. Otherwise, the function will cause an error.
 
 <RunnableExample
-  code={`// This code uses the *output* from the read_data function as the
-// *input* to the say function. It will cause the rover to say
-// whatever data is stored in the data terminal.
+  code={`// This code uses the *output* from the read_data function as
+// the *input* to the say function. It will cause the rover
+// to say whatever data is stored in the data terminal.
 say(read_data());`}
   level={SANDBOX_WITH_TERMINAL_LEVEL}
 />
