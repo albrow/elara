@@ -61,7 +61,14 @@ export default function DialogOverBg() {
             h="60%"
             opacity="0.8"
           />
-          <Box position="absolute" w="80%" h="35%" bottom="1%">
+          <Box
+            position="absolute"
+            bottom="1%"
+            right="0"
+            w="60%"
+            h="60%"
+            maxW="900px"
+          >
             <DialogTree
               treeName={treeName}
               onEnd={handleDialogEnd}
