@@ -18,6 +18,7 @@ import { useErrorModal } from "../hooks/error_modal_hooks";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import ShowHintButton from "../components/level/show_hint_button";
 import { useHintsModal } from "../hooks/hints_modal_hooks";
+import { NAVBAR_HEIGHT } from "../lib/constants";
 
 const game = Game.new();
 
@@ -253,7 +254,11 @@ export default function Level() {
         setVisible={setDialogVisible}
         treeName={getDialogTree()}
       />
-      <Container minW="container.xl" maxW="container.xl" mt={6}>
+      <Container
+        minW="container.xl"
+        maxW="container.xl"
+        mt={`${NAVBAR_HEIGHT + 10}px`}
+      >
         <Box>
           <Flex>
             <Text fontSize="2xl" fontWeight="bold" mb={1}>

@@ -1,4 +1,3 @@
-import { Container } from "@chakra-ui/react";
 import { useRouteNode } from "react-router5";
 
 import { useCallback } from "react";
@@ -42,9 +41,9 @@ export default function Root() {
   }, [route]);
 
   return (
-    <Container minW="container.md" maxW="none" p={0}>
+    <>
       <Navbar />
       {currPage()}
-    </Container>
+    </>
   );
 }

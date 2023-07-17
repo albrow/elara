@@ -1,8 +1,8 @@
-import { Container, Box, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { MdHome, MdSettings } from "react-icons/md";
 import { useState } from "react";
 
-import { NAVBAR_HEIGHT } from "../../lib/constants";
+import { NAVBAR_HEIGHT, NAVBAR_Z_INDEX } from "../../lib/constants";
 import { useSceneNavigator } from "../../hooks/scenes_hooks";
 import SettingsModal from "./settings_modal";
 import NavbarButton from "./navbar_button";
@@ -17,19 +17,24 @@ export default function Navbar() {
         visible={settingsVisible}
         setVisible={setSettingsVisible}
       />
-      <Box bg="gray.800" textColor="white">
-        <Container maxW="container.xl" p={2} height={`${NAVBAR_HEIGHT}px`}>
-          <Flex height="100%" align="center">
-            <NavbarButton onClick={() => navigateToHub()}>
-              <MdHome size="0.9em" style={{ marginRight: "0.2rem" }} />
-              Hub
-            </NavbarButton>
-            <NavbarButton onClick={() => setSettingsVisible(true)}>
-              <MdSettings size="0.9em" style={{ marginRight: "0.2rem" }} />
-              Settings
-            </NavbarButton>
-          </Flex>
-        </Container>
+      <Box
+        w="100%"
+        height={`${NAVBAR_HEIGHT}px`}
+        bg="gray.800"
+        textColor="white"
+        position="fixed"
+        zIndex={NAVBAR_Z_INDEX}
+        top="0"
+        p={2}
+      >
+        <NavbarButton onClick={() => navigateToHub()}>
+          <MdHome size="0.9em" style={{ marginRight: "0.2rem" }} />
+          Hub
+        </NavbarButton>
+        <NavbarButton onClick={() => setSettingsVisible(true)}>
+          <MdSettings size="0.9em" style={{ marginRight: "0.2rem" }} />
+          Settings
+        </NavbarButton>
       </Box>
     </>
   );

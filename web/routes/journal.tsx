@@ -64,6 +64,7 @@ export default function Journal() {
 
   return (
     <Box
+      mt={`${NAVBAR_HEIGHT}px`}
       id="dark-bg"
       bg="black"
       w="100%"

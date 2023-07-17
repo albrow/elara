@@ -1,11 +1,11 @@
 import { useRouteNode } from "react-router5";
 import { useEffect, useCallback } from "react";
 
-import { AspectRatio, Box, Image } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 import { TREES } from "../lib/dialog_trees";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import { useSaveData } from "../hooks/save_data_hooks";
-import { BG_INDEX as BG_Z_INDEX, MIN_BG_WIDTH } from "../lib/constants";
+import { BG_INDEX as BG_Z_INDEX } from "../lib/constants";
 
 import npcRightImage from "../images/npc_right.png";
 import videoTabletBgImage from "../images/video_tablet_bg.png";
@@ -41,43 +41,42 @@ export default function DialogOverBg() {
   }, [route, currTree]);
 
   return (
-    <Box w="100%" h="100%" minW={MIN_BG_WIDTH} position="fixed" bg="black">
-      <Image
-        src={videoTabletBgImage}
-        zIndex={BG_Z_INDEX}
+    <Box w="100%" h="100%" position="fixed" bg="black">
+      <Box
+        bgColor="black"
+        bgImage={videoTabletBgImage}
+        bgSize="cover"
+        width="100vw"
+        height="56.25vw"
+        maxHeight="100vh"
+        maxWidth="177.78vh"
+        mx="auto"
+        my="0"
         position="absolute"
         top="0"
-        left="50%"
-        transform="translateX(-50%)"
-      />
-      <AspectRatio maxW="1920px" ratio={16 / 9} mx="auto">
-        <Box w="100%" h="100%" position="relative" opacity="0.99">
-          <Image
-            src={npcRightImage}
-            zIndex={BG_Z_INDEX + 1}
-            position="absolute"
-            top="22%"
-            left="14%"
-            h="60%"
-            opacity="0.8"
+        left="0"
+        right="0"
+        bottom="0"
+        zIndex={BG_Z_INDEX}
+      >
+        <Image
+          src={npcRightImage}
+          zIndex={BG_Z_INDEX + 1}
+          position="absolute"
+          top="22%"
+          left="14%"
+          h="60%"
+          opacity="0.8"
+        />
+        <Box position="absolute" bottom="1%" right="0" w="60%" h="60%">
+          <DialogTree
+            treeName={treeName}
+            onEnd={handleDialogEnd}
+            showNpcProfile={false}
+            showHistory={false}
           />
-          <Box
-            position="absolute"
-            bottom="1%"
-            right="0"
-            w="60%"
-            h="60%"
-            maxW="900px"
-          >
-            <DialogTree
-              treeName={treeName}
-              onEnd={handleDialogEnd}
-              showNpcProfile={false}
-              showHistory={false}
-            />
-          </Box>
         </Box>
-      </AspectRatio>
+      </Box>
     </Box>
   );
 }

@@ -8,6 +8,7 @@ import { getChallengeProgress } from "../lib/utils";
 import { useSaveData } from "../hooks/save_data_hooks";
 // eslint-disable-next-line camelcase
 import { get_level_data } from "../../elara-lib/pkg/elara_lib";
+import { NAVBAR_HEIGHT } from "../lib/constants";
 
 export default function End() {
   const { route } = useRouteNode("");
@@ -20,7 +21,7 @@ export default function End() {
   }, [route.name]);
 
   return (
-    <Container maxW="container.xl" p={8}>
+    <Container maxW="container.xl" p={8} mt={`${NAVBAR_HEIGHT}px`}>
       <div className="md-content">
         <EndContent challengeProgress={challengeProgress} />
       </div>

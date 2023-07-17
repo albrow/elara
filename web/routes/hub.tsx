@@ -1,7 +1,7 @@
-import { AspectRatio, Box, Image } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import { useRouteNode } from "react-router5";
-import { BG_INDEX as BG_Z_INDEX, MIN_BG_WIDTH } from "../lib/constants";
+import { BG_INDEX as BG_Z_INDEX } from "../lib/constants";
 import LevelSlectModal from "../components/hub/level_select_modal";
 
 import hubBgImage from "../images/hub_bg_only.png";
@@ -93,153 +93,181 @@ export default function Hub() {
         visible={levelSelectModalVisible}
         setVisible={setLevelSelectModalVisible}
       />
-      <Box w="100%" h="100%" minW={MIN_BG_WIDTH} position="fixed" bg="black">
-        <Image
-          src={hubBgImage}
-          zIndex={BG_Z_INDEX}
+      <Box w="100%" h="100%" position="fixed" bg="black">
+        <Box
+          bgColor="black"
+          bgImage={hubBgImage}
+          bgSize="cover"
+          width="100vw"
+          height="56.25vw"
+          maxHeight="100vh"
+          maxWidth="177.78vh"
+          mx="auto"
+          my="0"
           position="absolute"
           top="0"
-          left="50%"
-          transform="translateX(-50%)"
-        />
-        <AspectRatio maxW="1920px" ratio={16 / 9} mx="auto">
-          <Box w="100%" h="100%" position="relative" opacity="0.99">
-            <Box
-              id="video-tablet-box"
-              // border="5px solid blue"
-              position="absolute"
-              top="63%"
-              left="26.5%"
-              w="9.5%"
-              h="24%"
-              zIndex={BG_Z_INDEX + 3}
-              _hover={{
-                cursor:
-                  nextUnlockedScene.type === "dialog"
-                    ? "pointer"
-                    : "not-allowed",
-              }}
-              onMouseEnter={() => {
-                setHoveringOver("video-tablet");
-              }}
-              onMouseLeave={() => setHoveringOver("none")}
-              onClick={() => {
-                navigateToScene(nextUnlockedScene);
-              }}
-            >
-              {nextUnlockedScene.type === "dialog" && (
+          left="0"
+          right="0"
+          bottom="0"
+          zIndex={BG_Z_INDEX}
+        >
+          <Box
+            id="video-tablet-box"
+            // border="5px solid blue"
+            position="absolute"
+            top="63%"
+            left="26.5%"
+            w="9.5%"
+            h="24%"
+            zIndex={BG_Z_INDEX + 3}
+            _hover={{
+              cursor:
+                nextUnlockedScene.type === "dialog" ? "pointer" : "not-allowed",
+            }}
+            onMouseEnter={() => {
+              setHoveringOver("video-tablet");
+            }}
+            onMouseLeave={() => setHoveringOver("none")}
+            onClick={() => {
+              navigateToScene(nextUnlockedScene);
+            }}
+          >
+            {nextUnlockedScene.type === "dialog" && (
+              <Box
+                position="relative"
+                bottom="24%"
+                height="24%"
+                w="140%"
+                left="-30%"
+                zIndex={BG_Z_INDEX + 5}
+              >
+                <BlinkingText text="Click Here!" />
+              </Box>
+            )}
+          </Box>
+          <Box
+            id="monitor-box"
+            // border="5px solid red"
+            position="absolute"
+            top="56.5%"
+            left="39.5%"
+            w="21%"
+            h="31%"
+            zIndex={BG_Z_INDEX + 3}
+            _hover={{
+              cursor: monitorUnlocked ? "pointer" : "not-allowed",
+            }}
+            onMouseEnter={() => {
+              setHoveringOver("monitor");
+            }}
+            onMouseLeave={() => setHoveringOver("none")}
+            onClick={() => setLevelSelectModalVisible(true)}
+          >
+            {nextUnlockedScene.type === "level" &&
+              !nextUnlockedScene.completed && (
                 <Box
                   position="relative"
-                  bottom="24%"
                   height="24%"
-                  w="140%"
-                  left="-30%"
+                  bottom="24%"
+                  w="100%"
                   zIndex={BG_Z_INDEX + 5}
+                  justifyContent="center"
                 >
-                  <BlinkingText text="Click Here!" />
+                  <BlinkingText text="New Levels!" />
                 </Box>
               )}
-            </Box>
-            <Box
-              id="monitor-box"
-              // border="5px solid red"
-              position="absolute"
-              top="56.5%"
-              left="39.5%"
-              w="21%"
-              h="31%"
-              zIndex={BG_Z_INDEX + 3}
-              _hover={{
-                cursor: monitorUnlocked ? "pointer" : "not-allowed",
-              }}
-              onMouseEnter={() => {
-                setHoveringOver("monitor");
-              }}
-              onMouseLeave={() => setHoveringOver("none")}
-              onClick={() => setLevelSelectModalVisible(true)}
-            >
-              {nextUnlockedScene.type === "level" &&
-                !nextUnlockedScene.completed && (
-                  <Box
-                    position="relative"
-                    height="24%"
-                    bottom="24%"
-                    w="100%"
-                    zIndex={BG_Z_INDEX + 5}
-                    justifyContent="center"
-                  >
-                    <BlinkingText text="New Levels!" />
-                  </Box>
-                )}
-            </Box>
-            <Box
-              id="journal-box"
-              // border="5px solid green"
-              position="absolute"
-              top="77.5%"
-              left="66%"
-              w="11.5%"
-              h="10.5%"
-              zIndex={BG_Z_INDEX + 3}
-              _hover={{
-                cursor: journalUnlocked ? "pointer" : "not-allowed",
-              }}
-              onMouseEnter={() => {
-                setHoveringOver("journal");
-              }}
-              onMouseLeave={() => setHoveringOver("none")}
-              onClick={() => navigateToNextJournalPage()}
-            >
-              {nextUnlockedScene.type === "journal" &&
-                !nextUnlockedScene.completed && (
-                  <Box
-                    position="relative"
-                    bottom="50%"
-                    height="50%"
-                    w="150%"
-                    left="-25%"
-                    zIndex={BG_Z_INDEX + 5}
-                    justifyContent="center"
-                  >
-                    <BlinkingText text="New Journal Pages!" />
-                  </Box>
-                )}
-            </Box>
           </Box>
-        </AspectRatio>
-        <Image
-          src={videoTabletImage}
-          zIndex={BG_Z_INDEX + 1}
-          position="absolute"
-          top="0"
-          left="50%"
-          transform="translateX(-50%)"
-          style={{
-            filter: videoTabletImageFilter,
-          }}
-        />
-        <Image
-          src={monitorImage}
-          zIndex={BG_Z_INDEX + 1}
-          position="absolute"
-          top="0"
-          left="50%"
-          transform="translateX(-50%)"
-          style={{
-            filter: monitorImageFilter,
-          }}
-        />
-        <Image
-          src={journalImage}
-          zIndex={BG_Z_INDEX + 1}
-          position="absolute"
-          top="0"
-          left="50%"
-          transform="translateX(-50%)"
-          style={{
-            filter: journalImageFilter,
-          }}
-        />
+          <Box
+            id="journal-box"
+            // border="5px solid green"
+            position="absolute"
+            top="77.5%"
+            left="66%"
+            w="11.5%"
+            h="10.5%"
+            zIndex={BG_Z_INDEX + 3}
+            _hover={{
+              cursor: journalUnlocked ? "pointer" : "not-allowed",
+            }}
+            onMouseEnter={() => {
+              setHoveringOver("journal");
+            }}
+            onMouseLeave={() => setHoveringOver("none")}
+            onClick={() => navigateToNextJournalPage()}
+          >
+            {nextUnlockedScene.type === "journal" &&
+              !nextUnlockedScene.completed && (
+                <Box
+                  position="relative"
+                  bottom="50%"
+                  height="50%"
+                  w="150%"
+                  left="-25%"
+                  zIndex={BG_Z_INDEX + 5}
+                  justifyContent="center"
+                >
+                  <BlinkingText text="New Journal Pages!" />
+                </Box>
+              )}
+          </Box>
+          <Image
+            src={videoTabletImage}
+            zIndex={BG_Z_INDEX + 1}
+            position="absolute"
+            objectFit="cover"
+            width="100vw"
+            height="56.25vw"
+            maxHeight="100vh"
+            maxWidth="177.78vh"
+            mx="auto"
+            my="0"
+            top="0"
+            left="0"
+            right="0"
+            bottom="0"
+            style={{
+              filter: videoTabletImageFilter,
+            }}
+          />
+          <Image
+            src={monitorImage}
+            zIndex={BG_Z_INDEX + 1}
+            position="absolute"
+            objectFit="cover"
+            width="100vw"
+            height="56.25vw"
+            maxHeight="100vh"
+            maxWidth="177.78vh"
+            mx="auto"
+            my="0"
+            top="0"
+            left="0"
+            right="0"
+            bottom="0"
+            style={{
+              filter: monitorImageFilter,
+            }}
+          />
+          <Image
+            src={journalImage}
+            zIndex={BG_Z_INDEX + 1}
+            position="absolute"
+            objectFit="cover"
+            width="100vw"
+            height="56.25vw"
+            maxHeight="100vh"
+            maxWidth="177.78vh"
+            mx="auto"
+            my="0"
+            top="0"
+            left="0"
+            right="0"
+            bottom="0"
+            style={{
+              filter: journalImageFilter,
+            }}
+          />
+        </Box>
       </Box>
     </>
   );
