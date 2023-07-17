@@ -10,17 +10,19 @@ export interface PasswordGateProps {
   offset: Offset;
   open: boolean;
   additionalInfo: string;
-  // fuzzy: boolean;
+  enableHoverInfo: boolean;
 }
 
 export default function PasswordGate(props: PasswordGateProps) {
   return (
     <>
-      <BoardHoverInfo
-        page={PasswordGatePage}
-        offset={props.offset}
-        additionalInfo={props.additionalInfo}
-      />
+      {props.enableHoverInfo && (
+        <BoardHoverInfo
+          page={PasswordGatePage}
+          offset={props.offset}
+          additionalInfo={props.additionalInfo}
+        />
+      )}
       <img
         alt={props.open ? "locked gate" : "unlocked gate"}
         src={props.open ? unlockedImgUrl : lockedImgUrl}

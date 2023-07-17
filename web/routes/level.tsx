@@ -314,6 +314,7 @@ export default function Level() {
               // If the editor is in the "paused" state, it's more clear to move the sprites in
               // discrete steps.
               enableAnimations={editorState === "running"}
+              enableHoverInfo={editorState !== "running"}
             />
           </Box>
         </Stack>

@@ -9,17 +9,19 @@ export interface GateProps {
   offset: Offset;
   open: boolean;
   additionalInfo: string;
-  // fuzzy: boolean;
+  enableHoverInfo: boolean;
 }
 
 export default function Gate(props: GateProps) {
   return (
     <>
-      <BoardHoverInfo
-        page={GatePage}
-        offset={props.offset}
-        additionalInfo={props.additionalInfo}
-      />
+      {props.enableHoverInfo && (
+        <BoardHoverInfo
+          page={GatePage}
+          offset={props.offset}
+          additionalInfo={props.additionalInfo}
+        />
+      )}
       <img
         alt={props.open ? "locked gate" : "unlocked gate"}
         src={props.open ? unlockedImgUrl : lockedImgUrl}

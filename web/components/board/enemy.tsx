@@ -14,13 +14,11 @@ import MalfunctioningRoverPage from "./hover_info_pages/malfunctioning_rover.mdx
 
 interface EnemyProps {
   offset: Offset;
-  // eslint-disable-next-line react/no-unused-prop-types
-  fuzzy: boolean;
   animState: string;
-  // eslint-disable-next-line react/no-unused-prop-types
   animData?: TeleAnimData;
   enableAnimations: boolean;
   facing: string;
+  enableHoverInfo: boolean;
 }
 
 export default function Enemy(props: EnemyProps) {
@@ -64,7 +62,9 @@ export default function Enemy(props: EnemyProps) {
 
   return (
     <>
-      <BoardHoverInfo page={MalfunctioningRoverPage} offset={props.offset} />
+      {props.enableHoverInfo && (
+        <BoardHoverInfo page={MalfunctioningRoverPage} offset={props.offset} />
+      )}
       {animation.definitions}
       <Box
         position="absolute"

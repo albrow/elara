@@ -5,7 +5,6 @@ import {
   DEFAULT_FUEL_GAIN,
 } from "../../lib/constants";
 import fuelImgUrl from "../../images/fuel.png";
-import glitchyFuelImgUrl from "../../images/fuel_glitchy.gif";
 import SpriteLabel from "./sprite_label";
 import FuelSpotPage from "./hover_info_pages/fuel_spot.mdx";
 import BoardHoverInfo from "./board_hover_info";
@@ -14,14 +13,16 @@ interface FuelSpotProps {
   offset: Offset;
   fuel?: number;
   collected: boolean;
-  fuzzy: boolean;
+  enableHoverInfo: boolean;
 }
 
 export default function FuelSpot(props: FuelSpotProps) {
   const fuelAmount = props.fuel || DEFAULT_FUEL_GAIN;
   return props.collected ? null : (
     <>
-      <BoardHoverInfo page={FuelSpotPage} offset={props.offset} />
+      {props.enableHoverInfo && !props.collected && (
+        <BoardHoverInfo page={FuelSpotPage} offset={props.offset} />
+      )}
       <div
         style={{
           position: "absolute",
@@ -32,11 +33,7 @@ export default function FuelSpot(props: FuelSpotProps) {
           top: props.offset.top,
         }}
       >
-        <img
-          className="fuelImage"
-          alt="fuel"
-          src={props.fuzzy ? glitchyFuelImgUrl : fuelImgUrl}
-        />
+        <img className="fuelImage" alt="fuel" src={fuelImgUrl} />
         <SpriteLabel zIndex={FUEL_Z_INDEX + 1} value={`+${fuelAmount}`} />
       </div>
     </>

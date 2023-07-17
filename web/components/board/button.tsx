@@ -21,7 +21,7 @@ interface ButtonProps {
   additionalInfo: string;
   connectionOffset: Offset | null;
   enableAnimations: boolean;
-  // fuzzy: boolean;
+  enableHoverInfo: boolean;
 }
 
 export default function Button(props: ButtonProps) {
@@ -137,11 +137,13 @@ export default function Button(props: ButtonProps) {
           </svg>
         </Box>
       )}
-      <BoardHoverInfo
-        page={ButtonPage}
-        offset={props.offset}
-        additionalInfo={props.additionalInfo}
-      />
+      {props.enableHoverInfo && (
+        <BoardHoverInfo
+          page={ButtonPage}
+          offset={props.offset}
+          additionalInfo={props.additionalInfo}
+        />
+      )}
       <Box
         position="absolute"
         left={props.offset.left}

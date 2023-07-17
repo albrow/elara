@@ -12,6 +12,7 @@ import BoardHoverInfo from "./board_hover_info";
 interface ObstacleProps {
   offset: Offset;
   fuzzy: boolean;
+  enableHoverInfo: boolean;
 }
 
 export default function Obstacle(props: ObstacleProps) {
@@ -21,7 +22,9 @@ export default function Obstacle(props: ObstacleProps) {
     // indicate this.
     return (
       <>
-        <BoardHoverInfo page={AsteroidWarningPage} offset={props.offset} />
+        {props.enableHoverInfo && (
+          <BoardHoverInfo page={AsteroidWarningPage} offset={props.offset} />
+        )}
         <Box
           position="absolute"
           left={props.offset.left}

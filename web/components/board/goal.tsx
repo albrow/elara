@@ -6,12 +6,15 @@ import BoardHoverInfo from "./board_hover_info";
 
 interface GoalProps {
   offset: Offset;
+  enableHoverInfo: boolean;
 }
 
 export default function Goal(props: GoalProps) {
   return (
     <>
-      <BoardHoverInfo page={GoalPage} offset={props.offset} />
+      {props.enableHoverInfo && (
+        <BoardHoverInfo page={GoalPage} offset={props.offset} />
+      )}
       <img
         alt="goal"
         src={flagImgUrl}

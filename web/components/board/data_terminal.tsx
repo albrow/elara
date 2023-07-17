@@ -17,7 +17,7 @@ interface DataTerminalProps {
   additionalInfo?: string;
   // Wether or not the position property should be CSS animated (default false)
   animatePos?: boolean;
-  // fuzzy: boolean;
+  enableHoverInfo: boolean;
 }
 
 export default function DataTerminal(props: DataTerminalProps) {
@@ -30,11 +30,13 @@ export default function DataTerminal(props: DataTerminalProps) {
 
   return (
     <>
-      <BoardHoverInfo
-        page={DataTerminalPage}
-        offset={props.offset}
-        additionalInfo={props.additionalInfo}
-      />
+      {props.enableHoverInfo && (
+        <BoardHoverInfo
+          page={DataTerminalPage}
+          offset={props.offset}
+          additionalInfo={props.additionalInfo}
+        />
+      )}
       <div
         style={{
           position: "absolute",

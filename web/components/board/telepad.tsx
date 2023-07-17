@@ -18,6 +18,7 @@ interface TelepadProps {
   offset: Offset;
   kind: TelepadKind;
   telepadIndex: number;
+  enableHoverInfo: boolean;
 }
 
 const SPRITE_URLS = [
@@ -38,10 +39,14 @@ const SPRITE_URLS = [
 export default function Telepad(props: TelepadProps) {
   return (
     <>
-      <BoardHoverInfo
-        page={props.kind === "entrance" ? TelepadEntrancePage : TelepadExitPage}
-        offset={props.offset}
-      />
+      {props.enableHoverInfo && (
+        <BoardHoverInfo
+          page={
+            props.kind === "entrance" ? TelepadEntrancePage : TelepadExitPage
+          }
+          offset={props.offset}
+        />
+      )}
       <Box
         position="absolute"
         left={props.offset.left}

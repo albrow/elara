@@ -37,6 +37,7 @@ import Gate from "./gate";
 interface BoardProps {
   gameState: FuzzyState;
   enableAnimations: boolean;
+  enableHoverInfo: boolean;
 }
 
 // Returns the offset for whatever the button is connected to.
@@ -130,17 +131,21 @@ export default function Board(props: BoardProps) {
             offset={playerOffset}
             fuel={player.fuel}
             message={player.message}
-            // fuzzy={player.fuzzy}
             animState={player.anim_state}
             animData={player.anim_data}
             facing={player.facing}
             enableAnimations={props.enableAnimations}
+            enableHoverInfo={props.enableHoverInfo}
           />
         );
       })}
       {(props.gameState.goals as FuzzyGoal[]).map((goal, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <Goal key={i} offset={posToOffset(goal.pos)} />
+        <Goal
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          offset={posToOffset(goal.pos)}
+          enableHoverInfo={props.enableHoverInfo}
+        />
       ))}
       {(props.gameState.fuel_spots as FuzzyFuelSpot[]).map((fuelSpot, i) => {
         const fuelOffset = posToOffset(fuelSpot.pos);
@@ -150,7 +155,7 @@ export default function Board(props: BoardProps) {
             // eslint-disable-next-line react/no-array-index-key
             key={i}
             offset={fuelOffset}
-            fuzzy={fuelSpot.fuzzy}
+            enableHoverInfo={props.enableHoverInfo}
           />
         );
       })}
@@ -163,7 +168,7 @@ export default function Board(props: BoardProps) {
           enableAnimations={props.enableAnimations}
           animState={enemy.anim_state}
           animData={enemy.anim_data}
-          fuzzy={enemy.fuzzy}
+          enableHoverInfo={props.enableHoverInfo}
         />
       ))}
       {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => (
@@ -172,6 +177,7 @@ export default function Board(props: BoardProps) {
           key={i}
           offset={posToOffset(obstacle.pos)}
           fuzzy={obstacle.fuzzy}
+          enableHoverInfo={props.enableHoverInfo}
         />
       ))}
       {(props.gameState.buttons as FuzzyButton[]).map((button, i) => (
@@ -183,7 +189,7 @@ export default function Board(props: BoardProps) {
           connectionOffset={getConnectionOffset(props.gameState, i)}
           additionalInfo={button.additional_info}
           enableAnimations={props.enableAnimations}
-          // fuzzy={button.fuzzy}
+          enableHoverInfo={props.enableHoverInfo}
         />
       ))}
       {(props.gameState.gates as FuzzyGate[]).map((gate, i) => (
@@ -193,7 +199,7 @@ export default function Board(props: BoardProps) {
           offset={posToOffset(gate.pos)}
           open={gate.open}
           additionalInfo={gate.additional_info}
-          // fuzzy={gate.fuzzy}
+          enableHoverInfo={props.enableHoverInfo}
         />
       ))}
       {(props.gameState.password_gates as FuzzyPasswordGate[]).map(
@@ -204,7 +210,7 @@ export default function Board(props: BoardProps) {
             offset={posToOffset(gate.pos)}
             open={gate.open}
             additionalInfo={gate.additional_info}
-            // fuzzy={gate.fuzzy}
+            enableHoverInfo={props.enableHoverInfo}
           />
         )
       )}
@@ -216,7 +222,7 @@ export default function Board(props: BoardProps) {
             offset={posToOffset(terminal.pos)}
             reading={terminal.reading}
             additionalInfo={terminal.additional_info}
-            // fuzzy={gate.fuzzy}
+            enableHoverInfo={props.enableHoverInfo}
           />
         )
       )}
@@ -229,6 +235,7 @@ export default function Board(props: BoardProps) {
             offset={posToOffset(telepad.start_pos)}
             kind="entrance"
             telepadIndex={i}
+            enableHoverInfo={props.enableHoverInfo}
           />
           <Telepad
             // eslint-disable-next-line react/no-array-index-key
@@ -236,6 +243,7 @@ export default function Board(props: BoardProps) {
             offset={posToOffset(telepad.end_pos)}
             kind="exit"
             telepadIndex={i}
+            enableHoverInfo={props.enableHoverInfo}
           />
         </Box>
       ))}

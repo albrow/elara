@@ -93,7 +93,7 @@ export default function MiniBoard(props: MiniBoardProps) {
             offset={getSpriteOffset(gate.pos)}
             reading={gate.reading}
             animatePos={shouldAnimSpritePos()}
-            // fuzzy={gate.fuzzy}
+            enableHoverInfo={false}
           />
         ))}
         <Player
@@ -104,6 +104,7 @@ export default function MiniBoard(props: MiniBoardProps) {
           animData={props.state.players[0].anim_data}
           enableAnimations={props.enableAnimations}
           facing={props.state.players[0].facing}
+          enableHoverInfo={false}
         />
       </Box>
     </Box>

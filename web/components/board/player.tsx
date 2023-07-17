@@ -25,6 +25,7 @@ interface PlayerProps {
   animState: string;
   animData?: TeleAnimData;
   enableAnimations: boolean;
+  enableHoverInfo: boolean;
   facing: string;
 }
 
@@ -96,7 +97,9 @@ export default function Player(props: PlayerProps) {
 
   return (
     <>
-      <BoardHoverInfo page={GroverPage} offset={props.offset} />
+      {props.enableHoverInfo && (
+        <BoardHoverInfo page={GroverPage} offset={props.offset} />
+      )}
       {animation.definitions}
       <Box
         position="absolute"
