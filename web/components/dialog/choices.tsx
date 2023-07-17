@@ -1,8 +1,9 @@
-import { Button } from "@chakra-ui/react";
 import { DialogChoice } from "../../lib/dialog_trees";
+import Choice from "./choice";
 
 export interface ChoicesProps {
   choices: DialogChoice[];
+  chosenChoices: string[];
   onSelection: (selectedChoice: DialogChoice) => void;
 }
 
@@ -10,20 +11,12 @@ export default function Choices(props: ChoicesProps) {
   return (
     <>
       {props.choices.map((choice) => (
-        <Button
-          bg="gray.200"
-          _hover={{ bg: "gray.300" }}
-          ml="5px"
-          mt="5px"
+        <Choice
           key={choice.text}
-          fontSize="1.1rem"
-          onClick={() => props.onSelection(choice)}
-          shadow="lg"
-          borderColor="gray.400"
-          borderWidth="1px"
-        >
-          {choice.text}
-        </Button>
+          choice={choice}
+          alreadyChosen={props.chosenChoices.includes(choice.text)}
+          onSelection={props.onSelection}
+        />
       ))}
     </>
   );

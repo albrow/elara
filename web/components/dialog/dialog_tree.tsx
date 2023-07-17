@@ -59,12 +59,16 @@ export default function DialogTree(props: DialogTreeProps) {
 
   const [node, setNode] = useState(initialNode);
   const [chatHistory, setChatHistory] = useState<MsgData[]>(initialMessages);
+  const [chosenChoices, setChosenChoices] = useState<string[]>([]);
 
   const choiceClickHandler = useCallback(
     (choice: DialogChoice) => {
       if (choice.nextId == null) {
         props.onEnd();
       } else {
+        if (!chosenChoices.includes(choice.text)) {
+          setChosenChoices([...chosenChoices, choice.text]);
+        }
         const newChats = [
           { text: node.text, isPlayer: false, id: uuidv4() },
           { text: choice.text, isPlayer: true, id: uuidv4() },
@@ -100,7 +104,7 @@ export default function DialogTree(props: DialogTreeProps) {
           ?.scrollIntoView({ behavior: "smooth" });
       }, 0);
     },
-    [chatHistory, node.text, props]
+    [chatHistory, chosenChoices, node.text, props]
   );
 
   // New messages from the NPC (not including the most recent one).
@@ -197,6 +201,7 @@ export default function DialogTree(props: DialogTreeProps) {
                 >
                   <Choices
                     choices={node.choiceIds.map((id) => CHOICES[id])}
+                    chosenChoices={chosenChoices}
                     onSelection={choiceClickHandler}
                   />
                 </Flex>

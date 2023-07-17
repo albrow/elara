@@ -43,7 +43,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   },
   offer_intro_end: {
     text: "Ready to get started with training or do you have any other questions?",
-    choiceIds: ["intro_end", "where_are_you", "who_are_you"],
+    choiceIds: ["where_are_you", "who_are_you", "intro_end"],
   },
 };
 
