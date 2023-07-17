@@ -183,9 +183,9 @@ export default function Editor(props: EditorProps) {
   );
 
   // We want to take some actions on every key stroke, but we don't want
-  // to do this on every single key stroke. We use the debounce function
-  // to only call the function after the user has stopped typing for a
-  // certain amount of time.
+  // to do actual work on every single key stroke. We use the debounce
+  // function to only call the function after the user has stopped typing
+  // for a certain amount of time.
   const onCodeChange = useMemo(
     () =>
       debounce(
@@ -536,7 +536,7 @@ export default function Editor(props: EditorProps) {
                 color="white"
                 _hover={{ cursor: "help" }}
               >
-                {codeLength || "???"} chars
+                {codeLength == null ? "???" : codeLength} chars
               </Text>
             </Tooltip>
           </Box>
