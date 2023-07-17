@@ -17,6 +17,11 @@ import init from "../elara-lib/pkg";
 import { SaveDataProvider } from "./contexts/save_data";
 import { ShortsModalProvider } from "./contexts/shorts_modal";
 import { ErrorModalProvider } from "./contexts/error_modal";
+import {
+  CHAKRA_TOOL_TIP_Z_INDEX,
+  ROVER_SPEECH_Z_INDEX,
+  TUTORIAL_MODAL_Z_INDEX,
+} from "./lib/constants";
 
 // This file doesn't play nicely with HMR/Fast refresh, so we just reload the page
 // if any changes are detected.
@@ -45,13 +50,20 @@ const elaraTheme = extendTheme({
   sizes: {
     "container.xl": "1268px",
   },
+  components: {
+    Tooltip: {
+      variants: {
+        "speech-bubble": {
+          zIndex: ROVER_SPEECH_Z_INDEX,
+        },
+      },
+    },
+  },
   zIndices: {
-    // NOTE(albrow): Below code breaks tooltips inside of modals, so I commented
-    // it out. Maybe it's not necessary?
-    //
-    // tooltip: CHAKRA_TOOL_TIP_Z_INDEX,
-    // modal: TUTORIAL_MODAL_Z_INDEX,
-    // modalOverlay: TUTORIAL_MODAL_Z_INDEX - 2,
+    // Fixes z-index
+    tooltip: CHAKRA_TOOL_TIP_Z_INDEX,
+    modal: TUTORIAL_MODAL_Z_INDEX,
+    modalOverlay: TUTORIAL_MODAL_Z_INDEX - 2,
   },
 });
 

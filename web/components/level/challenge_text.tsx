@@ -22,7 +22,7 @@ function injectTooltips(text: string) {
             fontStyle="italic"
             textDecoration="underline"
             textDecorationStyle="dotted"
-            _hover={{ textDecorationStyle: "solid" }}
+            _hover={{ textDecorationStyle: "solid", cursor: "help" }}
           >
             {codeLengthText}
             <FaQuestionCircle

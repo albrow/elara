@@ -119,6 +119,7 @@ export default function Player(props: PlayerProps) {
           zIndex={PLAYER_MESSAGE_Z_INDEX}
           placement={speechBubblePlacement(props.offset.pos)}
           fontFamily="monospace"
+          variant="speech-bubble"
         >
           <div
             style={{
