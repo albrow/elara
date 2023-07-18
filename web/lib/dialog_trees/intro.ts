@@ -6,12 +6,14 @@ export type NodeIds =
   | "journey_pos_response"
   | "who_i_am"
   | "where_i_am"
+  | "where_you_are"
   | "offer_intro_end";
 export type ChoiceIds =
   | "journey_negative"
   | "journey_positive"
   | "where_are_you"
   | "who_are_you"
+  | "where_am_i"
   | "intro_end";
 
 export const NODES: { [key in NodeIds]: DialogNode } = {
@@ -21,16 +23,16 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   },
   journey_neg_response: {
     text: "Yeah.. I know the feeling. Luckily it is something you get used to.",
-    choiceIds: ["where_are_you", "who_are_you"],
+    choiceIds: ["who_are_you", "where_am_i", "where_are_you"],
   },
   journey_pos_response: {
-    text: "That's great!",
-    choiceIds: ["where_are_you", "who_are_you"],
+    text: "Wow you must be lucky! I was space-lagged for days after my first trip.",
+    choiceIds: ["who_are_you", "where_am_i", "where_are_you"],
   },
   where_i_am: {
     text:
-      "I'm calling in from Moonbase Bravo, on the southern hemisphere of Elara. " +
-      "It's a small base but I'm happy to call it home, and you can't beat the view!",
+      "I'm calling in from Moonbase Beta, on the southern hemisphere of Elara. " +
+      "It's a small base, but I'm happy to call it home. And you can't beat the view!",
     choiceIds: [],
     nextId: "offer_intro_end",
   },
@@ -41,9 +43,17 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
     choiceIds: [],
     nextId: "offer_intro_end",
   },
+  where_you_are: {
+    text:
+      "The space-lag must have hit you hard, huh? No worries! It'll all come back to you soon. " +
+      "If you look out the window, you should see a weirdly shaped moon. That's Elara! " +
+      "You're currently orbiting around it in a small module.",
+    choiceIds: [],
+    nextId: "offer_intro_end",
+  },
   offer_intro_end: {
     text: "Ready to get started with training or do you have any other questions?",
-    choiceIds: ["where_are_you", "who_are_you", "intro_end"],
+    choiceIds: ["who_are_you", "where_am_i", "where_are_you", "intro_end"],
   },
 };
 
@@ -63,6 +73,10 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   who_are_you: {
     text: "Who are you exactly?",
     nextId: "who_i_am",
+  },
+  where_am_i: {
+    text: "Where am I?",
+    nextId: "where_you_are",
   },
   intro_end: {
     text: "Let's go!",

@@ -1,8 +1,9 @@
 import { Box, Image, Flex } from "@chakra-ui/react";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Animate, AnimateGroup } from "react-simple-animate";
 
+import { useRouteNode } from "react-router5";
 import {
   DialogChoice,
   TREES,
@@ -12,6 +13,7 @@ import {
 } from "../../lib/dialog_trees";
 import ChatMessage from "../../components/dialog/chat_message";
 import npcRightImgUrl from "../../images/npc_right.png";
+import { useSoundManager } from "../../hooks/sound_manager_hooks";
 import Choices from "./choices";
 
 export interface DialogTreeProps {
@@ -21,14 +23,10 @@ export interface DialogTreeProps {
   onEnd: () => void;
 }
 
-// TODO(albrow):
-//
-// - Add special icons to show which choices have already been chosen and which
-//   will end the current dialog. Maybe also fade out options which have already
-//   been chosen.
-//
-
 export default function DialogTree(props: DialogTreeProps) {
+  const { getSoundOrNull, stopAllSoundEffects } = useSoundManager();
+  const { route } = useRouteNode("");
+
   const currTree = useCallback(() => {
     const tree = TREES[props.treeName];
     if (!tree) {
@@ -61,8 +59,29 @@ export default function DialogTree(props: DialogTreeProps) {
   const [chatHistory, setChatHistory] = useState<MsgData[]>(initialMessages);
   const [chosenChoices, setChosenChoices] = useState<string[]>([]);
 
+  // TODO(albrow): Listen for route changes and stop all sound effects.
+  // TODO(albrow): Add settings for dialog volume.
+  // TODO(albrow): Figure out why the dialog sound effects sometimes don't play.
+  useEffect(() => {
+    if (chosenChoices.length === 0) {
+      // Play starting dialog sound effect (if any).
+      stopAllSoundEffects();
+      const sound = getSoundOrNull(`dialog_${currTree().startId}`);
+      if (sound) {
+        sound.play();
+      }
+    }
+  }, [
+    chosenChoices.length,
+    currTree,
+    getSoundOrNull,
+    route.name,
+    stopAllSoundEffects,
+  ]);
+
   const choiceClickHandler = useCallback(
     (choice: DialogChoice) => {
+      stopAllSoundEffects();
       if (choice.nextId == null) {
         props.onEnd();
       } else {
@@ -75,6 +94,13 @@ export default function DialogTree(props: DialogTreeProps) {
         ];
         const newNpcMessages = [];
         let nextNode = NODES[choice.nextId];
+
+        // Play dialog sound effect (if any).
+        const sound = getSoundOrNull(`dialog_${choice.nextId}`);
+        if (sound) {
+          sound.play();
+        }
+
         while (nextNode.choiceIds.length === 0) {
           // No choices. Continue immediately to the next node.
           if (nextNode.nextId == null) {
@@ -104,7 +130,14 @@ export default function DialogTree(props: DialogTreeProps) {
           ?.scrollIntoView({ behavior: "smooth" });
       }, 0);
     },
-    [chatHistory, chosenChoices, node.text, props]
+    [
+      chatHistory,
+      chosenChoices,
+      getSoundOrNull,
+      node.text,
+      props,
+      stopAllSoundEffects,
+    ]
   );
 
   // New messages from the NPC (not including the most recent one).
@@ -226,8 +259,3 @@ export default function DialogTree(props: DialogTreeProps) {
     </Flex>
   );
 }
-
-DialogTree.defaultProps = {
-  showNpcProfile: true,
-  showHistory: true,
-};

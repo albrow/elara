@@ -46,10 +46,24 @@ import buttonPressOn from "../audio/button_press_on.ogg";
 import buttonPressOff from "../audio/button_press_off.ogg";
 import buttonPressOnFallback from "../audio/button_press_on.mp3";
 import buttonPressOffFallback from "../audio/button_press_off.mp3";
+import intro from "../audio/dialog/intro.ogg";
+import introFallback from "../audio/dialog/intro.mp3";
+import journeyNegResponse from "../audio/dialog/journey_neg_response.ogg";
+import journeyNegResponseFallback from "../audio/dialog/journey_neg_response.mp3";
+import journeyPosResponse from "../audio/dialog/journey_pos_response.ogg";
+import journeyPosResponseFallback from "../audio/dialog/journey_pos_response.mp3";
+import whereIam from "../audio/dialog/where_i_am.ogg";
+import whereIamFallback from "../audio/dialog/where_i_am.mp3";
+import whoIam from "../audio/dialog/who_i_am.ogg";
+import whoIamFallback from "../audio/dialog/who_i_am.mp3";
+import whereYouAre from "../audio/dialog/where_you_are.ogg";
+import whereYouAreFallback from "../audio/dialog/where_you_are.mp3";
+
 import { useSaveData } from "../hooks/save_data_hooks";
 
 interface SoundManager {
   getSound: (id: string) => Playable;
+  getSoundOrNull: (id: string) => Playable | null;
   playSound: (id: string) => void;
   stopAllSoundEffects: () => void;
   setMasterGain: (gain: number) => void;
@@ -58,6 +72,9 @@ interface SoundManager {
 
 export const SoundManagerContext = createContext<SoundManager>({
   getSound: () => {
+    throw new Error("SoundManagerContext not initialized");
+  },
+  getSoundOrNull: () => {
     throw new Error("SoundManagerContext not initialized");
   },
   playSound: () => {
@@ -133,6 +150,32 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         [buttonPressOff, buttonPressOffFallback],
         1.0
       ),
+      dialog_intro: new Sound("dialog_intro", [intro, introFallback], 1.0),
+      dialog_journey_neg_response: new Sound(
+        "dialog_journey_neg_response",
+        [journeyNegResponse, journeyNegResponseFallback],
+        1.0
+      ),
+      dialog_journey_pos_response: new Sound(
+        "dialog_journey_pos_response",
+        [journeyPosResponse, journeyPosResponseFallback],
+        1.0
+      ),
+      dialog_where_i_am: new Sound(
+        "dialog_where_i_am",
+        [whereIam, whereIamFallback],
+        1.0
+      ),
+      dialog_who_i_am: new Sound(
+        "dialog_who_i_am",
+        [whoIam, whoIamFallback],
+        1.0
+      ),
+      dialog_where_you_are: new Sound(
+        "dialog_where_you_are",
+        [whereYouAre, whereYouAreFallback],
+        1.0
+      ),
     }),
     []
   );
@@ -148,6 +191,16 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
     (id: string) => {
       if (!(id in soundDict)) {
         throw new Error(`Sound "${id}" not found`);
+      }
+      return soundDict[id];
+    },
+    [soundDict]
+  );
+
+  const getSoundOrNull = useCallback(
+    (id: string) => {
+      if (!(id in soundDict)) {
+        return null;
       }
       return soundDict[id];
     },
@@ -179,12 +232,20 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const providerValue = useMemo(
     () => ({
       getSound,
+      getSoundOrNull,
       playSound,
       stopAllSoundEffects,
       setMasterGain,
       setSoundEffectsGain: setRelSfxGain,
     }),
-    [getSound, playSound, stopAllSoundEffects, setMasterGain, setRelSfxGain]
+    [
+      getSound,
+      getSoundOrNull,
+      playSound,
+      stopAllSoundEffects,
+      setMasterGain,
+      setRelSfxGain,
+    ]
   );
 
   return (
