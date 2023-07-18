@@ -1,11 +1,10 @@
 import { Sound } from "./sound";
-import { Playable } from ".";
+import { Playable, SoundCategory } from ".";
 
-/**
-
- */
 export class RoundRobinSoundGroup implements Playable {
-  private _id: string;
+  readonly id: string;
+
+  readonly category: SoundCategory;
 
   private _sounds: Array<Sound>;
 
@@ -21,17 +20,27 @@ export class RoundRobinSoundGroup implements Playable {
    *
    * This helps make sound effects feel more organic and less repetitive.
    *
+   * The category will be the same as the category for the first sound in the list.
+   *
    * @param id A unique identifier for the group.
    * @param sounds A list of sounds to be played in a round-robin fashion.
    */
   constructor(id: string, sounds: Array<Sound>) {
-    this._id = id;
+    this.id = id;
+    this.category = sounds[0].category;
+    sounds.forEach((sound) => {
+      if (sound.category !== this.category) {
+        throw new Error(
+          `Can't create RoundRobin group with different categories. Sound ${sound.id} does not belong to category ${this.category}.`
+        );
+      }
+    });
     this._sounds = sounds;
     this._currentSoundIndex = 0;
   }
 
-  setGroupGain(gain: number): void {
-    this._sounds.forEach((sound) => sound.setGroupGain(gain));
+  setCatGain(gain: number): void {
+    this._sounds.forEach((sound) => sound.setCatGain(gain));
   }
 
   play(): void {

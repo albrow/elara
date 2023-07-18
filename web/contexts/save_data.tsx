@@ -38,12 +38,14 @@ export interface Settings {
   masterVolume: number;
   musicVolume: number;
   soundEffectsVolume: number;
+  dialogVolume: number;
 }
 
 const DEFUALT_SETTINGS: Settings = {
-  masterVolume: 1,
+  masterVolume: 0.75,
   musicVolume: 1,
   soundEffectsVolume: 1,
+  dialogVolume: 1,
 };
 
 // The macro state of the game, including which levels have been
@@ -71,6 +73,8 @@ export interface SaveDataManager {
   markTutorialShortSeen: (shortId: ShortId) => void;
   saveMasterVolume: (volume: number) => void;
   saveSoundEffectsVolume: (volume: number) => void;
+  saveDialogVolume: (volume: number) => void;
+  saveMusicVolume: (volume: number) => void;
   markJournalPageSeen: (sectionName: SectionName) => void;
 }
 
@@ -135,6 +139,13 @@ function migrateSaveData(saveData: SaveData): SaveData {
     newData.seenJournalPages = [];
   }
 
+  // Migrate from version 9 to 10.
+  if (newData.version === 9) {
+    newData.version = 10;
+    // Version 10 added dialog volume.
+    newData.settings.dialogVolume = DEFUALT_SETTINGS.dialogVolume;
+  }
+
   return newData;
 }
 
@@ -181,6 +192,12 @@ export const SaveDataContext = createContext<
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
     saveSoundEffectsVolume: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    saveDialogVolume: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    saveMusicVolume: () => {
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
     markJournalPageSeen: () => {
@@ -304,6 +321,24 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
     [setSaveData]
   );
 
+  const saveDialogVolume = useCallback(
+    (volume: number) => {
+      const newSaveData = clone(saveDataRef.current);
+      newSaveData.settings.dialogVolume = volume;
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
+  const saveMusicVolume = useCallback(
+    (volume: number) => {
+      const newSaveData = clone(saveDataRef.current);
+      newSaveData.settings.musicVolume = volume;
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
   const markJournalPageSeen = useCallback(
     (sectionName: SectionName) => {
       const newSaveData = clone(saveDataRef.current);
@@ -327,18 +362,22 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
           markTutorialShortSeen,
           saveMasterVolume,
           saveSoundEffectsVolume,
+          saveDialogVolume,
+          saveMusicVolume,
           markJournalPageSeen,
         },
       ] as const,
     [
-      markDialogSeen,
-      markLevelChallengeCompleted,
-      markLevelCompleted,
-      markTutorialShortSeen,
       saveData,
+      markLevelCompleted,
+      markLevelChallengeCompleted,
+      updateLevelCode,
+      markDialogSeen,
+      markTutorialShortSeen,
       saveMasterVolume,
       saveSoundEffectsVolume,
-      updateLevelCode,
+      saveDialogVolume,
+      saveMusicVolume,
       markJournalPageSeen,
     ]
   );

@@ -99,14 +99,36 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const [relSfxGain, setRelSfxGain] = useState(
     saveData.settings.soundEffectsVolume
   );
+  const [relDialogGain, setRelDialogGain] = useState(
+    saveData.settings.dialogVolume
+  );
+  const [relMusicGain, setRelMusicGain] = useState(
+    saveData.settings.musicVolume
+  );
+
+  // Recalculate relative and total gains whenever the settings change.
   useEffect(() => {
-    // Automatically update gains when the settings change.
     setMasterGain(saveData.settings.masterVolume);
     setRelSfxGain(saveData.settings.soundEffectsVolume);
-  }, [saveData.settings.masterVolume, saveData.settings.soundEffectsVolume]);
+    setRelDialogGain(saveData.settings.dialogVolume);
+    setRelMusicGain(saveData.settings.musicVolume);
+  }, [
+    saveData.settings.dialogVolume,
+    saveData.settings.masterVolume,
+    saveData.settings.musicVolume,
+    saveData.settings.soundEffectsVolume,
+  ]);
   const sfxGain = useMemo(
     () => masterGain * relSfxGain,
     [masterGain, relSfxGain]
+  );
+  const dialogGain = useMemo(
+    () => masterGain * relDialogGain,
+    [masterGain, relDialogGain]
+  );
+  const musicGain = useMemo(
+    () => masterGain * relMusicGain,
+    [masterGain, relMusicGain]
   );
 
   // TODO(albrow): Sfx for reading data, collecting fuel,
@@ -114,76 +136,107 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
       move: new RoundRobinSoundGroup("move", [
-        new Sound("move_0", [moveSound0, moveSound0Fallback], 0.3),
-        new Sound("move_1", [moveSound1, moveSound1Fallback], 0.3),
-        new Sound("move_2", [moveSound2, moveSound2Fallback], 0.3),
-        new Sound("move_3", [moveSound3, moveSound3Fallback], 0.3),
+        new Sound("move_0", "sfx", [moveSound0, moveSound0Fallback], 0.3),
+        new Sound("move_1", "sfx", [moveSound1, moveSound1Fallback], 0.3),
+        new Sound("move_2", "sfx", [moveSound2, moveSound2Fallback], 0.3),
+        new Sound("move_3", "sfx", [moveSound3, moveSound3Fallback], 0.3),
       ]),
       turn: new RoundRobinSoundGroup("turn", [
-        new Sound("turn_0", [turnSound0, turnSound0Fallback], 0.3),
-        new Sound("turn_1", [turnSound1, turnSound1Fallback], 0.3),
-        new Sound("turn_2", [turnSound2, turnSound2Fallback], 0.3),
-        new Sound("turn_3", [turnSound3, turnSound3Fallback], 0.3),
+        new Sound("turn_0", "sfx", [turnSound0, turnSound0Fallback], 0.3),
+        new Sound("turn_1", "sfx", [turnSound1, turnSound1Fallback], 0.3),
+        new Sound("turn_2", "sfx", [turnSound2, turnSound2Fallback], 0.3),
+        new Sound("turn_3", "sfx", [turnSound3, turnSound3Fallback], 0.3),
       ]),
       bump: new RoundRobinSoundGroup("bump", [
-        new Sound("bump_0", [bumpSound0, bumpSound0Fallback], 0.3),
-        new Sound("bump_1", [bumpSound1, bumpSound1Fallback], 0.3),
+        new Sound("bump_0", "sfx", [bumpSound0, bumpSound0Fallback], 0.3),
+        new Sound("bump_1", "sfx", [bumpSound1, bumpSound1Fallback], 0.3),
       ]),
       teleport: new Sound(
         "teleport",
+        "sfx",
         [teleportSound, teleportSoundFallback],
         0.7
       ),
       speak: new RoundRobinSoundGroup("speak", [
-        new Sound("speak_0", [speakSound0, speakSound0Fallback], 0.15),
-        new Sound("speak_1", [speakSound1, speakSound1Fallback], 0.15),
-        new Sound("speak_2", [speakSound2, speakSound2Fallback], 0.15),
-        new Sound("speak_3", [speakSound3, speakSound3Fallback], 0.15),
+        new Sound("speak_0", "sfx", [speakSound0, speakSound0Fallback], 0.15),
+        new Sound("speak_1", "sfx", [speakSound1, speakSound1Fallback], 0.15),
+        new Sound("speak_2", "sfx", [speakSound2, speakSound2Fallback], 0.15),
+        new Sound("speak_3", "sfx", [speakSound3, speakSound3Fallback], 0.15),
       ]),
       button_press_on: new Sound(
         "button_press_on",
+        "sfx",
         [buttonPressOn, buttonPressOnFallback],
         1.0
       ),
       button_press_off: new Sound(
         "button_press_off",
+        "sfx",
         [buttonPressOff, buttonPressOffFallback],
         1.0
       ),
-      dialog_intro: new Sound("dialog_intro", [intro, introFallback], 1.0),
+      dialog_intro: new Sound(
+        "dialog_intro",
+        "dialog",
+        [intro, introFallback],
+        1.0
+      ),
       dialog_journey_neg_response: new Sound(
         "dialog_journey_neg_response",
+        "dialog",
         [journeyNegResponse, journeyNegResponseFallback],
         1.0
       ),
       dialog_journey_pos_response: new Sound(
         "dialog_journey_pos_response",
+        "dialog",
         [journeyPosResponse, journeyPosResponseFallback],
         1.0
       ),
       dialog_where_i_am: new Sound(
         "dialog_where_i_am",
+        "dialog",
         [whereIam, whereIamFallback],
         1.0
       ),
       dialog_who_i_am: new Sound(
         "dialog_who_i_am",
+        "dialog",
         [whoIam, whoIamFallback],
         1.0
       ),
       dialog_where_you_are: new Sound(
         "dialog_where_you_are",
+        "dialog",
         [whereYouAre, whereYouAreFallback],
         1.0
       ),
     }),
     []
   );
+
+  // Update the gain for each sound whenever the master gain or category gains change.
   useEffect(() => {
-    Object.values(soundDict).forEach((sound) => {
-      sound.setGroupGain(sfxGain);
-    });
+    Object.values(soundDict)
+      .filter((sound) => sound.category === "sfx")
+      .forEach((sound) => {
+        sound.setCatGain(sfxGain);
+      });
   }, [sfxGain, soundDict]);
+  useEffect(() => {
+    Object.values(soundDict)
+      .filter((sound) => sound.category === "dialog")
+      .forEach((sound) => {
+        sound.setCatGain(dialogGain);
+      });
+  }, [dialogGain, soundDict]);
+  useEffect(() => {
+    Object.values(soundDict)
+      .filter((sound) => sound.category === "music")
+      .forEach((sound) => {
+        sound.setCatGain(musicGain);
+      });
+  }, [musicGain, soundDict]);
 
   // getSound is used when you need more control over the sound (e.g. need
   // to play, pause, stop, or add effects).
@@ -197,6 +250,8 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
     [soundDict]
   );
 
+  // Similar to getSound but returns null instead of throwing an error
+  // if the sound does not exist.
   const getSoundOrNull = useCallback(
     (id: string) => {
       if (!(id in soundDict)) {
@@ -223,7 +278,7 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
     });
   }, [soundDict]);
 
-  // When the route changes, stop all sound effects.
+  // When the route changes, we always want to stop all sound effects.
   const { route } = useRouteNode("");
   useEffect(() => {
     stopAllSoundEffects();

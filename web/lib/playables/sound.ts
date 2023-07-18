@@ -1,15 +1,17 @@
 import { Howl } from "howler";
 
-import { Playable } from ".";
+import { Playable, SoundCategory } from ".";
 
 export class Sound implements Playable {
-  private _id: string;
+  readonly id: string;
+
+  readonly category: SoundCategory;
 
   private _sources: string[];
 
   private _baseGain: number;
 
-  private _groupGain: number;
+  private _catGain: number;
 
   private _howl: Howl;
 
@@ -17,38 +19,37 @@ export class Sound implements Playable {
    * This is the most basic implementation of Playable.
    *
    * @param id A unique identifier for the sound.
+   * @param category The category that the sound belongs to, i.e. "sfx", "music", "dialog"
    * @param sources An array of source URLs for the sound
    * @param baseGain The "base" or "internal" gain of the sound, from 0.0 to 1.0 (default 1.0).
    *    Independent of other volume controls. This is useful for adjusting specific sounds that
    *    are too loud or too quiet.
-   * @param groupGain The "group" or "external" gain of the sound, from 0.0 to 1.0 (default 1.0).
+   * @param catGain The "category" or "external" gain of the sound, from 0.0 to 1.0 (default 1.0).
    *    This is useful for adjusting the volume of a group of sounds together, i.e. having separate volume
    *    controls for sound effects, music, etc.
    */
   constructor(
     id: string,
+    category: SoundCategory,
     sources: string[],
     baseGain: number = 1.0,
-    groupGain: number = 1.0
+    catGain: number = 1.0
   ) {
-    this._id = id;
+    this.id = id;
+    this.category = category;
     this._sources = sources;
     this._baseGain = baseGain;
-    this._groupGain = groupGain;
+    this._catGain = catGain;
     this._howl = new Howl({
       src: this._sources,
-      volume: this._baseGain * this._groupGain,
+      volume: this._baseGain * this._catGain,
     });
   }
 
-  setGroupGain(gain: number): void {
-    this._groupGain = gain;
+  setCatGain(gain: number): void {
+    this._catGain = gain;
     if (this._howl) {
-      this._howl.fade(
-        this._howl.volume(),
-        this._baseGain * this._groupGain,
-        10
-      );
+      this._howl.fade(this._howl.volume(), this._baseGain * this._catGain, 10);
     }
   }
 

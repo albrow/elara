@@ -20,8 +20,10 @@ export interface SettingsModalProps {
 }
 
 export default function SettingsModal(props: SettingsModalProps) {
-  const [saveData, { saveMasterVolume, saveSoundEffectsVolume }] =
-    useSaveData();
+  const [
+    saveData,
+    { saveMasterVolume, saveSoundEffectsVolume, saveDialogVolume },
+  ] = useSaveData();
 
   const masterVolume = useMemo(
     () => saveData.settings.masterVolume,
@@ -53,6 +55,21 @@ export default function SettingsModal(props: SettingsModalProps) {
     { maxWait: 1000 }
   );
 
+  const dialogVolume = useMemo(
+    () => saveData.settings.dialogVolume,
+    [saveData.settings.dialogVolume]
+  );
+  const setDialogVolume = debounce(
+    useCallback(
+      (percentValue: number) => {
+        saveDialogVolume(percentValue / 100);
+      },
+      [saveDialogVolume]
+    ),
+    100,
+    { maxWait: 1000 }
+  );
+
   return (
     <Modal isOpen={props.visible} onClose={() => props.setVisible(false)}>
       <ModalOverlay />
@@ -63,7 +80,7 @@ export default function SettingsModal(props: SettingsModalProps) {
         <ModalCloseButton />
         <ModalBody>
           <Box pb="10px">
-            <Text fontWeight="bold">Master volume</Text>
+            <Text fontWeight="bold">Overall volume</Text>
             <VolumeSlider
               initialValPercent={masterVolume * 100}
               onChange={setMasterVolume}
@@ -72,6 +89,11 @@ export default function SettingsModal(props: SettingsModalProps) {
             <VolumeSlider
               initialValPercent={soundEffectsVolume * 100}
               onChange={setSoundEffectsVolume}
+            />
+            <Text fontWeight="bold">Dialog volume</Text>
+            <VolumeSlider
+              initialValPercent={dialogVolume * 100}
+              onChange={setDialogVolume}
             />
           </Box>
         </ModalBody>
