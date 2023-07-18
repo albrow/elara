@@ -259,3 +259,8 @@ export default function DialogTree(props: DialogTreeProps) {
     </Flex>
   );
 }
+
+DialogTree.defaultProps = {
+  showNpcProfile: true,
+  showHistory: true,
+};
