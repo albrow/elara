@@ -60,6 +60,7 @@ import whereYouAre from "../audio/dialog/where_you_are.ogg";
 import whereYouAreFallback from "../audio/dialog/where_you_are.mp3";
 
 import { useSaveData } from "../hooks/save_data_hooks";
+import { volumeToGain } from "../lib/utils";
 
 interface SoundManager {
   getSound: (id: string) => Playable;
@@ -119,15 +120,15 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
     saveData.settings.soundEffectsVolume,
   ]);
   const sfxGain = useMemo(
-    () => masterGain * relSfxGain,
+    () => volumeToGain(masterGain * relSfxGain),
     [masterGain, relSfxGain]
   );
   const dialogGain = useMemo(
-    () => masterGain * relDialogGain,
+    () => volumeToGain(masterGain * relDialogGain),
     [masterGain, relDialogGain]
   );
   const musicGain = useMemo(
-    () => masterGain * relMusicGain,
+    () => volumeToGain(masterGain * relMusicGain),
     [masterGain, relMusicGain]
   );
 
@@ -136,20 +137,20 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
       move: new RoundRobinSoundGroup("move", [
-        new Sound("move_0", "sfx", [moveSound0, moveSound0Fallback], 0.3),
-        new Sound("move_1", "sfx", [moveSound1, moveSound1Fallback], 0.3),
-        new Sound("move_2", "sfx", [moveSound2, moveSound2Fallback], 0.3),
-        new Sound("move_3", "sfx", [moveSound3, moveSound3Fallback], 0.3),
+        new Sound("move_0", "sfx", [moveSound0, moveSound0Fallback], 0.4),
+        new Sound("move_1", "sfx", [moveSound1, moveSound1Fallback], 0.4),
+        new Sound("move_2", "sfx", [moveSound2, moveSound2Fallback], 0.4),
+        new Sound("move_3", "sfx", [moveSound3, moveSound3Fallback], 0.4),
       ]),
       turn: new RoundRobinSoundGroup("turn", [
-        new Sound("turn_0", "sfx", [turnSound0, turnSound0Fallback], 0.3),
-        new Sound("turn_1", "sfx", [turnSound1, turnSound1Fallback], 0.3),
-        new Sound("turn_2", "sfx", [turnSound2, turnSound2Fallback], 0.3),
-        new Sound("turn_3", "sfx", [turnSound3, turnSound3Fallback], 0.3),
+        new Sound("turn_0", "sfx", [turnSound0, turnSound0Fallback], 0.4),
+        new Sound("turn_1", "sfx", [turnSound1, turnSound1Fallback], 0.4),
+        new Sound("turn_2", "sfx", [turnSound2, turnSound2Fallback], 0.4),
+        new Sound("turn_3", "sfx", [turnSound3, turnSound3Fallback], 0.4),
       ]),
       bump: new RoundRobinSoundGroup("bump", [
-        new Sound("bump_0", "sfx", [bumpSound0, bumpSound0Fallback], 0.3),
-        new Sound("bump_1", "sfx", [bumpSound1, bumpSound1Fallback], 0.3),
+        new Sound("bump_0", "sfx", [bumpSound0, bumpSound0Fallback], 0.4),
+        new Sound("bump_1", "sfx", [bumpSound1, bumpSound1Fallback], 0.4),
       ]),
       teleport: new Sound(
         "teleport",
@@ -158,58 +159,58 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         0.7
       ),
       speak: new RoundRobinSoundGroup("speak", [
-        new Sound("speak_0", "sfx", [speakSound0, speakSound0Fallback], 0.15),
-        new Sound("speak_1", "sfx", [speakSound1, speakSound1Fallback], 0.15),
-        new Sound("speak_2", "sfx", [speakSound2, speakSound2Fallback], 0.15),
-        new Sound("speak_3", "sfx", [speakSound3, speakSound3Fallback], 0.15),
+        new Sound("speak_0", "sfx", [speakSound0, speakSound0Fallback], 0.08),
+        new Sound("speak_1", "sfx", [speakSound1, speakSound1Fallback], 0.08),
+        new Sound("speak_2", "sfx", [speakSound2, speakSound2Fallback], 0.08),
+        new Sound("speak_3", "sfx", [speakSound3, speakSound3Fallback], 0.08),
       ]),
       button_press_on: new Sound(
         "button_press_on",
         "sfx",
         [buttonPressOn, buttonPressOnFallback],
-        1.0
+        0.8
       ),
       button_press_off: new Sound(
         "button_press_off",
         "sfx",
         [buttonPressOff, buttonPressOffFallback],
-        1.0
+        0.8
       ),
       dialog_intro: new Sound(
         "dialog_intro",
         "dialog",
         [intro, introFallback],
-        1.0
+        0.8
       ),
       dialog_journey_neg_response: new Sound(
         "dialog_journey_neg_response",
         "dialog",
         [journeyNegResponse, journeyNegResponseFallback],
-        1.0
+        0.8
       ),
       dialog_journey_pos_response: new Sound(
         "dialog_journey_pos_response",
         "dialog",
         [journeyPosResponse, journeyPosResponseFallback],
-        1.0
+        0.8
       ),
       dialog_where_i_am: new Sound(
         "dialog_where_i_am",
         "dialog",
         [whereIam, whereIamFallback],
-        1.0
+        0.8
       ),
       dialog_who_i_am: new Sound(
         "dialog_who_i_am",
         "dialog",
         [whoIam, whoIamFallback],
-        1.0
+        0.8
       ),
       dialog_where_you_are: new Sound(
         "dialog_where_you_are",
         "dialog",
         [whereYouAre, whereYouAreFallback],
-        1.0
+        0.8
       ),
     }),
     []

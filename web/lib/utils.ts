@@ -87,3 +87,10 @@ export function getNextJournalPage(scene: Scene): Scene | undefined {
   }
   return undefined;
 }
+
+// Converts a volume from 0 to 1 to an appropriately scaled gain value.
+// Human perception of loudness is logarithmic, so this helps to make the
+// volume slider "feel" more linear.
+export function volumeToGain(volume: number): number {
+  return (10 * volume ** 3) / 10;
+}

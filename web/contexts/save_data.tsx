@@ -42,8 +42,8 @@ export interface Settings {
 }
 
 const DEFUALT_SETTINGS: Settings = {
-  masterVolume: 0.5,
-  musicVolume: 0.5,
+  masterVolume: 0.8,
+  musicVolume: 0.8,
   soundEffectsVolume: 1,
   dialogVolume: 1,
 };
