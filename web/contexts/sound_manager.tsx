@@ -136,6 +136,14 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   // opening gates, being destroyed/attacked by malfunctioning rover.
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
+      // silence: new Sound(
+      //   "silence",
+      //   "sfx",
+      //   [
+      //     "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA",
+      //   ],
+      //   0
+      // ),
       move: new RoundRobinSoundGroup("move", [
         new Sound("move_0", "sfx", [moveSound0, moveSound0Fallback], 0.4),
         new Sound("move_1", "sfx", [moveSound1, moveSound1Fallback], 0.4),
@@ -304,28 +312,36 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
     ]
   );
 
-  // Create a test sound effect that is short and silent and play
-  // it after the first user interaction. This makes sound playback
+  // Play a test sound after the first user interaction. This makes sound playback
   // more reliable on iOS.
   useEffect(() => {
-    const testSound = new Audio();
-    testSound.autoplay = false;
-    testSound.src =
-      "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+    const stopAndUnmute = () => {
+      console.log("Stopping test sound...");
+      const introSound = getSound("dialog_intro") as Sound;
+      introSound.stop();
+      introSound.unmute();
+    };
+
+    let timeout: NodeJS.Timeout | null = null;
     const listener = () => {
-      testSound.muted = false;
-      testSound.play();
+      console.log("Playing test sound...");
+      const introSound = getSound("dialog_intro") as Sound;
+      introSound.mute();
+      introSound.play();
+      timeout = setTimeout(stopAndUnmute, 200);
       window.removeEventListener("touchstart", listener);
       window.removeEventListener("click", listener);
-      return true;
     };
     window.addEventListener("touchstart", listener);
     window.addEventListener("click", listener);
     return () => {
       window.removeEventListener("touchstart", listener);
       window.removeEventListener("click", listener);
+      if (timeout) {
+        clearTimeout(timeout);
+      }
     };
-  }, []);
+  }, [getSound]);
 
   return (
     <SoundManagerContext.Provider value={providerValue}>

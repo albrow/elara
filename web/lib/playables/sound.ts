@@ -53,6 +53,14 @@ export class Sound implements Playable {
     }
   }
 
+  mute() {
+    this._howl?.mute(true);
+  }
+
+  unmute() {
+    this._howl?.mute(false);
+  }
+
   play() {
     this._howl?.play();
   }
