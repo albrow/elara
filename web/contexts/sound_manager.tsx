@@ -304,6 +304,29 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
     ]
   );
 
+  // Create a test sound effect that is short and silent and play
+  // it after the first user interaction. This makes sound playback
+  // more reliable on iOS.
+  useEffect(() => {
+    const testSound = new Audio();
+    testSound.autoplay = false;
+    testSound.src =
+      "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+    const listener = () => {
+      testSound.muted = false;
+      testSound.play();
+      window.removeEventListener("touchstart", listener);
+      window.removeEventListener("click", listener);
+      return true;
+    };
+    window.addEventListener("touchstart", listener);
+    window.addEventListener("click", listener);
+    return () => {
+      window.removeEventListener("touchstart", listener);
+      window.removeEventListener("click", listener);
+    };
+  }, []);
+
   return (
     <SoundManagerContext.Provider value={providerValue}>
       {props.children}

@@ -11,6 +11,7 @@
     "test:rust-wasm": "cd ./elara-lib && wasm-pack test --chrome --headless -- --features=wasm",
     "test:js": "vitest run",
     "dev": "vite",
+    "dev:host": "vite --host",
     "build": "npm run build:wasm && tsc --noEmit && vite build",
     "test": "npm run test:rust && npm run test:rust-wasm && npm run test:js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
