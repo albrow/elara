@@ -312,37 +312,6 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
     ]
   );
 
-  // Play a test sound after the first user interaction. This makes sound playback
-  // more reliable on iOS.
-  useEffect(() => {
-    const stopAndUnmute = () => {
-      console.log("Stopping test sound...");
-      const introSound = getSound("dialog_intro") as Sound;
-      introSound.stop();
-      introSound.unmute();
-    };
-
-    let timeout: NodeJS.Timeout | null = null;
-    const listener = () => {
-      console.log("Playing test sound...");
-      const introSound = getSound("dialog_intro") as Sound;
-      introSound.mute();
-      introSound.play();
-      timeout = setTimeout(stopAndUnmute, 200);
-      window.removeEventListener("touchstart", listener);
-      window.removeEventListener("click", listener);
-    };
-    window.addEventListener("touchstart", listener);
-    window.addEventListener("click", listener);
-    return () => {
-      window.removeEventListener("touchstart", listener);
-      window.removeEventListener("click", listener);
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    };
-  }, [getSound]);
-
   return (
     <SoundManagerContext.Provider value={providerValue}>
       {props.children}

@@ -1,9 +1,8 @@
 import { Box, Image, Flex } from "@chakra-ui/react";
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Animate, AnimateGroup } from "react-simple-animate";
 
-import { useRouteNode } from "react-router5";
 import {
   DialogChoice,
   TREES,
@@ -25,7 +24,6 @@ export interface DialogTreeProps {
 
 export default function DialogTree(props: DialogTreeProps) {
   const { getSoundOrNull, stopAllSoundEffects } = useSoundManager();
-  const { route } = useRouteNode("");
 
   const currTree = useCallback(() => {
     const tree = TREES[props.treeName];
@@ -58,26 +56,6 @@ export default function DialogTree(props: DialogTreeProps) {
   const [node, setNode] = useState(initialNode);
   const [chatHistory, setChatHistory] = useState<MsgData[]>(initialMessages);
   const [chosenChoices, setChosenChoices] = useState<string[]>([]);
-
-  // TODO(albrow): Listen for route changes and stop all sound effects.
-  // TODO(albrow): Add settings for dialog volume.
-  // TODO(albrow): Figure out why the dialog sound effects sometimes don't play.
-  useEffect(() => {
-    if (chosenChoices.length === 0) {
-      // Play starting dialog sound effect (if any).
-      stopAllSoundEffects();
-      const sound = getSoundOrNull(`dialog_${currTree().startId}`);
-      if (sound) {
-        sound.play();
-      }
-    }
-  }, [
-    chosenChoices.length,
-    currTree,
-    getSoundOrNull,
-    route.name,
-    stopAllSoundEffects,
-  ]);
 
   const choiceClickHandler = useCallback(
     (choice: DialogChoice) => {
