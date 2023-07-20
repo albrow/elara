@@ -168,7 +168,12 @@
       "no-undef": "off",
       "no-underscore-dangle": "off",
       "jsx-a11y/anchor-is-valid": "off",
-      "react-refresh/only-export-components": "warn"
+      "react-refresh/only-export-components": [
+        "warn",
+        {
+          "allowConstantExport": true
+        }
+      ]
     }
   }
 }
