@@ -24,6 +24,10 @@ interface RawScene {
   level?: LevelData;
   tutorialShorts?: ShortId[];
   hints?: string[];
+  // A sound effect to be played immediately after navigating to this scene.
+  // Used as a workaround for iOS audio restrictions, namely that audio can
+  // only be played in direct response to user action (i.e. in a click handler).
+  initialSound?: string;
 }
 
 export interface Scene extends RawScene {
@@ -71,6 +75,7 @@ function dialogScene(treeName: keyof typeof TREES): RawScene {
     name: `${TREES[treeName].name}`,
     routeName: "dialog",
     routeParams: { treeName },
+    initialSound: `dialog_${treeName}`,
   };
 }
 

@@ -1,7 +1,6 @@
 import { Box, Image } from "@chakra-ui/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouteNode, useRouter } from "react-router5";
-import { Unsubscribe } from "router5/dist/types/base";
+import { useEffect, useMemo, useState } from "react";
+import { useRouteNode } from "react-router5";
 import { BG_INDEX as BG_Z_INDEX } from "../lib/constants";
 import LevelSlectModal from "../components/hub/level_select_modal";
 
@@ -16,8 +15,6 @@ import {
   useSceneNavigator,
 } from "../hooks/scenes_hooks";
 import BlinkingText from "../components/hub/blinking_text";
-import { useSoundManager } from "../hooks/sound_manager_hooks";
-import { TREES } from "../lib/dialog_trees";
 
 export default function Hub() {
   const [hoveringOver, setHoveringOver] = useState<
@@ -29,8 +26,6 @@ export default function Hub() {
   const JOURNAL_PAGES = useJournalPages();
   const nextUnlockedScene = useNextUnlockedScene();
   const { route } = useRouteNode("");
-  const { getSoundOrNull } = useSoundManager();
-  const router = useRouter();
 
   useEffect(() => {
     document.title = "Elara | Hub";
@@ -92,29 +87,6 @@ export default function Hub() {
     nextUnlockedScene.type,
   ]);
 
-  // Special logic to account for web audio limitations on iOS. Sound can only be
-  // played in direct response to a user action, i.e. as part of a click handler.
-  // Otherwise, we would just do this when the DialogTree component mounts.
-  const handleVideoTabletClick = useCallback(() => {
-    const treeName = nextUnlockedScene.routeParams?.treeName as string | null;
-    if (treeName != null) {
-      const tree = TREES[treeName];
-      if (tree) {
-        const firstDialogSound = getSoundOrNull(`dialog_${tree.startId}`);
-        if (firstDialogSound) {
-          const unsubscribe = router.subscribe((_transition) => {
-            setTimeout(() => {
-              firstDialogSound.play();
-            }, 100);
-            unsubscribe();
-          }) as Unsubscribe;
-        }
-      }
-    }
-
-    navigateToScene(nextUnlockedScene);
-  }, [getSoundOrNull, navigateToScene, nextUnlockedScene, router]);
-
   return (
     <>
       <LevelSlectModal
@@ -157,7 +129,7 @@ export default function Hub() {
             onMouseLeave={() => setHoveringOver("none")}
             onClick={() => {
               if (nextUnlockedScene.type === "dialog") {
-                handleVideoTabletClick();
+                navigateToScene(nextUnlockedScene);
               }
             }}
           >

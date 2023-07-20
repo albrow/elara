@@ -1,8 +1,10 @@
-import { useContext, useState, useEffect, useCallback } from "react";
+import { useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useRouteNode, useRouter } from "react-router5";
 import type { State } from "router5";
 
-import { ScenesContext, Scene } from "../contexts/scenes";
+import type { Scene } from "../contexts/scenes";
+import { ScenesContext } from "../contexts/scenes";
+import { useSoundManager } from "./sound_manager_hooks";
 
 function getSceneIndexFromRoute(
   scenes: Scene[],
@@ -66,12 +68,27 @@ export function useSceneNavigator() {
   const currScene = useCurrScene();
   const router = useRouter();
   const JOURNAL_PAGES = useJournalPages();
+  const { getSoundOrNull } = useSoundManager();
+  const soundTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const navigateToScene = useCallback(
     (scene: Scene) => {
       router.navigate(scene.routeName, scene.routeParams ?? {});
+
+      // Check if the scene has an initial sound. If so, play it
+      // after a short delay.
+      if (scene.initialSound != null) {
+        if (soundTimeout.current) {
+          clearTimeout(soundTimeout.current);
+        }
+        const sound = getSoundOrNull(scene.initialSound);
+        if (sound) {
+          sound.stop();
+          soundTimeout.current = setTimeout(() => sound.play(), 250);
+        }
+      }
     },
-    [router]
+    [getSoundOrNull, router]
   );
 
   const navigateToNextScene = useCallback(() => {
