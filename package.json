@@ -66,6 +66,7 @@
     "lodash.chunk": "^4.2.0",
     "lodash.debounce": "^4.0.8",
     "markdown-to-jsx": "^7.2.1",
+    "pretty-date": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.6.0",

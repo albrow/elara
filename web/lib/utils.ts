@@ -1,3 +1,5 @@
+import prettydate from "pretty-date";
+
 import { LevelData, Pos } from "../../elara-lib/pkg/elara_lib";
 import { SaveData } from "../contexts/save_data";
 import { Scene } from "../contexts/scenes";
@@ -93,4 +95,25 @@ export function getNextJournalPage(scene: Scene): Scene | undefined {
 // volume slider "feel" more linear.
 export function volumeToGain(volume: number): number {
   return (10 * volume ** 3) / 10;
+}
+
+const TWELVE_HOURS_IN_MS = 12 * 60 * 60 * 1000;
+
+export function humanFriendlyTimestamp(timestamp: number): string {
+  const now = Date.now();
+  const diff = now - timestamp;
+  if (diff <= TWELVE_HOURS_IN_MS) {
+    return prettydate.format(new Date(timestamp));
+  }
+  const date = new Date(timestamp);
+  const dayMonthYear = date.toLocaleDateString("en-us", {
+    year:
+      date.getFullYear() === new Date().getFullYear() ? undefined : "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  return `${dayMonthYear} at ${date.toLocaleTimeString("en-us", {
+    hour: "numeric",
+    minute: "numeric",
+  })}`;
 }

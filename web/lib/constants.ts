@@ -4,9 +4,6 @@
 // Screen size.
 export const MIN_BG_WIDTH = "980px";
 
-// Save data and settings
-export const SAVE_DATA_VERSION = 10;
-
 // Constants related to the game board and game logic.
 export const WIDTH = 12;
 export const HEIGHT = 8;

@@ -4,10 +4,12 @@ import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "react-router5";
 import { MdPlayCircle, MdSave, MdSettings } from "react-icons/md";
 import { BsFillQuestionCircleFill } from "react-icons/bs";
-import { NAVBAR_HEIGHT } from "../lib/constants";
+
 import { useSaveData } from "../hooks/save_data_hooks";
 import SettingsModal from "../components/settings/navbar/settings_modal";
 import ConfirmNewGameModal from "../components/title/confirm_new_game_modal";
+import { humanFriendlyTimestamp } from "../lib/utils";
+import staryBgImg from "../images/starry_bg.webp";
 
 export default function Title() {
   const [saveData, { resetAllSaveData }] = useSaveData();
@@ -49,7 +51,14 @@ export default function Title() {
   }, [router]);
 
   return (
-    <Box w="100%" h="100%" bg="black" position="fixed">
+    <Box
+      w="100%"
+      h="100%"
+      bg="black"
+      bgImage={staryBgImg}
+      bgSize="cover"
+      position="fixed"
+    >
       <SettingsModal
         visible={settingsVisible}
         setVisible={setSettingsVisible}
@@ -59,7 +68,12 @@ export default function Title() {
         setVisible={setConfirmNewGameVisible}
         onConfirm={handleNewGameConfirm}
       />
-      <Container maxW="container.md" p={8} mt={`${NAVBAR_HEIGHT}px`}>
+      <Container
+        maxW="container.md"
+        position="relative"
+        top="30%"
+        transform="translateY(-30%)"
+      >
         <Text fontSize="5em" color="white" textAlign="center">
           Elara
         </Text>
@@ -68,13 +82,26 @@ export default function Title() {
           maxW="fit-content"
           mx="auto"
           my="20px"
-          gap="20px"
+          gap="10px"
         >
           {hasExistingSave && (
-            <Button size="lg" onClick={handleContinue}>
-              <MdPlayCircle style={{ marginRight: "0.2em" }} />
-              Continue
-            </Button>
+            <Box minW="fit-content" mb="10px">
+              <Button w="100%" size="lg" onClick={handleContinue}>
+                <MdPlayCircle style={{ marginRight: "0.2em" }} />
+                Continue
+              </Button>
+              {saveData.lastUpdated && (
+                <Text
+                  mt="1px"
+                  fontStyle="italic"
+                  fontSize="0.9em"
+                  color="white"
+                  textAlign="center"
+                >
+                  Last saved: {humanFriendlyTimestamp(saveData.lastUpdated)}
+                </Text>
+              )}
+            </Box>
           )}
           <Button size="lg" onClick={handleNewGame}>
             <MdSave style={{ marginRight: "0.2em" }} />
@@ -93,6 +120,15 @@ export default function Title() {
           </Button>
         </Flex>
       </Container>
+      <Text
+        position="fixed"
+        fontSize="1em"
+        color="white"
+        bottom="10px"
+        right="10px"
+      >
+        (early alpha version)
+      </Text>
     </Box>
   );
 }

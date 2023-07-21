@@ -12,9 +12,9 @@ import clone from "clone";
 import debounce from "lodash.debounce";
 import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
-import { SAVE_DATA_VERSION } from "../lib/constants";
 import { SectionName } from "../components/journal/sections";
 
+export const SAVE_DATA_VERSION = 11;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 // Amount of time (in milliseconds) to wait for further updates before
@@ -55,6 +55,9 @@ const DEFAULT_SAVE_DATA = {
   seenTutorialShorts: [],
   settings: DEFUALT_SETTINGS,
   seenJournalPages: [],
+  // lastUpdated is intentially omitted from the default save data.
+  // it will be set automatically when the save data is committed to
+  // local storage.
 };
 
 // The macro state of the game, including which levels have been
@@ -72,6 +75,9 @@ export interface SaveData {
   settings: Settings;
   // Tracks which journal pages the user has already seen.
   seenJournalPages: SectionName[];
+  // When the save data was last committed to local storage.
+  // Measured as milliseconds since the UNIX epoch.
+  lastUpdated?: number;
 }
 
 export interface SaveDataManager {
@@ -156,6 +162,13 @@ function migrateSaveData(saveData: SaveData): SaveData {
     newData.settings.dialogVolume = DEFUALT_SETTINGS.dialogVolume;
   }
 
+  // Migrate from version 10 to 11.
+  if (newData.version === 10) {
+    newData.version = 11;
+    // Version 11 added lastUpdated.
+    newData.lastUpdated = Date.now();
+  }
+
   return newData;
 }
 
@@ -238,7 +251,10 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
   // save data. DO NOT set the ref directly or call __internalSetSaveData directly.
   const setSaveData = useCallback(
     (newSaveData: SaveData) => {
-      saveDataRef.current = newSaveData;
+      saveDataRef.current = {
+        ...newSaveData,
+        lastUpdated: Date.now(),
+      };
       __internalSetSaveData(newSaveData);
     },
     [__internalSetSaveData, saveDataRef]
