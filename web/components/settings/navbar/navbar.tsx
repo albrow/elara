@@ -2,8 +2,8 @@ import { Box } from "@chakra-ui/react";
 import { MdHome, MdSettings } from "react-icons/md";
 import { useState } from "react";
 
-import { NAVBAR_HEIGHT, NAVBAR_Z_INDEX } from "../../lib/constants";
-import { useSceneNavigator } from "../../hooks/scenes_hooks";
+import { NAVBAR_HEIGHT, NAVBAR_Z_INDEX } from "../../../lib/constants";
+import { useSceneNavigator } from "../../../hooks/scenes_hooks";
 import SettingsModal from "./settings_modal";
 import NavbarButton from "./navbar_button";
 

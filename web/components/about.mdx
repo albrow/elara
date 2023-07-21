@@ -1,10 +1,23 @@
 import { Button } from "@chakra-ui/react";
-import { MdArrowForward } from "react-icons/md";
+import { MdArrowBack } from "react-icons/md";
 import { Link } from "react-router5";
 
 import { useScenes } from "../hooks/scenes_hooks";
 
-## Welcome to Elara
+export const StartButton = () => {
+  return (
+    <Link routeName={"title"}>
+      <Button colorScheme="blue">
+        <MdArrowBack size="1.3em" style={{ marginRight: "0.2rem" }} />
+        <span>Back to Title Screen</span>
+      </Button>
+    </Link>
+  );
+};
+
+<StartButton />
+
+## About Elara
 
 Elara is a game that teaches you how to code. It is named after one of the
 [moons of Jupiter](<https://en.wikipedia.org/wiki/Elara_(moon)>), where the bulk
@@ -18,19 +31,6 @@ and your feedback can help us get there 😀
 Right now, we are focusing on testing the core mechanics of the game, which
 includes writing code to control a rover and solve various puzzles. Click the
 "Start" button to start playing!
-
-export const StartButton = () => {
-  return (
-    <Link routeName={"hub"}>
-      <Button colorScheme="green">
-        <span>Start</span>
-        <MdArrowForward size="1.3em" style={{ marginLeft: "0.2rem" }} />
-      </Button>
-    </Link>
-  );
-};
-
-<StartButton />
 
 ---
 

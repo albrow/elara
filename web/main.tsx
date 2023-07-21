@@ -80,8 +80,12 @@ const elaraTheme = extendTheme({
 
   const routes: Route[] = [
     {
-      name: "about",
+      name: "title",
       path: "/",
+    },
+    {
+      name: "about",
+      path: "/about",
     },
     {
       name: "hub",

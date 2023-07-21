@@ -1,7 +1,8 @@
 import { useRouteNode } from "react-router5";
+import { useCallback, useMemo } from "react";
 
-import { useCallback } from "react";
-import Navbar from "../components/navbar/navbar";
+import Navbar from "../components/settings/navbar/navbar";
+import Title from "./title";
 import About from "./about";
 import Hub from "./hub";
 import Level from "./level";
@@ -19,8 +20,8 @@ export default function Root() {
   }
 
   const currPage = useCallback(() => {
-    if (route.name === "about") {
-      return <About />;
+    if (route.name === "title") {
+      return <Title />;
     }
     if (route.name === "hub") {
       return <Hub />;
@@ -34,15 +35,24 @@ export default function Root() {
     if (route.name === "journal_section") {
       return <Journal />;
     }
+    if (route.name === "about") {
+      return <About />;
+    }
     if (route.name === "end") {
       return <End />;
     }
     throw new Error(`Unknown route: ${route.name}`);
   }, [route]);
 
+  const shouldShowNavbar = useMemo(
+    () =>
+      ["hub", "level", "dialog", "journal_section", "end"].includes(route.name),
+    [route.name]
+  );
+
   return (
     <>
-      <Navbar />
+      {shouldShowNavbar && <Navbar />}
       {currPage()}
     </>
   );

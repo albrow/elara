@@ -7,11 +7,15 @@ import {
   ModalCloseButton,
   Box,
   Text,
+  Button,
+  Flex,
 } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import debounce from "lodash.debounce";
 
-import { useSaveData } from "../../hooks/save_data_hooks";
+import { MdExitToApp } from "react-icons/md";
+import { useRouteNode, useRouter } from "react-router5";
+import { useSaveData } from "../../../hooks/save_data_hooks";
 import VolumeSlider from "./volume_slider";
 
 export interface SettingsModalProps {
@@ -24,6 +28,8 @@ export default function SettingsModal(props: SettingsModalProps) {
     saveData,
     { saveMasterVolume, saveSoundEffectsVolume, saveDialogVolume },
   ] = useSaveData();
+  const router = useRouter();
+  const { route } = useRouteNode("");
 
   const masterVolume = useMemo(
     () => saveData.settings.masterVolume,
@@ -96,6 +102,17 @@ export default function SettingsModal(props: SettingsModalProps) {
               onChange={setDialogVolume}
             />
           </Box>
+          {route.name !== "title" && (
+            <Flex w="100%" mt="20px" mb="10px" gap="5px" justifyContent="right">
+              <Button
+                colorScheme="blackAlpha"
+                onClick={() => router.navigate("title")}
+              >
+                <MdExitToApp style={{ marginRight: "0.3em" }} />
+                Exit to Title Screen
+              </Button>
+            </Flex>
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>

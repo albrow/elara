@@ -48,6 +48,15 @@ const DEFUALT_SETTINGS: Settings = {
   dialogVolume: 1,
 };
 
+const DEFAULT_SAVE_DATA = {
+  version: SAVE_DATA_VERSION,
+  levelStates: {},
+  seenDialogTrees: [],
+  seenTutorialShorts: [],
+  settings: DEFUALT_SETTINGS,
+  seenJournalPages: [],
+};
+
 // The macro state of the game, including which levels have been
 // completed, user settings, dialog options, etc.
 export interface SaveData {
@@ -76,6 +85,7 @@ export interface SaveDataManager {
   saveDialogVolume: (volume: number) => void;
   saveMusicVolume: (volume: number) => void;
   markJournalPageSeen: (sectionName: SectionName) => void;
+  resetAllSaveData: () => void;
 }
 
 // Actually saves the data to local storage.
@@ -201,6 +211,9 @@ export const SaveDataContext = createContext<
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
     markJournalPageSeen: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    resetAllSaveData: () => {
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
   },
@@ -350,6 +363,10 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
     [setSaveData]
   );
 
+  const resetAllSaveData = useCallback(() => {
+    setSaveData(DEFAULT_SAVE_DATA);
+  }, [setSaveData]);
+
   const providerValue = useMemo(
     () =>
       [
@@ -365,6 +382,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
           saveDialogVolume,
           saveMusicVolume,
           markJournalPageSeen,
+          resetAllSaveData,
         },
       ] as const,
     [
@@ -379,6 +397,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       saveDialogVolume,
       saveMusicVolume,
       markJournalPageSeen,
+      resetAllSaveData,
     ]
   );
 
