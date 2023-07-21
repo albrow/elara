@@ -2,8 +2,12 @@ import { Box, Button, Container, Flex, Text } from "@chakra-ui/react";
 
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "react-router5";
-import { MdPlayCircle, MdSave, MdSettings } from "react-icons/md";
-import { BsFillQuestionCircleFill } from "react-icons/bs";
+import {
+  MdPlayCircle,
+  MdSave,
+  MdSettings,
+  MdOutlineHelp,
+} from "react-icons/md";
 
 import { useSaveData } from "../hooks/save_data_hooks";
 import SettingsModal from "../components/settings/navbar/settings_modal";
@@ -112,10 +116,7 @@ export default function Title() {
             Settings
           </Button>
           <Button size="lg" onClick={handleAbout}>
-            <BsFillQuestionCircleFill
-              size="0.9em"
-              style={{ marginRight: "0.3em" }}
-            />
+            <MdOutlineHelp style={{ marginRight: "0.3em" }} />
             About
           </Button>
         </Flex>
