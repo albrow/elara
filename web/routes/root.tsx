@@ -1,6 +1,7 @@
 import { useRouteNode } from "react-router5";
 import { useCallback, useEffect, useMemo } from "react";
 
+import { Box } from "@chakra-ui/react";
 import Navbar from "../components/settings/navbar/navbar";
 import Title from "./title";
 import Loading from "./loading";
@@ -20,27 +21,31 @@ export default function Root() {
     throw new Error("Route is undefined");
   }
 
-  // Based on https://stackoverflow.com/questions/68842602/react-how-to-detect-page-refresh-and-redirect-user
-  // We use different methods to detect a reload in order to account for both older and newer browsers.
-  const isReload = useMemo(
-    () =>
-      (window.performance.navigation &&
-        window.performance.navigation.type === 1) ||
-      window.performance
-        .getEntriesByType("navigation")
-        // @ts-ignore
-        .map((nav) => nav.type)
-        .includes("reload"),
-    []
+  // Detect if the user reloaded the page or directly visited a URL other than
+  // the root.
+  const isDirectVisitOrReload = useMemo(() => {
+    const { referrer } = document;
+
+    return (
+      referrer === "" ||
+      !referrer.startsWith(
+        `${window.location.protocol}//${window.location.host}`
+      )
+    );
+  }, []);
+
+  const shouldRedirect = useMemo(
+    () => isDirectVisitOrReload,
+    [isDirectVisitOrReload]
   );
 
-  // Redirect the user to the loading screen if they reload the page.
+  // Redirect the user to the loading screen if they reload the page or directly
+  // visit a URL other than the root.
   useEffect(() => {
-    if (isReload) {
-      // console.log("detected reload");
+    if (isDirectVisitOrReload && route.name !== "loading") {
       window.location.href = "/loading/title";
     }
-  }, [isReload]);
+  }, [isDirectVisitOrReload, route.name]);
 
   const currPage = useCallback(() => {
     if (route.name === "loading") {
@@ -78,8 +83,13 @@ export default function Root() {
 
   return (
     <>
-      {shouldShowNavbar && <Navbar />}
-      {currPage()}
+      {shouldRedirect && <Box w="100%" h="100%" bg="black" position="fixed" />}
+      {!shouldRedirect && (
+        <>
+          {shouldShowNavbar && <Navbar />}
+          {currPage()}
+        </>
+      )}
     </>
   );
 }

@@ -18,7 +18,7 @@ import { useErrorModal } from "../hooks/error_modal_hooks";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import ShowHintButton from "../components/level/show_hint_button";
 import { useHintsModal } from "../hooks/hints_modal_hooks";
-import { NAVBAR_HEIGHT } from "../lib/constants";
+import { BG_INDEX, NAVBAR_HEIGHT } from "../lib/constants";
 
 const game = Game.new();
 
@@ -67,7 +67,7 @@ export default function Level() {
     }
   }, [currLevel]);
 
-  const [showShortsModal, _] = useShortsModal();
+  const [showShortsModal, hideShortsModal] = useShortsModal();
   useEffect(() => {
     // Update the shorts modal state whenever the route changes.
     if (currScene?.tutorialShorts) {
@@ -75,7 +75,11 @@ export default function Level() {
       // has already seen these particular tutorials.
       showShortsModal(currScene.tutorialShorts);
     }
-  }, [currScene?.tutorialShorts, showShortsModal]);
+    return () => {
+      // Hide the shorts modal when the route changes.
+      hideShortsModal();
+    };
+  }, [currScene?.tutorialShorts, hideShortsModal, showShortsModal]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [lastResult, setLastResult] = useState<RunResult | null>(null);
@@ -254,12 +258,19 @@ export default function Level() {
         setVisible={setDialogVisible}
         treeName={getDialogTree()}
       />
+      <Box
+        position="fixed"
+        w="100%"
+        h="100%"
+        zIndex={BG_INDEX}
+        backgroundColor="white"
+      />
       <Container
         minW="container.xl"
         maxW="container.xl"
-        mt={`${NAVBAR_HEIGHT + 10}px`}
+        mt={`${NAVBAR_HEIGHT}px`}
       >
-        <Box>
+        <Box pt="15px">
           <Flex>
             <Text fontSize="2xl" fontWeight="bold" mb={1}>
               Level {currScene?.levelIndex}: {currLevel().name}

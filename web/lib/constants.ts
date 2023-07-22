@@ -1,5 +1,6 @@
 // Shared constants go here. Other constants should be
 // defined in their respective components.
+export const PROD_HOSTNAME = "play.elaragame.com";
 
 // Screen size.
 export const MIN_BG_WIDTH = "980px";
