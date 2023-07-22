@@ -25,7 +25,6 @@ export default function Root() {
   // the root.
   const isDirectVisitOrReload = useMemo(() => {
     const { referrer } = document;
-
     return (
       referrer === "" ||
       !referrer.startsWith(
@@ -35,17 +34,18 @@ export default function Root() {
   }, []);
 
   const shouldRedirect = useMemo(
-    () => isDirectVisitOrReload,
-    [isDirectVisitOrReload]
+    () =>
+      isDirectVisitOrReload && route.name !== "loading" && route.name !== "",
+    [isDirectVisitOrReload, route.name]
   );
 
   // Redirect the user to the loading screen if they reload the page or directly
   // visit a URL other than the root.
   useEffect(() => {
-    if (isDirectVisitOrReload && route.name !== "loading") {
+    if (shouldRedirect) {
       window.location.href = "/loading/title";
     }
-  }, [isDirectVisitOrReload, route.name]);
+  }, [isDirectVisitOrReload, route.name, shouldRedirect]);
 
   const currPage = useCallback(() => {
     if (route.name === "loading") {

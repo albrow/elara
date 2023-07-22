@@ -26,7 +26,7 @@ export default function Loading(props: LoadingProps) {
     return () => {
       clearTimeout(timeout);
     };
-  }, [props.destination, router]);
+  }, []);
 
   const handlePlay = useCallback(() => {
     const dest = props.destination || "title";
