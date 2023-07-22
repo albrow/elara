@@ -1,8 +1,9 @@
 import { useRouteNode } from "react-router5";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import Navbar from "../components/settings/navbar/navbar";
 import Title from "./title";
+import Loading from "./loading";
 import About from "./about";
 import Hub from "./hub";
 import Level from "./level";
@@ -19,7 +20,32 @@ export default function Root() {
     throw new Error("Route is undefined");
   }
 
+  // Based on https://stackoverflow.com/questions/68842602/react-how-to-detect-page-refresh-and-redirect-user
+  // We use different methods to detect a reload in order to account for both older and newer browsers.
+  const isReload = useMemo(
+    () =>
+      (window.performance.navigation &&
+        window.performance.navigation.type === 1) ||
+      window.performance
+        .getEntriesByType("navigation")
+        // @ts-ignore
+        .map((nav) => nav.type)
+        .includes("reload"),
+    []
+  );
+
+  // Redirect the user to the loading screen if they reload the page.
+  useEffect(() => {
+    if (isReload) {
+      // console.log("detected reload");
+      window.location.href = "/loading/title";
+    }
+  }, [isReload]);
+
   const currPage = useCallback(() => {
+    if (route.name === "loading") {
+      return <Loading destination={route.params.destination} />;
+    }
     if (route.name === "title") {
       return <Title />;
     }
@@ -42,7 +68,7 @@ export default function Root() {
       return <End />;
     }
     throw new Error(`Unknown route: ${route.name}`);
-  }, [route]);
+  }, [route.name, route.params.destination]);
 
   const shouldShowNavbar = useMemo(
     () =>

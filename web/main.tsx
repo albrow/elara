@@ -81,7 +81,11 @@ const elaraTheme = extendTheme({
   const routes: Route[] = [
     {
       name: "title",
-      path: "/",
+      path: "/title",
+    },
+    {
+      name: "loading",
+      path: "/loading/*destination",
     },
     {
       name: "about",
@@ -114,7 +118,8 @@ const elaraTheme = extendTheme({
   ];
 
   const router = createRouter(routes, {
-    defaultRoute: "about",
+    defaultRoute: "loading",
+    defaultParams: { destination: "title" },
   });
   router.usePlugin(browserPlugin());
   router.start();

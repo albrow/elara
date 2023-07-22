@@ -58,6 +58,8 @@ import whoIam from "../audio/dialog/who_i_am.ogg";
 import whoIamFallback from "../audio/dialog/who_i_am.mp3";
 import whereYouAre from "../audio/dialog/where_you_are.ogg";
 import whereYouAreFallback from "../audio/dialog/where_you_are.mp3";
+import prelude from "../audio/music/prelude.ogg";
+import preludeFallback from "../audio/music/prelude.mp3";
 
 import { useSaveData } from "../hooks/save_data_hooks";
 import { volumeToGain } from "../lib/utils";
@@ -219,6 +221,12 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         "dialog",
         [whereYouAre, whereYouAreFallback],
         0.8
+      ),
+      music_prelude: new Sound(
+        "music_prelude",
+        "music",
+        [prelude, preludeFallback],
+        0.7
       ),
     }),
     []
