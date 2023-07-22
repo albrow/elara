@@ -17,9 +17,6 @@ interface JournalModalProps extends JournalProps {
 }
 
 export default function JournalModal(props: JournalModalProps) {
-  // TODO(albrow): Fix issues with z-index. Doesn't seem to be respecting the
-  // values I'm setting here, and the player message can sometimes appear on
-  // top of the modal.
   return (
     <Box hidden={!props.visible} zIndex={JOURNAL_MODAL_Z_INDEX}>
       <Modal
