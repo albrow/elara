@@ -84,6 +84,7 @@ export default function Title() {
         <Flex
           direction="column"
           maxW="fit-content"
+          minW="240px"
           mx="auto"
           my="20px"
           gap="10px"

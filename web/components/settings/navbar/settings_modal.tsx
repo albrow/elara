@@ -26,7 +26,12 @@ export interface SettingsModalProps {
 export default function SettingsModal(props: SettingsModalProps) {
   const [
     saveData,
-    { saveMasterVolume, saveSoundEffectsVolume, saveDialogVolume },
+    {
+      saveMasterVolume,
+      saveSoundEffectsVolume,
+      saveDialogVolume,
+      saveMusicVolume,
+    },
   ] = useSaveData();
   const router = useRouter();
   const { route } = useRouteNode("");
@@ -76,6 +81,21 @@ export default function SettingsModal(props: SettingsModalProps) {
     { maxWait: 1000 }
   );
 
+  const musicVolume = useMemo(
+    () => saveData.settings.musicVolume,
+    [saveData.settings.musicVolume]
+  );
+  const setMusicVolume = debounce(
+    useCallback(
+      (percentValue: number) => {
+        saveMusicVolume(percentValue / 100);
+      },
+      [saveMusicVolume]
+    ),
+    100,
+    { maxWait: 1000 }
+  );
+
   return (
     <Modal isOpen={props.visible} onClose={() => props.setVisible(false)}>
       <ModalOverlay />
@@ -100,6 +120,11 @@ export default function SettingsModal(props: SettingsModalProps) {
             <VolumeSlider
               initialValPercent={dialogVolume * 100}
               onChange={setDialogVolume}
+            />
+            <Text fontWeight="bold">Music volume</Text>
+            <VolumeSlider
+              initialValPercent={musicVolume * 100}
+              onChange={setMusicVolume}
             />
           </Box>
           {route.name !== "title" && (
