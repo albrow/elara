@@ -5,10 +5,10 @@ import { MdPlayArrow } from "react-icons/md";
 
 import { useRouter } from "react-router5";
 import { useCallback, useEffect, useState } from "react";
-import { useSoundManager } from "../hooks/sound_manager_hooks";
+
+import { useSceneNavigator } from "../hooks/scenes_hooks";
 
 const LOAD_TIME_MS = 1000;
-const SOUND_DELAY_TIME_MS = 200;
 
 export interface LoadingProps {
   destination?: string;
@@ -17,7 +17,7 @@ export interface LoadingProps {
 export default function Loading(props: LoadingProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const { getSound } = useSoundManager();
+  const { navigateToTitle } = useSceneNavigator();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -30,25 +30,13 @@ export default function Loading(props: LoadingProps) {
 
   const handlePlay = useCallback(() => {
     const dest = props.destination || "title";
-    router.navigate(dest);
 
-    let timeout: NodeJS.Timeout | null = null;
     if (dest === "title") {
-      const sound = getSound("music_prelude");
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      timeout = setTimeout(() => {
-        // TODO(albrow): Loop the music.
-        sound.play();
-      }, SOUND_DELAY_TIME_MS);
+      navigateToTitle();
+    } else {
+      router.navigate(dest);
     }
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    };
-  }, [getSound, props.destination, router]);
+  }, [navigateToTitle, props.destination, router]);
 
   return (
     <Box w="100%" h="100%" bg="black" position="fixed">

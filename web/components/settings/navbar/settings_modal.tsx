@@ -14,8 +14,9 @@ import { useCallback, useMemo } from "react";
 import debounce from "lodash.debounce";
 
 import { MdExitToApp } from "react-icons/md";
-import { useRouteNode, useRouter } from "react-router5";
+import { useRouteNode } from "react-router5";
 import { useSaveData } from "../../../hooks/save_data_hooks";
+import { useSceneNavigator } from "../../../hooks/scenes_hooks";
 import VolumeSlider from "./volume_slider";
 
 export interface SettingsModalProps {
@@ -33,8 +34,8 @@ export default function SettingsModal(props: SettingsModalProps) {
       saveMusicVolume,
     },
   ] = useSaveData();
-  const router = useRouter();
   const { route } = useRouteNode("");
+  const { navigateToTitle } = useSceneNavigator();
 
   const masterVolume = useMemo(
     () => saveData.settings.masterVolume,
@@ -129,10 +130,7 @@ export default function SettingsModal(props: SettingsModalProps) {
           </Box>
           {route.name !== "title" && (
             <Flex w="100%" mt="20px" mb="10px" gap="5px" justifyContent="right">
-              <Button
-                colorScheme="blackAlpha"
-                onClick={() => router.navigate("title")}
-              >
+              <Button colorScheme="blackAlpha" onClick={navigateToTitle}>
                 <MdExitToApp style={{ marginRight: "0.3em" }} />
                 Exit to Title Screen
               </Button>

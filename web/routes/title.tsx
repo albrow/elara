@@ -14,12 +14,14 @@ import SettingsModal from "../components/settings/navbar/settings_modal";
 import ConfirmNewGameModal from "../components/title/confirm_new_game_modal";
 import { humanFriendlyTimestamp } from "../lib/utils";
 import staryBgImg from "../images/starry_bg.webp";
+import { useSceneNavigator } from "../hooks/scenes_hooks";
 
 export default function Title() {
   const [saveData, { resetAllSaveData }] = useSaveData();
   const router = useRouter();
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [confirmNewGameVisible, setConfirmNewGameVisible] = useState(false);
+  const { navigateToHub } = useSceneNavigator();
 
   const hasExistingSave = useMemo(
     () =>
@@ -31,8 +33,8 @@ export default function Title() {
 
   const handleNewGameConfirm = useCallback(() => {
     resetAllSaveData();
-    router.navigate("hub");
-  }, [resetAllSaveData, router]);
+    navigateToHub();
+  }, [navigateToHub, resetAllSaveData]);
 
   const handleNewGame = useCallback(() => {
     if (hasExistingSave) {
@@ -43,8 +45,8 @@ export default function Title() {
   }, [hasExistingSave, handleNewGameConfirm]);
 
   const handleContinue = useCallback(() => {
-    router.navigate("hub");
-  }, [router]);
+    navigateToHub();
+  }, [navigateToHub]);
 
   const handleSettings = useCallback(() => {
     setSettingsVisible(true);

@@ -5,6 +5,9 @@ export const PROD_HOSTNAME = "play.elaragame.com";
 // Screen size.
 export const MIN_BG_WIDTH = "980px";
 
+// How long to wait when navigating to a new scene before playing the sound.
+export const SOUND_DELAY_TIME_MS = 100;
+
 // Constants related to the game board and game logic.
 export const WIDTH = 12;
 export const HEIGHT = 8;

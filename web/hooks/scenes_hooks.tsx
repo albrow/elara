@@ -4,6 +4,7 @@ import type { State } from "router5";
 
 import type { Scene } from "../contexts/scenes";
 import { ScenesContext } from "../contexts/scenes";
+import { SOUND_DELAY_TIME_MS } from "../lib/constants";
 import { useSoundManager } from "./sound_manager_hooks";
 
 function getSceneIndexFromRoute(
@@ -68,7 +69,7 @@ export function useSceneNavigator() {
   const currScene = useCurrScene();
   const router = useRouter();
   const JOURNAL_PAGES = useJournalPages();
-  const { getSoundOrNull } = useSoundManager();
+  const { getSound, getSoundOrNull } = useSoundManager();
   const soundTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const navigateToScene = useCallback(
@@ -106,6 +107,24 @@ export function useSceneNavigator() {
     router.navigate("hub");
   }, [router]);
 
+  const navigateToTitle = useCallback(() => {
+    router.navigate("title");
+
+    let timeout: NodeJS.Timeout | null = null;
+    const sound = getSound("music_prelude");
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      sound.play();
+    }, SOUND_DELAY_TIME_MS);
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [getSound, router]);
+
   const navigateToNextJournalPage = useCallback(() => {
     const unlockedPages = JOURNAL_PAGES.filter((page) => page.unlocked);
     if (unlockedPages.length === 0) {
@@ -125,6 +144,7 @@ export function useSceneNavigator() {
     navigateToScene,
     navigateToNextScene,
     navigateToHub,
+    navigateToTitle,
     navigateToNextJournalPage,
   };
 }
