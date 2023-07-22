@@ -15,6 +15,8 @@ export class Sound implements Playable {
 
   private _howl: Howl;
 
+  private _loop: boolean;
+
   /**
    * This is the most basic implementation of Playable.
    *
@@ -24,25 +26,25 @@ export class Sound implements Playable {
    * @param baseGain The "base" or "internal" gain of the sound, from 0.0 to 1.0 (default 1.0).
    *    Independent of other volume controls. This is useful for adjusting specific sounds that
    *    are too loud or too quiet.
-   * @param catGain The "category" or "external" gain of the sound, from 0.0 to 1.0 (default 1.0).
-   *    This is useful for adjusting the volume of a group of sounds together, i.e. having separate volume
-   *    controls for sound effects, music, etc.
+   * @param loop Whether or not the sound should loop (default false).
    */
   constructor(
     id: string,
     category: SoundCategory,
     sources: string[],
     baseGain: number = 1.0,
-    catGain: number = 1.0
+    loop: boolean = false
   ) {
     this.id = id;
     this.category = category;
     this._sources = sources;
     this._baseGain = baseGain;
-    this._catGain = catGain;
+    this._catGain = 1.0;
+    this._loop = loop;
     this._howl = new Howl({
       src: this._sources,
-      volume: this._baseGain * this._catGain,
+      volume: this._baseGain,
+      loop: this._loop,
     });
   }
 
