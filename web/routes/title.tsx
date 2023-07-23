@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Img, Text } from "@chakra-ui/react";
 
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "react-router5";
@@ -9,12 +9,14 @@ import {
   MdOutlineHelp,
 } from "react-icons/md";
 
+import { Animate } from "react-simple-animate";
 import { useSaveData } from "../hooks/save_data_hooks";
 import SettingsModal from "../components/settings/navbar/settings_modal";
 import ConfirmNewGameModal from "../components/title/confirm_new_game_modal";
 import { humanFriendlyTimestamp } from "../lib/utils";
 import staryBgImg from "../images/starry_bg.webp";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
+import logoImg from "../images/logo.webp";
 
 export default function Title() {
   const [saveData, { resetAllSaveData }] = useSaveData();
@@ -77,18 +79,30 @@ export default function Title() {
       <Container
         maxW="container.md"
         position="relative"
-        top="30%"
-        transform="translateY(-30%)"
+        top="25%"
+        transform="translateY(-25%)"
       >
-        <Text fontSize="5em" color="white" textAlign="center">
-          Elara
-        </Text>
+        <Animate
+          start={{
+            opacity: 0,
+            transform: "translateY(-40%)",
+          }}
+          end={{
+            opacity: 1,
+            transform: "translateY(0)",
+          }}
+          play
+          duration={3}
+        >
+          <Img src={logoImg} w="50%" mx="auto" />
+        </Animate>
         <Flex
           direction="column"
           maxW="fit-content"
           minW="240px"
           mx="auto"
-          my="20px"
+          mt="40px"
+          mb="20px"
           gap="10px"
         >
           {hasExistingSave && (
