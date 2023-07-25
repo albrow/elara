@@ -6,7 +6,6 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import createRouter from "router5";
 import { RouterProvider } from "react-router5";
 import type { Route } from "router5";
-import browserPlugin from "router5-plugin-browser";
 
 import "@fontsource/nunito/600.css";
 import "@fontsource/nunito/800.css";
@@ -121,7 +120,7 @@ const elaraTheme = extendTheme({
     defaultRoute: "loading",
     defaultParams: { destination: "title" },
   });
-  router.usePlugin(browserPlugin());
+  // router.usePlugin(browserPlugin());
   router.start();
 
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

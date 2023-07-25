@@ -1,7 +1,6 @@
 import { useRouteNode } from "react-router5";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
-import { Box } from "@chakra-ui/react";
 import Navbar from "../components/settings/navbar/navbar";
 import Title from "./title";
 import Loading from "./loading";
@@ -20,32 +19,6 @@ export default function Root() {
   if (!route) {
     throw new Error("Route is undefined");
   }
-
-  // Detect if the user reloaded the page or directly visited a URL other than
-  // the root.
-  const isDirectVisitOrReload = useMemo(() => {
-    const { referrer } = document;
-    return (
-      referrer === "" ||
-      !referrer.startsWith(
-        `${window.location.protocol}//${window.location.host}`
-      )
-    );
-  }, []);
-
-  const shouldRedirect = useMemo(
-    () =>
-      isDirectVisitOrReload && route.name !== "loading" && route.name !== "",
-    [isDirectVisitOrReload, route.name]
-  );
-
-  // Redirect the user to the loading screen if they reload the page or directly
-  // visit a URL other than the root.
-  useEffect(() => {
-    if (shouldRedirect) {
-      window.location.href = "/loading/title";
-    }
-  }, [isDirectVisitOrReload, route.name, shouldRedirect]);
 
   const currPage = useCallback(() => {
     if (route.name === "loading") {
@@ -83,13 +56,8 @@ export default function Root() {
 
   return (
     <>
-      {shouldRedirect && <Box w="100%" h="100%" bg="black" position="fixed" />}
-      {!shouldRedirect && (
-        <>
-          {shouldShowNavbar && <Navbar />}
-          {currPage()}
-        </>
-      )}
+      {shouldShowNavbar && <Navbar />}
+      {currPage()}
     </>
   );
 }
