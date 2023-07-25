@@ -16,23 +16,15 @@ import "../styles/scrollbars.css";
 
 export default function Root() {
   const { route } = useRouteNode("");
-  // const [hasLoaded, setHasLoaded] = useState(false);
 
   if (!route) {
     throw new Error("Route is undefined");
   }
 
-  // useEffect(() => {
-  //   setHasLoaded(true);
-  // }, []);
-
   // Detect if the user reloaded the page or directly visited a URL other than
   // the root.
   const isDirectVisitOrReload = useMemo(() => {
     const { referrer } = document;
-    // if (hasLoaded) {
-    //   return false;
-    // }
     return (
       referrer === "" ||
       !referrer.startsWith(
