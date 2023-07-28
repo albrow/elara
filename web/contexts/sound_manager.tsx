@@ -227,7 +227,8 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         "music",
         [prelude, preludeFallback],
         1.0,
-        true
+        true,
+        4000
       ),
     }),
     []

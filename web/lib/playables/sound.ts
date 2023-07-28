@@ -17,6 +17,8 @@ export class Sound implements Playable {
 
   private _loop: boolean;
 
+  private _fadeIn: number;
+
   /**
    * This is the most basic implementation of Playable.
    *
@@ -27,13 +29,15 @@ export class Sound implements Playable {
    *    Independent of other volume controls. This is useful for adjusting specific sounds that
    *    are too loud or too quiet.
    * @param loop Whether or not the sound should loop (default false).
+   * @param fadeIn Number of milliseconds to fade the sound in when playing it.
    */
   constructor(
     id: string,
     category: SoundCategory,
     sources: string[],
     baseGain: number = 1.0,
-    loop: boolean = false
+    loop: boolean = false,
+    fadeIn: number = 0.0
   ) {
     this.id = id;
     this.category = category;
@@ -41,6 +45,7 @@ export class Sound implements Playable {
     this._baseGain = baseGain;
     this._catGain = 1.0;
     this._loop = loop;
+    this._fadeIn = fadeIn;
     this._howl = new Howl({
       src: this._sources,
       volume: this._baseGain,
@@ -48,10 +53,14 @@ export class Sound implements Playable {
     });
   }
 
+  private _getTotalGain(): number {
+    return this._baseGain * this._catGain;
+  }
+
   setCatGain(gain: number): void {
     this._catGain = gain;
     if (this._howl) {
-      this._howl.fade(this._howl.volume(), this._baseGain * this._catGain, 10);
+      this._howl.fade(this._howl.volume(), this._getTotalGain(), 10);
     }
   }
 
@@ -64,7 +73,13 @@ export class Sound implements Playable {
   }
 
   play() {
+    if (this._fadeIn > 0) {
+      this._howl.volume(0);
+    }
     this._howl?.play();
+    if (this._fadeIn > 0) {
+      this._howl.fade(0, this._getTotalGain(), this._fadeIn);
+    }
   }
 
   pause() {
