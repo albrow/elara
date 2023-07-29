@@ -43,19 +43,6 @@ export interface ControlBarProps {
 }
 
 export default function ControlBar(props: ControlBarProps) {
-  const getStateText = useCallback(() => {
-    switch (props.editorState) {
-      case "editing":
-        return "editing";
-      case "running":
-        return "running...";
-      case "paused":
-        return "paused";
-      default:
-        throw Error(`Invalid editor state: ${props.editorState}`);
-    }
-  }, [props.editorState]);
-
   const [showSliderTip, setShowSliderTip] = useState(true);
 
   const onSliderChange = useCallback(
@@ -164,7 +151,7 @@ export default function ControlBar(props: ControlBarProps) {
         </Box>
         {props.numSteps && props.stepIndex !== undefined && (
           <>
-            <Box ml="18px" width="180px" my="auto">
+            <Box ml="18px" width="190px" my="auto">
               <Slider
                 defaultValue={0}
                 value={props.stepIndex}
@@ -200,7 +187,7 @@ export default function ControlBar(props: ControlBarProps) {
             </Box>
             <Box my="auto" ml="12px">
               <Text as="span" fontSize="sm" color="white" verticalAlign="top">
-                {props.stepIndex + 1}/{props.numSteps} ({getStateText()})
+                Step: {props.stepIndex + 1}/{props.numSteps}
               </Text>
             </Box>
           </>
