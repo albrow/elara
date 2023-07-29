@@ -81,7 +81,7 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -103,7 +103,7 @@ mod tests {
             move_backward(2);
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
     }

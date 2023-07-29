@@ -4,11 +4,6 @@ use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, State};
 #[derive(Copy, Clone)]
 pub struct Movement {}
 
-lazy_static! {
-    static ref MOVEMENT_FUNCS: Vec<&'static str> =
-        vec!["move_forward", "move_backward", "turn_left", "turn_right",];
-}
-
 impl Level for Movement {
     fn name(&self) -> &'static str {
         "First Steps"
@@ -18,9 +13,6 @@ impl Level for Movement {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &MOVEMENT_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// The code below moves the rover, but it's not going to the
@@ -72,14 +64,14 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
         // Running this code should result in Outcome::Success.
         let script = "move_forward(3); turn_right(); move_forward(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -93,7 +85,7 @@ mod tests {
             turn_right();
             move_forward(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -105,14 +97,14 @@ mod tests {
         // the player should stop moving right after hitting the obstacle at (4, 0).
         let script = "move_forward(5); turn_right(); move_forward(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
         // Now try moving too far down.
         let script = "turn_right(); move_forward(5); turn_left(); move_forward(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -129,7 +121,7 @@ mod tests {
                 move_backward(1);
             }";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         // In this case, we don't reach the objective so we expect ERR_OUT_OF_FUEL.
@@ -141,7 +133,7 @@ mod tests {
             turn_right();
             move_forward(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,

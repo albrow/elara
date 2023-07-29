@@ -1,4 +1,4 @@
-use super::{Level, Outcome, ALL_AVAIL_FUNCS};
+use super::{Level, Outcome};
 use crate::{
     constants::ERR_OUT_OF_FUEL,
     simulation::{Actor, DataTerminal, Obstacle, Orientation, Player, State},
@@ -19,9 +19,6 @@ impl Level for DataTerminalsPartOne {
     }
     fn objective(&self) -> &'static str {
         "Use the say function to find out what the data terminal ({terminal}) holds."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &ALL_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// The read_data function outputs the data from a terminal, but only
@@ -90,7 +87,7 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue,);
 
@@ -99,7 +96,7 @@ mod tests {
             move_forward(5);
             say(read_data());";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -109,7 +106,7 @@ mod tests {
             say("This isn't the right message");
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -121,7 +118,7 @@ mod tests {
             say(read_data());
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,

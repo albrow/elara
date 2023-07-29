@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome, ALL_AVAIL_FUNCS};
+use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EvilRoverActor};
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, DataTerminal, Enemy, FuelSpot, Orientation};
@@ -66,9 +66,6 @@ impl Level for EnemiesAndAsteroids {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to one of the goals ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &ALL_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// The data terminal will output "right" or "left" depending on which
@@ -151,7 +148,7 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -180,7 +177,7 @@ mod tests {
             }
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -206,7 +203,7 @@ mod tests {
             }
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -238,7 +235,7 @@ mod tests {
             }
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -275,7 +272,7 @@ mod tests {
             }
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, false);
@@ -311,7 +308,7 @@ mod tests {
             }
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, true);
@@ -347,7 +344,7 @@ mod tests {
             }
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, false);
@@ -380,7 +377,7 @@ mod tests {
             }
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, false);

@@ -28,6 +28,8 @@ interface RawScene {
   // Used as a workaround for iOS audio restrictions, namely that audio can
   // only be played in direct response to user action (i.e. in a click handler).
   initialSound?: string;
+  // New functions that should be unlocked after completing this scene.
+  newFunctions?: string[];
 }
 
 export interface Scene extends RawScene {
@@ -52,7 +54,8 @@ export const SANDBOX_WITH_TERMINAL_LEVEL = levelData.get(
 function levelScene(
   shortName: string,
   tutorialShorts?: ShortId[],
-  hints?: string[]
+  hints?: string[],
+  newFunctions?: string[]
 ): RawScene {
   const level = levelData.get(shortName);
   if (!level) {
@@ -66,6 +69,7 @@ function levelScene(
     level,
     tutorialShorts,
     hints,
+    newFunctions,
   };
 }
 
@@ -88,6 +92,8 @@ function journalScene(sectionName: string): RawScene {
   };
 }
 
+// TODO(albrow): Define which functions should be unlocked at scene end
+// (or alternatively when the scene is unlocked).
 const RAW_SCENES: RawScene[] = [
   dialogScene("intro"),
   levelScene(
@@ -101,7 +107,8 @@ const RAW_SCENES: RawScene[] = [
     [
       "Find the line of code that says `move_forward(1);`. Try changing the number `1` to a different number.",
       "The `turn_right` function doesn't expect any inputs, so you don't need to put anything in between the parentheses. (You'll learn more about function inputs soon.)",
-    ]
+    ],
+    ["say"]
   ),
   journalScene("functions"),
   journalScene("comments"),
@@ -133,7 +140,8 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
       "Don't forget to include the `loop` keyword right before the opening curly brace (`{`).",
       "You don't need a semicolon (`;`) after the closing curly brace (`}`).",
-    ]
+    ],
+    ["press_button"]
   ),
   levelScene(
     "buttons_part_one",
@@ -147,7 +155,8 @@ const RAW_SCENES: RawScene[] = [
     [],
     [
       "Remember, the `press_button` function only works if G.R.O.V.E.R. is next to the button (he doesn't need to be facing it).",
-    ]
+    ],
+    ["read_data", "get_orientation"]
   ),
   journalScene("function_outputs"),
   levelScene(

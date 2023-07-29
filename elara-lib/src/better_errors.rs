@@ -73,14 +73,19 @@ pub fn search_prev_lines(script: &str, start_line: usize) -> usize {
     return start_line;
 }
 
+// TODO(albrow):
+//
+//  - Handle functions which are not unlocked yet.
+//  - Handle functions which are unlocked but temporarily disabled.
+//
 fn convert_func_not_found_err(
-    avail_funcs: &Vec<&'static str>,
+    avail_funcs: &Vec<String>,
     fn_sig: &str,
     pos: &rhai::Position,
 ) -> BetterError {
     let fn_name = fn_name_from_sig(fn_sig);
-    if !avail_funcs.contains(&fn_name.as_str()) {
-        // If the function is not available for this level, just return
+    if !avail_funcs.contains(&fn_name) {
+        // If the function is not unlocked yet, just return
         // a "function not found" error.
         return BetterError {
             message: format!("Error: Function not found: {}", fn_name),
@@ -241,8 +246,13 @@ lazy_static! {
     };
 }
 
+// TODO(albrow):
+//
+//  - Handle functions which are not unlocked yet.
+//  - Handle functions which are unlocked but temporarily disabled.
+//
 fn convert_var_not_found_error(
-    avail_funcs: &Vec<&'static str>,
+    avail_funcs: &Vec<String>,
     var_name: &str,
     pos: &rhai::Position,
 ) -> BetterError {
@@ -255,7 +265,7 @@ fn convert_var_not_found_error(
             line: pos.line(),
             col: pos.position(),
         };
-    } else if avail_funcs.contains(&var_name) {
+    } else if avail_funcs.contains(&var_name.to_string()) {
         return BetterError {
             message: format!(
                 r#"Error: Variable not found: {}. (Hint: If you meant to call a function, make sure you include parentheses after the function name.)"#,
@@ -273,8 +283,13 @@ fn convert_var_not_found_error(
     }
 }
 
+// TODO(albrow):
+//
+//  - Handle functions which are not unlocked yet.
+//  - Handle functions which are unlocked but temporarily disabled.
+//
 pub fn convert_err(
-    avail_funcs: &Vec<&'static str>,
+    avail_funcs: &Vec<String>,
     script: String,
     err: Box<EvalAltResult>,
 ) -> BetterError {
@@ -332,12 +347,12 @@ mod tests {
     use super::*;
 
     lazy_static! {
-        static ref TEST_AVAIL_FUNCS: Vec<&'static str> = vec![
-            "move_forward",
-            "move_backward",
-            "turn_left",
-            "turn_right",
-            "say",
+        static ref TEST_UNLOCKED_FUNCS: Vec<String> = vec![
+            "move_forward".to_string(),
+            "move_backward".to_string(),
+            "turn_left".to_string(),
+            "turn_right".to_string(),
+            "say".to_string(),
         ];
     }
 
@@ -365,7 +380,7 @@ mod tests {
             rhai::ParseErrorType::MissingToken(String::from(";"), String::from("at end of line")),
             rhai::Position::new(4, 21),
         );
-        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
+        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -393,7 +408,7 @@ mod tests {
             ),
             rhai::Position::new(4, 13),
         );
-        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
+        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -416,7 +431,7 @@ mod tests {
             ),
             rhai::Position::new(3, 26),
         );
-        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
+        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -444,7 +459,7 @@ mod tests {
             ),
             rhai::Position::new(5, 13),
         );
-        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
+        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -470,7 +485,7 @@ mod tests {
             ),
             rhai::Position::new(2, 15),
         );
-        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
+        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -496,7 +511,7 @@ mod tests {
             ),
             rhai::Position::new(3, 15),
         );
-        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
+        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -524,7 +539,7 @@ mod tests {
             ),
             rhai::Position::new(4, 1),
         );
-        let err = convert_err(&TEST_AVAIL_FUNCS, script, Box::new(err));
+        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {

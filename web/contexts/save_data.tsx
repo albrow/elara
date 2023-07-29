@@ -14,7 +14,7 @@ import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
 import { SectionName } from "../components/journal/sections";
 
-export const SAVE_DATA_VERSION = 11;
+export const SAVE_DATA_VERSION = 12;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 // Amount of time (in milliseconds) to wait for further updates before
@@ -41,25 +41,6 @@ export interface Settings {
   dialogVolume: number;
 }
 
-const DEFUALT_SETTINGS: Settings = {
-  masterVolume: 0.8,
-  musicVolume: 0.8,
-  soundEffectsVolume: 1,
-  dialogVolume: 1,
-};
-
-const DEFAULT_SAVE_DATA = {
-  version: SAVE_DATA_VERSION,
-  levelStates: {},
-  seenDialogTrees: [],
-  seenTutorialShorts: [],
-  settings: DEFUALT_SETTINGS,
-  seenJournalPages: [],
-  // lastUpdated is intentially omitted from the default save data.
-  // it will be set automatically when the save data is committed to
-  // local storage.
-};
-
 // The macro state of the game, including which levels have been
 // completed, user settings, dialog options, etc.
 export interface SaveData {
@@ -75,10 +56,40 @@ export interface SaveData {
   settings: Settings;
   // Tracks which journal pages the user has already seen.
   seenJournalPages: SectionName[];
+  // Which functions have been unlocked.
+  unlockedFunctions: string[];
   // When the save data was last committed to local storage.
   // Measured as milliseconds since the UNIX epoch.
   lastUpdated?: number;
 }
+
+const DEFUALT_SETTINGS: Settings = {
+  masterVolume: 0.8,
+  musicVolume: 0.8,
+  soundEffectsVolume: 1,
+  dialogVolume: 1,
+};
+
+// These functions are always unlocked at the start of the game.
+const DEFAULT_UNLOCKED_FUNCTIONS = [
+  "move_forward",
+  "move_backward",
+  "turn_left",
+  "turn_right",
+];
+
+const DEFAULT_SAVE_DATA: SaveData = {
+  version: SAVE_DATA_VERSION,
+  levelStates: {},
+  seenDialogTrees: [],
+  seenTutorialShorts: [],
+  settings: DEFUALT_SETTINGS,
+  seenJournalPages: [],
+  unlockedFunctions: DEFAULT_UNLOCKED_FUNCTIONS,
+  // lastUpdated is intentially omitted from the default save data.
+  // it will be set automatically when the save data is committed to
+  // local storage.
+};
 
 export interface SaveDataManager {
   markLevelCompleted: (levelName: string) => void;
@@ -92,6 +103,7 @@ export interface SaveDataManager {
   saveMusicVolume: (volume: number) => void;
   markJournalPageSeen: (sectionName: SectionName) => void;
   resetAllSaveData: () => void;
+  unlockFunctions: (newFunctions: string[]) => void;
 }
 
 // Actually saves the data to local storage.
@@ -111,14 +123,7 @@ function migrateSaveData(saveData: SaveData): SaveData {
   if (saveData.version < 5) {
     // For older versions, just log a warning and return the default save data.
     console.warn("Save data too old to migrate. Falling back to default.");
-    return {
-      version: SAVE_DATA_VERSION,
-      levelStates: {},
-      seenDialogTrees: [],
-      seenTutorialShorts: [],
-      settings: DEFUALT_SETTINGS,
-      seenJournalPages: [],
-    };
+    return DEFAULT_SAVE_DATA;
   }
 
   // Migrate from version 5 to 6.
@@ -169,6 +174,30 @@ function migrateSaveData(saveData: SaveData): SaveData {
     newData.lastUpdated = Date.now();
   }
 
+  if (newData.version === 11) {
+    newData.version = 12;
+    const unlockedFunctions = DEFAULT_UNLOCKED_FUNCTIONS;
+    // Version 12 added unlockedFunctions.
+    // We need to add unlocked functions based on which journal pages and
+    // levels the user has already completed.
+    if (newData.levelStates.movement?.completed) {
+      unlockedFunctions.push("say");
+    }
+    if (newData.levelStates.loops_part_two?.completed) {
+      unlockedFunctions.push("press_button");
+    }
+    if (newData.levelStates.button_and_gate?.completed) {
+      unlockedFunctions.push("read_data");
+      unlockedFunctions.push("get_orientation");
+    }
+
+    // Note(albrow): We use a Set here to ensure that we don't add any
+    // duplicate functions. Seems to be an issue if hooks trigger more
+    // than once in rapid sucession. In other words, using Set makes
+    // this function idempotent.
+    newData.unlockedFunctions = [...new Set(unlockedFunctions)];
+  }
+
   return newData;
 }
 
@@ -181,14 +210,7 @@ function load(): SaveData {
     }
     return migrateSaveData(saveData);
   }
-  return {
-    version: SAVE_DATA_VERSION,
-    levelStates: {},
-    seenDialogTrees: [],
-    seenTutorialShorts: [],
-    settings: DEFUALT_SETTINGS,
-    seenJournalPages: [],
-  };
+  return DEFAULT_SAVE_DATA;
 }
 
 export const SaveDataContext = createContext<
@@ -227,6 +249,9 @@ export const SaveDataContext = createContext<
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
     resetAllSaveData: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    unlockFunctions: () => {
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
   },
@@ -379,9 +404,23 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
     [setSaveData]
   );
 
+  // TODO(albrow): Consider making settings carry over even if you start a new game?
   const resetAllSaveData = useCallback(() => {
     setSaveData(DEFAULT_SAVE_DATA);
   }, [setSaveData]);
+
+  // TODO(albrow): Use a set everywhere else to prevent duplicates being
+  // added in save data arrays.
+  const unlockFunctions = useCallback(
+    (newFunctions: string[]) => {
+      const newSaveData = clone(saveDataRef.current);
+      const unlockedFunctions = new Set(newSaveData.unlockedFunctions);
+      newFunctions.forEach((f) => unlockedFunctions.add(f));
+      newSaveData.unlockedFunctions = [...unlockedFunctions];
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
 
   const providerValue = useMemo(
     () =>
@@ -399,6 +438,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
           saveMusicVolume,
           markJournalPageSeen,
           resetAllSaveData,
+          unlockFunctions,
         },
       ] as const,
     [
@@ -414,6 +454,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       saveMusicVolume,
       markJournalPageSeen,
       resetAllSaveData,
+      unlockFunctions,
     ]
   );
 
@@ -450,6 +491,11 @@ if (import.meta.vitest) {
           seenTutorialShorts: ["how_to_run_code"],
           settings: DEFUALT_SETTINGS,
           seenJournalPages: ["functions", "comments"],
+          unlockedFunctions: [
+            ...DEFAULT_UNLOCKED_FUNCTIONS,
+            "say",
+            "press_button",
+          ],
         };
         save(saveData);
         // Wait for debounce
@@ -469,6 +515,7 @@ if (import.meta.vitest) {
           seenTutorialShorts: [],
           settings: DEFUALT_SETTINGS,
           seenJournalPages: [],
+          unlockedFunctions: DEFAULT_UNLOCKED_FUNCTIONS,
         } as SaveData);
       });
 
@@ -489,6 +536,11 @@ if (import.meta.vitest) {
           seenTutorialShorts: ["how_to_run_code"],
           settings: DEFUALT_SETTINGS,
           seenJournalPages: ["functions", "comments"],
+          unlockedFunctions: [
+            ...DEFAULT_UNLOCKED_FUNCTIONS,
+            "say",
+            "press_button",
+          ],
         };
         window.localStorage.setItem(
           LOCAL_STORAGE_KEY,
@@ -496,6 +548,89 @@ if (import.meta.vitest) {
         );
 
         expect(load()).toStrictEqual(saveData);
+      });
+    });
+
+    describe("load", () => {
+      it("migrates from version 11 to 12 (adds unlocked functions)", () => {
+        const oldData = {
+          version: 11,
+          levelStates: {
+            movement: {
+              completed: true,
+              code: `say("hello");`,
+            },
+            movement_part_two: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+            fuel_part_one: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+            fuel_part_two: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+            loops_part_one: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+            loops_part_two: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+          },
+          seenDialogTrees: ["intro"],
+          seenTutorialShorts: [],
+          settings: DEFUALT_SETTINGS,
+          seenJournalPages: ["functions", "comments", "strings", "loops"],
+        };
+
+        window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(oldData));
+
+        const expectedData: SaveData = {
+          version: 12,
+          levelStates: {
+            movement: {
+              completed: true,
+              code: `say("hello");`,
+            },
+            movement_part_two: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+            fuel_part_one: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+            fuel_part_two: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+            loops_part_one: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+            loops_part_two: {
+              completed: true,
+              code: `move_right(5);`,
+            },
+          },
+          seenDialogTrees: ["intro"],
+          seenTutorialShorts: [],
+          settings: DEFUALT_SETTINGS,
+          seenJournalPages: ["functions", "comments", "strings", "loops"],
+          unlockedFunctions: [
+            ...DEFAULT_UNLOCKED_FUNCTIONS,
+            "say",
+            "press_button",
+          ],
+        };
+
+        const gotData = load();
+
+        expect(gotData).toStrictEqual(expectedData);
       });
     });
   });

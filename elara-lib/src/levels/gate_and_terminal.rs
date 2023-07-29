@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome, ALL_AVAIL_FUNCS};
+use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
     Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
 };
@@ -15,9 +15,6 @@ impl Level for GateAndTerminal {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &ALL_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"move_forward(1);
@@ -84,7 +81,7 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -97,7 +94,7 @@ mod tests {
             move_forward(3);
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         // Regression check for a bug where read_data was not correctly
@@ -111,7 +108,7 @@ mod tests {
             let password = read_data();
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         // result.outcome should be Outcome::Failure and the message
         // should contain ERR_NO_DATA_TERMINAL.

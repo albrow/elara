@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Container, Flex, Text, Box, Stack } from "@chakra-ui/react";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
@@ -39,6 +39,14 @@ export default function Level() {
     }
     return currScene.level!;
   }, [currScene]);
+
+  const availFuncs = useMemo(() => {
+    const funcs = new Set(saveData.unlockedFunctions);
+    currLevel().disabled_funcs.forEach((funcName) => {
+      funcs.delete(funcName);
+    });
+    return [...funcs];
+  }, [currLevel, saveData.unlockedFunctions]);
 
   // Update the page title whenever the level changes.
   useEffect(() => {
@@ -121,9 +129,9 @@ export default function Level() {
       updateLevelCode(currLevel().short_name, script);
 
       // Then run the script using the current level name.
-      return game.run_player_script(script, currLevel().short_name);
+      return game.run_player_script(currLevel().short_name, availFuncs, script);
     },
-    [currLevel, updateLevelCode]
+    [availFuncs, currLevel, updateLevelCode]
   );
 
   const onEditorStep = useCallback((step: FuzzyStateWithLines) => {
@@ -312,7 +320,7 @@ export default function Level() {
                 type="level"
                 code={initialCode()}
                 originalCode={currLevel().initial_code}
-                availableFunctions={currLevel().available_functions}
+                availableFunctions={availFuncs}
                 runScript={runScript}
                 onReplayDone={onReplayDone}
                 onScriptError={onScriptError}

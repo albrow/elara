@@ -6,6 +6,7 @@ import type { Scene } from "../contexts/scenes";
 import { ScenesContext } from "../contexts/scenes";
 import { SOUND_DELAY_TIME_MS } from "../lib/constants";
 import { useSoundManager } from "./sound_manager_hooks";
+import { useSaveData } from "./save_data_hooks";
 
 function getSceneIndexFromRoute(
   scenes: Scene[],
@@ -71,6 +72,7 @@ export function useSceneNavigator() {
   const JOURNAL_PAGES = useJournalPages();
   const { getSound, getSoundOrNull } = useSoundManager();
   const soundTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [_, { unlockFunctions }] = useSaveData();
 
   const navigateToScene = useCallback(
     (scene: Scene) => {
@@ -88,8 +90,12 @@ export function useSceneNavigator() {
           soundTimeout.current = setTimeout(() => sound.play(), 250);
         }
       }
+
+      if (scene.newFunctions != null && scene.newFunctions.length > 0) {
+        unlockFunctions(scene.newFunctions);
+      }
     },
-    [getSoundOrNull, router]
+    [getSoundOrNull, router, unlockFunctions]
   );
 
   const navigateToNextScene = useCallback(() => {

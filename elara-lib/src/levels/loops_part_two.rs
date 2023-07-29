@@ -1,6 +1,6 @@
 use rhai::Engine;
 
-use super::{std_check_win, Level, Outcome, STARTING_AVAIL_FUNCS};
+use super::{std_check_win, Level, Outcome};
 use crate::{
     actors::{Bounds, EvilRoverActor},
     constants::{HEIGHT, WIDTH},
@@ -20,9 +20,6 @@ impl Level for LoopsPartTwo {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &STARTING_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// Try writing a loop on your own this time.
@@ -120,7 +117,7 @@ mod tests {
         // the rover does not move at all.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -133,7 +130,7 @@ mod tests {
                 turn_left();
             }";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
     }
@@ -152,7 +149,7 @@ mod tests {
                 turn_left();
             }";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, false);
@@ -169,7 +166,7 @@ mod tests {
 
             main();"#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, true);
@@ -191,7 +188,7 @@ mod tests {
 
             main();"#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, true);
@@ -205,7 +202,7 @@ mod tests {
                 turn_left();
             });"#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, true);

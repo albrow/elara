@@ -23,6 +23,7 @@ use rand::seq::SliceRandom;
 use script_runner::{ScriptResult, ScriptRunner};
 use simulation::Simulation;
 use std::cell::RefCell;
+use std::collections::HashSet;
 use std::rc::Rc;
 use std::sync::mpsc;
 use wasm_bindgen::prelude::*;
@@ -81,12 +82,17 @@ impl Game {
 
     pub fn run_player_script(
         &mut self,
-        script: String,
         level_name: &str,
+        unlocked_funcs: js_sys::Array,
+        script: String,
     ) -> Result<js_types::RunResult, JsValue> {
         // Run the script and convert the results to the corresponding JS Types.
         let level = LEVELS.get(level_name).unwrap();
-        let result = self.run_player_script_internal(script, level.as_ref());
+        let unlocked_funcs = unlocked_funcs
+            .iter()
+            .map(|x| x.as_string().unwrap())
+            .collect();
+        let result = self.run_player_script_internal(level.as_ref(), &unlocked_funcs, script);
         match result {
             Ok(result) => Ok(js_types::to_js_run_result(&result)),
             Err(err) => {
@@ -99,11 +105,24 @@ impl Game {
     }
 }
 
+fn get_avail_funcs(level: &'static dyn Level, unlocked_funcs: &Vec<String>) -> Vec<String> {
+    // Store avail_funcs in a set
+    let mut avail_funcs = HashSet::new();
+    for func in unlocked_funcs {
+        avail_funcs.insert(func.clone());
+    }
+    for func in level.disabled_functions() {
+        avail_funcs.remove(func.clone());
+    }
+    avail_funcs.into_iter().collect()
+}
+
 impl Game {
     fn run_player_script_internal(
         &mut self,
-        script: String,
         level: &'static dyn Level,
+        unlocked_funcs: &Vec<String>,
+        script: String,
     ) -> Result<ScriptResult, BetterError> {
         // Run the simulation multiple times, once for each possible initial
         // state. Return the first result that fails (if any), otherwise return
@@ -116,15 +135,15 @@ impl Game {
         let mut rng = rand::thread_rng();
         seeds.shuffle(&mut rng);
 
+        let avail_funcs = get_avail_funcs(level, unlocked_funcs);
+
         for i in seeds {
             // Reset the simulation and load the level.
             self.simulation.borrow_mut().load_level(level, i);
             // Drain the channel.
             while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
             // Run the script.
-            let result = self
-                .script_runner
-                .run(level.available_functions(), script.as_str())?;
+            let result = self.script_runner.run(&avail_funcs, script.as_str())?;
             match result.outcome {
                 Outcome::Success => {
                     successes.push(result);
@@ -149,6 +168,27 @@ impl Game {
         // Otherwise, return the first successful result. (This is effectively
         // a random result since the seeds were shuffled above.)
         Ok(successes.first().unwrap().clone())
+    }
+
+    fn run_player_script_with_all_funcs_unlocked(
+        &mut self,
+        level: &'static dyn Level,
+        script: String,
+    ) -> Result<ScriptResult, BetterError> {
+        let avail_funcs = get_avail_funcs(
+            level,
+            &vec![
+                "move_forward".to_string(),
+                "move_backward".to_string(),
+                "turn_left".to_string(),
+                "turn_right".to_string(),
+                "say".to_string(),
+                "press_button".to_string(),
+                "get_orientation".to_string(),
+                "read_data".to_string(),
+            ],
+        );
+        return self.run_player_script_internal(level, &avail_funcs, script);
     }
 }
 

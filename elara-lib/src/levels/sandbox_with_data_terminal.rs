@@ -4,22 +4,6 @@ use crate::{
     simulation::{Actor, DataTerminal, Orientation, Player, State},
 };
 
-lazy_static! {
-    // For now the sandbox level supports all needed functions.
-    // TODO(albrow): Can we change this based on which journal page is being viewed?
-    static ref SANDBOX_AVAIL_FUNCS: Vec<&'static str> = vec![
-        "move_forward",
-        "move_backward",
-        "turn_left",
-        "turn_right",
-        "say",
-        "read_data",
-        "get_orientation",
-        "push",
-        // "get_position",
-    ];
-}
-
 #[derive(Copy, Clone)]
 /// Sandbox is a special level which does not have an explicit objective. It can
 /// be used in runnable examples or for players to explore and experiment on
@@ -35,9 +19,6 @@ impl Level for SandboxWithDataTerminal {
     }
     fn objective(&self) -> &'static str {
         "Write whatever code you want :)"
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &SANDBOX_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         // Note(albrow): Typically the initial code would be provided in the UI.
@@ -82,14 +63,14 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
         // We should be able to read from the data terminal.
         let script = "say(read_data());";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::NoObjective);
         assert_eq!(result.states.last().unwrap().player.message, "bananas");

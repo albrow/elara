@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome, AVAIL_FUNCS_WITH_PRESS};
+use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
     Actor, Button, ButtonConnection, Gate, Goal, Obstacle, Orientation, Player, State,
 };
@@ -15,9 +15,6 @@ impl Level for ButtonAndGate {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAIL_FUNCS_WITH_PRESS
     }
     fn initial_code(&self) -> &'static str {
         r#"// This code tries to move the rover to the goal, but
@@ -80,7 +77,7 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -96,7 +93,7 @@ mod tests {
             move_forward(4);
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -111,7 +108,7 @@ mod tests {
             move_forward(4);
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -127,7 +124,7 @@ mod tests {
             move_forward(4);
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
     }

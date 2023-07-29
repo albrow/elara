@@ -8,7 +8,7 @@ use crate::{
 pub struct ReimplementTurnRight {}
 
 lazy_static! {
-    static ref AVAILABLE_FUNCS: Vec<&'static str> = vec!["move_backward", "turn_left", "say"];
+    static ref DISABLED_FUNCS: Vec<&'static str> = vec!["move_forward", "turn_right"];
 }
 
 impl Level for ReimplementTurnRight {
@@ -21,8 +21,8 @@ impl Level for ReimplementTurnRight {
     fn objective(&self) -> &'static str {
         "Finish defining the new_turn_right function, then move the rover ({robot}) to the goal ({goal})."
     }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAILABLE_FUNCS
+    fn disabled_functions(&self) -> &'static Vec<&'static str> {
+        &DISABLED_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r"fn new_turn_right() {
@@ -101,7 +101,7 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -127,7 +127,7 @@ mod tests {
             move_backward(1);
         ";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
     }
@@ -156,7 +156,7 @@ mod tests {
             move_backward(1);
         ";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, false);
@@ -171,7 +171,7 @@ mod tests {
                 l();
             }"#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
         assert_eq!(result.passes_challenge, true);

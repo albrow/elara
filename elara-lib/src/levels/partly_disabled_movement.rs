@@ -5,7 +5,7 @@ use crate::simulation::{Actor, Goal, Obstacle, Orientation, Player, State};
 pub struct PartlyDisabledMovement {}
 
 lazy_static! {
-    static ref AVAILABLE_FUNCS: Vec<&'static str> = vec!["move_backward", "turn_left", "say"];
+    static ref DISABLED_FUNCS: Vec<&'static str> = vec!["move_forward", "turn_right"];
 }
 
 impl Level for PartlyDisabledMovement {
@@ -18,8 +18,8 @@ impl Level for PartlyDisabledMovement {
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
     }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAILABLE_FUNCS
+    fn disabled_functions(&self) -> &'static Vec<&'static str> {
+        &DISABLED_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// Can you navigate to the goal using only the move_backward
@@ -66,7 +66,7 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -79,7 +79,7 @@ mod tests {
             move_backward(3);
         ";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -90,12 +90,12 @@ mod tests {
             turn_left();
             move_forward(3);
         ";
-        let result = game.run_player_script_internal(script.to_string(), LEVEL);
+        let result = game.run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string());
         assert!(result.is_err());
         assert!(result.err().unwrap().to_string().contains("move_forward"));
 
         let script = r"turn_right();";
-        let result = game.run_player_script_internal(script.to_string(), LEVEL);
+        let result = game.run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string());
         assert!(result.is_err());
         assert!(result.err().unwrap().to_string().contains("turn_right"));
     }

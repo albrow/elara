@@ -66,7 +66,7 @@ impl ScriptRunner {
     /// Some levels have restrictions on which functions are available.
     pub fn run(
         &mut self,
-        avail_funcs: &'static Vec<&'static str>,
+        avail_funcs: &Vec<String>,
         script: &str,
     ) -> Result<ScriptResult, BetterError> {
         // Create and configure the Rhai engine.
@@ -170,9 +170,10 @@ impl ScriptRunner {
         })
     }
 
-    fn register_debugger(&self, engine: &mut Engine, avail_funcs: &'static Vec<&'static str>) {
+    fn register_debugger(&self, engine: &mut Engine, avail_funcs: &Vec<String>) {
         let pending_trace = self.pending_trace.clone();
         let simulation = self.simulation.clone();
+        let avail_funcs = avail_funcs.clone();
         // Note(albrow): register_debugger is not actually deprecated. The Rhai maintainers
         // have decided to use the "deprecated" attribute to indicate that the API is not
         // stable.
@@ -188,7 +189,7 @@ impl ScriptRunner {
                         //     fn_call_expr.name.as_str()
                         // );
                         Self::handle_debugger_function_call(
-                            avail_funcs,
+                            &avail_funcs,
                             pending_trace.clone(),
                             context,
                             pos,
@@ -201,7 +202,7 @@ impl ScriptRunner {
                         //     fn_call_expr.name.as_str()
                         // );
                         Self::handle_debugger_function_call(
-                            avail_funcs,
+                            &avail_funcs,
                             pending_trace.clone(),
                             context,
                             pos,
@@ -231,13 +232,13 @@ impl ScriptRunner {
     // hooking into the current EvalContext and evaluating some custom code/custom
     // AST at runtime.
     fn handle_debugger_function_call(
-        avail_funcs: &Vec<&'static str>,
+        avail_funcs: &Vec<String>,
         pending_trace: Rc<RefCell<Vec<Vec<usize>>>>,
         context: EvalContext,
         pos: Position,
         fn_call_expr: &Box<FnCallExpr>,
     ) -> Result<DebuggerCommand, Box<EvalAltResult>> {
-        if !(avail_funcs.contains(&fn_call_expr.name.as_str())) {
+        if !(avail_funcs.contains(&fn_call_expr.name.as_str().to_string())) {
             // If the function is not in the list of available functions, we
             // ignore it. Some levels may ask users to implement functions that
             // are later considered built-in.
@@ -367,7 +368,7 @@ impl ScriptRunner {
     ///
     /// avail_funcs is the list of functions that are available to the user.
     /// Some levels have restrictions on which functions are available.
-    fn register_player_funcs(&self, engine: &mut Engine, avail_funcs: &Vec<&'static str>) {
+    fn register_player_funcs(&self, engine: &mut Engine, avail_funcs: &Vec<String>) {
         // For each function, we clone and borrow some pointers (e.g. simulation and
         // player_action_tx). This is a workaround due to the fact that the Rhai engine
         // does not allow for mutable non-static references in handlers. See
@@ -377,7 +378,7 @@ impl ScriptRunner {
         // Note(albrow): If you add new functions here, don't forget to add them to
         // BUILTIN_FUNCTIONS in constants.rs.
         //
-        if avail_funcs.contains(&"wait") {
+        if avail_funcs.contains(&"wait".to_string()) {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("wait", move |duration: i64| {
@@ -387,7 +388,7 @@ impl ScriptRunner {
                 }
             });
         }
-        if avail_funcs.contains(&"turn_right") {
+        if avail_funcs.contains(&"turn_right".to_string()) {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("turn_right", move || {
@@ -397,7 +398,7 @@ impl ScriptRunner {
                 simulation.borrow_mut().step_forward();
             });
         }
-        if avail_funcs.contains(&"turn_left") {
+        if avail_funcs.contains(&"turn_left".to_string()) {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("turn_left", move || {
@@ -405,7 +406,7 @@ impl ScriptRunner {
                 simulation.borrow_mut().step_forward();
             });
         }
-        if avail_funcs.contains(&"move_forward") {
+        if avail_funcs.contains(&"move_forward".to_string()) {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("move_forward", move |spaces: i64| {
@@ -419,7 +420,7 @@ impl ScriptRunner {
                 }
             });
         }
-        if avail_funcs.contains(&"move_backward") {
+        if avail_funcs.contains(&"move_backward".to_string()) {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("move_backward", move |spaces: i64| {
@@ -431,7 +432,7 @@ impl ScriptRunner {
                 }
             });
         }
-        if avail_funcs.contains(&"move_right") {
+        if avail_funcs.contains(&"move_right".to_string()) {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("move_right", move |spaces: i64| {
@@ -468,7 +469,7 @@ impl ScriptRunner {
                 }
             });
         }
-        if avail_funcs.contains(&"move_left") {
+        if avail_funcs.contains(&"move_left".to_string()) {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("move_left", move |spaces: i64| {
@@ -500,7 +501,7 @@ impl ScriptRunner {
                 }
             });
         }
-        if avail_funcs.contains(&"move_up") {
+        if avail_funcs.contains(&"move_up".to_string()) {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("move_up", move |spaces: i64| {
@@ -534,7 +535,7 @@ impl ScriptRunner {
                 }
             });
         }
-        if avail_funcs.contains(&"move_down") {
+        if avail_funcs.contains(&"move_down".to_string()) {
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
             engine.register_fn("move_down", move |spaces: i64| {
@@ -568,7 +569,7 @@ impl ScriptRunner {
                 }
             });
         }
-        if avail_funcs.contains(&"get_position") {
+        if avail_funcs.contains(&"get_position".to_string()) {
             // get_position returns the current position of the player as an array
             // of [x, y].
             let simulation = self.simulation.clone();
@@ -581,7 +582,7 @@ impl ScriptRunner {
                 .into()
             });
         }
-        if avail_funcs.contains(&"get_orientation") {
+        if avail_funcs.contains(&"get_orientation".to_string()) {
             // get_orientation returns the direction that the player is currently
             // facing as a string.
             let simulation = self.simulation.clone();
@@ -596,7 +597,7 @@ impl ScriptRunner {
                 Dynamic::from(orientation_str)
             });
         }
-        if avail_funcs.contains(&"say") {
+        if avail_funcs.contains(&"say".to_string()) {
             // say causes the rover to say (i.e. display in a speech bubble)
             // the given expression.
             let tx = self.player_action_tx.clone();
@@ -607,12 +608,12 @@ impl ScriptRunner {
                 simulation.borrow_mut().step_forward();
             });
         }
-        if avail_funcs.contains(&"add") {
+        if avail_funcs.contains(&"add".to_string()) {
             // adds two numbers together. Used for teaching about function outputs.
             // (Normally you would use the + operator instead.)
             engine.register_fn("add", |a: i64, b: i64| -> i64 { a + b });
         }
-        if avail_funcs.contains(&"read_data") {
+        if avail_funcs.contains(&"read_data".to_string()) {
             // read_data returns the data held by an adjacent data terminal.
             // If there is no data terminal adjacent to the player, it returns
             // an error.
@@ -636,7 +637,7 @@ impl ScriptRunner {
                 },
             );
         }
-        if avail_funcs.contains(&"press_button") {
+        if avail_funcs.contains(&"press_button".to_string()) {
             // press_button presses an adjacent button. If there is no button
             // adjacent to the player, it returns an error.
             let tx = self.player_action_tx.clone();
@@ -957,7 +958,11 @@ mod test {
             get_orientation();
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .run_player_script_internal(
+                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                &vec!["get_orientation".to_string()],
+                script.to_string(),
+            )
             .unwrap();
         assert_trace_eq(&result, vec![vec![]]);
     }
@@ -975,7 +980,16 @@ mod test {
             read_data();
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .run_player_script_internal(
+                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                &vec![
+                    "turn_left".to_string(),
+                    "turn_right".to_string(),
+                    "say".to_string(),
+                    "read_data".to_string(),
+                ],
+                script.to_string(),
+            )
             .unwrap();
         assert_trace_eq(&result, vec![vec![], vec![2], vec![3], vec![4], vec![5]]);
     }
@@ -991,7 +1005,11 @@ mod test {
             move_backward(3);
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .run_player_script_internal(
+                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                &vec!["move_forward".to_string(), "move_backward".to_string()],
+                script.to_string(),
+            )
             .unwrap();
         assert_trace_eq(
             &result,
@@ -1015,7 +1033,11 @@ mod test {
             foo();
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .run_player_script_internal(
+                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                &vec!["move_forward".to_string(), "say".to_string()],
+                script.to_string(),
+            )
             .unwrap();
         assert_trace_eq(
             &result,
@@ -1048,7 +1070,11 @@ mod test {
             foo();
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), SANDBOX_LEVEL_WITH_DATA_TERMINAL)
+            .run_player_script_internal(
+                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                &vec!["move_forward".to_string(), "say".to_string()],
+                script.to_string(),
+            )
             .unwrap();
         assert_trace_eq(
             &result,

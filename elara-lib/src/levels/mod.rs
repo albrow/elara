@@ -48,39 +48,9 @@ pub enum Outcome {
     // Used for levels without any set objective.
     NoObjective,
 }
+
 lazy_static! {
-    // These are the functions available at the start of the game.
-    static ref STARTING_AVAIL_FUNCS: Vec<&'static str> = vec![
-        "move_forward",
-        "move_backward",
-        "turn_left",
-        "turn_right",
-        "say",
-    ];
-
-    // This list adds the "press_button" function and is used for
-    // levels that contain buttons.
-    static ref AVAIL_FUNCS_WITH_PRESS: Vec<&'static str> = vec![
-        "move_forward",
-        "move_backward",
-        "turn_left",
-        "turn_right",
-        "say",
-        "press_button",
-    ];
-
-    // This list includes all the functions that are available in the game.
-    // It includes the "read_data" and "get_orientation" functions.
-    static ref ALL_AVAIL_FUNCS: Vec<&'static str> = vec![
-        "move_forward",
-        "move_backward",
-        "turn_left",
-        "turn_right",
-        "say",
-        "press_button",
-        "read_data",
-        "get_orientation",
-    ];
+    static ref EMPTY_VEC: Vec<&'static str> = vec![];
 }
 
 pub trait Level {
@@ -102,8 +72,8 @@ pub trait Level {
             max_y: (HEIGHT - 1) as i32,
         }
     }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &ALL_AVAIL_FUNCS
+    fn disabled_functions(&self) -> &'static Vec<&'static str> {
+        &EMPTY_VEC
     }
     fn challenge(&self) -> Option<&'static str> {
         None

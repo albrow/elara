@@ -1,5 +1,5 @@
 import { Box, Stack } from "@chakra-ui/react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { SANDBOX_LEVEL } from "../../contexts/scenes";
 import Editor, { EditorState } from "../editor/editor";
@@ -10,6 +10,7 @@ import {
   LevelData,
 } from "../../../elara-lib/pkg/elara_lib";
 import { useErrorModal } from "../../hooks/error_modal_hooks";
+import { useSaveData } from "../../hooks/save_data_hooks";
 import MiniBoard from "./mini_board";
 
 export interface RunnableExampleProps {
@@ -23,6 +24,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
   const [editorState, setEditorState] = useState<EditorState>("editing");
   const [showErrorModal, _hidErrorModal, setErrorModalOnClose] =
     useErrorModal();
+  const [saveData, _] = useSaveData();
 
   // If the initial code is short, add some extra lines
   // to make the editor look better.
@@ -31,6 +33,11 @@ export default function RunnableExample(props: RunnableExampleProps) {
     initialCode += "\n";
   }
   const [boardState, setBoardState] = useState(initialState);
+
+  const availFuncs = useMemo(
+    () => saveData.unlockedFunctions,
+    [saveData.unlockedFunctions]
+  );
 
   const resetState = useCallback(() => {
     setBoardState(initialState);
@@ -86,7 +93,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
           type="example"
           code={initialCode}
           originalCode={initialCode}
-          availableFunctions={SANDBOX_LEVEL.available_functions}
+          availableFunctions={availFuncs}
           runScript={runScript}
           onReplayDone={onReplayDone}
           onScriptError={onScriptError}

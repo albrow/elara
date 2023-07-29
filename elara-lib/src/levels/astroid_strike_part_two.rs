@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome, ALL_AVAIL_FUNCS};
+use super::{std_check_win, Level, Outcome};
 use crate::simulation::{Actor, DataTerminal, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
@@ -54,9 +54,6 @@ impl Level for AstroidStrikePartTwo {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to one of the goals ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &ALL_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"// You'll need to read the safe direction from the data terminal
@@ -142,7 +139,7 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -160,7 +157,7 @@ mod tests {
             move_forward(3);
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
@@ -169,21 +166,21 @@ mod tests {
         // run out of fuel, but we didn't reach the goal either.
         let script = r"move_forward(6);";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
         let script = r"move_forward(3);
             turn_right();
             move_forward(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
         let script = r"move_forward(3);
         turn_left();
         move_forward(3);";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
     }

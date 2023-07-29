@@ -1,4 +1,4 @@
-use super::{Level, Outcome, AVAIL_FUNCS_WITH_PRESS};
+use super::{Level, Outcome};
 use crate::{
     constants::ERR_OUT_OF_FUEL,
     simulation::{Actor, Button, ButtonConnection, Orientation, Player, State},
@@ -16,9 +16,6 @@ impl Level for ButtonsPartOne {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) next to the button ({button}) and press it."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &AVAIL_FUNCS_WITH_PRESS
     }
     fn initial_code(&self) -> &'static str {
         r#"// The press_button function can be used to press buttons,
@@ -66,7 +63,7 @@ mod tests {
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
@@ -76,7 +73,7 @@ mod tests {
             press_button();
         "#;
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
     }

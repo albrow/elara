@@ -1,4 +1,4 @@
-use super::{std_check_win, Level, Outcome, STARTING_AVAIL_FUNCS};
+use super::{std_check_win, Level, Outcome};
 use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, State};
 
 #[derive(Copy, Clone)]
@@ -13,9 +13,6 @@ impl Level for LoopsPartOne {
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
-    }
-    fn available_functions(&self) -> &'static Vec<&'static str> {
-        &STARTING_AVAIL_FUNCS
     }
     fn initial_code(&self) -> &'static str {
         r#"loop {
@@ -87,7 +84,7 @@ mod tests {
         // running out of fuel.
         let script = LEVEL.initial_code();
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,
@@ -102,7 +99,7 @@ mod tests {
             turn_right();
           }";
         let result = game
-            .run_player_script_internal(script.to_string(), LEVEL)
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
     }
