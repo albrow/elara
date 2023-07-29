@@ -44,8 +44,9 @@ export default function RunnableExample(props: RunnableExampleProps) {
   }, [initialState]);
 
   const runScript = useCallback(
-    (script: string) => game.run_player_script(script, props.level!.short_name),
-    [game, props.level]
+    (script: string) =>
+      game.run_player_script(props.level!.short_name, availFuncs, script),
+    [availFuncs, game, props.level]
   );
 
   const onReplayDone = useCallback(
