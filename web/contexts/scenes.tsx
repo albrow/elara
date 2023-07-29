@@ -28,7 +28,7 @@ interface RawScene {
   // Used as a workaround for iOS audio restrictions, namely that audio can
   // only be played in direct response to user action (i.e. in a click handler).
   initialSound?: string;
-  // New functions that should be unlocked after completing this scene.
+  // New functions that should be unlocked when navigating to this scene.
   newFunctions?: string[];
 }
 
@@ -83,12 +83,13 @@ function dialogScene(treeName: keyof typeof TREES): RawScene {
   };
 }
 
-function journalScene(sectionName: string): RawScene {
+function journalScene(sectionName: string, newFunctions?: string[]): RawScene {
   return {
     type: "journal",
     name: titleCase(sectionName.split("_").join(" ")),
     routeName: "journal_section",
     routeParams: { sectionName },
+    newFunctions,
   };
 }
 
@@ -107,10 +108,9 @@ const RAW_SCENES: RawScene[] = [
     [
       "Find the line of code that says `move_forward(1);`. Try changing the number `1` to a different number.",
       "The `turn_right` function doesn't expect any inputs, so you don't need to put anything in between the parentheses. (You'll learn more about function inputs soon.)",
-    ],
-    ["say"]
+    ]
   ),
-  journalScene("functions"),
+  journalScene("functions", ["say"]),
   journalScene("comments"),
   levelScene(
     "movement_part_two",
@@ -140,25 +140,24 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
       "Don't forget to include the `loop` keyword right before the opening curly brace (`{`).",
       "You don't need a semicolon (`;`) after the closing curly brace (`}`).",
-    ],
-    ["press_button"]
+    ]
   ),
   levelScene(
     "buttons_part_one",
     [],
     [
       "Remember, the `press_button` function only works if G.R.O.V.E.R. is next to the button (he doesn't need to be facing it).",
-    ]
+    ],
+    ["press_button"]
   ),
   levelScene(
     "button_and_gate",
     [],
     [
       "Remember, the `press_button` function only works if G.R.O.V.E.R. is next to the button (he doesn't need to be facing it).",
-    ],
-    ["read_data", "get_orientation"]
+    ]
   ),
-  journalScene("function_outputs"),
+  journalScene("function_outputs", ["read_data", "get_orientation"]),
   levelScene(
     "data_terminals_part_one",
     [],

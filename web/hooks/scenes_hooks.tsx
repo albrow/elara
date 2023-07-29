@@ -91,6 +91,8 @@ export function useSceneNavigator() {
         }
       }
 
+      // If the scene we're navigating too has any new functions to unlock,
+      // unlock them.
       if (scene.newFunctions != null && scene.newFunctions.length > 0) {
         unlockFunctions(scene.newFunctions);
       }
@@ -143,8 +145,9 @@ export function useSceneNavigator() {
       unlockedAndUnseenPages.length > 0
         ? unlockedAndUnseenPages[0]
         : unlockedPages[unlockedPages.length - 1];
-    router.navigate(newestPage.routeName, newestPage.routeParams ?? {});
-  }, [JOURNAL_PAGES, router]);
+
+    navigateToScene(newestPage);
+  }, [JOURNAL_PAGES, navigateToScene]);
 
   return {
     navigateToScene,
