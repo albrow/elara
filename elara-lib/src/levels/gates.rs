@@ -18,8 +18,10 @@ impl Level for Gates {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"move_forward(2);
+        r#"// First, we move G.R.O.V.E.R. next to the password gate.
+move_forward(2);
 
+// Then, you just need to say the password.
 // Reminder: the password for this gate is "lovelace".
 // ADD YOUR CODE BELOW
 "#

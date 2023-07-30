@@ -17,11 +17,10 @@ impl Level for GateAndTerminal {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"move_forward(1);
-
-// This code reads the password from the data terminal and
-// stores it in a variable called password. (You don't
+        r#"// This code reads the password from the data terminal and
+// stores it in a variable called password. (You DON'T
 // need to change this part).
+move_forward(1);
 let password = read_data();
 
 // Now you just need to unlock the gate and move to the goal.
