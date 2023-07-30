@@ -40,6 +40,8 @@ pub struct Game {
 }
 
 #[wasm_bindgen]
+/// This includes the main entry points for the game that accept JS types and
+/// return JS types. They are usually intended to be called from Wasm-land, not Rust-land.
 impl Game {
     pub fn new() -> Game {
         console_error_panic_hook::set_once();
@@ -118,6 +120,8 @@ fn get_avail_funcs(level: &'static dyn Level, unlocked_funcs: &Vec<String>) -> V
 }
 
 impl Game {
+    /// An internal implementation of run_player_script which works with Rust types
+    /// instead of JS types. This is not expected to be called from Wasm-land.
     fn run_player_script_internal(
         &mut self,
         level: &'static dyn Level,
@@ -170,6 +174,9 @@ impl Game {
         Ok(successes.first().unwrap().clone())
     }
 
+    #[allow(dead_code)]
+    /// Like run_player_script_internal but considers all functions to be unlocked.
+    /// This is mainly used as a convenience for testing.
     fn run_player_script_with_all_funcs_unlocked(
         &mut self,
         level: &'static dyn Level,
