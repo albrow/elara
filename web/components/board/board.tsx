@@ -25,7 +25,7 @@ import "./board.css";
 import lunarSurfaceBgUrl from "../../images/board/lunar_surface_bg.png";
 import DataTerminal from "./data_terminal";
 import Enemy from "./enemy";
-import FuelSpot from "./energy_pod";
+import EnergyCell from "./energy_cell";
 import PasswordGate from "./password_gate";
 import Goal from "./goal";
 import Obstacle from "./obstacle";
@@ -150,7 +150,7 @@ export default function Board(props: BoardProps) {
       {(props.gameState.fuel_spots as FuzzyFuelSpot[]).map((fuelSpot, i) => {
         const fuelOffset = posToOffset(fuelSpot.pos);
         return (
-          <FuelSpot
+          <EnergyCell
             collected={fuelSpot.collected}
             // eslint-disable-next-line react/no-array-index-key
             key={i}
