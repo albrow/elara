@@ -73,33 +73,41 @@ pub fn search_prev_lines(script: &str, start_line: usize) -> usize {
     return start_line;
 }
 
-// TODO(albrow):
-//
-//  - Handle functions which are not unlocked yet.
-//  - Handle functions which are unlocked but temporarily disabled.
-//
 fn convert_func_not_found_err(
     avail_funcs: &Vec<String>,
+    disabled_funcs: &'static Vec<&'static str>,
     fn_sig: &str,
     pos: &rhai::Position,
 ) -> BetterError {
     let fn_name = fn_name_from_sig(fn_sig);
-    if !avail_funcs.contains(&fn_name) {
-        // If the function is not unlocked yet, just return
-        // a "function not found" error.
+
+    // First check if the function is disabled.
+    if disabled_funcs.contains(&fn_name.as_str()) {
         return BetterError {
-            message: format!("Error: Function not found: {}", fn_name),
+            message: format!("Error: The {fn_name} function is disabled for this level"),
             line: pos.line(),
             col: pos.position(),
         };
     }
 
-    // If the function is a builtin function, we can give a more helpful error message.
-    // We know exactly how many arguments and of what type the function expects.
+    // Then check if the function has not yet been unlocked.
+    if BUILTIN_FUNCTIONS.contains_key(fn_name.as_str()) && !avail_funcs.contains(&fn_name) {
+        return BetterError {
+            message: format!("Error: You haven't unlocked the {fn_name} function yet"),
+            line: pos.line(),
+            col: pos.position(),
+        };
+    }
+
+    // If the function is unlocked and not disabled, give a better error message based on how
+    // many arguments and of what type the function expects.
     if let Some(builtin_fn) = BUILTIN_FUNCTIONS.get(fn_name.as_str()) {
         return match builtin_fn.arg_types.len() {
             0 => BetterError {
-                message: format!("Error: {} should not have any inputs.", builtin_fn.name),
+                message: format!(
+                    "Error: The {} function should not have any inputs.",
+                    builtin_fn.name
+                ),
                 line: pos.line(),
                 col: pos.position(),
             },
@@ -107,7 +115,7 @@ fn convert_func_not_found_err(
                 if builtin_fn.arg_types[0] == "any" {
                     BetterError {
                         message: format!(
-                            "Error: {} should have one input of any type.",
+                            "Error: The {} function should have one input of any type.",
                             builtin_fn.name
                         ),
                         line: pos.line(),
@@ -116,7 +124,7 @@ fn convert_func_not_found_err(
                 } else {
                     BetterError {
                         message: format!(
-                            "Error: {} should have one {} as an input.",
+                            "Error: The {} function should have one {} as an input.",
                             builtin_fn.name, builtin_fn.arg_types[0]
                         ),
                         line: pos.line(),
@@ -126,7 +134,7 @@ fn convert_func_not_found_err(
             }
             _ => BetterError {
                 message: format!(
-                    "Error: Wrong inputs for {}. Should have {} inputs ({}).",
+                    "Error: Wrong inputs for the {} function. Should have {} inputs ({}).",
                     builtin_fn.name,
                     builtin_fn.arg_types.len(),
                     builtin_fn.arg_types.join(", ")
@@ -137,12 +145,12 @@ fn convert_func_not_found_err(
         };
     }
 
-    // In this case, just return a generic "function not found" error.
-    BetterError {
-        message: format!("Error: Function not found: {}", fn_name),
+    // If we reached here this is not a built-in function, just return a generic error.
+    return BetterError {
+        message: format!("Error: There is no function named {fn_name} (maybe you made a typo?)"),
         line: pos.line(),
         col: pos.position(),
-    }
+    };
 }
 
 /// Returns true if the script contains an extra set of parentheses on the line
@@ -246,16 +254,7 @@ lazy_static! {
     };
 }
 
-// TODO(albrow):
-//
-//  - Handle functions which are not unlocked yet.
-//  - Handle functions which are unlocked but temporarily disabled.
-//
-fn convert_var_not_found_error(
-    avail_funcs: &Vec<String>,
-    var_name: &str,
-    pos: &rhai::Position,
-) -> BetterError {
+fn convert_var_not_found_error(var_name: &str, pos: &rhai::Position) -> BetterError {
     if KEYWORD_HINTS.contains_key(var_name) {
         return BetterError {
             message: format!(
@@ -265,7 +264,7 @@ fn convert_var_not_found_error(
             line: pos.line(),
             col: pos.position(),
         };
-    } else if avail_funcs.contains(&var_name.to_string()) {
+    } else if BUILTIN_FUNCTIONS.contains_key(var_name) {
         return BetterError {
             message: format!(
                 r#"Error: Variable not found: {}. (Hint: If you meant to call a function, make sure you include parentheses after the function name.)"#,
@@ -283,17 +282,13 @@ fn convert_var_not_found_error(
     }
 }
 
-// TODO(albrow):
-//
-//  - Handle functions which are not unlocked yet.
-//  - Handle functions which are unlocked but temporarily disabled.
-//
 pub fn convert_err(
     avail_funcs: &Vec<String>,
+    disabled_funcs: &'static Vec<&'static str>,
     script: String,
     err: Box<EvalAltResult>,
 ) -> BetterError {
-    // log!("{:?}", err);
+    log!("{:?}", err);
     match *err {
         EvalAltResult::ErrorTooManyOperations(ref pos) => {
             return BetterError {
@@ -311,16 +306,16 @@ pub fn convert_err(
             }
         }
         EvalAltResult::ErrorFunctionNotFound(ref fn_sig, ref pos) => {
-            return convert_func_not_found_err(avail_funcs, fn_sig, pos);
+            return convert_func_not_found_err(avail_funcs, disabled_funcs, fn_sig, pos);
         }
         EvalAltResult::ErrorVariableNotFound(ref var_name, ref pos) => {
-            return convert_var_not_found_error(avail_funcs, var_name, pos);
+            return convert_var_not_found_error(var_name, pos);
         }
         EvalAltResult::ErrorParsing(
             rhai::ParseErrorType::VariableUndefined(ref var_name),
             ref pos,
         ) => {
-            return convert_var_not_found_error(avail_funcs, var_name, pos);
+            return convert_var_not_found_error(var_name, pos);
         }
         EvalAltResult::ErrorParsing(
             rhai::ParseErrorType::BadInput(rhai::LexError::UnterminatedString),
@@ -347,13 +342,21 @@ mod tests {
     use super::*;
 
     lazy_static! {
-        static ref TEST_UNLOCKED_FUNCS: Vec<String> = vec![
+        static ref AVAIL_FUNCS: Vec<String> = vec![
             "move_forward".to_string(),
             "move_backward".to_string(),
             "turn_left".to_string(),
             "turn_right".to_string(),
             "say".to_string(),
         ];
+        static ref AVAIL_FUNCS_IMPAIRED_MOVEMENT: Vec<String> = vec![
+            "move_backward".to_string(),
+            "turn_left".to_string(),
+            "say".to_string(),
+        ];
+        static ref DISABLED_FUNCS_IMPAIRED_MOVEMENT: Vec<&'static str> =
+            vec!["move_forward", "turn_right"];
+        static ref NO_DISABLED_FUNCS: Vec<&'static str> = vec![];
     }
 
     #[test]
@@ -380,7 +383,7 @@ mod tests {
             rhai::ParseErrorType::MissingToken(String::from(";"), String::from("at end of line")),
             rhai::Position::new(4, 21),
         );
-        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -408,7 +411,7 @@ mod tests {
             ),
             rhai::Position::new(4, 13),
         );
-        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -431,7 +434,7 @@ mod tests {
             ),
             rhai::Position::new(3, 26),
         );
-        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -459,7 +462,7 @@ mod tests {
             ),
             rhai::Position::new(5, 13),
         );
-        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -485,7 +488,7 @@ mod tests {
             ),
             rhai::Position::new(2, 15),
         );
-        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -511,7 +514,7 @@ mod tests {
             ),
             rhai::Position::new(3, 15),
         );
-        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
@@ -539,11 +542,107 @@ mod tests {
             ),
             rhai::Position::new(4, 1),
         );
-        let err = convert_err(&TEST_UNLOCKED_FUNCS, script, Box::new(err));
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
         assert_eq!(
             err,
             BetterError {
                 message: String::from("Syntax Error: Missing semicolon ';' at end of line."),
+                line: Some(1),
+                col: Some(1),
+            }
+        );
+    }
+
+    #[test]
+    fn test_convert_func_not_found_err() {
+        // Built-in function, not unlocked yet.
+        let script = String::from(r"press_button(1);");
+        let err = EvalAltResult::ErrorFunctionNotFound(
+            String::from("press_button (i64)"),
+            rhai::Position::new(1, 1),
+        );
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from("Error: You haven't unlocked the press_button function yet"),
+                line: Some(1),
+                col: Some(1),
+            }
+        );
+
+        // Built-in function, unlocked but disabled.
+        let script = String::from(r"move_forward(1);");
+        let err = EvalAltResult::ErrorFunctionNotFound(
+            String::from("move_forward (i64)"),
+            rhai::Position::new(1, 1),
+        );
+        let err = convert_err(
+            &AVAIL_FUNCS_IMPAIRED_MOVEMENT,
+            &DISABLED_FUNCS_IMPAIRED_MOVEMENT,
+            script,
+            Box::new(err),
+        );
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(
+                    "Error: The move_forward function is disabled for this level"
+                ),
+                line: Some(1),
+                col: Some(1),
+            }
+        );
+
+        // Built-in function but wrong number of arguments.
+        let script = String::from(r"move_forward(1, 2);");
+        let err = EvalAltResult::ErrorFunctionNotFound(
+            String::from("move_forward (i64, i64)"),
+            rhai::Position::new(1, 1),
+        );
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(
+                    "Error: The move_forward function should have one number as an input."
+                ),
+                line: Some(1),
+                col: Some(1),
+            }
+        );
+
+        // Built-in function but wrong type of argument.
+        let script = String::from(r"move_forward(true);");
+        let err = EvalAltResult::ErrorFunctionNotFound(
+            String::from("move_forward (bool)"),
+            rhai::Position::new(1, 1),
+        );
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(
+                    "Error: The move_forward function should have one number as an input."
+                ),
+                line: Some(1),
+                col: Some(1),
+            }
+        );
+
+        // Not a built-in function.
+        let script = String::from(r"move_diagonally(42);");
+        let err = EvalAltResult::ErrorFunctionNotFound(
+            String::from("move_diagonally (i64)"),
+            rhai::Position::new(1, 1),
+        );
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(
+                    "Error: There is no function named move_diagonally (maybe you made a typo?)"
+                ),
                 line: Some(1),
                 col: Some(1),
             }

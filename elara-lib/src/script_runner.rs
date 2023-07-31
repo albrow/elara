@@ -67,6 +67,7 @@ impl ScriptRunner {
     pub fn run(
         &mut self,
         avail_funcs: &Vec<String>,
+        disabled_funcs: &'static Vec<&'static str>,
         script: &str,
     ) -> Result<ScriptResult, BetterError> {
         // Create and configure the Rhai engine.
@@ -82,7 +83,12 @@ impl ScriptRunner {
         let ast = match engine.compile(script) {
             Err(parse_err) => {
                 let alt_result = Box::new(EvalAltResult::ErrorParsing(*parse_err.0, parse_err.1));
-                return Err(convert_err(avail_funcs, script.to_string(), alt_result));
+                return Err(convert_err(
+                    avail_funcs,
+                    disabled_funcs,
+                    script.to_string(),
+                    alt_result,
+                ));
             }
             Ok(ast) => ast,
         };
@@ -91,7 +97,14 @@ impl ScriptRunner {
         // (except for blocks or inside comments).
         match check_semicolons(script) {
             Ok(()) => {}
-            Err(err) => return Err(convert_err(avail_funcs, script.to_string(), err)),
+            Err(err) => {
+                return Err(convert_err(
+                    avail_funcs,
+                    disabled_funcs,
+                    script.to_string(),
+                    err,
+                ))
+            }
         }
 
         // Reset pending_trace. We always start with an empty list for step 0 (i.e. no
@@ -133,7 +146,12 @@ impl ScriptRunner {
                     }
                     _ => {
                         // For all other kinds of errors, we return the error.
-                        return Err(convert_err(avail_funcs, script.to_string(), err));
+                        return Err(convert_err(
+                            avail_funcs,
+                            disabled_funcs,
+                            script.to_string(),
+                            err,
+                        ));
                     }
                 }
             }

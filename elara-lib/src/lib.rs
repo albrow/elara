@@ -147,7 +147,11 @@ impl Game {
             // Drain the channel.
             while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
             // Run the script.
-            let result = self.script_runner.run(&avail_funcs, script.as_str())?;
+            let result = self.script_runner.run(
+                &avail_funcs,
+                level.disabled_functions(),
+                script.as_str(),
+            )?;
             match result.outcome {
                 Outcome::Success => {
                     successes.push(result);
