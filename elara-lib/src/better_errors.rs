@@ -288,7 +288,7 @@ pub fn convert_err(
     script: String,
     err: Box<EvalAltResult>,
 ) -> BetterError {
-    log!("{:?}", err);
+    // log!("{:?}", err);
     match *err {
         EvalAltResult::ErrorTooManyOperations(ref pos) => {
             return BetterError {

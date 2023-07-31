@@ -24,7 +24,7 @@ import { FaSatelliteDish } from "react-icons/fa";
 
 import { range } from "../../lib/utils";
 import type { EditorState } from "./editor";
-import FunctionList from "./hover_docs/function_list";
+import FunctionList from "./text_effects/function_list";
 
 export interface ControlBarProps {
   editorState: EditorState;

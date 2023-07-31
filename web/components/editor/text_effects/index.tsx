@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Box } from "@chakra-ui/react";
 import {
   hoverTooltip,
@@ -113,17 +114,17 @@ function showDocsOnHover(availFuncs: string[]) {
   });
 }
 
-function hoverWordRegex(availFuncs: string[]) {
-  if (availFuncs.length === 0) {
+function wordRegex(words: string[]) {
+  if (words.length === 0) {
     // A regex that will never match anything.
     return /$^/g;
   }
-  return new RegExp(availFuncs.map((word) => `\\b${word}\\b`).join("|"), "g");
+  return new RegExp(words.map((word) => `\\b${word}\\b`).join("|"), "g");
 }
 
 function hoverWordMatcher(availFuncs: string[]) {
   return new MatchDecorator({
-    regexp: hoverWordRegex(availFuncs),
+    regexp: wordRegex(availFuncs),
     decoration: () =>
       Decoration.mark({
         class: "cm-hoverable",
@@ -156,14 +157,54 @@ function highlightHoverable(availFuncs: string[]) {
   );
 }
 
-// A CodeMirror extension that both shows hover docs and highlights hoverable
-// words.
+function disabledFuncsMatcher(disabledFuncs: string[]) {
+  return new MatchDecorator({
+    regexp: wordRegex(disabledFuncs),
+    decoration: () =>
+      Decoration.mark({
+        class: "cm-disabled-func",
+      }),
+  });
+}
+
+// A plugin that strikes out disabled functions in the editor.
+function strikeDisabledFuncs(disabledFuncs: string[]) {
+  if (disabledFuncs.length === 0) {
+    // If there are no disabled functions, don't bother creating a plugin.
+    return [];
+  }
+  const matcher = disabledFuncsMatcher(disabledFuncs);
+  return ViewPlugin.fromClass(
+    class {
+      placeholders: DecorationSet;
+
+      constructor(view: EditorView) {
+        this.placeholders = matcher.createDeco(view);
+      }
+
+      update(update: ViewUpdate) {
+        this.placeholders = matcher.updateDeco(update, this.placeholders);
+      }
+    },
+    {
+      decorations: (instance) => instance.placeholders,
+    }
+  );
+}
+
+// A CodeMirror extension that shows effects on the editor text. This
+// includes highlighting hoverable words, showing hover docs, and
+// striking out disabled functions.
 //
 // availableFunctions is an array of strings that are the names of the
 // functions that should be highlighted and have hover docs.
-export function hoverDocs(availableFunctions: string[]) {
+export function textEffects(
+  availableFunctions: string[],
+  disabledFuncs: string[]
+) {
   return [
     showDocsOnHover(availableFunctions),
     highlightHoverable(availableFunctions),
+    strikeDisabledFuncs(disabledFuncs),
   ];
 }

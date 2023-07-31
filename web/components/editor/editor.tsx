@@ -24,23 +24,29 @@ import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
 import { CODE_LEN_EXPLANATION } from "../../lib/constants";
-import { hoverDocs } from "./hover_docs";
+import { textEffects } from "./text_effects";
 import ControlBar from "./control_bar";
 
 export type EditorState = "editing" | "running" | "paused";
 
 // Used to reconfigure some extensions on the fly so we can change the
-// available functions (i.e. which functions are auto-completed).
+// available functions (e.g., which functions are auto-completed).
 // See: https://codemirror.net/docs/ref/#state.Compartment
 // Also see: https://codemirror.net/examples/config/#compartments
 const languageCompartment = new Compartment();
-const hoverDocsCompartment = new Compartment();
+const textEffectsCompartment = new Compartment();
 
-function setAvailableFuncs(view: EditorView, funcs: string[]) {
+function setAvailableAndDisabledFuncs(
+  view: EditorView,
+  availableFuncs: string[],
+  disabledFuncs: string[]
+) {
   view.dispatch({
     effects: [
-      languageCompartment.reconfigure(rhaiSupport(funcs)),
-      hoverDocsCompartment.reconfigure(hoverDocs(funcs)),
+      languageCompartment.reconfigure(rhaiSupport(availableFuncs)),
+      textEffectsCompartment.reconfigure(
+        textEffects(availableFuncs, disabledFuncs)
+      ),
     ],
   });
 }
@@ -68,7 +74,7 @@ const extensions = [
   // keymap.of([indentWithTab]),
   keymap.of(completeOrIndentWithTab),
   languageCompartment.of(rhaiSupport([])),
-  hoverDocsCompartment.of(hoverDocs([])),
+  textEffectsCompartment.of(textEffects([], [])),
 ];
 
 export interface CodeError {
@@ -146,6 +152,8 @@ interface EditorProps {
   // Which built-in functions should be considered available. These functions
   // will have autocomplete and hover docs enabled.
   availableFunctions: string[];
+  // Which functions are disabled for this level (if any).
+  disabledFunctions?: string[];
   onStep?: (step: FuzzyStateWithLines) => void;
   onCancel?: (script: string) => void;
   onStateChange?: (state: EditorState) => void;
@@ -283,9 +291,13 @@ export default function Editor(props: EditorProps) {
   useEffect(() => {
     // Update the available functions when needed.
     if (view) {
-      setAvailableFuncs(view, props.availableFunctions);
+      setAvailableAndDisabledFuncs(
+        view,
+        props.availableFunctions,
+        props.disabledFunctions || []
+      );
     }
-  }, [props.availableFunctions, view]);
+  }, [props.availableFunctions, props.disabledFunctions, view]);
 
   useEffect(() => {
     if (editor.current) {
@@ -545,8 +557,3 @@ export default function Editor(props: EditorProps) {
     </>
   );
 }
-
-Editor.defaultProps = {
-  resetOnReplayDone: true,
-  showCodeLenCounter: true,
-};

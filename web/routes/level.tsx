@@ -321,6 +321,7 @@ export default function Level() {
                 code={initialCode()}
                 originalCode={currLevel().initial_code}
                 availableFunctions={availFuncs}
+                disabledFunctions={currLevel().disabled_funcs}
                 runScript={runScript}
                 onReplayDone={onReplayDone}
                 onScriptError={onScriptError}

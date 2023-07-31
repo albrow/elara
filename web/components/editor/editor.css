@@ -90,6 +90,8 @@ call stack (i.e. it highlights function calls higher up in the stack). */
 for hoverables inside of comments. */
 .cm-comment {
   color: var(--chakra-colors-green-600);
+  text-decoration: none;
+  display: inline-block; /* This is needed to override parent text-decoration styles. */
 }
 
 .cm-comment:hover {
@@ -115,6 +117,12 @@ plugin for any text which supports documentation-on-hover */
 .cm-hoverable:hover {
   font-weight: 700;
   transition: font-weight 1s;
+}
+
+/* .cm-disabled-func is the class added by our strikeDisabledFuncs
+plugin for any functions which are currently disabled. */
+.cm-disabled-func {
+  text-decoration: line-through;
 }
 
 .editor-example .cm-scroller {
