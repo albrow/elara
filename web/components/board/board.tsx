@@ -22,10 +22,10 @@ import {
 } from "../../lib/constants";
 import { Offset, posToOffset, range } from "../../lib/utils";
 import "./board.css";
-import lunarSurfaceBgUrl from "../../images/lunar_surface_bg.png";
+import lunarSurfaceBgUrl from "../../images/board/lunar_surface_bg.png";
 import DataTerminal from "./data_terminal";
 import Enemy from "./enemy";
-import FuelSpot from "./fuel_spot";
+import FuelSpot from "./energy_pod";
 import PasswordGate from "./password_gate";
 import Goal from "./goal";
 import Obstacle from "./obstacle";

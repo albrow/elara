@@ -2,12 +2,12 @@ import { Box } from "@chakra-ui/react";
 import { Offset } from "../../lib/utils";
 import { TELEPAD_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 
-import telepadBlueEntranceUrl from "../../images/telepad_blue_entrance.png";
-import telepadBlueExitUrl from "../../images/telepad_blue_exit.png";
-import telepadGreenEntranceUrl from "../../images/telepad_green_entrance.png";
-import telepadGreenExitUrl from "../../images/telepad_green_exit.png";
-import telepadPurpleEntranceUrl from "../../images/telepad_purple_entrance.png";
-import telepadPurpleExitUrl from "../../images/telepad_purple_exit.png";
+import telepadBlueEntranceUrl from "../../images/board/telepad_blue_entrance.png";
+import telepadBlueExitUrl from "../../images/board/telepad_blue_exit.png";
+import telepadGreenEntranceUrl from "../../images/board/telepad_green_entrance.png";
+import telepadGreenExitUrl from "../../images/board/telepad_green_exit.png";
+import telepadPurpleEntranceUrl from "../../images/board/telepad_purple_entrance.png";
+import telepadPurpleExitUrl from "../../images/board/telepad_purple_exit.png";
 import TelepadExitPage from "./hover_info_pages/telepad_exit.mdx";
 import TelepadEntrancePage from "./hover_info_pages/telepad_entrance.mdx";
 import BoardHoverInfo from "./board_hover_info";

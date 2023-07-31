@@ -18,7 +18,7 @@ export const BOARD_INNER_WIDTH = TILE_SIZE * WIDTH;
 export const BOARD_INNER_HEIGHT = TILE_SIZE * HEIGHT;
 export const BOARD_TOTAL_WIDTH = BOARD_INNER_WIDTH + AXIS_WIDTH + 2;
 export const BOARD_TOTAL_HEIGHT = BOARD_INNER_HEIGHT + AXIS_HEIGHT + 2;
-export const DEFAULT_FUEL_GAIN = 10;
+export const DEFAULT_ENERGY_POD_GAIN = 10;
 
 // Game speed and animations.
 export const DEFAULT_GAME_SPEED = 1; // steps per second
@@ -51,7 +51,7 @@ export const ROVER_SPEECH_Z_INDEX = 400; // Special tooltip variant used only fo
 export const PLAYER_MESSAGE_Z_INDEX = ROVER_SPEECH_Z_INDEX + 10;
 export const ENEMY_Z_INDEX = 300;
 export const PLAYER_Z_INDEX = 200;
-export const FUEL_Z_INDEX = 100;
+export const ENERGY_POD_Z_INDEX = 100;
 export const GOAL_Z_INDEX = 100;
 export const TELEPAD_Z_INDEX = 100;
 export const WALL_Z_INDEX = 100;

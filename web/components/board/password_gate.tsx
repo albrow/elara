@@ -1,8 +1,8 @@
 import { Offset } from "../../lib/utils";
 import { GATE_Z_INDEX, TILE_SIZE } from "../../lib/constants";
-import lockedImgUrl from "../../images/locked.png";
-import unlockedImgUrl from "../../images/unlocked.png";
-import speakerImgUrl from "../../images/speaker.png";
+import lockedImgUrl from "../../images/board/locked.png";
+import unlockedImgUrl from "../../images/board/unlocked.png";
+import speakerImgUrl from "../../images/board/speaker.png";
 import BoardHoverInfo from "./board_hover_info";
 import PasswordGatePage from "./hover_info_pages/password_gate.mdx";
 

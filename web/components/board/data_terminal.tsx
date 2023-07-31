@@ -7,7 +7,7 @@ import {
   TERMINAL_Z_INDEX,
   CSS_ANIM_DURATION,
 } from "../../lib/constants";
-import tvImageUrl from "../../images/tv.png";
+import tvImageUrl from "../../images/board/tv.png";
 import BoardHoverInfo from "./board_hover_info";
 import DataTerminalPage from "./hover_info_pages/data_terminal.mdx";
 

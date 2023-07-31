@@ -1,6 +1,6 @@
 import { Offset } from "../../lib/utils";
 import { TILE_SIZE, GOAL_Z_INDEX } from "../../lib/constants";
-import flagImgUrl from "../../images/flag.png";
+import flagImgUrl from "../../images/board/flag.png";
 import GoalPage from "./hover_info_pages/goal.mdx";
 import BoardHoverInfo from "./board_hover_info";
 

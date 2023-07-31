@@ -9,8 +9,8 @@ import {
   BUTTON_Z_INDEX,
   TILE_SIZE,
 } from "../../lib/constants";
-import buttonImgUrl from "../../images/button.png";
-import buttonPressedImgUrl from "../../images/button_pressed.png";
+import buttonImgUrl from "../../images/board/button.png";
+import buttonPressedImgUrl from "../../images/board/button_pressed.png";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
 import BoardHoverInfo from "./board_hover_info";
 import ButtonPage from "./hover_info_pages/button.mdx";

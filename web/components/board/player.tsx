@@ -7,10 +7,10 @@ import {
   PLAYER_Z_INDEX,
   PLAYER_MESSAGE_Z_INDEX,
 } from "../../lib/constants";
-import groverUpUrl from "../../images/grover_up.png";
-import groverDownUrl from "../../images/grover_down.png";
-import groverLeftUrl from "../../images/grover_left.png";
-import groverRightUrl from "../../images/grover_right.png";
+import groverUpUrl from "../../images/board/grover_up.png";
+import groverDownUrl from "../../images/board/grover_down.png";
+import groverLeftUrl from "../../images/board/grover_left.png";
+import groverRightUrl from "../../images/board/grover_right.png";
 import { Pos, TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
 import SpriteLabel from "./sprite_label";

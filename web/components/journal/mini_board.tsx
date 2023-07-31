@@ -12,7 +12,7 @@ import {
 } from "../../../elara-lib/pkg/elara_lib";
 import { Offset, posToOffset } from "../../lib/utils";
 
-import lunarSurfaceBgUrl from "../../images/lunar_surface_bg.png";
+import lunarSurfaceBgUrl from "../../images/board/lunar_surface_bg.png";
 import { AXIS_WIDTH, CSS_ANIM_DURATION, TILE_SIZE } from "../../lib/constants";
 
 export interface MiniBoardProps {

@@ -4,7 +4,7 @@ import { Box } from "@chakra-ui/react";
 import { AnimateKeyframes } from "react-simple-animate";
 import { Offset } from "../../lib/utils";
 import { TILE_SIZE, WALL_Z_INDEX } from "../../lib/constants";
-import rockImgUrl from "../../images/rock.png";
+import rockImgUrl from "../../images/board/rock.png";
 // import RockPage from "./hover_info_pages/rock.mdx";
 import AsteroidWarningPage from "./hover_info_pages/asteroid_warning.mdx";
 import BoardHoverInfo from "./board_hover_info";
