@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import { Offset } from "../../lib/utils";
 import {
   TILE_SIZE,
@@ -22,22 +23,30 @@ export default function EnergyPod(props: EnergyPodProps) {
       {props.enableHoverInfo && !props.collected && (
         <BoardHoverInfo page={EnergyPodPage} offset={props.offset} />
       )}
-      <div
-        style={{
-          position: "absolute",
-          width: `${TILE_SIZE - 1}px`,
-          height: `${TILE_SIZE - 1}px`,
-          zIndex: ENERGY_POD_Z_INDEX,
-          left: props.offset.left,
-          top: props.offset.top,
-        }}
+      <Box
+        position="absolute"
+        left={props.offset.left}
+        top={props.offset.top}
+        w={`${TILE_SIZE}px`}
+        h={`${TILE_SIZE}px`}
+        zIndex={ENERGY_POD_Z_INDEX}
       >
-        <img alt="energyPod" src={energyPodImgUrl} />
-        <SpriteLabel
-          zIndex={ENERGY_POD_Z_INDEX + 1}
-          value={`+${props.energyGain}`}
-        />
-      </div>
+        <div
+          style={{
+            width: `${TILE_SIZE - 2}px`,
+            height: `${TILE_SIZE - 2}px`,
+            marginTop: "1px",
+            zIndex: ENERGY_POD_Z_INDEX,
+            filter: "drop-shadow(-2px 3px 2px rgba(0, 0, 0, 0.3))",
+          }}
+        >
+          <img alt="energyPod" src={energyPodImgUrl} />
+          <SpriteLabel
+            zIndex={ENERGY_POD_Z_INDEX + 1}
+            value={`+${props.energyGain}`}
+          />
+        </div>
+      </Box>
     </>
   );
 }
