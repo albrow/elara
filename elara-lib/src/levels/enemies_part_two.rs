@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EvilRoverActor};
-use crate::simulation::{Actor, Enemy, FuelSpot, Goal, Obstacle, Orientation, Player, State};
+use crate::simulation::{Actor, Enemy, EnergyCell, Goal, Obstacle, Orientation, Player, State};
 
 #[derive(Copy, Clone)]
 pub struct EnemiesPartTwo {}
@@ -22,7 +22,7 @@ impl Level for EnemiesPartTwo {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(2, 3, 10, Orientation::Right);
-        state.fuel_spots = vec![FuelSpot::new(6, 5)];
+        state.energy_cells = vec![EnergyCell::new(6, 5)];
         state.goals = vec![Goal::new(8, 2)];
         state.enemies = vec![
             Enemy::new(0, 7, Orientation::Up),
@@ -78,7 +78,7 @@ impl Level for EnemiesPartTwo {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal using 7 fuel or less.")
+        Some("Reach the goal using 7 energy or less.")
     }
     fn check_challenge(
         &self,
@@ -86,7 +86,7 @@ impl Level for EnemiesPartTwo {
         _script: &str,
         stats: &crate::script_runner::ScriptStats,
     ) -> bool {
-        stats.fuel_used <= 7
+        stats.energy_used <= 7
     }
 }
 

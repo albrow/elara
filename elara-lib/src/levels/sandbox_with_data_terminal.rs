@@ -1,6 +1,6 @@
 use super::{no_objective_check_win, Level, Outcome};
 use crate::{
-    constants::MAX_FUEL,
+    constants::MAX_ENERGY,
     simulation::{Actor, DataTerminal, Orientation, Player, State},
 };
 
@@ -40,12 +40,12 @@ impl Level for SandboxWithDataTerminal {
     }
     fn bounds(&self) -> crate::actors::Bounds {
         // For the sandbox level, we allow the player to move in any direction
-        // until they run out of fuel.
+        // until they run out of energy.
         crate::actors::Bounds {
-            min_x: -(MAX_FUEL as i32),
-            max_x: MAX_FUEL as i32,
-            min_y: -(MAX_FUEL as i32),
-            max_y: MAX_FUEL as i32,
+            min_x: -(MAX_ENERGY as i32),
+            max_x: MAX_ENERGY as i32,
+            min_y: -(MAX_ENERGY as i32),
+            max_y: MAX_ENERGY as i32,
         }
     }
 }

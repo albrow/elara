@@ -1,6 +1,6 @@
 use super::{Level, Outcome};
 use crate::{
-    constants::ERR_OUT_OF_FUEL,
+    constants::ERR_OUT_OF_ENERGY,
     simulation::{Actor, Button, ButtonConnection, Orientation, Player, State},
 };
 
@@ -40,8 +40,8 @@ impl Level for ButtonsPartOne {
     fn check_win(&self, state: &State) -> Outcome {
         // Note that this level uses a different check_win function. There is not
         // goal to reach. Instead you beat the level by pressing the button.
-        if state.player.fuel == 0 {
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        if state.player.energy == 0 {
+            Outcome::Failure(ERR_OUT_OF_ENERGY.to_string())
         } else if state.buttons[0].currently_pressed {
             Outcome::Success
         } else {

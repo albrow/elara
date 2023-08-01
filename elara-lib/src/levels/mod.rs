@@ -1,5 +1,5 @@
-mod astroid_strike;
-mod astroid_strike_part_two;
+mod asteroid_strike;
+mod asteroid_strike_part_two;
 mod button_and_gate;
 mod buttons_part_one;
 mod data_terminal_demo;
@@ -8,7 +8,7 @@ mod enemies_and_asteroids;
 mod enemies_part_one;
 mod enemies_part_two;
 mod enemies_with_telepad;
-mod fuel_part_one;
+mod energy_part_one;
 mod gate_and_terminal;
 mod gate_and_terminal_array;
 mod gate_and_terminal_three;
@@ -30,11 +30,11 @@ mod variables_intro;
 use std::collections::HashMap;
 
 use crate::actors::Bounds;
-use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_FUEL, HEIGHT, WIDTH};
+use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_ENERGY, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, Button, Gate, Orientation, Telepad};
 use crate::simulation::{
-    DataTerminal, Enemy, FuelSpot, Goal, Obstacle, PasswordGate, Player, State,
+    DataTerminal, Enemy, EnergyCell, Goal, Obstacle, PasswordGate, Player, State,
 };
 
 #[derive(PartialEq, Clone, Debug)]
@@ -96,7 +96,7 @@ lazy_static! {
         let mut m: HashMap<&'static str, Box<dyn Level + Sync>> = HashMap::new();
         m.insert(movement::Movement {}.short_name(), Box::new(movement::Movement {}));
         m.insert(movement_part_two::MovementPartTwo {}.short_name(), Box::new(movement_part_two::MovementPartTwo {}));
-        m.insert(fuel_part_one::FuelPartOne {}.short_name(), Box::new(fuel_part_one::FuelPartOne {}));
+        m.insert(energy_part_one::EnergyPartOne {}.short_name(), Box::new(energy_part_one::EnergyPartOne {}));
         m.insert(data_terminals_part_one::DataTerminalsPartOne {}.short_name(),
             Box::new(data_terminals_part_one::DataTerminalsPartOne {}),
         );
@@ -116,8 +116,8 @@ lazy_static! {
         m.insert(loops_part_two::LoopsPartTwo {}.short_name(), Box::new(loops_part_two::LoopsPartTwo {}));
         m.insert(sandbox::Sandbox{}.short_name(), Box::new(sandbox::Sandbox{}));
         m.insert(sandbox_with_data_terminal::SandboxWithDataTerminal{}.short_name(), Box::new(sandbox_with_data_terminal::SandboxWithDataTerminal {}));
-        m.insert(astroid_strike::AstroidStrike{}.short_name(), Box::new(astroid_strike::AstroidStrike{}));
-        m.insert(astroid_strike_part_two::AstroidStrikePartTwo{}.short_name(), Box::new(astroid_strike_part_two::AstroidStrikePartTwo{}));
+        m.insert(asteroid_strike::AsteroidStrike{}.short_name(), Box::new(asteroid_strike::AsteroidStrike{}));
+        m.insert(asteroid_strike_part_two::AsteroidStrikePartTwo{}.short_name(), Box::new(asteroid_strike_part_two::AsteroidStrikePartTwo{}));
         m.insert(data_terminal_demo::DataTerminalDemo{}.short_name(), Box::new(data_terminal_demo::DataTerminalDemo{}));
         m.insert(partly_disabled_movement::PartlyDisabledMovement{}.short_name(), Box::new(partly_disabled_movement::PartlyDisabledMovement{}));
         m.insert(reimplement_turn_right::ReimplementTurnRight{}.short_name(), Box::new(reimplement_turn_right::ReimplementTurnRight{}));
@@ -158,7 +158,7 @@ fn did_reach_goal(state: &State) -> bool {
 #[derive(PartialEq, Debug)]
 pub struct FuzzyState {
     pub players: Vec<Fuzzy<Player>>,
-    pub fuel_spots: Vec<Fuzzy<FuelSpot>>,
+    pub energy_cells: Vec<Fuzzy<EnergyCell>>,
     pub goals: Vec<Fuzzy<Goal>>,
     pub enemies: Vec<Fuzzy<Enemy>>,
     pub obstacles: Vec<Fuzzy<Obstacle>>,
@@ -173,8 +173,8 @@ impl FuzzyState {
     pub fn from_single_state(state: &State) -> Self {
         Self {
             players: vec![Fuzzy::new(state.player.clone(), false)],
-            fuel_spots: state
-                .fuel_spots
+            energy_cells: state
+                .energy_cells
                 .clone()
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
@@ -301,8 +301,8 @@ pub fn std_check_win(state: &State) -> Outcome {
         Outcome::Failure(ERR_DESTROYED_BY_ENEMY.to_string())
     } else if did_reach_goal(state) {
         Outcome::Success
-    } else if state.player.fuel == 0 {
-        Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+    } else if state.player.energy == 0 {
+        Outcome::Failure(ERR_OUT_OF_ENERGY.to_string())
     } else {
         Outcome::Continue
     }
@@ -312,8 +312,8 @@ pub fn std_check_win(state: &State) -> Outcome {
 /// explicit objective. Some levels may need to implement
 /// their own logic on top of this.
 pub fn no_objective_check_win(state: &State) -> Outcome {
-    if state.player.fuel == 0 {
-        Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+    if state.player.energy == 0 {
+        Outcome::Failure(ERR_OUT_OF_ENERGY.to_string())
     } else {
         Outcome::NoObjective
     }
@@ -417,7 +417,7 @@ mod tests {
             .build()];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), false)],
-            fuel_spots: vec![],
+            energy_cells: vec![],
             goals: vec![Fuzzy::new(Goal::new(2, 2), false)],
             enemies: vec![],
             obstacles: vec![],
@@ -446,7 +446,7 @@ mod tests {
                 Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), true),
                 Fuzzy::new(Player::new(1, 1, 10, Orientation::Down), true),
             ],
-            fuel_spots: vec![],
+            energy_cells: vec![],
             goals: vec![Fuzzy::new(
                 Goal {
                     pos: Pos::new(2, 2),
@@ -477,7 +477,7 @@ mod tests {
         ];
         let expected = FuzzyState {
             players: vec![Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), false)],
-            fuel_spots: vec![],
+            energy_cells: vec![],
             goals: vec![
                 Fuzzy::new(
                     Goal {
@@ -504,7 +504,7 @@ mod tests {
         assert_eq!(actual, expected);
 
         // TODO(albrow): Expand on tests when we support fuzziness for
-        // fuel_spots, enemies, obstacles, etc.
+        // energy cells, enemies, obstacles, etc.
     }
 
     #[test]

@@ -1,24 +1,24 @@
 use super::{std_check_win, Level, Outcome};
 use crate::{
     script_runner::ScriptStats,
-    simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State},
+    simulation::{Actor, EnergyCell, Goal, Obstacle, Orientation, Player, Pos, State},
 };
 
 #[derive(Copy, Clone)]
-pub struct FuelPartOne {}
+pub struct EnergyPartOne {}
 
-impl Level for FuelPartOne {
+impl Level for EnergyPartOne {
     fn name(&self) -> &'static str {
-        "Fuel Up"
+        "Energized"
     }
     fn short_name(&self) -> &'static str {
-        "fuel_part_one"
+        "energy_part_one"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Try collecting some fuel before moving to the goal.
+        r#"// Try collecting an energy cell before moving to the goal.
 
 // CHANGE THE CODE BELOW
 move_forward(4);
@@ -29,13 +29,13 @@ move_forward(4);
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(0, 0, 5, Orientation::Down);
-        state.fuel_spots = vec![FuelSpot {
+        state.energy_cells = vec![EnergyCell {
             pos: Pos { x: 0, y: 5 },
             collected: false,
         }];
         state.goals = vec![Goal::new(4, 4)];
         state.obstacles = vec![
-            // Obstacles enclose the player, goal, and fuel with a few different
+            // Obstacles enclose the player, goal, and energy cells with a few different
             // branching paths.
             Obstacle::new(1, 1),
             Obstacle::new(1, 2),
@@ -78,22 +78,22 @@ move_forward(4);
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::levels::{Outcome, ERR_OUT_OF_FUEL};
+    use crate::levels::{Outcome, ERR_OUT_OF_ENERGY};
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &FuelPartOne {};
+        const LEVEL: &'static dyn Level = &EnergyPartOne {};
 
         // Running the initial code should result in Outcome::Failure due to
-        // running out of fuel.
+        // running out of energy.
         let script = LEVEL.initial_code();
         let result = game
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,
-            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+            Outcome::Failure(String::from(ERR_OUT_OF_ENERGY))
         );
 
         // Running this code should result in Outcome::Success.
@@ -125,7 +125,7 @@ mod tests {
     #[test]
     fn challenge() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &FuelPartOne {};
+        const LEVEL: &'static dyn Level = &EnergyPartOne {};
 
         // This code beats the level, but doesn't satisfy the challenge conditions.
         let script = r"

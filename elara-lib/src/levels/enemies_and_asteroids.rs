@@ -1,7 +1,7 @@
 use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EvilRoverActor};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, DataTerminal, Enemy, FuelSpot, Orientation};
+use crate::simulation::{Actor, DataTerminal, Enemy, EnergyCell, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
@@ -77,7 +77,7 @@ impl Level for EnemiesAndAsteroids {
         let mut state_maker = StateMaker::new();
         let base_state = state_maker
             .with_player(Player::new(5, 6, 16, Orientation::Up))
-            .with_fuel_spots(vec![FuelSpot::new(2, 0), FuelSpot::new(9, 0)])
+            .with_energy_cells(vec![EnergyCell::new(2, 0), EnergyCell::new(9, 0)])
             .with_goals(vec![Goal::new(7, 6), Goal::new(3, 6)])
             .with_enemies(vec![
                 Enemy::new(2, 2, Orientation::Down),

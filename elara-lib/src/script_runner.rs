@@ -694,21 +694,21 @@ impl ScriptRunner {
 pub struct ScriptStats {
     // Length of the script in bytes.
     pub code_len: usize,
-    // Amount of fuel used by the rover.
-    pub fuel_used: u32,
+    // Amount of energy used by the rover.
+    pub energy_used: u32,
     // Amount of time (i.e. number of steps) taken to execute the script.
     pub time_taken: u32,
 }
 
 fn compute_stats(engine: &Engine, script: &str, states: &Vec<State>) -> ScriptStats {
-    let fuel_used = states.last().unwrap().player.total_fuel_used;
+    let energy_used = states.last().unwrap().player.total_energy_used;
     let time_taken = states.len() as u32;
     // Note that we use compact_script to remove all comments and unnecessary whitespace
     // prior to computing the length.
     let code_len = engine.compact_script(script).unwrap().len();
     ScriptStats {
         code_len,
-        fuel_used,
+        energy_used,
         time_taken,
     }
 }

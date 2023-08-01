@@ -9,9 +9,9 @@ use crate::state_maker::StateMaker;
 const DATA_TERMINAL_INFO: &'static str = r#"This data terminal will output either `"left"` or `"right"` depending on which way is safe to go."#;
 
 #[derive(Copy, Clone)]
-pub struct AstroidStrike {}
+pub struct AsteroidStrike {}
 
-impl AstroidStrike {
+impl AsteroidStrike {
     // Note: We make obstacles a method so we can re-use the same set of
     // obstacles for each possible state.
     fn obstacles(&self) -> Vec<Obstacle> {
@@ -40,12 +40,12 @@ impl AstroidStrike {
     }
 }
 
-impl Level for AstroidStrike {
+impl Level for AsteroidStrike {
     fn name(&self) -> &'static str {
-        "Astroid Strike"
+        "Asteroid Strike"
     }
     fn short_name(&self) -> &'static str {
-        "astroid_strike"
+        "asteroid_strike"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to either the left or the right goal ({goal})."
@@ -123,7 +123,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &AstroidStrike {};
+        const LEVEL: &'static dyn Level = &AsteroidStrike {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
@@ -154,7 +154,7 @@ mod tests {
 
         // Hard-coding the movement direction should always result in failure.
         // In this specific case, it should be Outcome::Continue because we didn't
-        // run out of fuel, but we didn't reach the goal either.
+        // run out of energy, but we didn't reach the goal either.
         let script = r"move_forward(2);
             turn_left();
             move_forward(3);";
@@ -203,7 +203,7 @@ mod tests {
     #[test]
     fn challenge() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &AstroidStrike {};
+        const LEVEL: &'static dyn Level = &AsteroidStrike {};
 
         // This code beats the level, but doesn't satisfy the challenge conditions.
         let script = r#"

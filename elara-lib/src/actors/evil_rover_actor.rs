@@ -6,7 +6,7 @@ use super::{can_move_to, get_telepad_at, Bounds, MoveDirection, TurnDirection};
 
 /// An actor for "malfunctioning" or "evil" rover enemies which always tries to chase
 /// the player down. It follows the same basic movement rules as the player but doesn't
-/// have any fuel restrictions.
+/// have any energy restrictions.
 pub struct EvilRoverActor {
     /// The index in State.enemies of the enemy which will be controlled by
     /// this actor.

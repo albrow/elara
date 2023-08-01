@@ -134,7 +134,7 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
     [masterGain, relMusicGain]
   );
 
-  // TODO(albrow): Sfx for reading data, collecting fuel,
+  // TODO(albrow): Sfx for reading data, collecting energy cells,
   // opening gates, being destroyed/attacked by malfunctioning rover.
   const soundDict: Record<string, Playable> = useMemo(
     () => ({

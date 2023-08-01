@@ -1,6 +1,6 @@
 use super::{Level, Outcome};
 use crate::{
-    constants::ERR_OUT_OF_FUEL,
+    constants::ERR_OUT_OF_ENERGY,
     simulation::{Actor, DataTerminal, Obstacle, Orientation, Player, State},
 };
 
@@ -64,8 +64,8 @@ impl Level for DataTerminalsPartOne {
     fn check_win(&self, state: &State) -> Outcome {
         // Note that this level uses a different check_win function. There is not
         // goal to reach. Instead you beat the level by saying the correct message.
-        if state.player.fuel == 0 {
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+        if state.player.energy == 0 {
+            Outcome::Failure(ERR_OUT_OF_ENERGY.to_string())
         } else if state.player.message == HUMMUS_RECIPE {
             Outcome::Success
         } else {
@@ -77,7 +77,7 @@ impl Level for DataTerminalsPartOne {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::levels::{Outcome, ERR_OUT_OF_FUEL};
+    use crate::levels::{Outcome, ERR_OUT_OF_ENERGY};
 
     #[test]
     fn level() {
@@ -110,7 +110,7 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
-        // This code should cause the rover to run out of fuel before saying the
+        // This code should cause the rover to run out of energy before saying the
         // message. (This test is a helpful sanity check since we are using a special
         // check_win function).
         let script = r#"
@@ -122,7 +122,7 @@ mod tests {
             .unwrap();
         assert_eq!(
             result.outcome,
-            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+            Outcome::Failure(String::from(ERR_OUT_OF_ENERGY))
         );
     }
 }

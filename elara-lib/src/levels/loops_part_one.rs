@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, State};
+use crate::simulation::{Actor, EnergyCell, Goal, Obstacle, Orientation, Player, State};
 
 #[derive(Copy, Clone)]
 pub struct LoopsPartOne {}
@@ -27,7 +27,7 @@ impl Level for LoopsPartOne {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(0, 7, 5, Orientation::Right);
-        state.fuel_spots = vec![FuelSpot::new(3, 5)];
+        state.energy_cells = vec![EnergyCell::new(3, 5)];
         state.goals = vec![Goal::new(8, 0)];
         state.obstacles = vec![
             Obstacle::new(0, 6),
@@ -72,7 +72,7 @@ impl Level for LoopsPartOne {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::constants::ERR_OUT_OF_FUEL;
+    use crate::constants::ERR_OUT_OF_ENERGY;
     use crate::levels::Outcome;
 
     #[test]
@@ -81,14 +81,14 @@ mod tests {
         const LEVEL: &'static dyn Level = &LoopsPartOne {};
 
         // Running the initial code should result in Outcome::Failure due to
-        // running out of fuel.
+        // running out of energy.
         let script = LEVEL.initial_code();
         let result = game
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,
-            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+            Outcome::Failure(String::from(ERR_OUT_OF_ENERGY))
         );
 
         // Running this code should result in Outcome::Success.

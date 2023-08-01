@@ -7,12 +7,12 @@ new loop, use the `loop` keyword followed by curly brackets (`{` and `}`)
 Everything inside the curly brackets will be repeated until either:
 
 - (a) you reach the end of the level or
-- (b) run out of fuel.
+- (b) run out of energy.
 
 (There is also a different way to end a loop, but we'll get to that later).
 
 For example, this loop will cause the rover to move forward and backward,
-over and over again until it runs out of fuel.
+over and over again until it runs out of energy.
 
 <RunnableExample
   code={`loop {
@@ -25,7 +25,7 @@ over and over again until it runs out of fuel.
 Elara has safeguards in place to prevent infinite loops. If a possible
 infinite loop is detected, you will see an error message. Below is an
 example of an infinite loop. In this case, the loop runs forever because
-the rover never uses any fuel (e.g. by moving).
+the rover never uses any energy (e.g. by moving).
 
 💡 **Try it**: Run the code to see what happens. You should see an error.
 

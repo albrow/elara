@@ -6,9 +6,9 @@ use crate::state_maker::StateMaker;
 const DATA_TERMINAL_INFO: &'static str = r#"This data terminal will output either `"top"`, `"middle"`, or `"bottom"` depending on which way is safe to go."#;
 
 #[derive(Copy, Clone)]
-pub struct AstroidStrikePartTwo {}
+pub struct AsteroidStrikePartTwo {}
 
-impl AstroidStrikePartTwo {
+impl AsteroidStrikePartTwo {
     // Note: We make obstacles a method so we can re-use the same set of
     // obstacles for each possible state.
     fn obstacles(&self) -> Vec<Obstacle> {
@@ -45,12 +45,12 @@ impl AstroidStrikePartTwo {
     }
 }
 
-impl Level for AstroidStrikePartTwo {
+impl Level for AsteroidStrikePartTwo {
     fn name(&self) -> &'static str {
         "On Your Own"
     }
     fn short_name(&self) -> &'static str {
-        "astroid_strike_part_two"
+        "asteroid_strike_part_two"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to one of the goals ({goal})."
@@ -134,7 +134,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &AstroidStrikePartTwo {};
+        const LEVEL: &'static dyn Level = &AsteroidStrikePartTwo {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
@@ -163,7 +163,7 @@ mod tests {
 
         // Hard-coding the movement direction should always result in failure.
         // In this specific case, it should be Outcome::Continue because we didn't
-        // run out of fuel, but we didn't reach the goal either.
+        // run out of energy, but we didn't reach the goal either.
         let script = r"move_forward(6);";
         let result = game
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())

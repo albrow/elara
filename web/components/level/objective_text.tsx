@@ -14,7 +14,6 @@ export interface ObjectiveTextProps {
 const imgUrlMappping = {
   "{robot}": groverDownUrl,
   "{goal}": flagImageUrl,
-  "{fuel}": energyCellImgUrl,
   "{energyCell}": energyCellImgUrl,
   "{gate}": lockedImgUrl,
   "{terminal}": tvImgUrl,

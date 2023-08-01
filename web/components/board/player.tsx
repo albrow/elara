@@ -20,7 +20,7 @@ import GroverPage from "./hover_info_pages/grover.mdx";
 
 interface PlayerProps {
   offset: Offset;
-  fuel: number;
+  energy: number;
   message: string;
   animState: string;
   animData?: TeleAnimData;
@@ -131,7 +131,7 @@ export default function Player(props: PlayerProps) {
             }}
           >
             <img alt="rover" className="playerImage" src={getRobotImgUrl()} />
-            <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.fuel} />
+            <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.energy} />
           </div>
         </Tooltip>
       </Box>

@@ -98,7 +98,7 @@ export default function MiniBoard(props: MiniBoardProps) {
         ))}
         <Player
           offset={fixedPlayerOffset}
-          fuel={props.state.players[0].fuel}
+          energy={props.state.players[0].energy}
           message={props.state.players[0].message}
           animState={props.state.players[0].anim_state}
           animData={props.state.players[0].anim_data}

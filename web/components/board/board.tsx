@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import {
   FuzzyDataTerminal,
   FuzzyEnemy,
-  FuzzyFuelSpot,
+  FuzzyEnergyCell,
   FuzzyGoal,
   FuzzyObstacle,
   FuzzyPasswordGate,
@@ -129,7 +129,7 @@ export default function Board(props: BoardProps) {
             // eslint-disable-next-line react/no-array-index-key
             key={i}
             offset={playerOffset}
-            fuel={player.fuel}
+            energy={player.energy}
             message={player.message}
             animState={player.anim_state}
             animData={player.anim_data}
@@ -147,18 +147,20 @@ export default function Board(props: BoardProps) {
           enableHoverInfo={props.enableHoverInfo}
         />
       ))}
-      {(props.gameState.fuel_spots as FuzzyFuelSpot[]).map((fuelSpot, i) => {
-        const fuelOffset = posToOffset(fuelSpot.pos);
-        return (
-          <EnergyCell
-            collected={fuelSpot.collected}
-            // eslint-disable-next-line react/no-array-index-key
-            key={i}
-            offset={fuelOffset}
-            enableHoverInfo={props.enableHoverInfo}
-          />
-        );
-      })}
+      {(props.gameState.energy_cells as FuzzyEnergyCell[]).map(
+        (energyCell, i) => {
+          const cellOffset = posToOffset(energyCell.pos);
+          return (
+            <EnergyCell
+              collected={energyCell.collected}
+              // eslint-disable-next-line react/no-array-index-key
+              key={i}
+              offset={cellOffset}
+              enableHoverInfo={props.enableHoverInfo}
+            />
+          );
+        }
+      )}
       {(props.gameState.enemies as FuzzyEnemy[]).map((enemy, i) => (
         <Enemy
           // eslint-disable-next-line react/no-array-index-key

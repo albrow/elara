@@ -9,7 +9,7 @@ import * as Gates from "./level_gates";
 import * as DataTerminalsPartOne from "./level_data_terminals_part_one";
 import * as GateAndTerminal from "./level_gate_and_terminal";
 import * as GateAndTerminalPartThree from "./level_gate_and_terminal_part_three";
-import * as AstroidStrike from "./level_astroid_strike";
+import * as AsteroidStrike from "./level_asteroid_strike";
 import * as PartlyDisabledMovement from "./level_partly_disabled_movement";
 import * as ReImplementTurnRight from "./level_reimplement_turn_right";
 import * as JournalArrays from "./journal_arrays";
@@ -27,7 +27,7 @@ type NodeIds =
   | Gates.NodeIds
   | GateAndTerminal.NodeIds
   | GateAndTerminalPartThree.NodeIds
-  | AstroidStrike.NodeIds
+  | AsteroidStrike.NodeIds
   | PartlyDisabledMovement.NodeIds
   | ReImplementTurnRight.NodeIds
   | JournalArrays.NodeIds
@@ -42,7 +42,7 @@ type ChoiceIds =
   | Gates.ChoiceIds
   | GateAndTerminal.ChoiceIds
   | GateAndTerminalPartThree.ChoiceIds
-  | AstroidStrike.ChoiceIds
+  | AsteroidStrike.ChoiceIds
   | PartlyDisabledMovement.ChoiceIds
   | ReImplementTurnRight.ChoiceIds
   | JournalArrays.ChoiceIds
@@ -85,7 +85,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   ...Gates.NODES,
   ...GateAndTerminal.NODES,
   ...GateAndTerminalPartThree.NODES,
-  ...AstroidStrike.NODES,
+  ...AsteroidStrike.NODES,
   ...PartlyDisabledMovement.NODES,
   ...ReImplementTurnRight.NODES,
   ...JournalArrays.NODES,
@@ -102,7 +102,7 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...Gates.CHOICES,
   ...GateAndTerminal.CHOICES,
   ...GateAndTerminalPartThree.CHOICES,
-  ...AstroidStrike.CHOICES,
+  ...AsteroidStrike.CHOICES,
   ...PartlyDisabledMovement.CHOICES,
   ...ReImplementTurnRight.CHOICES,
   ...JournalArrays.CHOICES,
@@ -119,7 +119,7 @@ export const TREES: DialogTrees = {
   ...Gates.TREES,
   ...GateAndTerminal.TREES,
   ...GateAndTerminalPartThree.TREES,
-  ...AstroidStrike.TREES,
+  ...AsteroidStrike.TREES,
   ...PartlyDisabledMovement.TREES,
   ...ReImplementTurnRight.TREES,
   ...JournalArrays.TREES,

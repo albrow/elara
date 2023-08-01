@@ -18,7 +18,7 @@ interface ObstacleProps {
 export default function Obstacle(props: ObstacleProps) {
   if (props.fuzzy) {
     // "Fuzzy" in this context means that there may or may not be an
-    // astroid strike at this location. Use a flashing warning icon to
+    // asteroid strike at this location. Use a flashing warning icon to
     // indicate this.
     return (
       <>

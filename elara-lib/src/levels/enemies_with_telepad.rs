@@ -2,7 +2,7 @@ use super::{make_all_initial_states_for_telepads, std_check_win, Level, Outcome}
 use crate::actors::{Bounds, EvilRoverActor};
 use crate::constants::{HEIGHT, WIDTH};
 use crate::simulation::{
-    Actor, Enemy, FuelSpot, Goal, Obstacle, Orientation, Player, State, Telepad,
+    Actor, Enemy, EnergyCell, Goal, Obstacle, Orientation, Player, State, Telepad,
 };
 use crate::state_maker::StateMaker;
 
@@ -59,7 +59,7 @@ impl Level for EnemiesWithTelepad {
                 Obstacle::new(10, 6),
                 Obstacle::new(11, 2),
             ])
-            .with_fuel_spots(vec![FuelSpot::new(3, 4)])
+            .with_energy_cells(vec![EnergyCell::new(3, 4)])
             .with_enemies(vec![Enemy::new(4, 7, Orientation::Right)])
             .with_telepads(vec![Telepad::new((9, 6), (0, 7), Orientation::Up)])
             .build();
@@ -80,7 +80,7 @@ impl Level for EnemiesWithTelepad {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal without picking up any additional fuel.")
+        Some("Reach the goal without picking up any energy cells.")
     }
     fn check_challenge(
         &self,
@@ -91,7 +91,7 @@ impl Level for EnemiesWithTelepad {
         if states.len() == 0 {
             return false;
         }
-        states.last().unwrap().fuel_spots[0].collected == false
+        states.last().unwrap().energy_cells[0].collected == false
     }
 }
 

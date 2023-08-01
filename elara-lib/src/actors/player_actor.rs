@@ -2,7 +2,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
 
-use crate::constants::FUEL_SPOT_AMOUNT;
+use crate::constants::ENERGY_CELL_AMOUNT;
 use crate::simulation::{
     get_adjacent_button, get_adjacent_terminal, Actor, BumpAnimData, ButtonConnection, Orientation,
     PlayerAnimState, Pos, State, TeleAnimData,
@@ -50,14 +50,14 @@ impl Actor for PlayerChannelActor {
         match rx.borrow().try_recv() {
             Ok(Action::Wait) => {}
             Ok(Action::Move(direction)) => {
-                // We can't move if we're out of fuel.
-                if state.player.fuel == 0 {
+                // We can't move if we're out of energy.
+                if state.player.energy == 0 {
                     return state;
                 }
 
-                // Moving in any direction costs one fuel.
-                state.player.fuel -= 1;
-                state.player.total_fuel_used += 1;
+                // Moving in any direction costs one energy.
+                state.player.energy -= 1;
+                state.player.total_energy_used += 1;
                 // Update the position and animation state. Note that the player may not
                 // be able to actually move if there are obstacles in the way.
                 let (new_pos, new_facing, new_anim_state) = self.try_to_move(&state, direction);
@@ -114,12 +114,12 @@ impl Actor for PlayerChannelActor {
             Err(_) => {}
         }
 
-        // If we're on a fuel spot *after moving*, increase our current fuel
-        // and mark the fuel spot as collected.
-        for (i, fuel_spot) in state.fuel_spots.iter().enumerate() {
-            if fuel_spot.pos == state.player.pos && !fuel_spot.collected {
-                state.player.fuel += FUEL_SPOT_AMOUNT;
-                state.fuel_spots[i].collected = true;
+        // If we're on a energy cell *after moving*, increase our current energy
+        // and mark the energy cell as collected.
+        for (i, energy_cell) in state.energy_cells.iter().enumerate() {
+            if energy_cell.pos == state.player.pos && !energy_cell.collected {
+                state.player.energy += ENERGY_CELL_AMOUNT;
+                state.energy_cells[i].collected = true;
                 break;
             }
         }
@@ -195,7 +195,7 @@ impl PlayerChannelActor {
 mod test {
     use super::*;
     use crate::{
-        constants::MAX_FUEL,
+        constants::MAX_ENERGY,
         simulation::{Obstacle, PasswordGate, Player, PlayerAnimState, Pos, State, Telepad},
     };
 
@@ -210,7 +210,7 @@ mod test {
         let (tx, rx) = mpsc::channel();
         let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
         let mut state = State::new();
-        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
 
         tx.send(Action::Move(MoveDirection::Forward)).unwrap();
         let new_state = actor.apply(state.clone());
@@ -218,11 +218,11 @@ mod test {
             new_state.player,
             Player {
                 pos: Pos::new(2, 1),
-                fuel: state.player.fuel - 1,
+                energy: state.player.energy - 1,
                 message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Right,
-                total_fuel_used: 1,
+                total_energy_used: 1,
             }
         );
         state = new_state;
@@ -233,11 +233,11 @@ mod test {
             new_state.player,
             Player {
                 pos: Pos::new(2, 1),
-                fuel: state.player.fuel,
+                energy: state.player.energy,
                 message: String::from(""),
                 anim_state: PlayerAnimState::Turning,
                 facing: Orientation::Down,
-                total_fuel_used: 1,
+                total_energy_used: 1,
             }
         );
         state = new_state;
@@ -248,11 +248,11 @@ mod test {
             new_state.player,
             Player {
                 pos: Pos::new(2, 2),
-                fuel: state.player.fuel - 1,
+                energy: state.player.energy - 1,
                 message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Down,
-                total_fuel_used: 2,
+                total_energy_used: 2,
             }
         );
     }
@@ -267,7 +267,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State::new();
-        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
 
         // Simple case where no obstacles are in the way and we are not
         // outside the bounds.
@@ -319,7 +319,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State::new();
-        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
 
         // We can't move outside the bounds.
         state.player.pos = Pos::new(0, 0);
@@ -376,7 +376,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State::new();
-        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
         state.obstacles = vec![
             Obstacle::new(0, 0),
             Obstacle::new(1, 0),
@@ -437,7 +437,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State::new();
-        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
         state.password_gates = vec![
             PasswordGate::new(0, 0, "lovelace".to_string(), false),
             PasswordGate::new(1, 0, "lovelace".to_string(), false),
@@ -498,7 +498,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State::new();
-        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
         state.password_gates = vec![
             PasswordGate::new(0, 0, "lovelace".to_string(), true),
             PasswordGate::new(1, 0, "lovelace".to_string(), true),
@@ -559,7 +559,7 @@ mod test {
         };
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State::new();
-        state.player = Player::new(1, 1, MAX_FUEL, Orientation::Right);
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
         state.telepads = vec![Telepad::new((2, 1), (4, 4), Orientation::Left)];
 
         // Should teleport to end_pos and be facing the new direction.

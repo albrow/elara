@@ -44,8 +44,8 @@ pub struct Pos {
 pub struct ScriptStats {
     // Length of the script in bytes.
     pub code_len: i32,
-    // Amount of fuel used by the rover.
-    pub fuel_used: i32,
+    // Amount of energy used by the rover.
+    pub energy_used: i32,
     // Amount of time (i.e. number of steps) taken to execute the script.
     pub time_taken: i32,
 }
@@ -54,7 +54,7 @@ impl From<&script_runner::ScriptStats> for ScriptStats {
     fn from(stats: &script_runner::ScriptStats) -> Self {
         Self {
             code_len: stats.code_len as i32,
-            fuel_used: stats.fuel_used as i32,
+            energy_used: stats.energy_used as i32,
             time_taken: stats.time_taken as i32,
         }
     }
@@ -223,7 +223,7 @@ fn get_js_enemy_anim_data(anim_state: &EnemyAnimState) -> Option<JsValue> {
 #[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyState {
     pub players: Array,        // Array<FuzzyPlayer>
-    pub fuel_spots: Array,     // Array<FuzzyFuelSpot>
+    pub energy_cells: Array,   // Array<FuzzyEnergyCell>
     pub goals: Array,          // Array<FuzzyGoal>
     pub enemies: Array,        // Array<FuzzyEnemy>
     pub obstacles: Array,      // Array<FuzzyObstacle>
@@ -238,7 +238,7 @@ impl FuzzyState {
     pub fn new() -> Self {
         FuzzyState {
             players: Array::new(),
-            fuel_spots: Array::new(),
+            energy_cells: Array::new(),
             goals: Array::new(),
             enemies: Array::new(),
             obstacles: Array::new(),
@@ -276,7 +276,7 @@ impl FuzzyState {
                         x: player.pos.x as i32,
                         y: player.pos.y as i32,
                     },
-                    fuel: player.fuel as i32,
+                    energy: player.energy as i32,
                     message: player.message.clone(),
                     anim_state: anim_state.to_string(),
                     anim_data: anim_data,
@@ -286,18 +286,18 @@ impl FuzzyState {
             );
         }
 
-        let fuel_spots = Array::new_with_length(state.fuel_spots.len() as u32);
-        for (i, fuzzy_fuel_spot) in state.fuel_spots.iter().enumerate() {
-            let fuel_spot = &fuzzy_fuel_spot.obj;
-            fuel_spots.set(
+        let energy_cells = Array::new_with_length(state.energy_cells.len() as u32);
+        for (i, fuzzy_energy_cell) in state.energy_cells.iter().enumerate() {
+            let energy_cell = &fuzzy_energy_cell.obj;
+            energy_cells.set(
                 i as u32,
-                JsValue::from(FuzzyFuelSpot {
+                JsValue::from(FuzzyEnergyCell {
                     pos: Pos {
-                        x: fuel_spot.pos.x as i32,
-                        y: fuel_spot.pos.y as i32,
+                        x: energy_cell.pos.x as i32,
+                        y: energy_cell.pos.y as i32,
                     },
-                    collected: fuel_spot.collected,
-                    fuzzy: fuzzy_fuel_spot.fuzzy,
+                    collected: energy_cell.collected,
+                    fuzzy: fuzzy_energy_cell.fuzzy,
                 }),
             );
         }
@@ -469,7 +469,7 @@ impl FuzzyState {
 
         FuzzyState {
             players,
-            fuel_spots,
+            energy_cells,
             goals,
             enemies,
             obstacles,
@@ -499,7 +499,7 @@ fn term_data_to_js(data: &TermData) -> JsValue {
 #[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyPlayer {
     pub pos: Pos,
-    pub fuel: i32,
+    pub energy: i32,
     pub message: String,
     pub anim_state: String, // PlayerAnimState
     pub anim_data: JsValue, // TeleAnimData | BumpAnimData |(other animation data types) | undefined
@@ -516,7 +516,7 @@ pub struct FuzzyGoal {
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub struct FuzzyFuelSpot {
+pub struct FuzzyEnergyCell {
     pub pos: Pos,
     pub collected: bool,
     pub fuzzy: bool,

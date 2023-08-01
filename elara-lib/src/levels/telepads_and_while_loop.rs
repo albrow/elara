@@ -1,7 +1,7 @@
 use super::{make_all_initial_states_for_telepads, std_check_win, Level, Outcome};
 use crate::{
     script_runner::ScriptStats,
-    simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, State, Telepad},
+    simulation::{Actor, EnergyCell, Goal, Obstacle, Orientation, Player, State, Telepad},
     state_maker::StateMaker,
 };
 
@@ -67,7 +67,7 @@ move_forward(3);
                 Obstacle::new(9, 5),
                 Obstacle::new(9, 6),
             ])
-            .with_fuel_spots(vec![FuelSpot::new(6, 4)])
+            .with_energy_cells(vec![EnergyCell::new(6, 4)])
             .with_telepads(vec![
                 Telepad::new((2, 4), (4, 6), Orientation::Up),
                 Telepad::new((4, 3), (6, 6), Orientation::Up),

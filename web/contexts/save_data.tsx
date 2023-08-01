@@ -14,7 +14,7 @@ import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
 import { SectionName } from "../components/journal/sections";
 
-export const SAVE_DATA_VERSION = 12;
+export const SAVE_DATA_VERSION = 13;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 // Amount of time (in milliseconds) to wait for further updates before
@@ -196,6 +196,32 @@ function migrateSaveData(saveData: SaveData): SaveData {
     // than once in rapid sucession. In other words, using Set makes
     // this function idempotent.
     newData.unlockedFunctions = [...new Set(unlockedFunctions)];
+  }
+
+  if (newData.version === 12) {
+    newData.version = 13;
+
+    // Version 13 renamed some levels:
+    //
+    //   fuel_part_one -> energy_part_one
+    //   astroid_strike -> asteroid_strike
+    //   astroid_strike_part_two -> asteroid_strike_part_two
+    //
+    newData.levelStates.energy_part_one = newData.levelStates.fuel_part_one;
+    delete newData.levelStates.fuel_part_one;
+    newData.levelStates.asteroid_strike = newData.levelStates.astroid_strike;
+    delete newData.levelStates.astroid_strike;
+    newData.levelStates.asteroid_strike_part_two =
+      newData.levelStates.astroid_strike_part_two;
+    delete newData.levelStates.astroid_strike_part_two;
+
+    // We also renamed the dialog tree:
+    //
+    //   level_astroid_strike -> level_asteroid_strike
+    //
+    newData.seenDialogTrees = newData.seenDialogTrees.map((treeName) =>
+      treeName === "level_astroid_strike" ? "level_asteroid_strike" : treeName
+    );
   }
 
   return newData;
@@ -482,7 +508,7 @@ if (import.meta.vitest) {
               completed: false,
               code: `say("hello");`,
             },
-            fuel_part_two: {
+            energy_part_one: {
               completed: false,
               code: `move_right(5);`,
             },
@@ -527,7 +553,7 @@ if (import.meta.vitest) {
               completed: false,
               code: `say("hello");`,
             },
-            fuel_part_two: {
+            energy_part_one: {
               completed: false,
               code: `move_right(5);`,
             },
@@ -564,11 +590,7 @@ if (import.meta.vitest) {
               completed: true,
               code: `move_right(5);`,
             },
-            fuel_part_one: {
-              completed: true,
-              code: `move_right(5);`,
-            },
-            fuel_part_two: {
+            energy_part_one: {
               completed: true,
               code: `move_right(5);`,
             },
@@ -600,11 +622,7 @@ if (import.meta.vitest) {
               completed: true,
               code: `move_right(5);`,
             },
-            fuel_part_one: {
-              completed: true,
-              code: `move_right(5);`,
-            },
-            fuel_part_two: {
+            energy_part_one: {
               completed: true,
               code: `move_right(5);`,
             },

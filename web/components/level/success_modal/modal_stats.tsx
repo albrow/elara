@@ -52,7 +52,7 @@ export default function ModalStats(props: StatsProps) {
                 marginTop: "0.1rem",
               }}
             />
-            {`Fuel Used: ${props.stats.fuel_used}`}
+            {`Energy Used: ${props.stats.energy_used}`}
           </Flex>
         </Badge>
       </Animate>

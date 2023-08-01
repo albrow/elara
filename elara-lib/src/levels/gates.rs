@@ -65,7 +65,7 @@ move_forward(2);
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::constants::ERR_OUT_OF_FUEL;
+    use crate::constants::ERR_OUT_OF_ENERGY;
     use crate::levels::Outcome;
 
     #[test]
@@ -88,14 +88,14 @@ mod tests {
         assert_eq!(result.outcome, Outcome::Success);
 
         // Attempting to reach the goal without saying the password should
-        // result in running out of fuel.
+        // result in running out of energy.
         let script = "loop { move_forward(1); }";
         let result = game
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(
             result.outcome,
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+            Outcome::Failure(ERR_OUT_OF_ENERGY.to_string())
         );
 
         // Saying the wrong password should not open the gate.

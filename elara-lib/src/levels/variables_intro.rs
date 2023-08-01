@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
-    Actor, FuelSpot, Goal, Obstacle, Orientation, PasswordGate, Player, State,
+    Actor, EnergyCell, Goal, Obstacle, Orientation, PasswordGate, Player, State,
 };
 
 #[derive(Copy, Clone)]
@@ -68,10 +68,10 @@ let password = "supercalifragilisticexpialidocious";
             Obstacle::new(10, 3),
             Obstacle::new(10, 4),
         ];
-        state.fuel_spots = vec![
-            FuelSpot::new(3, 3),
-            FuelSpot::new(8, 7),
-            FuelSpot::new(5, 0),
+        state.energy_cells = vec![
+            EnergyCell::new(3, 3),
+            EnergyCell::new(8, 7),
+            EnergyCell::new(5, 0),
         ];
         state.password_gates = vec![
             PasswordGate::new_with_info(5, 6, PASSWORD.to_string(), false, GATE_INFO.into()),
@@ -87,7 +87,7 @@ let password = "supercalifragilisticexpialidocious";
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal using 12 fuel or less.")
+        Some("Reach the goal using 12 energy or less.")
     }
     fn check_challenge(
         &self,
@@ -95,14 +95,14 @@ let password = "supercalifragilisticexpialidocious";
         _script: &str,
         stats: &crate::script_runner::ScriptStats,
     ) -> bool {
-        stats.fuel_used <= 12
+        stats.energy_used <= 12
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::constants::ERR_OUT_OF_FUEL;
+    use crate::constants::ERR_OUT_OF_ENERGY;
     use crate::levels::Outcome;
 
     #[test]
@@ -169,8 +169,8 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
 
-        // Attempting to reach the goal without collecting the fuel on
-        // the way should result in running out of fuel.
+        // Attempting to reach the goal without collecting the energy
+        // cell on the way should result in running out of energy.
         let script = r#"
             let password = "supercalifragilisticexpialidocious";
             say(password);
@@ -185,7 +185,7 @@ mod tests {
             .unwrap();
         assert_eq!(
             result.outcome,
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+            Outcome::Failure(ERR_OUT_OF_ENERGY.to_string())
         );
     }
 

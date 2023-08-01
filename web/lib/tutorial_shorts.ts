@@ -3,8 +3,8 @@ import howToPauseAndStepUrl from "../images/shorts/how_to_pause_and_step.gif";
 import howToSeeErrorsUrl from "../images/shorts/how_to_see_errors.gif";
 import whereToFindObjectivesUrl from "../images/shorts/where_to_find_objectives.gif";
 import backToHubUrl from "../images/shorts/back_to_hub.gif";
-import movingTakesFuelUrl from "../images/shorts/moving_takes_fuel.gif";
-import howToGetMoreFuelUrl from "../images/shorts/how_to_get_more_fuel.gif";
+import movingTakesEnergyUrl from "../images/shorts/moving_takes_fuel.gif";
+import howToGetMoreEnergyUrl from "../images/shorts/how_to_get_more_fuel.gif";
 import howToUseDataTerminalsUrl from "../images/shorts/how_to_use_data_terminals.gif";
 import howToViewFunctionListUrl from "../images/shorts/how_to_view_function_list.gif";
 import extraChallengesUrl from "../images/shorts/extra_challenges.gif";
@@ -41,15 +41,15 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     text: 'You can go back to the hub at anytime by pressing the "Hub" button. From there, you can revisit previous levels or look at the journal.',
     imageUrl: backToHubUrl,
   },
-  moving_takes_fuel: {
-    title: "Fuel",
-    text: "The little orange number shows the rover's current amount of fuel. Moving the rover uses one fuel per space.",
-    imageUrl: movingTakesFuelUrl,
+  moving_takes_energy: {
+    title: "Energy",
+    text: "The little number next to G.R.O.V.E.R. shows his current amount of energy. Moving him uses one energy per space.",
+    imageUrl: movingTakesEnergyUrl,
   },
-  how_to_get_more_fuel: {
-    title: "How to get more fuel",
-    text: "If you run out of fuel, you won't be able to complete the objective. You can get more fuel by simply moving into a space that contains it.",
-    imageUrl: howToGetMoreFuelUrl,
+  how_to_get_more_energy: {
+    title: "How to get more energy",
+    text: "If you run out of energy, you won't be able to complete the objective. You can get more energy by collecting an energy cell.",
+    imageUrl: howToGetMoreEnergyUrl,
   },
   how_to_use_data_terminals: {
     title: "Reading data from terminals",

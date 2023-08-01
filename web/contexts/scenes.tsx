@@ -121,7 +121,10 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
-  levelScene("fuel_part_one", ["moving_takes_fuel", "how_to_get_more_fuel"]),
+  levelScene("energy_part_one", [
+    "moving_takes_energy",
+    "how_to_get_more_energy",
+  ]),
   journalScene("strings"),
   journalScene("loops"),
   levelScene(
@@ -182,7 +185,7 @@ const RAW_SCENES: RawScene[] = [
     [
       `Remember: quotation marks are used for strings, but not for variable names.`,
       `For this level, you should be writing \`password\` (without the quotes) instead of \`"password"\` (with the quotes).`,
-      "You don't necessarily need to collect all the fuel in order to reach the goal.",
+      "You don't necessarily need to collect all the energy cells in order to reach the goal.",
     ]
   ),
   levelScene(
@@ -208,7 +211,7 @@ const RAW_SCENES: RawScene[] = [
   journalScene("comparisons"),
   journalScene("if_statements"),
   levelScene(
-    "astroid_strike",
+    "asteroid_strike",
     [],
     [
       "The starting code already contains almost everything you need.",
@@ -217,7 +220,7 @@ const RAW_SCENES: RawScene[] = [
     ]
   ),
   levelScene(
-    "astroid_strike_part_two",
+    "asteroid_strike_part_two",
     [],
     [
       'This is very similar to the previous level, but this time there are three possible directions: `"top"`, `"middle"`, and `"bottom"`.',
@@ -288,7 +291,7 @@ const RAW_SCENES: RawScene[] = [
   levelScene(
     "enemies_part_two",
     [],
-    ["If you're not sure where to go, try moving toward the fuel spot first."]
+    ["If you're not sure where to go, try moving toward the energy cell first."]
   ),
   levelScene(
     "enemies_with_telepad",

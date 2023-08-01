@@ -1,7 +1,7 @@
 use super::{std_check_win, Level, Outcome};
 use crate::{
     script_runner::ScriptStats,
-    simulation::{Actor, FuelSpot, Goal, Obstacle, Orientation, Player, State},
+    simulation::{Actor, EnergyCell, Goal, Obstacle, Orientation, Player, State},
 };
 
 #[derive(Copy, Clone)]
@@ -71,7 +71,7 @@ move_backward(1);
             Obstacle::new(5, 4),
             Obstacle::new(5, 5),
         ];
-        state.fuel_spots = vec![FuelSpot::new(2, 4)];
+        state.energy_cells = vec![EnergyCell::new(2, 4)];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
@@ -91,7 +91,7 @@ move_backward(1);
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{constants::ERR_OUT_OF_FUEL, levels::Outcome};
+    use crate::{constants::ERR_OUT_OF_ENERGY, levels::Outcome};
 
     #[test]
     fn level() {
@@ -105,7 +105,7 @@ mod tests {
             .unwrap();
         assert_eq!(
             result.outcome,
-            Outcome::Failure(ERR_OUT_OF_FUEL.to_string())
+            Outcome::Failure(ERR_OUT_OF_ENERGY.to_string())
         );
 
         // This is an example solution that should result in Outcome::Success.

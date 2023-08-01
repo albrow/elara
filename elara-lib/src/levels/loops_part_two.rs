@@ -5,7 +5,7 @@ use crate::{
     actors::{Bounds, EvilRoverActor},
     constants::{HEIGHT, WIDTH},
     script_runner::ScriptStats,
-    simulation::{Actor, Enemy, FuelSpot, Goal, Obstacle, Orientation, Player, Pos, State},
+    simulation::{Actor, Enemy, EnergyCell, Goal, Obstacle, Orientation, Player, Pos, State},
 };
 
 #[derive(Copy, Clone)]
@@ -31,7 +31,7 @@ impl Level for LoopsPartTwo {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(0, 0, 10, Orientation::Right);
-        state.fuel_spots = vec![FuelSpot::new(7, 3)];
+        state.energy_cells = vec![EnergyCell::new(7, 3)];
         state.goals = vec![Goal {
             pos: Pos { x: 10, y: 5 },
         }];

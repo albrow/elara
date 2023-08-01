@@ -10,14 +10,14 @@ import SpriteLabel from "./sprite_label";
 import EnergyCellPage from "./hover_info_pages/energy_cell.mdx";
 import BoardHoverInfo from "./board_hover_info";
 
-interface EnergyCellProps {
+interface EnergyPodProps {
   offset: Offset;
   energyGain?: number;
   collected: boolean;
   enableHoverInfo: boolean;
 }
 
-export default function EnergyCell(props: EnergyCellProps) {
+export default function EnergyPod(props: EnergyPodProps) {
   return props.collected ? null : (
     <>
       {props.enableHoverInfo && !props.collected && (
@@ -51,6 +51,6 @@ export default function EnergyCell(props: EnergyCellProps) {
   );
 }
 
-EnergyCell.defaultProps = {
+EnergyPod.defaultProps = {
   energyGain: DEFAULT_ENERGY_CELL_GAIN,
 };

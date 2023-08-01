@@ -3,7 +3,7 @@ use std::fmt;
 
 use crate::{
     actors::PlayerChannelActor,
-    constants::MAX_FUEL,
+    constants::MAX_ENERGY,
     levels::{Level, Outcome, LEVELS},
 };
 
@@ -137,7 +137,7 @@ pub struct State {
     pub player: Player,
     pub goals: Vec<Goal>,
     pub obstacles: Vec<Obstacle>,
-    pub fuel_spots: Vec<FuelSpot>,
+    pub energy_cells: Vec<EnergyCell>,
     pub buttons: Vec<Button>,
     pub gates: Vec<Gate>,
     pub data_terminals: Vec<DataTerminal>,
@@ -149,10 +149,10 @@ pub struct State {
 impl State {
     pub fn new() -> State {
         State {
-            player: Player::new(0, 0, MAX_FUEL, Orientation::Right),
+            player: Player::new(0, 0, MAX_ENERGY, Orientation::Right),
             goals: vec![],
             obstacles: vec![],
-            fuel_spots: vec![],
+            energy_cells: vec![],
             buttons: vec![],
             gates: vec![],
             password_gates: vec![],
@@ -171,7 +171,7 @@ impl fmt::Debug for State {
             // Omitting obstacles field since it can be very long and
             // the obstacles never move.
             // .field("obstacles", &self.obstacles)
-            .field("fuel_spots", &self.fuel_spots)
+            .field("energy_cells", &self.energy_cells)
             .field("buttons", &self.buttons)
             .field("gates", &self.gates)
             .field("data_terminals", &self.data_terminals)
@@ -247,35 +247,35 @@ pub struct BumpAnimData {
 #[derive(Clone, PartialEq, Debug)]
 pub struct Player {
     pub pos: Pos,
-    pub fuel: u32,
+    pub energy: u32,
     pub message: String,
     pub anim_state: PlayerAnimState,
     pub facing: Orientation,
-    pub total_fuel_used: u32,
+    pub total_energy_used: u32,
 }
 
 impl Player {
-    pub fn new(x: u32, y: u32, fuel: u32, facing: Orientation) -> Player {
+    pub fn new(x: u32, y: u32, energy: u32, facing: Orientation) -> Player {
         Player {
             pos: Pos::new(x as i32, y as i32),
-            fuel: fuel,
+            energy: energy,
             message: String::new(),
             anim_state: PlayerAnimState::Idle,
             facing: facing,
-            total_fuel_used: 0,
+            total_energy_used: 0,
         }
     }
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuelSpot {
+pub struct EnergyCell {
     pub pos: Pos,
     pub collected: bool,
 }
 
-impl FuelSpot {
-    pub fn new(x: u32, y: u32) -> FuelSpot {
-        FuelSpot {
+impl EnergyCell {
+    pub fn new(x: u32, y: u32) -> EnergyCell {
+        EnergyCell {
             pos: Pos {
                 x: x as i32,
                 y: y as i32,

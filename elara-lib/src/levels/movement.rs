@@ -53,7 +53,7 @@ move_forward(1);
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::constants::ERR_OUT_OF_FUEL;
+    use crate::constants::ERR_OUT_OF_ENERGY;
     use crate::levels::Outcome;
 
     #[test]
@@ -76,7 +76,7 @@ mod tests {
         assert_eq!(result.outcome, Outcome::Success);
 
         // Running this code should result in Outcome::Failure due to running out
-        // of fuel.
+        // of energy.
         let script = r"for x in 0..25 {
                 move_forward(1);
                 move_backward(1);
@@ -89,7 +89,7 @@ mod tests {
             .unwrap();
         assert_eq!(
             result.outcome,
-            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+            Outcome::Failure(String::from(ERR_OUT_OF_ENERGY))
         );
 
         // Player should not be able to move past the obstacles for this level.
@@ -109,7 +109,7 @@ mod tests {
         assert_eq!(result.outcome, Outcome::Success);
 
         // It is *okay* for a script to contain an infinite loop, as long as we either
-        // run out of fuel or reach the objective before hitting the limitation for max
+        // run out of energy or reach the objective before hitting the limitation for max
         // operations in the Rhai engine.
         // In this case, we reach the objective first, so we expect Outcome::Success.
         let script = r"move_forward(3);
@@ -124,7 +124,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        // In this case, we don't reach the objective so we expect ERR_OUT_OF_FUEL.
+        // In this case, we don't reach the objective so we expect ERR_OUT_OF_ENERGY.
         let script = r"while (true) {
                 move_forward(1);
                 move_backward(1);
@@ -137,7 +137,7 @@ mod tests {
             .unwrap();
         assert_eq!(
             result.outcome,
-            Outcome::Failure(String::from(ERR_OUT_OF_FUEL))
+            Outcome::Failure(String::from(ERR_OUT_OF_ENERGY))
         );
     }
 }

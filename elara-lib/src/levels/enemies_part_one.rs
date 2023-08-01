@@ -26,7 +26,7 @@ move_forward(3);
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(8, 2, 20, Orientation::Down);
-        state.fuel_spots = vec![];
+        state.energy_cells = vec![];
         state.goals = vec![Goal::new(8, 5)];
         state.enemies = vec![Enemy::new(8, 6, Orientation::Up)];
         state.obstacles = vec![
