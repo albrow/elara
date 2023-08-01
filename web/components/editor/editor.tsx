@@ -3,7 +3,14 @@ import { completionStatus, acceptCompletion } from "@codemirror/autocomplete";
 import { lintGutter, setDiagnostics, Diagnostic } from "@codemirror/lint";
 import { EditorView, KeyBinding, keymap } from "@codemirror/view";
 import { useCodeMirror } from "@uiw/react-codemirror";
-import { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useLayoutEffect,
+} from "react";
 import { createTheme } from "@uiw/codemirror-themes";
 import { tags as t } from "@lezer/highlight";
 import { Box, Text, Tooltip } from "@chakra-ui/react";
@@ -144,6 +151,9 @@ interface EditorProps {
   code: string;
   // E.g., the original code for the level or runnable example. The code that we will reset to.
   originalCode: string;
+  // Editor state requested by the parent component.
+  requestedState: EditorState | null;
+  // type is either "level" or "example".
   type: EditorType;
   runScript: (script: string) => RunResult;
   onReplayDone: (script: string, result: RunResult) => void;
@@ -238,7 +248,7 @@ export default function Editor(props: EditorProps) {
   );
 
   const { onStateChange } = props;
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Call the onStateChange handler whenever the state changes.
     if (onStateChange) {
       onStateChange(state);
@@ -252,6 +262,24 @@ export default function Editor(props: EditorProps) {
     setStepIndex(0);
     setNumSteps(0);
   }, []);
+
+  // Respond to a requested state change.
+  useEffect(() => {
+    if (props.requestedState === null) {
+      // Just means a state is not being requested by the parent.
+      return;
+    }
+    if (props.requestedState === "editing") {
+      // If the requested state is "editing", stop the replayer and reset the state.
+      if (replayer.current) {
+        replayer.current.stop();
+      }
+      resetState();
+    } else {
+      // Requesting other states is not allowed.
+      throw new Error(`Invalid requested state: ${props.requestedState}`);
+    }
+  }, [props.requestedState, resetState]);
 
   const getCode = useCallback(
     () => view?.state.doc.toString() || "",
@@ -356,6 +384,8 @@ export default function Editor(props: EditorProps) {
     (script: string, result: RunResult) => () => {
       if (props.resetOnReplayDone) {
         resetState();
+      } else {
+        setState("paused");
       }
       props.onReplayDone(script, result);
     },

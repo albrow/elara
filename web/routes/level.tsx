@@ -28,7 +28,18 @@ export default function Level() {
     { markLevelCompleted, markLevelChallengeCompleted, updateLevelCode },
   ] = useSaveData();
   const currScene = useCurrScene();
-  const [editorState, setEditorState] = useState<EditorState>("editing");
+
+  // Note: unsafeSetEditorState should only be called in response to an onStateChange
+  // event from the Editor component. It does not actually change the state inside the
+  // Editor component. To do that, you have to use requestEditorState.
+  const [editorState, unsafeSetEditorState] = useState<EditorState>("editing");
+  // requestEditorState will request that the editor change its state to the given
+  // state. It is not gauranteed that the Editor will respect this request, but if it
+  // does, it will trigger an onStateChange event with the new state. For now "editing"
+  // is the only type of state that parent components can request.
+  const [requestedEditorState, requestEditorState] =
+    useState<EditorState | null>(null);
+
   const [showErrorModal, _hidErrorModal, setErrorModalOnClose] =
     useErrorModal();
   const [showHintsModal] = useHintsModal();
@@ -118,6 +129,7 @@ export default function Level() {
   const resetLevelState = useCallback(() => {
     setModalVisible(false);
     setBoardState(currLevel().initial_state);
+    requestEditorState("editing");
   }, [currLevel]);
 
   // Returns a function that can be used to run a script.
@@ -139,7 +151,12 @@ export default function Level() {
   }, []);
 
   const onEditorStateChange = useCallback((state: EditorState) => {
-    setEditorState(state);
+    // If there is a pending requested editor state, change it to null.
+    // This is telling the editor we are no longer requesting any specific
+    // state.
+    requestEditorState(null);
+    // Then update our (i.e. the Level component's) reckoning of the editor state.
+    unsafeSetEditorState(state);
   }, []);
 
   // Called when the replay is done (i.e. the user has either completed or failed the
@@ -166,8 +183,6 @@ export default function Level() {
           result.outcome === "continue" ? undefined : result.outcome
         );
       }
-
-      setEditorState("editing");
     },
     [
       currLevel,
@@ -318,6 +333,7 @@ export default function Level() {
             <Box w="608px">
               <Editor
                 type="level"
+                requestedState={requestedEditorState}
                 code={initialCode()}
                 originalCode={currLevel().initial_code}
                 availableFunctions={availFuncs}

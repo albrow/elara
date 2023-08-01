@@ -21,7 +21,11 @@ export interface RunnableExampleProps {
 export default function RunnableExample(props: RunnableExampleProps) {
   const game = Game.new();
   const initialState = props.level!.initial_state;
-  const [editorState, setEditorState] = useState<EditorState>("editing");
+
+  // Note: unsafeSetEditorState should only be called in response to an onStateChange
+  // event from the Editor component. It does not actually change the state inside the
+  // Editor component.
+  const [editorState, unsafeSetEditorState] = useState<EditorState>("editing");
   const [showErrorModal, _hidErrorModal, setErrorModalOnClose] =
     useErrorModal();
   const [saveData, _] = useSaveData();
@@ -65,7 +69,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
   }, []);
 
   const onEditorStateChange = useCallback((state: EditorState) => {
-    setEditorState(state);
+    unsafeSetEditorState(state);
   }, []);
 
   const onScriptError = useCallback(
@@ -93,6 +97,8 @@ export default function RunnableExample(props: RunnableExampleProps) {
         <Editor
           type="example"
           code={initialCode}
+          requestedState={null}
+          resetOnReplayDone
           originalCode={initialCode}
           availableFunctions={availFuncs}
           runScript={runScript}
