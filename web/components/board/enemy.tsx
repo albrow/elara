@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { Offset } from "../../lib/utils";
 import { ENEMY_Z_INDEX, TILE_SIZE } from "../../lib/constants";
-import groverUpUrl from "../../images/board/grover_up.png";
-import groverDownUrl from "../../images/board/grover_down.png";
-import groverLeftUrl from "../../images/board/grover_left.png";
-import groverRightUrl from "../../images/board/grover_right.png";
+import evelRoverUpImg from "../../images/board/evil_rover_up.png";
+import evilRoverDownImg from "../../images/board/evil_rover_down.png";
+import evilRoverLeftImg from "../../images/board/evil_rover_left.png";
+import evilRoverRightImg from "../../images/board/evil_rover_right.png";
 import lightningEffectUrl from "../../images/board/lightning.gif";
 import { TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
 import { getSpriteAnimations } from "./anim_utils";
@@ -48,13 +48,13 @@ export default function Enemy(props: EnemyProps) {
   const getRobotImgUrl = useCallback(() => {
     switch (props.facing) {
       case "up":
-        return groverUpUrl;
+        return evelRoverUpImg;
       case "down":
-        return groverDownUrl;
+        return evilRoverDownImg;
       case "left":
-        return groverLeftUrl;
+        return evilRoverLeftImg;
       case "right":
-        return groverRightUrl;
+        return evilRoverRightImg;
       default:
         throw new Error(`Unknown orientation: + ${props.facing}`);
     }
@@ -93,9 +93,7 @@ export default function Enemy(props: EnemyProps) {
               width: `${TILE_SIZE - 2}px`,
               height: `${TILE_SIZE - 2}px`,
               position: "absolute",
-              filter:
-                "drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3)) hue-rotate(180deg) " +
-                "brightness(80%) sepia(20%) contrast(120%) saturate(200%)",
+              filter: "drop-shadow(-2px 3px 2px rgba(0, 0, 0, 0.3))",
             }}
           />
           <Box
