@@ -1,9 +1,6 @@
 import { Badge, Flex } from "@chakra-ui/react";
-import {
-  MdOutlineTimer,
-  MdLocalGasStation,
-  MdOutlineTextSnippet,
-} from "react-icons/md";
+import { MdOutlineTimer, MdOutlineTextSnippet } from "react-icons/md";
+import { BsLightningChargeFill } from "react-icons/bs";
 import { Animate } from "react-simple-animate";
 
 import { ScriptStats } from "../../../../elara-lib/pkg/elara_lib";
@@ -43,9 +40,9 @@ export default function ModalStats(props: StatsProps) {
         start={{ opacity: 0 }}
         end={{ opacity: 1 }}
       >
-        <Badge colorScheme="green" px="9px" py="3px" fontSize="sm">
+        <Badge colorScheme="blue" px="9px" py="3px" fontSize="sm">
           <Flex direction="row" mt="0.12rem">
-            <MdLocalGasStation
+            <BsLightningChargeFill
               size="1.2em"
               style={{
                 marginRight: "0.1rem",
@@ -62,7 +59,7 @@ export default function ModalStats(props: StatsProps) {
         start={{ opacity: 0 }}
         end={{ opacity: 1 }}
       >
-        <Badge colorScheme="blue" px="9px" py="3px" fontSize="sm">
+        <Badge colorScheme="green" px="9px" py="3px" fontSize="sm">
           <Flex direction="row" mt="0.12rem">
             <MdOutlineTextSnippet
               size="1.2em"
