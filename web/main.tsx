@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import createRouter from "router5";
 import { RouterProvider } from "react-router5";
+import browserPlugin from "router5-plugin-browser";
 import type { Route } from "router5";
 
 import "@fontsource/nunito/600.css";
@@ -120,7 +121,14 @@ const elaraTheme = extendTheme({
     defaultRoute: "loading",
     defaultParams: { destination: "title" },
   });
-  // router.usePlugin(browserPlugin());
+
+  // For local development, enable browser plugin. This means if we
+  // refresh the page, we'll stay on the same route instead of being
+  // kicked back to the loading screen.
+  if (import.meta.env.DEV) {
+    router.usePlugin(browserPlugin());
+  }
+
   router.start();
 
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
