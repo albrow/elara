@@ -2,17 +2,17 @@ mod asteroid_strike;
 mod asteroid_strike_part_two;
 mod button_and_gate;
 mod buttons_part_one;
-mod data_terminal_demo;
-mod data_terminals_part_one;
+mod data_point_demo;
+mod data_points_part_one;
 mod enemies_and_asteroids;
 mod enemies_part_one;
 mod enemies_part_two;
 mod enemies_with_telepad;
 mod energy_part_one;
-mod gate_and_terminal;
-mod gate_and_terminal_array;
-mod gate_and_terminal_three;
-mod gate_and_terminal_two;
+mod gate_and_data_point;
+mod gate_and_data_point_array;
+mod gate_and_data_point_three;
+mod gate_and_data_point_two;
 mod gates;
 mod loops_part_one;
 mod loops_part_two;
@@ -21,7 +21,7 @@ mod movement_part_two;
 mod partly_disabled_movement;
 mod reimplement_turn_right;
 mod sandbox;
-mod sandbox_with_data_terminal;
+mod sandbox_with_data_point;
 mod telepad_part_one;
 mod telepad_part_two;
 mod telepads_and_while_loop;
@@ -34,7 +34,7 @@ use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_ENERGY, HEIGHT, WIDTH}
 use crate::script_runner::ScriptStats;
 use crate::simulation::{Actor, Button, Gate, Orientation, Telepad};
 use crate::simulation::{
-    DataTerminal, Enemy, EnergyCell, Goal, Obstacle, PasswordGate, Player, State,
+    DataPoint, Enemy, EnergyCell, Goal, Obstacle, PasswordGate, Player, State,
 };
 
 #[derive(PartialEq, Clone, Debug)]
@@ -87,8 +87,8 @@ pub trait Level {
 #[allow(dead_code)]
 pub const SANDBOX_LEVEL: &'static dyn Level = &sandbox::Sandbox {};
 #[allow(dead_code)]
-pub const SANDBOX_LEVEL_WITH_DATA_TERMINAL: &'static dyn Level =
-    &sandbox_with_data_terminal::SandboxWithDataTerminal {};
+pub const SANDBOX_LEVEL_WITH_DATA_POINT: &'static dyn Level =
+    &sandbox_with_data_point::SandboxWithDataPoint {};
 
 lazy_static! {
     #[derive(Debug, Clone, Copy)]
@@ -97,31 +97,31 @@ lazy_static! {
         m.insert(movement::Movement {}.short_name(), Box::new(movement::Movement {}));
         m.insert(movement_part_two::MovementPartTwo {}.short_name(), Box::new(movement_part_two::MovementPartTwo {}));
         m.insert(energy_part_one::EnergyPartOne {}.short_name(), Box::new(energy_part_one::EnergyPartOne {}));
-        m.insert(data_terminals_part_one::DataTerminalsPartOne {}.short_name(),
-            Box::new(data_terminals_part_one::DataTerminalsPartOne {}),
+        m.insert(data_points_part_one::DataPointsPartOne {}.short_name(),
+            Box::new(data_points_part_one::DataPointsPartOne {}),
         );
         m.insert(gates::Gates {}.short_name(), Box::new(gates::Gates {}));
         m.insert(variables_intro::VariablesIntro{}.short_name(), Box::new(variables_intro::VariablesIntro{}));
-        m.insert(gate_and_terminal::GateAndTerminal {}.short_name(),
-            Box::new(gate_and_terminal::GateAndTerminal {}),
+        m.insert(gate_and_data_point::GateAndDataPoint {}.short_name(),
+            Box::new(gate_and_data_point::GateAndDataPoint {}),
         );
-        m.insert(gate_and_terminal_two::GateAndTerminalPartTwo {}.short_name(),
-            Box::new(gate_and_terminal_two::GateAndTerminalPartTwo {}),
+        m.insert(gate_and_data_point_two::GateAndDataPointPartTwo {}.short_name(),
+            Box::new(gate_and_data_point_two::GateAndDataPointPartTwo {}),
         );
-        m.insert(gate_and_terminal_three::GateAndTerminalPartThree {}.short_name(),
-            Box::new(gate_and_terminal_three::GateAndTerminalPartThree {}),
+        m.insert(gate_and_data_point_three::GateAndDataPointPartThree {}.short_name(),
+            Box::new(gate_and_data_point_three::GateAndDataPointPartThree {}),
         );
         m.insert(enemies_part_one::EnemiesPartOne {}.short_name(), Box::new(enemies_part_one::EnemiesPartOne {}));
         m.insert(loops_part_one::LoopsPartOne {}.short_name(), Box::new(loops_part_one::LoopsPartOne {}));
         m.insert(loops_part_two::LoopsPartTwo {}.short_name(), Box::new(loops_part_two::LoopsPartTwo {}));
         m.insert(sandbox::Sandbox{}.short_name(), Box::new(sandbox::Sandbox{}));
-        m.insert(sandbox_with_data_terminal::SandboxWithDataTerminal{}.short_name(), Box::new(sandbox_with_data_terminal::SandboxWithDataTerminal {}));
+        m.insert(sandbox_with_data_point::SandboxWithDataPoint{}.short_name(), Box::new(sandbox_with_data_point::SandboxWithDataPoint {}));
         m.insert(asteroid_strike::AsteroidStrike{}.short_name(), Box::new(asteroid_strike::AsteroidStrike{}));
         m.insert(asteroid_strike_part_two::AsteroidStrikePartTwo{}.short_name(), Box::new(asteroid_strike_part_two::AsteroidStrikePartTwo{}));
-        m.insert(data_terminal_demo::DataTerminalDemo{}.short_name(), Box::new(data_terminal_demo::DataTerminalDemo{}));
+        m.insert(data_point_demo::DataPointDemo{}.short_name(), Box::new(data_point_demo::DataPointDemo{}));
         m.insert(partly_disabled_movement::PartlyDisabledMovement{}.short_name(), Box::new(partly_disabled_movement::PartlyDisabledMovement{}));
         m.insert(reimplement_turn_right::ReimplementTurnRight{}.short_name(), Box::new(reimplement_turn_right::ReimplementTurnRight{}));
-        m.insert(gate_and_terminal_array::GateAndTerminalArray{}.short_name(), Box::new(gate_and_terminal_array::GateAndTerminalArray{}));
+        m.insert(gate_and_data_point_array::GateAndDataPointArray{}.short_name(), Box::new(gate_and_data_point_array::GateAndDataPointArray{}));
         m.insert(telepad_part_one::TelepadPartOne{}.short_name(), Box::new(telepad_part_one::TelepadPartOne{}));
         m.insert(telepad_part_two::TelepadPartTwo{}.short_name(), Box::new(telepad_part_two::TelepadPartTwo{}));
         m.insert(enemies_part_two::EnemiesPartTwo{}.short_name(), Box::new(enemies_part_two::EnemiesPartTwo{}));
@@ -163,7 +163,7 @@ pub struct FuzzyState {
     pub enemies: Vec<Fuzzy<Enemy>>,
     pub obstacles: Vec<Fuzzy<Obstacle>>,
     pub password_gates: Vec<Fuzzy<PasswordGate>>,
-    pub data_terminals: Vec<Fuzzy<DataTerminal>>,
+    pub data_points: Vec<Fuzzy<DataPoint>>,
     pub telepads: Vec<Fuzzy<Telepad>>,
     pub buttons: Vec<Fuzzy<Button>>,
     pub gates: Vec<Fuzzy<Gate>>,
@@ -203,8 +203,8 @@ impl FuzzyState {
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
                 .collect(),
-            data_terminals: state
-                .data_terminals
+            data_points: state
+                .data_points
                 .clone()
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
@@ -422,7 +422,7 @@ mod tests {
             enemies: vec![],
             obstacles: vec![],
             password_gates: vec![],
-            data_terminals: vec![],
+            data_points: vec![],
             telepads: vec![],
             buttons: vec![],
             gates: vec![],
@@ -456,7 +456,7 @@ mod tests {
             enemies: vec![],
             obstacles: vec![],
             password_gates: vec![],
-            data_terminals: vec![],
+            data_points: vec![],
             telepads: vec![],
             buttons: vec![],
             gates: vec![],
@@ -495,7 +495,7 @@ mod tests {
             enemies: vec![],
             obstacles: vec![],
             password_gates: vec![],
-            data_terminals: vec![],
+            data_points: vec![],
             telepads: vec![],
             buttons: vec![],
             gates: vec![],

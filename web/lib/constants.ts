@@ -57,7 +57,7 @@ export const TELEPAD_Z_INDEX = 100;
 export const WALL_Z_INDEX = 100;
 export const BUTTON_Z_INDEX = 100;
 export const GATE_Z_INDEX = 100;
-export const TERMINAL_Z_INDEX = 100;
+export const DATA_POINT_Z_INDEX = 100;
 export const BUTTON_WIRE_INDEX = 50;
 export const BG_INDEX = -100;
 

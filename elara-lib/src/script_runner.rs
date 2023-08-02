@@ -11,10 +11,10 @@ use std::vec;
 
 use crate::actors::{Action, MoveDirection, TurnDirection};
 use crate::better_errors::{convert_err, BetterError};
-use crate::constants::{ERR_NO_BUTTON, ERR_NO_DATA_TERMINAL, ERR_SIMULATION_END};
+use crate::constants::{ERR_NO_BUTTON, ERR_NO_DATA_POINT, ERR_SIMULATION_END};
 use crate::levels::Outcome;
 use crate::simulation::{
-    get_adjacent_button, get_adjacent_terminal, Orientation, Pos, Simulation, State,
+    get_adjacent_button, get_adjacent_point, Orientation, Pos, Simulation, State,
 };
 
 /// Responsible for running user scripts and coordinating communication
@@ -632,8 +632,8 @@ impl ScriptRunner {
             engine.register_fn("add", |a: i64, b: i64| -> i64 { a + b });
         }
         if avail_funcs.contains(&"read_data".to_string()) {
-            // read_data returns the data held by an adjacent data terminal.
-            // If there is no data terminal adjacent to the player, it returns
+            // read_data returns the data held by an adjacent data point.
+            // If there is no data point adjacent to the player, it returns
             // an error.
             let tx = self.player_action_tx.clone();
             let simulation = self.simulation.clone();
@@ -645,12 +645,12 @@ impl ScriptRunner {
 
                     let state = simulation.borrow().curr_state();
                     let pos = &state.player.pos;
-                    if let Some(terminal_index) = get_adjacent_terminal(&state, pos) {
-                        let data = state.data_terminals[terminal_index].data.clone();
+                    if let Some(point_index) = get_adjacent_point(&state, pos) {
+                        let data = state.data_points[point_index].data.clone();
                         Ok(data.into())
                     } else {
                         // TODO(albrow): Can we determine the line number for the error message?
-                        Err(ERR_NO_DATA_TERMINAL.into())
+                        Err(ERR_NO_DATA_POINT.into())
                     }
                 },
             );
@@ -871,7 +871,7 @@ fn eval_curr_orientation(context: &EvalContext) -> Result<Orientation, Error> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::levels::SANDBOX_LEVEL_WITH_DATA_TERMINAL;
+    use crate::levels::SANDBOX_LEVEL_WITH_DATA_POINT;
 
     #[test]
     fn test_check_semicolons() {
@@ -977,7 +977,7 @@ mod test {
         "#;
         let result = game
             .run_player_script_internal(
-                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                SANDBOX_LEVEL_WITH_DATA_POINT,
                 &vec!["get_orientation".to_string()],
                 script.to_string(),
             )
@@ -999,7 +999,7 @@ mod test {
         "#;
         let result = game
             .run_player_script_internal(
-                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                SANDBOX_LEVEL_WITH_DATA_POINT,
                 &vec![
                     "turn_left".to_string(),
                     "turn_right".to_string(),
@@ -1024,7 +1024,7 @@ mod test {
         "#;
         let result = game
             .run_player_script_internal(
-                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                SANDBOX_LEVEL_WITH_DATA_POINT,
                 &vec!["move_forward".to_string(), "move_backward".to_string()],
                 script.to_string(),
             )
@@ -1052,7 +1052,7 @@ mod test {
         "#;
         let result = game
             .run_player_script_internal(
-                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                SANDBOX_LEVEL_WITH_DATA_POINT,
                 &vec!["move_forward".to_string(), "say".to_string()],
                 script.to_string(),
             )
@@ -1089,7 +1089,7 @@ mod test {
         "#;
         let result = game
             .run_player_script_internal(
-                SANDBOX_LEVEL_WITH_DATA_TERMINAL,
+                SANDBOX_LEVEL_WITH_DATA_POINT,
                 &vec!["move_forward".to_string(), "say".to_string()],
                 script.to_string(),
             )

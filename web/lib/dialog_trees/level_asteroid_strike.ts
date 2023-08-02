@@ -37,7 +37,7 @@ export const NODES: {
   },
   explain_sensor_direction: {
     text:
-      `There's a data terminal ahead which is connected to an asteroid detector. ` +
+      `There's a data point ahead which is connected to an asteroid detector. ` +
       `It can tell you which way is safe to go.`,
     choiceIds: [],
     nextId: "explain_possible_paths",
@@ -45,7 +45,7 @@ export const NODES: {
   explain_possible_paths: {
     text:
       `The safe direction seems random and can change over time, so you need to ` +
-      `handle *both* cases. Basically, if the data terminal says "left", then you ` +
+      `handle *both* cases. Basically, if the data point says "left", then you ` +
       `should go left. If it says "right", then you should go right.`,
     choiceIds: ["ack_possible_paths"],
   },

@@ -5,7 +5,8 @@ import whereToFindObjectivesUrl from "../images/shorts/where_to_find_objectives.
 import backToHubUrl from "../images/shorts/back_to_hub.gif";
 import movingTakesEnergyUrl from "../images/shorts/moving_takes_energy.gif";
 import howToGetMoreEnergyUrl from "../images/shorts/how_to_get_more_energy.gif";
-import howToUseDataTerminalsUrl from "../images/shorts/how_to_use_data_terminals.gif";
+// TODO(albrow): Replace this!
+import howToUseDataPointsUrl from "../images/shorts/how_to_use_data_terminals.gif";
 import howToViewFunctionListUrl from "../images/shorts/how_to_view_function_list.gif";
 import extraChallengesUrl from "../images/shorts/extra_challenges.gif";
 
@@ -51,10 +52,10 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     text: "If you run out of energy, you won't be able to complete the objective. You can get more energy by collecting an energy cell.",
     imageUrl: howToGetMoreEnergyUrl,
   },
-  how_to_use_data_terminals: {
-    title: "Reading data from terminals",
-    text: "Data terminals can hold lots of different kinds of information. You can read data from a terminal by moving the rover next to it and then using the read_data function.",
-    imageUrl: howToUseDataTerminalsUrl,
+  how_to_use_data_points: {
+    title: "Reading data from data points",
+    text: "Data points can hold lots of different kinds of information. You can read data from a data point by moving the rover next to it and then using the read_data function.",
+    imageUrl: howToUseDataPointsUrl,
   },
   how_to_view_function_list: {
     title: "List of available functions",

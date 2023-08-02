@@ -1,25 +1,25 @@
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
-    Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, State,
+    Actor, DataPoint, Goal, Obstacle, Orientation, PasswordGate, Player, State,
 };
 
 #[derive(Copy, Clone)]
-pub struct GateAndTerminalPartThree {}
+pub struct GateAndDataPointPartThree {}
 
-impl Level for GateAndTerminalPartThree {
+impl Level for GateAndDataPointPartThree {
     fn name(&self) -> &'static str {
         "Needle in a Haystack"
     }
     fn short_name(&self) -> &'static str {
-        "gate_and_terminal_part_three"
+        "gate_and_data_point_part_three"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This code reads the data from the closest data terminal and
+        r#"// This code reads the data from the closest data point and
 // tries using it as the password. However, it looks like it
-// isn't the right password. Try the other terminals?
+// isn't the right password. Try the other data points?
 //
 // CHANGE THE CODE BELOW
 let password = read_data();
@@ -40,10 +40,10 @@ say(password);
             Obstacle::new(2, 3),
         ];
         state.password_gates = vec![PasswordGate::new(2, 1, "vaughan".to_string(), false)];
-        state.data_terminals = vec![
-            DataTerminal::new(0, 0, "carver".into()),
-            DataTerminal::new(0, 1, "curie".into()),
-            DataTerminal::new(0, 2, "vaughan".into()),
+        state.data_points = vec![
+            DataPoint::new(0, 0, "carver".into()),
+            DataPoint::new(0, 1, "curie".into()),
+            DataPoint::new(0, 2, "vaughan".into()),
         ];
         vec![state]
     }
@@ -63,7 +63,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &GateAndTerminalPartThree {};
+        const LEVEL: &'static dyn Level = &GateAndDataPointPartThree {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();

@@ -47,8 +47,8 @@ const levelData: Map<string, LevelData> = new Map(
 
 // Special levels used for runnable examples.
 export const SANDBOX_LEVEL = levelData.get("sandbox")!;
-export const SANDBOX_WITH_TERMINAL_LEVEL = levelData.get(
-  "sandbox_with_data_terminal"
+export const SANDBOX_WITH_DATA_POINT_LEVEL = levelData.get(
+  "sandbox_with_data_point"
 )!;
 
 function levelScene(
@@ -162,7 +162,7 @@ const RAW_SCENES: RawScene[] = [
   ),
   journalScene("function_outputs", ["read_data", "get_orientation"]),
   levelScene(
-    "data_terminals_part_one",
+    "data_points_part_one",
     [],
     [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
@@ -189,25 +189,25 @@ const RAW_SCENES: RawScene[] = [
     ]
   ),
   levelScene(
-    "gate_and_terminal",
+    "gate_and_data_point",
     [],
     [
-      "The starting code already reads the data from the terminal and stores it in a variable called `password`. You don't need to change this part.",
+      "The starting code already reads the data from the data point and stores it in a variable called `password`. You don't need to change this part.",
       "You just need to add some code after the comment that says `// ADD YOUR CODE BELOW`.",
       `If you're still feeling stuck, try going back to the "Variables" and "Function Outputs" journal pages.`,
     ]
   ),
   levelScene(
-    "gate_and_terminal_part_two",
+    "gate_and_data_point_part_two",
     [],
     [
-      "This is very similar to the previous level, but the positions of the data terminal and gate are different.",
-      "Remember: G.R.O.V.E.R. needs to be next to the data terminal before you call `read_data`.",
+      "This is very similar to the previous level, but the positions of the data point and gate are different.",
+      "Remember: G.R.O.V.E.R. needs to be next to the data point before you call `read_data`.",
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
   // Temporarily disabled for the sake of saving time during playtesting.
-  // levelScene("gate_and_terminal_part_three"),
+  // levelScene("gate_and_data_point_part_three"),
   journalScene("comparisons"),
   journalScene("if_statements"),
   levelScene(
@@ -244,10 +244,10 @@ const RAW_SCENES: RawScene[] = [
   //
   // journalScene("arrays"),
   // levelScene(
-  //   "gate_and_terminal_array",
+  //   "gate_and_data_point_array",
   //   [],
   //   [
-  //     "The starting code already reads the data from the terminal and stores it in a variable called `array`. You just need to add some code after the comment that says `// ADD YOUR CODE BELOW`.",
+  //     "The starting code already reads the data from the data point and stores it in a variable called `array`. You just need to add some code after the comment that says `// ADD YOUR CODE BELOW`.",
   //     "As an example, to make the rover say the element at index `0` you could write `say(array[0]);`. What do you need to change to make it say the element at index `2` instead?",
   //     `The "Arrays" journal page has more information and examples.`,
   //   ]

@@ -1,17 +1,17 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, DataTerminal, Obstacle, Orientation, Player, State};
+use crate::simulation::{Actor, DataPoint, Obstacle, Orientation, Player, State};
 
-/// A simple level that uses data terminals.
+/// A simple level that uses data points.
 /// Used for recording GIFs and videos only.
 #[derive(Copy, Clone)]
-pub struct DataTerminalDemo {}
+pub struct DataPointDemo {}
 
-impl Level for DataTerminalDemo {
+impl Level for DataPointDemo {
     fn name(&self) -> &'static str {
-        "Data Terminal Demo"
+        "Data Point Demo"
     }
     fn short_name(&self) -> &'static str {
-        "data_terminal_demo"
+        "data_point_demo"
     }
     fn objective(&self) -> &'static str {
         "(Demo only)"
@@ -35,7 +35,7 @@ say(data);
             Obstacle::new(2, 2),
             Obstacle::new(2, 3),
         ];
-        state.data_terminals = vec![DataTerminal::new(0, 1, "bananas".into())];
+        state.data_points = vec![DataPoint::new(0, 1, "bananas".into())];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {

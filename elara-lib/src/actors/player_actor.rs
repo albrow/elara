@@ -4,7 +4,7 @@ use std::sync::mpsc;
 
 use crate::constants::ENERGY_CELL_AMOUNT;
 use crate::simulation::{
-    get_adjacent_button, get_adjacent_terminal, Actor, BumpAnimData, ButtonConnection, Orientation,
+    get_adjacent_button, get_adjacent_point, Actor, BumpAnimData, ButtonConnection, Orientation,
     PlayerAnimState, Pos, State, TeleAnimData,
 };
 
@@ -36,9 +36,9 @@ impl Actor for PlayerChannelActor {
         // We only want messages to persist for one step.
         state.player.message = String::new();
 
-        // Reset the reading state of all data terminals.
-        for terminal in state.data_terminals.iter_mut() {
-            terminal.reading = false;
+        // Reset the reading state of all data points.
+        for d_point in state.data_points.iter_mut() {
+            d_point.reading = false;
         }
 
         // Reset the pressed state of all buttons.
@@ -98,10 +98,10 @@ impl Actor for PlayerChannelActor {
                 state.player.message = message;
             }
             Ok(Action::ReadData) => {
-                // If we're next to a data terminal, mark it as being currently read.
+                // If we're next to a data point, mark it as being currently read.
                 // (The reading state only affects the UI).
-                if let Some(terminal_index) = get_adjacent_terminal(&state, &state.player.pos) {
-                    state.data_terminals[terminal_index].reading = true;
+                if let Some(d_point_index) = get_adjacent_point(&state, &state.player.pos) {
+                    state.data_points[d_point_index].reading = true;
                 }
                 state.player.anim_state = PlayerAnimState::Idle;
             }

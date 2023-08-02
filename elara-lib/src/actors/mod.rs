@@ -63,10 +63,10 @@ fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
             return true;
         }
     }
-    // Data terminals are treated as simple obstacles since
+    // Data points are treated as simple obstacles since
     // they can never move or be opened.
-    for data_terminal in &state.data_terminals {
-        if data_terminal.pos == *pos {
+    for data_point in &state.data_points {
+        if data_point.pos == *pos {
             return true;
         }
     }

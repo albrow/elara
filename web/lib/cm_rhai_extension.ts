@@ -97,7 +97,7 @@ const builtInFuncs: PartialFuncOption[] = [
   },
   {
     label: "read_data",
-    info: "Read data from a nearby data terminal.",
+    info: "Get the data from a nearby data point.",
     apply: applyFuncWithoutArgs,
   },
   {

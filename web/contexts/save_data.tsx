@@ -14,7 +14,7 @@ import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
 import { SectionName } from "../components/journal/sections";
 
-export const SAVE_DATA_VERSION = 13;
+export const SAVE_DATA_VERSION = 14;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 // Amount of time (in milliseconds) to wait for further updates before
@@ -222,6 +222,66 @@ function migrateSaveData(saveData: SaveData): SaveData {
     newData.seenDialogTrees = newData.seenDialogTrees.map((treeName) =>
       treeName === "level_astroid_strike" ? "level_asteroid_strike" : treeName
     );
+  }
+
+  if (newData.version === 13) {
+    newData.version = 14;
+
+    // Version 14 renamed "data terminals" to "data points".
+    // This affects some levels and dialog trees.
+
+    // levels:
+    //
+    //  - data_terminals_part_one
+    //  - gate_and_terminal
+    //  - gate_and_terminal_part_two
+    //  - gate_and_terminal_part_three
+    //
+    newData.levelStates.data_points_part_one =
+      newData.levelStates.data_terminals_part_one;
+    delete newData.levelStates.data_terminals_part_one;
+    newData.levelStates.gate_and_data_point =
+      newData.levelStates.gate_and_terminal;
+    delete newData.levelStates.gate_and_terminal;
+    newData.levelStates.gate_and_data_point_part_two =
+      newData.levelStates.gate_and_terminal_part_two;
+    delete newData.levelStates.gate_and_terminal_part_two;
+    newData.levelStates.gate_and_data_point_part_three =
+      newData.levelStates.gate_and_terminal_part_three;
+    delete newData.levelStates.gate_and_terminal_part_three;
+
+    // Tutorial shorts:
+    //
+    //   - how_to_use_data_terminals
+    //
+    newData.seenTutorialShorts = newData.seenTutorialShorts.map((shortId) =>
+      shortId === "how_to_use_data_terminals"
+        ? "how_to_use_data_points"
+        : shortId
+    );
+
+    // Dialog trees:
+    //
+    //   - level_data_terminals_part_one
+    //   - level_gate_and_terminal
+    //   - level_gate_and_terminal_part_two
+    //   - level_gate_and_terminal_part_three
+    //
+    newData.seenDialogTrees = newData.seenDialogTrees.map((treeName) => {
+      if (treeName === "level_data_terminals_part_one") {
+        return "level_data_points_part_one";
+      }
+      if (treeName === "level_gate_and_terminal") {
+        return "level_gate_and_data_point";
+      }
+      if (treeName === "level_gate_and_terminal_part_two") {
+        return "level_gate_and_data_point_part_two";
+      }
+      if (treeName === "level_gate_and_terminal_part_three") {
+        return "level_gate_and_data_point_part_three";
+      }
+      return treeName;
+    });
   }
 
   return newData;

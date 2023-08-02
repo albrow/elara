@@ -1,11 +1,11 @@
 use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EvilRoverActor};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, DataTerminal, Enemy, EnergyCell, Orientation};
+use crate::simulation::{Actor, DataPoint, Enemy, EnergyCell, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
-const DATA_TERMINAL_INFO: &'static str = r#"This data terminal will output either `"left"` or `"right"` depending on which way is safe to go."#;
+const DATA_POINT_INFO: &'static str = r#"This data point will output either `"left"` or `"right"` depending on which way is safe to go."#;
 
 #[derive(Copy, Clone)]
 pub struct EnemiesAndAsteroids {}
@@ -68,7 +68,7 @@ impl Level for EnemiesAndAsteroids {
         "Move the rover ({robot}) to one of the goals ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// The data terminal will output "right" or "left" depending on which
+        r#"// The data point will output "right" or "left" depending on which
 // direction is safe from falling asteroids. However, it can't detect
 // malfunctioning rovers. You'll need to avoid those on your own!
 "#
@@ -93,11 +93,11 @@ impl Level for EnemiesAndAsteroids {
                     ]
                     .concat(),
                 )
-                .with_data_terminal(vec![DataTerminal::new_with_info(
+                .with_data_points(vec![DataPoint::new_with_info(
                     5,
                     7,
                     "right".into(),
-                    DATA_TERMINAL_INFO.into(),
+                    DATA_POINT_INFO.into(),
                 )])
                 .build(),
             base_state
@@ -109,11 +109,11 @@ impl Level for EnemiesAndAsteroids {
                     ]
                     .concat(),
                 )
-                .with_data_terminal(vec![DataTerminal::new_with_info(
+                .with_data_points(vec![DataPoint::new_with_info(
                     5,
                     7,
                     "left".into(),
-                    DATA_TERMINAL_INFO.into(),
+                    DATA_POINT_INFO.into(),
                 )])
                 .build(),
         ]

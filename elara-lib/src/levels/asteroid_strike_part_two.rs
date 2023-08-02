@@ -1,9 +1,9 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, DataTerminal, Orientation};
+use crate::simulation::{Actor, DataPoint, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
-const DATA_TERMINAL_INFO: &'static str = r#"This data terminal will output either `"top"`, `"middle"`, or `"bottom"` depending on which way is safe to go."#;
+const DATA_POINT_INFO: &'static str = r#"This data point will output either `"top"`, `"middle"`, or `"bottom"` depending on which way is safe to go."#;
 
 #[derive(Copy, Clone)]
 pub struct AsteroidStrikePartTwo {}
@@ -56,7 +56,7 @@ impl Level for AsteroidStrikePartTwo {
         "Move the rover ({robot}) to one of the goals ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// You'll need to read the safe direction from the data terminal
+        r#"// You'll need to read the safe direction from the data point
 // (either "top", "middle", or "bottom") and then move the rover
 // to the corresponding goal.
 //
@@ -75,11 +75,11 @@ impl Level for AsteroidStrikePartTwo {
                     ]
                     .concat(),
                 )
-                .with_data_terminal(vec![DataTerminal::new_with_info(
+                .with_data_points(vec![DataPoint::new_with_info(
                     0,
                     3,
                     "top".into(),
-                    DATA_TERMINAL_INFO.into(),
+                    DATA_POINT_INFO.into(),
                 )])
                 .build(),
             StateMaker::new()
@@ -92,11 +92,11 @@ impl Level for AsteroidStrikePartTwo {
                     ]
                     .concat(),
                 )
-                .with_data_terminal(vec![DataTerminal::new_with_info(
+                .with_data_points(vec![DataPoint::new_with_info(
                     0,
                     3,
                     "middle".into(),
-                    DATA_TERMINAL_INFO.into(),
+                    DATA_POINT_INFO.into(),
                 )])
                 .build(),
             StateMaker::new()
@@ -109,11 +109,11 @@ impl Level for AsteroidStrikePartTwo {
                     ]
                     .concat(),
                 )
-                .with_data_terminal(vec![DataTerminal::new_with_info(
+                .with_data_points(vec![DataPoint::new_with_info(
                     0,
                     3,
                     "bottom".into(),
-                    DATA_TERMINAL_INFO.into(),
+                    DATA_POINT_INFO.into(),
                 )])
                 .build(),
         ]

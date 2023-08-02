@@ -1,7 +1,7 @@
 import RunnableExample from "../runnable_example";
 import YoutubeVideo from "../youtube_video";
 
-import { SANDBOX_WITH_TERMINAL_LEVEL } from "../../../contexts/scenes";
+import { SANDBOX_WITH_DATA_POINT_LEVEL } from "../../../contexts/scenes";
 
 ### Function Outputs
 
@@ -33,17 +33,17 @@ say("Now I am facing " + get_orientation());
 `}
 />
 
-The example below introduces a "data terminal". Data terminals are scattered throughout
+The example below introduces a "data point". Data points are scattered throughout
 Elara and can hold all kinds of information. The `read_data` function outputs whatever
-data was stored in the data terminal.
+data was stored in the data point.
 
 ⚠️ **Warning** The `read_data` function only works if the rover is next to a data
-terminal. Otherwise, the function will cause an error.
+point. Otherwise, the function will cause an error.
 
 <RunnableExample
   code={`// This code uses the *output* from the read_data function as
 // the *input* to the say function. It will cause the rover
-// to say whatever data is stored in the data terminal.
+// to say whatever data is stored in the data point.
 say(read_data());`}
-  level={SANDBOX_WITH_TERMINAL_LEVEL}
+  level={SANDBOX_WITH_DATA_POINT_LEVEL}
 />

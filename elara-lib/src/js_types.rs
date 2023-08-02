@@ -228,7 +228,7 @@ pub struct FuzzyState {
     pub enemies: Array,        // Array<FuzzyEnemy>
     pub obstacles: Array,      // Array<FuzzyObstacle>
     pub password_gates: Array, // Array<FuzzyPasswordGate>
-    pub data_terminals: Array, // Array<FuzzyDataTerminal>
+    pub data_points: Array,    // Array<FuzzyDataPoint>
     pub telepads: Array,       // Array<FuzzyTelepad>
     pub buttons: Array,        // Array<FuzzyButton>
     pub gates: Array,          // Array<FuzzyGate>
@@ -243,7 +243,7 @@ impl FuzzyState {
             enemies: Array::new(),
             obstacles: Array::new(),
             password_gates: Array::new(),
-            data_terminals: Array::new(),
+            data_points: Array::new(),
             telepads: Array::new(),
             buttons: Array::new(),
             gates: Array::new(),
@@ -382,20 +382,20 @@ impl FuzzyState {
             );
         }
 
-        let data_terminals = Array::new_with_length(state.data_terminals.len() as u32);
-        for (i, fuzzy_data_terminal) in state.data_terminals.iter().enumerate() {
-            let data_terminal = &fuzzy_data_terminal.obj;
-            data_terminals.set(
+        let data_points = Array::new_with_length(state.data_points.len() as u32);
+        for (i, fuzzy_data_point) in state.data_points.iter().enumerate() {
+            let data_point = &fuzzy_data_point.obj;
+            data_points.set(
                 i as u32,
-                JsValue::from(FuzzyDataTerminal {
+                JsValue::from(FuzzyDataPoint {
                     pos: Pos {
-                        x: data_terminal.pos.x as i32,
-                        y: data_terminal.pos.y as i32,
+                        x: data_point.pos.x as i32,
+                        y: data_point.pos.y as i32,
                     },
-                    data: term_data_to_js(&data_terminal.data),
-                    reading: data_terminal.reading,
-                    additional_info: data_terminal.additional_info.clone(),
-                    fuzzy: fuzzy_data_terminal.fuzzy,
+                    data: term_data_to_js(&data_point.data),
+                    reading: data_point.reading,
+                    additional_info: data_point.additional_info.clone(),
+                    fuzzy: fuzzy_data_point.fuzzy,
                 }),
             );
         }
@@ -474,7 +474,7 @@ impl FuzzyState {
             enemies,
             obstacles,
             password_gates,
-            data_terminals,
+            data_points: data_points,
             telepads,
             buttons,
             gates,
@@ -551,7 +551,7 @@ pub struct FuzzyPasswordGate {
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyDataTerminal {
+pub struct FuzzyDataPoint {
     pub pos: Pos,
     pub data: JsValue, // string | string[]
     pub reading: bool,

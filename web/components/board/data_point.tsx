@@ -4,14 +4,14 @@ import { useCallback } from "react";
 import { Offset } from "../../lib/utils";
 import {
   TILE_SIZE,
-  TERMINAL_Z_INDEX,
+  DATA_POINT_Z_INDEX,
   CSS_ANIM_DURATION,
 } from "../../lib/constants";
 import dataPointImg from "../../images/board/data_point.png";
 import BoardHoverInfo from "./board_hover_info";
-import DataTerminalPage from "./hover_info_pages/data_terminal.mdx";
+import DataPointPage from "./hover_info_pages/data_point.mdx";
 
-interface DataTerminalProps {
+interface DataPointProps {
   offset: Offset;
   reading: boolean;
   additionalInfo?: string;
@@ -20,7 +20,7 @@ interface DataTerminalProps {
   enableHoverInfo: boolean;
 }
 
-export default function DataTerminal(props: DataTerminalProps) {
+export default function DataPoint(props: DataPointProps) {
   const getCssTransition = useCallback(() => {
     if (!props.animatePos) {
       return "none";
@@ -32,7 +32,7 @@ export default function DataTerminal(props: DataTerminalProps) {
     <>
       {props.enableHoverInfo && (
         <BoardHoverInfo
-          page={DataTerminalPage}
+          page={DataPointPage}
           offset={props.offset}
           additionalInfo={props.additionalInfo}
         />
@@ -43,7 +43,7 @@ export default function DataTerminal(props: DataTerminalProps) {
         top={props.offset.top}
         w={`${TILE_SIZE - 1}px`}
         h={`${TILE_SIZE - 1}px`}
-        zIndex={TERMINAL_Z_INDEX}
+        zIndex={DATA_POINT_Z_INDEX}
         filter="drop-shadow(-2px 3px 2px rgba(0, 0, 0, 0.3))"
         transition={getCssTransition()}
       >
@@ -62,7 +62,7 @@ export default function DataTerminal(props: DataTerminalProps) {
             position="absolute"
             left="19px"
             top="18.5px"
-            zIndex={TERMINAL_Z_INDEX + 1}
+            zIndex={DATA_POINT_Z_INDEX + 1}
           >
             <Spinner
               size="xs"
@@ -77,6 +77,6 @@ export default function DataTerminal(props: DataTerminalProps) {
   );
 }
 
-DataTerminal.defaultProps = {
+DataPoint.defaultProps = {
   animatePos: false,
 };

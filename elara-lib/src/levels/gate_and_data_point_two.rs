@@ -3,26 +3,26 @@ use crate::{
     actors::{Bounds, EvilRoverActor},
     constants::{HEIGHT, WIDTH},
     simulation::{
-        Actor, DataTerminal, Enemy, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
+        Actor, DataPoint, Enemy, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
     },
 };
 
 #[derive(Copy, Clone)]
-pub struct GateAndTerminalPartTwo {}
+pub struct GateAndDataPointPartTwo {}
 
-impl Level for GateAndTerminalPartTwo {
+impl Level for GateAndDataPointPartTwo {
     fn name(&self) -> &'static str {
         "Slipped My Mind"
     }
     fn short_name(&self) -> &'static str {
-        "gate_and_terminal_part_two"
+        "gate_and_data_point_part_two"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Yet another locked gate! Just like before, the password is
-// stored in a data terminal. Can you get through on your own
+// stored in a data point. Can you get through on your own
 // this time?
 //
 // ADD YOUR CODE BELOW
@@ -53,13 +53,13 @@ impl Level for GateAndTerminalPartTwo {
             2,
             "hopper".into(),
             false,
-            "The password for this gate is stored in the nearby data terminal.".into(),
+            "The password for this gate is stored in the nearby data point.".into(),
         )];
-        state.data_terminals = vec![DataTerminal::new_with_info(
+        state.data_points = vec![DataPoint::new_with_info(
             10,
             0,
             "hopper".into(),
-            "This data terminal contains the password you need.".into(),
+            "This data point contains the password you need.".into(),
         )];
         state.enemies = vec![Enemy::new(5, 0, Orientation::Right)];
         vec![state]
@@ -88,7 +88,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &GateAndTerminalPartTwo {};
+        const LEVEL: &'static dyn Level = &GateAndDataPointPartTwo {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();

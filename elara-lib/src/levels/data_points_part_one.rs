@@ -1,27 +1,27 @@
 use super::{Level, Outcome};
 use crate::{
     constants::ERR_OUT_OF_ENERGY,
-    simulation::{Actor, DataTerminal, Obstacle, Orientation, Player, State},
+    simulation::{Actor, DataPoint, Obstacle, Orientation, Player, State},
 };
 
 const HUMMUS_RECIPE: &'static str =
     "Ingredients: 120g dried chickpeas, 2g citric acid, 2g ground paprika...";
 
 #[derive(Copy, Clone)]
-pub struct DataTerminalsPartOne {}
+pub struct DataPointsPartOne {}
 
-impl Level for DataTerminalsPartOne {
+impl Level for DataPointsPartOne {
     fn name(&self) -> &'static str {
         "Secret Recipe"
     }
     fn short_name(&self) -> &'static str {
-        "data_terminals_part_one"
+        "data_points_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Use the say function to find out what the data terminal ({terminal}) holds."
+        "Use the say function to find out what the data point ({dataPoint}) holds."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// The read_data function outputs the data from a terminal, but only
+        r#"// The read_data function outputs the data from a point, but only
 // if the rover is right next to it!
 //
 // You need to use the output from the read_data function as the
@@ -50,11 +50,11 @@ impl Level for DataTerminalsPartOne {
             Obstacle::new(5, 4),
             Obstacle::new(6, 4),
         ];
-        state.data_terminals = vec![DataTerminal::new_with_info(
+        state.data_points = vec![DataPoint::new_with_info(
             6,
             3,
             HUMMUS_RECIPE.into(),
-            "This data terminal contains the secret hummus recipe as a string.".into(),
+            "This data point contains the secret hummus recipe as a string.".into(),
         )];
         vec![state]
     }
@@ -82,7 +82,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &DataTerminalsPartOne {};
+        const LEVEL: &'static dyn Level = &DataPointsPartOne {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();

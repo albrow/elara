@@ -60,7 +60,7 @@ export const CHOICES: {
 };
 
 export const TREES: DialogTrees = {
-  level_gate_and_terminal_part_two: {
+  level_gate_and_point_part_two: {
     name: "Slipped My Mind",
     startId: "do_you_see_evil_rover",
   },

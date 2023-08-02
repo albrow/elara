@@ -1,21 +1,21 @@
 use super::{no_objective_check_win, Level, Outcome};
 use crate::{
     constants::MAX_ENERGY,
-    simulation::{Actor, DataTerminal, Orientation, Player, State},
+    simulation::{Actor, DataPoint, Orientation, Player, State},
 };
 
 #[derive(Copy, Clone)]
 /// Sandbox is a special level which does not have an explicit objective. It can
 /// be used in runnable examples or for players to explore and experiment on
 /// their own.
-pub struct SandboxWithDataTerminal {}
+pub struct SandboxWithDataPoint {}
 
-impl Level for SandboxWithDataTerminal {
+impl Level for SandboxWithDataPoint {
     fn name(&self) -> &'static str {
         "Sandbox"
     }
     fn short_name(&self) -> &'static str {
-        "sandbox_with_data_terminal"
+        "sandbox_with_data_point"
     }
     fn objective(&self) -> &'static str {
         "Write whatever code you want :)"
@@ -29,7 +29,7 @@ impl Level for SandboxWithDataTerminal {
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
         state.player = Player::new(0, 0, 50, Orientation::Right);
-        state.data_terminals = vec![DataTerminal::new(1, 0, "bananas".into())];
+        state.data_points = vec![DataPoint::new(1, 0, "bananas".into())];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
@@ -58,7 +58,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &SandboxWithDataTerminal {};
+        const LEVEL: &'static dyn Level = &SandboxWithDataPoint {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
@@ -67,7 +67,7 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
 
-        // We should be able to read from the data terminal.
+        // We should be able to read from the data point.
         let script = "say(read_data());";
         let result = game
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())

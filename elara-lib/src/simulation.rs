@@ -140,7 +140,7 @@ pub struct State {
     pub energy_cells: Vec<EnergyCell>,
     pub buttons: Vec<Button>,
     pub gates: Vec<Gate>,
-    pub data_terminals: Vec<DataTerminal>,
+    pub data_points: Vec<DataPoint>,
     pub password_gates: Vec<PasswordGate>,
     pub telepads: Vec<Telepad>,
     pub enemies: Vec<Enemy>,
@@ -156,7 +156,7 @@ impl State {
             buttons: vec![],
             gates: vec![],
             password_gates: vec![],
-            data_terminals: vec![],
+            data_points: vec![],
             telepads: vec![],
             enemies: vec![],
         }
@@ -174,7 +174,7 @@ impl fmt::Debug for State {
             .field("energy_cells", &self.energy_cells)
             .field("buttons", &self.buttons)
             .field("gates", &self.gates)
-            .field("data_terminals", &self.data_terminals)
+            .field("data_points", &self.data_points)
             .field("password_gates", &self.password_gates)
             .field("telepads", &self.telepads)
             .field("enemies", &self.enemies)
@@ -504,18 +504,18 @@ impl From<TermData> for Dynamic {
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub struct DataTerminal {
+pub struct DataPoint {
     pub pos: Pos,
     pub data: TermData,
     pub reading: bool,
     /// Additional information that will be displayed in the UI.
-    /// (e.g. explain what the data terminal will output)
+    /// (e.g. explain what the data point will output)
     pub additional_info: String,
 }
 
-impl DataTerminal {
-    pub fn new(x: u32, y: u32, data: TermData) -> DataTerminal {
-        DataTerminal {
+impl DataPoint {
+    pub fn new(x: u32, y: u32, data: TermData) -> DataPoint {
+        DataPoint {
             pos: Pos {
                 x: x as i32,
                 y: y as i32,
@@ -525,8 +525,8 @@ impl DataTerminal {
             additional_info: String::new(),
         }
     }
-    pub fn new_with_info(x: u32, y: u32, data: TermData, additional_info: String) -> DataTerminal {
-        DataTerminal {
+    pub fn new_with_info(x: u32, y: u32, data: TermData, additional_info: String) -> DataPoint {
+        DataPoint {
             pos: Pos {
                 x: x as i32,
                 y: y as i32,
@@ -560,20 +560,20 @@ impl Pos {
     }
 }
 
-/// Returns the index of the data terminal adjacent to the given
-/// position. Returns None if there is no adjacent data terminal.
-pub fn get_adjacent_terminal(state: &State, pos: &Pos) -> Option<usize> {
-    for (i, terminal) in state.data_terminals.iter().enumerate() {
-        if terminal.pos.x == pos.x && terminal.pos.y == pos.y + 1 {
+/// Returns the index of the data point adjacent to the given
+/// position. Returns None if there is no adjacent data point.
+pub fn get_adjacent_point(state: &State, pos: &Pos) -> Option<usize> {
+    for (i, d_point) in state.data_points.iter().enumerate() {
+        if d_point.pos.x == pos.x && d_point.pos.y == pos.y + 1 {
             return Some(i);
         }
-        if pos.y != 0 && terminal.pos.x == pos.x && terminal.pos.y == pos.y - 1 {
+        if pos.y != 0 && d_point.pos.x == pos.x && d_point.pos.y == pos.y - 1 {
             return Some(i);
         }
-        if terminal.pos.x == pos.x + 1 && terminal.pos.y == pos.y {
+        if d_point.pos.x == pos.x + 1 && d_point.pos.y == pos.y {
             return Some(i);
         }
-        if pos.x != 0 && terminal.pos.x == pos.x - 1 && terminal.pos.y == pos.y {
+        if pos.x != 0 && d_point.pos.x == pos.x - 1 && d_point.pos.y == pos.y {
             return Some(i);
         }
     }

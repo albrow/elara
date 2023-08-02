@@ -2,12 +2,12 @@ import { Box } from "@chakra-ui/react";
 
 import { useCallback } from "react";
 import Player from "../board/player";
-import DataTerminal from "../board/data_point";
+import DataPoint from "../board/data_point";
 import {
   // eslint-disable-next-line camelcase
   new_pos,
   FuzzyState,
-  FuzzyDataTerminal,
+  FuzzyDataPoint,
   Pos,
 } from "../../../elara-lib/pkg/elara_lib";
 import { Offset, posToOffset } from "../../lib/utils";
@@ -86,8 +86,8 @@ export default function MiniBoard(props: MiniBoardProps) {
       borderColor="gray.800"
     >
       <Box position="relative">
-        {(props.state.data_terminals as FuzzyDataTerminal[]).map((gate, i) => (
-          <DataTerminal
+        {(props.state.data_points as FuzzyDataPoint[]).map((gate, i) => (
+          <DataPoint
             // eslint-disable-next-line react/no-array-index-key
             key={i}
             offset={getSpriteOffset(gate.pos)}

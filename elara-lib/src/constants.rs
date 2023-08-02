@@ -19,8 +19,8 @@ pub static ERR_DESTROYED_BY_ENEMY: &str =
 /// a script if the simulation outcome does not require us to continue running
 /// it.
 pub static ERR_SIMULATION_END: &str = "SIMULATION_END";
-/// Returned from read_data if you call it when not adjacent to a data terminal.
-pub static ERR_NO_DATA_TERMINAL: &str = "read_data only works if you are next to a data terminal.";
+/// Returned from read_data if you call it when not adjacent to a data point.
+pub static ERR_NO_DATA_POINT: &str = "read_data only works if you are next to a data point.";
 /// Returned from press_button if you call it when not adjacent to a button.
 pub static ERR_NO_BUTTON: &str = "press_button only works if you are next to a button.";
 

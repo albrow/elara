@@ -6,16 +6,16 @@
 
 import * as Intro from "./intro";
 import * as Gates from "./level_gates";
-import * as DataTerminalsPartOne from "./level_data_terminals_part_one";
-import * as GateAndTerminal from "./level_gate_and_terminal";
-import * as GateAndTerminalPartThree from "./level_gate_and_terminal_part_three";
+import * as DataPointsPartOne from "./level_data_points_part_one";
+import * as GateAndDataPoint from "./level_gate_and_data_point";
+import * as GateAndDataPointPartThree from "./level_gate_and_data_point_part_three";
 import * as AsteroidStrike from "./level_asteroid_strike";
 import * as PartlyDisabledMovement from "./level_partly_disabled_movement";
 import * as ReImplementTurnRight from "./level_reimplement_turn_right";
 import * as JournalArrays from "./journal_arrays";
 import * as LevelTelepadPartOne from "./level_telepad_part_one";
 import * as LoopsPartTwo from "./level_loops_part_two";
-import * as GateAndTerminalPartTwo from "./level_gate_and_terminal_part_two";
+import * as GateAndDataPointPartTwo from "./level_gate_and_data_point_part_two";
 import * as EnemiesPartOne from "./level_enemies_part_one";
 import * as LevelTelepadsAndWhileLoop from "./level_telepads_and_while_loop";
 
@@ -23,32 +23,32 @@ import * as LevelTelepadsAndWhileLoop from "./level_telepads_and_while_loop";
 // that the compiler will catch any incorrect or missing references.
 type NodeIds =
   | Intro.NodeIds
-  | DataTerminalsPartOne.NodeIds
+  | DataPointsPartOne.NodeIds
   | Gates.NodeIds
-  | GateAndTerminal.NodeIds
-  | GateAndTerminalPartThree.NodeIds
+  | GateAndDataPoint.NodeIds
+  | GateAndDataPointPartThree.NodeIds
   | AsteroidStrike.NodeIds
   | PartlyDisabledMovement.NodeIds
   | ReImplementTurnRight.NodeIds
   | JournalArrays.NodeIds
   | LevelTelepadPartOne.NodeIds
   | LoopsPartTwo.NodeIds
-  | GateAndTerminalPartTwo.NodeIds
+  | GateAndDataPointPartTwo.NodeIds
   | EnemiesPartOne.NodeIds
   | LevelTelepadsAndWhileLoop.NodeIds;
 type ChoiceIds =
   | Intro.ChoiceIds
-  | DataTerminalsPartOne.ChoiceIds
+  | DataPointsPartOne.ChoiceIds
   | Gates.ChoiceIds
-  | GateAndTerminal.ChoiceIds
-  | GateAndTerminalPartThree.ChoiceIds
+  | GateAndDataPoint.ChoiceIds
+  | GateAndDataPointPartThree.ChoiceIds
   | AsteroidStrike.ChoiceIds
   | PartlyDisabledMovement.ChoiceIds
   | ReImplementTurnRight.ChoiceIds
   | JournalArrays.ChoiceIds
   | LevelTelepadPartOne.ChoiceIds
   | LoopsPartTwo.ChoiceIds
-  | GateAndTerminalPartTwo.ChoiceIds
+  | GateAndDataPointPartTwo.ChoiceIds
   | EnemiesPartOne.ChoiceIds
   | LevelTelepadsAndWhileLoop.ChoiceIds;
 
@@ -81,51 +81,51 @@ export interface DialogTrees {
 
 export const NODES: { [key in NodeIds]: DialogNode } = {
   ...Intro.NODES,
-  ...DataTerminalsPartOne.NODES,
+  ...DataPointsPartOne.NODES,
   ...Gates.NODES,
-  ...GateAndTerminal.NODES,
-  ...GateAndTerminalPartThree.NODES,
+  ...GateAndDataPoint.NODES,
+  ...GateAndDataPointPartThree.NODES,
   ...AsteroidStrike.NODES,
   ...PartlyDisabledMovement.NODES,
   ...ReImplementTurnRight.NODES,
   ...JournalArrays.NODES,
   ...LevelTelepadPartOne.NODES,
   ...LoopsPartTwo.NODES,
-  ...GateAndTerminalPartTwo.NODES,
+  ...GateAndDataPointPartTwo.NODES,
   ...EnemiesPartOne.NODES,
   ...LevelTelepadsAndWhileLoop.NODES,
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...Intro.CHOICES,
-  ...DataTerminalsPartOne.CHOICES,
+  ...DataPointsPartOne.CHOICES,
   ...Gates.CHOICES,
-  ...GateAndTerminal.CHOICES,
-  ...GateAndTerminalPartThree.CHOICES,
+  ...GateAndDataPoint.CHOICES,
+  ...GateAndDataPointPartThree.CHOICES,
   ...AsteroidStrike.CHOICES,
   ...PartlyDisabledMovement.CHOICES,
   ...ReImplementTurnRight.CHOICES,
   ...JournalArrays.CHOICES,
   ...LevelTelepadPartOne.CHOICES,
   ...LoopsPartTwo.CHOICES,
-  ...GateAndTerminalPartTwo.CHOICES,
+  ...GateAndDataPointPartTwo.CHOICES,
   ...EnemiesPartOne.CHOICES,
   ...LevelTelepadsAndWhileLoop.CHOICES,
 };
 
 export const TREES: DialogTrees = {
   ...Intro.TREES,
-  ...DataTerminalsPartOne.TREES,
+  ...DataPointsPartOne.TREES,
   ...Gates.TREES,
-  ...GateAndTerminal.TREES,
-  ...GateAndTerminalPartThree.TREES,
+  ...GateAndDataPoint.TREES,
+  ...GateAndDataPointPartThree.TREES,
   ...AsteroidStrike.TREES,
   ...PartlyDisabledMovement.TREES,
   ...ReImplementTurnRight.TREES,
   ...JournalArrays.TREES,
   ...LevelTelepadPartOne.TREES,
   ...LoopsPartTwo.TREES,
-  ...GateAndTerminalPartTwo.TREES,
+  ...GateAndDataPointPartTwo.TREES,
   ...EnemiesPartOne.TREES,
   ...LevelTelepadsAndWhileLoop.TREES,
 };

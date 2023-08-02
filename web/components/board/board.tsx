@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 
 import {
-  FuzzyDataTerminal,
+  FuzzyDataPoint,
   FuzzyEnemy,
   FuzzyEnergyCell,
   FuzzyGoal,
@@ -23,7 +23,7 @@ import {
 import { Offset, posToOffset, range } from "../../lib/utils";
 import "./board.css";
 import lunarSurfaceBgUrl from "../../images/board/lunar_surface_bg.png";
-import DataTerminal from "./data_point";
+import DataPoint from "./data_point";
 import Enemy from "./enemy";
 import EnergyCell from "./energy_cell";
 import PasswordGate from "./password_gate";
@@ -216,18 +216,16 @@ export default function Board(props: BoardProps) {
           />
         )
       )}
-      {(props.gameState.data_terminals as FuzzyDataTerminal[]).map(
-        (terminal, i) => (
-          <DataTerminal
-            // eslint-disable-next-line react/no-array-index-key
-            key={i}
-            offset={posToOffset(terminal.pos)}
-            reading={terminal.reading}
-            additionalInfo={terminal.additional_info}
-            enableHoverInfo={props.enableHoverInfo}
-          />
-        )
-      )}
+      {(props.gameState.data_points as FuzzyDataPoint[]).map((dataPoint, i) => (
+        <DataPoint
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          offset={posToOffset(dataPoint.pos)}
+          reading={dataPoint.reading}
+          additionalInfo={dataPoint.additional_info}
+          enableHoverInfo={props.enableHoverInfo}
+        />
+      ))}
       {(props.gameState.telepads as FuzzyTelepad[]).map((telepad, i) => (
         // eslint-disable-next-line react/no-array-index-key
         <Box key={i}>

@@ -1,23 +1,23 @@
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
-    Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, State,
+    Actor, DataPoint, Goal, Obstacle, Orientation, PasswordGate, Player, State,
 };
 
 #[derive(Copy, Clone)]
-pub struct GateAndTerminalArray {}
+pub struct GateAndDataPointArray {}
 
-impl Level for GateAndTerminalArray {
+impl Level for GateAndDataPointArray {
     fn name(&self) -> &'static str {
         "Needle in a Haystack"
     }
     fn short_name(&self) -> &'static str {
-        "gate_and_terminal_array"
+        "gate_and_data_point_array"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This data terminal holds an array instead of just a string.
+        r#"// This data point holds an array instead of just a string.
 let array = read_data();
 
 // The password is at index 2 in the array. Once you get the
@@ -48,9 +48,9 @@ let array = read_data();
             6,
             "vaughan".to_string(),
             false,
-            "The nearby data terminal holds an array. The password for this gate is stored at index `2` of the array.".into(),
+            "The nearby data point holds an array. The password for this gate is stored at index `2` of the array.".into(),
         )];
-        state.data_terminals = vec![DataTerminal::new_with_info(
+        state.data_points = vec![DataPoint::new_with_info(
             11,
             6,
             vec![
@@ -60,7 +60,7 @@ let array = read_data();
                 "42",
             ]
             .into(),
-            "This data terminal holds an array. The password is stored at index `2` of the array.".into(),
+            "This data point holds an array. The password is stored at index `2` of the array.".into(),
         )];
         vec![state]
     }
@@ -80,7 +80,7 @@ mod tests {
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &GateAndTerminalArray {};
+        const LEVEL: &'static dyn Level = &GateAndDataPointArray {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();

@@ -1,23 +1,23 @@
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
-    Actor, DataTerminal, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
+    Actor, DataPoint, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
 };
 
 #[derive(Copy, Clone)]
-pub struct GateAndTerminal {}
+pub struct GateAndDataPoint {}
 
-impl Level for GateAndTerminal {
+impl Level for GateAndDataPoint {
     fn name(&self) -> &'static str {
         "Forgotten Password"
     }
     fn short_name(&self) -> &'static str {
-        "gate_and_terminal"
+        "gate_and_data_point"
     }
     fn objective(&self) -> &'static str {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This code reads the password from the data terminal and
+        r#"// This code reads the password from the data point and
 // stores it in a variable called password. (You DON'T
 // need to change this part).
 move_forward(1);
@@ -48,13 +48,13 @@ let password = read_data();
             3,
             "turing".to_string(),
             false,
-            "The password for this gate is stored in the nearby data terminal.".into(),
+            "The password for this gate is stored in the nearby data point.".into(),
         )];
-        state.data_terminals = vec![DataTerminal::new_with_info(
+        state.data_points = vec![DataPoint::new_with_info(
             4,
             1,
             "turing".into(),
-            "This data terminal contains the password you need.".into(),
+            "This data point contains the password you need.".into(),
         )];
         vec![state]
     }
@@ -69,13 +69,13 @@ let password = read_data();
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::constants::ERR_NO_DATA_TERMINAL;
+    use crate::constants::ERR_NO_DATA_POINT;
     use crate::levels::Outcome;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
-        const LEVEL: &'static dyn Level = &GateAndTerminal {};
+        const LEVEL: &'static dyn Level = &GateAndDataPoint {};
 
         // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
@@ -101,7 +101,7 @@ mod tests {
         // mismatch.
         assert_eq!(result.states.len(), result.trace.len());
 
-        // Calling read_data when we are not next to a data terminal
+        // Calling read_data when we are not next to a data point
         // should result in an error.
         let script = r#"
             let password = read_data();
@@ -110,10 +110,10 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         // result.outcome should be Outcome::Failure and the message
-        // should contain ERR_NO_DATA_TERMINAL.
+        // should contain ERR_NO_DATA_POINT.
         match result.outcome {
             Outcome::Failure(msg) => {
-                assert!(msg.to_string().contains(ERR_NO_DATA_TERMINAL));
+                assert!(msg.to_string().contains(ERR_NO_DATA_POINT));
             }
             _ => {
                 panic!("Expected Outcome::Failure, got {:?}", result.outcome);

@@ -1,4 +1,4 @@
-use crate::simulation::{DataTerminal, Enemy, EnergyCell, Goal, Obstacle, Player, State, Telepad};
+use crate::simulation::{DataPoint, Enemy, EnergyCell, Goal, Obstacle, Player, State, Telepad};
 
 /// A convenience struct for building a State via chainable
 /// methods. This is useful for tests and for configuring initial
@@ -38,8 +38,8 @@ impl StateMaker {
         self
     }
 
-    pub fn with_data_terminal(&mut self, data_terminals: Vec<DataTerminal>) -> &mut Self {
-        self.state.data_terminals = data_terminals;
+    pub fn with_data_points(&mut self, data_points: Vec<DataPoint>) -> &mut Self {
+        self.state.data_points = data_points;
         self
     }
 
