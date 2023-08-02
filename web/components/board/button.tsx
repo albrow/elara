@@ -151,7 +151,7 @@ export default function Button(props: ButtonProps) {
         w={`${TILE_SIZE - 1}px`}
         h={`${TILE_SIZE - 1}px`}
         zIndex={BUTTON_Z_INDEX}
-        filter="drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.3))"
+        filter="drop-shadow(-2px 3px 2px rgba(0, 0, 0, 0.3))"
       >
         <img
           ref={imgRef}

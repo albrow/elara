@@ -7,7 +7,7 @@ import {
   TERMINAL_Z_INDEX,
   CSS_ANIM_DURATION,
 } from "../../lib/constants";
-import tvImageUrl from "../../images/board/tv.png";
+import dataPointImg from "../../images/board/data_point.png";
 import BoardHoverInfo from "./board_hover_info";
 import DataTerminalPage from "./hover_info_pages/data_terminal.mdx";
 
@@ -37,30 +37,42 @@ export default function DataTerminal(props: DataTerminalProps) {
           additionalInfo={props.additionalInfo}
         />
       )}
-      <div
-        style={{
-          position: "absolute",
-          width: `${TILE_SIZE - 1}px`,
-          height: `${TILE_SIZE - 1}px`,
-          zIndex: TERMINAL_Z_INDEX,
-          left: props.offset.left,
-          top: props.offset.top,
-          transition: getCssTransition(),
-        }}
+      <Box
+        position="absolute"
+        left={props.offset.left}
+        top={props.offset.top}
+        w={`${TILE_SIZE - 1}px`}
+        h={`${TILE_SIZE - 1}px`}
+        zIndex={TERMINAL_Z_INDEX}
+        filter="drop-shadow(-2px 3px 2px rgba(0, 0, 0, 0.3))"
+        transition={getCssTransition()}
       >
-        <img src={tvImageUrl} alt="data terminal" />
-
+        <img
+          alt="dataPoint"
+          src={dataPointImg}
+          style={{
+            width: `${TILE_SIZE - 2}px`,
+            height: `${TILE_SIZE - 2}px`,
+            marginTop: "1px",
+            marginLeft: "1px",
+          }}
+        />
         {props.reading && (
           <Box
             position="absolute"
-            left={3}
-            top={2}
+            left="19px"
+            top="18.5px"
             zIndex={TERMINAL_Z_INDEX + 1}
           >
-            <Spinner color="blue.400" thickness="4px" speed="0.65s" />
+            <Spinner
+              size="xs"
+              color="green.400"
+              thickness="2.5px"
+              speed="0.65s"
+            />
           </Box>
         )}
-      </div>
+      </Box>
     </>
   );
 }

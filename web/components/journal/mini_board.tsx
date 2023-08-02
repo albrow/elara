@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/react";
 
 import { useCallback } from "react";
 import Player from "../board/player";
-import DataTerminal from "../board/data_terminal";
+import DataTerminal from "../board/data_point";
 import {
   // eslint-disable-next-line camelcase
   new_pos,

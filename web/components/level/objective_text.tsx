@@ -3,7 +3,7 @@ import flagImageUrl from "../../images/board/flag.png";
 import groverDownUrl from "../../images/board/grover_down.png";
 import energyCellImgUrl from "../../images/board/energy_cell.png";
 import lockedImgUrl from "../../images/board/locked.png";
-import tvImgUrl from "../../images/board/tv.png";
+import dataPointImgUrl from "../../images/board/data_point.png";
 import buttonImgUrl from "../../images/board/button.png";
 import MiniSprite from "./mini_sprite";
 
@@ -16,7 +16,7 @@ const imgUrlMappping = {
   "{goal}": flagImageUrl,
   "{energyCell}": energyCellImgUrl,
   "{gate}": lockedImgUrl,
-  "{terminal}": tvImgUrl,
+  "{dataPoint}": dataPointImgUrl,
   "{button}": buttonImgUrl,
 };
 
