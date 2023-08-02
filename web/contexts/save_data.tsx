@@ -207,13 +207,19 @@ function migrateSaveData(saveData: SaveData): SaveData {
     //   astroid_strike -> asteroid_strike
     //   astroid_strike_part_two -> asteroid_strike_part_two
     //
-    newData.levelStates.energy_part_one = newData.levelStates.fuel_part_one;
-    delete newData.levelStates.fuel_part_one;
-    newData.levelStates.asteroid_strike = newData.levelStates.astroid_strike;
-    delete newData.levelStates.astroid_strike;
-    newData.levelStates.asteroid_strike_part_two =
-      newData.levelStates.astroid_strike_part_two;
-    delete newData.levelStates.astroid_strike_part_two;
+    if (newData.levelStates.fuel_part_one) {
+      newData.levelStates.energy_part_one = newData.levelStates.fuel_part_one;
+      delete newData.levelStates.fuel_part_one;
+    }
+    if (newData.levelStates.astroid_strike) {
+      newData.levelStates.asteroid_strike = newData.levelStates.astroid_strike;
+      delete newData.levelStates.astroid_strike;
+    }
+    if (newData.levelStates.astroid_strike_part_two) {
+      newData.levelStates.asteroid_strike_part_two =
+        newData.levelStates.astroid_strike_part_two;
+      delete newData.levelStates.astroid_strike_part_two;
+    }
 
     // We also renamed the dialog tree:
     //
@@ -237,18 +243,26 @@ function migrateSaveData(saveData: SaveData): SaveData {
     //  - gate_and_terminal_part_two
     //  - gate_and_terminal_part_three
     //
-    newData.levelStates.data_points_part_one =
-      newData.levelStates.data_terminals_part_one;
-    delete newData.levelStates.data_terminals_part_one;
-    newData.levelStates.gate_and_data_point =
-      newData.levelStates.gate_and_terminal;
-    delete newData.levelStates.gate_and_terminal;
-    newData.levelStates.gate_and_data_point_part_two =
-      newData.levelStates.gate_and_terminal_part_two;
-    delete newData.levelStates.gate_and_terminal_part_two;
-    newData.levelStates.gate_and_data_point_part_three =
-      newData.levelStates.gate_and_terminal_part_three;
-    delete newData.levelStates.gate_and_terminal_part_three;
+    if (newData.levelStates.data_terminals_part_one) {
+      newData.levelStates.data_points_part_one =
+        newData.levelStates.data_terminals_part_one;
+      delete newData.levelStates.data_terminals_part_one;
+    }
+    if (newData.levelStates.gate_and_terminal) {
+      newData.levelStates.gate_and_data_point =
+        newData.levelStates.gate_and_terminal;
+      delete newData.levelStates.gate_and_terminal;
+    }
+    if (newData.levelStates.gate_and_terminal_part_two) {
+      newData.levelStates.gate_and_data_point_part_two =
+        newData.levelStates.gate_and_terminal_part_two;
+      delete newData.levelStates.gate_and_terminal_part_two;
+    }
+    if (newData.levelStates.gate_and_terminal_part_three) {
+      newData.levelStates.gate_and_data_point_part_three =
+        newData.levelStates.gate_and_terminal_part_three;
+      delete newData.levelStates.gate_and_terminal_part_three;
+    }
 
     // Tutorial shorts:
     //
@@ -638,7 +652,7 @@ if (import.meta.vitest) {
     });
 
     describe("load", () => {
-      it("migrates from version 11 to 12 (adds unlocked functions)", () => {
+      it("migrates from version 11 to the latest version", () => {
         const oldData = {
           version: 11,
           levelStates: {
@@ -672,7 +686,7 @@ if (import.meta.vitest) {
         window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(oldData));
 
         const expectedData: SaveData = {
-          version: 12,
+          version: SAVE_DATA_VERSION,
           levelStates: {
             movement: {
               completed: true,
