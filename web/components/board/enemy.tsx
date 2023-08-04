@@ -6,14 +6,14 @@ import evilRoverDownImg from "../../images/board/evil_rover_down.png";
 import evilRoverLeftImg from "../../images/board/evil_rover_left.png";
 import evilRoverRightImg from "../../images/board/evil_rover_right.png";
 import lightningEffectUrl from "../../images/board/lightning.gif";
-import { Pos, TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
-import { posToOffset, rowBasedZIndex } from "../../lib/utils";
+import { TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
+import { Offset } from "../../lib/utils";
 import { getSpriteAnimations } from "./anim_utils";
 import BoardHoverInfo from "./board_hover_info";
 import MalfunctioningRoverPage from "./hover_info_pages/malfunctioning_rover.mdx";
 
 interface EnemyProps {
-  pos: Pos;
+  offset: Offset;
   animState: string;
   animData?: TeleAnimData;
   enableAnimations: boolean;
@@ -22,12 +22,6 @@ interface EnemyProps {
 }
 
 export default function Enemy(props: EnemyProps) {
-  const offset = useMemo(() => posToOffset(props.pos), [props.pos]);
-  const zIndex = useMemo(
-    () => rowBasedZIndex(props.pos.y, ENEMY_Z_INDEX),
-    [props.pos.y]
-  );
-
   const animation = useMemo(
     () =>
       getSpriteAnimations(
@@ -69,16 +63,16 @@ export default function Enemy(props: EnemyProps) {
   return (
     <>
       {props.enableHoverInfo && (
-        <BoardHoverInfo page={MalfunctioningRoverPage} offset={offset} />
+        <BoardHoverInfo page={MalfunctioningRoverPage} offset={props.offset} />
       )}
       {animation.definitions}
       <Box
         position="absolute"
-        left={offset.left}
-        top={offset.top}
+        left={props.offset.left}
+        top={props.offset.top}
         w={`${TILE_SIZE}px`}
         h={`${TILE_SIZE}px`}
-        zIndex={zIndex}
+        zIndex={ENEMY_Z_INDEX}
         style={animation.style}
       >
         <div
@@ -86,7 +80,7 @@ export default function Enemy(props: EnemyProps) {
             width: `${TILE_SIZE - 2}px`,
             height: `${TILE_SIZE - 2}px`,
             marginTop: "1px",
-            zIndex,
+            zIndex: ENEMY_Z_INDEX,
           }}
         >
           <img

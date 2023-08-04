@@ -126,7 +126,7 @@ export default function Board(props: BoardProps) {
         <Player
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          pos={player.pos}
+          offset={posToOffset(player.pos)}
           energy={player.energy}
           message={player.message}
           animState={player.anim_state}
@@ -140,7 +140,7 @@ export default function Board(props: BoardProps) {
         <Goal
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          pos={goal.pos}
+          offset={posToOffset(goal.pos)}
           enableHoverInfo={props.enableHoverInfo}
         />
       ))}
@@ -150,7 +150,7 @@ export default function Board(props: BoardProps) {
             collected={energyCell.collected}
             // eslint-disable-next-line react/no-array-index-key
             key={i}
-            pos={energyCell.pos}
+            offset={posToOffset(energyCell.pos)}
             enableHoverInfo={props.enableHoverInfo}
           />
         )
@@ -159,7 +159,7 @@ export default function Board(props: BoardProps) {
         <Enemy
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          pos={enemy.pos}
+          offset={posToOffset(enemy.pos)}
           facing={enemy.facing}
           enableAnimations={props.enableAnimations}
           animState={enemy.anim_state}
@@ -171,7 +171,7 @@ export default function Board(props: BoardProps) {
         <Obstacle
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          pos={obstacle.pos}
+          offset={posToOffset(obstacle.pos)}
           fuzzy={obstacle.fuzzy}
           enableHoverInfo={props.enableHoverInfo}
         />
@@ -180,7 +180,7 @@ export default function Board(props: BoardProps) {
         <Button
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          pos={button.pos}
+          offset={posToOffset(button.pos)}
           currentlyPressed={button.currently_pressed}
           connectionOffset={getConnectionOffset(props.gameState, i)}
           additionalInfo={button.additional_info}
@@ -192,7 +192,7 @@ export default function Board(props: BoardProps) {
         <Gate
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          pos={gate.pos}
+          offset={posToOffset(gate.pos)}
           open={gate.open}
           additionalInfo={gate.additional_info}
           enableHoverInfo={props.enableHoverInfo}
@@ -203,7 +203,7 @@ export default function Board(props: BoardProps) {
           <PasswordGate
             // eslint-disable-next-line react/no-array-index-key
             key={i}
-            pos={gate.pos}
+            offset={posToOffset(gate.pos)}
             open={gate.open}
             additionalInfo={gate.additional_info}
             enableHoverInfo={props.enableHoverInfo}
@@ -214,7 +214,7 @@ export default function Board(props: BoardProps) {
         <DataPoint
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          pos={dataPoint.pos}
+          offset={posToOffset(dataPoint.pos)}
           reading={dataPoint.reading}
           additionalInfo={dataPoint.additional_info}
           enableHoverInfo={props.enableHoverInfo}
@@ -226,7 +226,7 @@ export default function Board(props: BoardProps) {
           <Telepad
             // eslint-disable-next-line react/no-array-index-key
             key={`entrance_${i}`}
-            pos={telepad.start_pos}
+            offset={posToOffset(telepad.start_pos)}
             kind="entrance"
             telepadIndex={i}
             enableHoverInfo={props.enableHoverInfo}
@@ -234,7 +234,7 @@ export default function Board(props: BoardProps) {
           <Telepad
             // eslint-disable-next-line react/no-array-index-key
             key={`exit_${i}`}
-            pos={telepad.end_pos}
+            offset={posToOffset(telepad.end_pos)}
             kind="exit"
             telepadIndex={i}
             enableHoverInfo={props.enableHoverInfo}

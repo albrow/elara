@@ -36,16 +36,6 @@ export function posToOffset(pos: Pos): Offset {
   };
 }
 
-// Returns a z-index which accounts for the row of the given position.
-// Used to make sure that objects in the same row are drawn in the correct
-// order. Objects in lower rows should be drawn on top of objects in higher
-// rows.
-//
-// Row is the index of the row, starting from 0 at the top.
-export function rowBasedZIndex(row: number, zIndex: number): number {
-  return zIndex + row * 1000;
-}
-
 export interface ChallengeProgress {
   completed: number;
   available: number;
