@@ -32,7 +32,6 @@ impl EnemiesAndAsteroids {
             Obstacle::new(4, 5),
             Obstacle::new(4, 6),
             Obstacle::new(4, 7),
-            Obstacle::new(5, 7),
             Obstacle::new(6, 1),
             Obstacle::new(6, 3),
             Obstacle::new(6, 5),
