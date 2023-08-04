@@ -2,9 +2,10 @@ import { Text } from "@chakra-ui/react";
 import flagImageUrl from "../../images/board/flag.png";
 import groverDownUrl from "../../images/board/grover_down.png";
 import energyCellImgUrl from "../../images/board/energy_cell.png";
-import lockedImgUrl from "../../images/board/locked.png";
 import dataPointImgUrl from "../../images/board/data_point.png";
 import buttonImgUrl from "../../images/board/button.png";
+import gateImgUrl from "../../images/board/gate_locked.png";
+import passwordGateImgUrl from "../../images/board/password_gate_locked.png";
 import MiniSprite from "./mini_sprite";
 
 export interface ObjectiveTextProps {
@@ -15,7 +16,8 @@ const imgUrlMappping = {
   "{robot}": groverDownUrl,
   "{goal}": flagImageUrl,
   "{energyCell}": energyCellImgUrl,
-  "{gate}": lockedImgUrl,
+  "{gate}": gateImgUrl,
+  "{passwordGate}": passwordGateImgUrl,
   "{dataPoint}": dataPointImgUrl,
   "{button}": buttonImgUrl,
 };
