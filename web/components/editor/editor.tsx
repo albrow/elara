@@ -587,3 +587,7 @@ export default function Editor(props: EditorProps) {
     </>
   );
 }
+
+Editor.defaultProps = {
+  showCodeLenCounter: true,
+};
