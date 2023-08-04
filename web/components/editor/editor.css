@@ -8,7 +8,7 @@
   /* Unfortunately there's no way to import typescript constants here,
   but we should make sure this matches CM_TOOL_TIP_Z_INDEX in
   web/lib/constants.ts */
-  z-index: 800;
+  z-index: 1040;
 }
 
 .cm-foldGutter {
