@@ -1,5 +1,5 @@
 import { Box, Image } from "@chakra-ui/react";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { Offset } from "../../lib/utils";
 import {
@@ -36,7 +36,7 @@ export default function Button(props: ButtonProps) {
   const animationTimerRef = useRef<number | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
-  const { getSound, stopAllSoundEffects } = useSoundManager();
+  const { getSound } = useSoundManager();
   const buttonPressOnSound = useMemo(
     () => getSound("button_press_on"),
     [getSound]
@@ -45,6 +45,10 @@ export default function Button(props: ButtonProps) {
     () => getSound("button_press_off"),
     [getSound]
   );
+  const stopMySoundEffects = useCallback(() => {
+    buttonPressOnSound.stop();
+    buttonPressOffSound.stop();
+  }, [buttonPressOnSound, buttonPressOffSound]);
 
   const wirePoints = useMemo(() => {
     if (!props.connectionOffset) {
@@ -59,7 +63,7 @@ export default function Button(props: ButtonProps) {
 
   useEffect(() => {
     if (!props.enableAnimations) {
-      stopAllSoundEffects();
+      stopMySoundEffects();
     }
     if (props.currentlyPressed) {
       // If the button is pressed, we always want to update the wire and image
@@ -91,7 +95,7 @@ export default function Button(props: ButtonProps) {
         clearTimeout(animationTimerRef.current);
       }
     };
-  }, [props, stopAllSoundEffects, buttonPressOnSound, buttonPressOffSound]);
+  }, [props, stopMySoundEffects, buttonPressOnSound, buttonPressOffSound]);
 
   return (
     <>

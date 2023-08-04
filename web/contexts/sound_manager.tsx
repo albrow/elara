@@ -12,40 +12,44 @@ import { Sound } from "../lib/playables/sound";
 import { Playable } from "../lib/playables";
 import { RoundRobinSoundGroup } from "../lib/playables/round_robin";
 
-import bumpSound0 from "../audio/bump_0.ogg";
-import bumpSound1 from "../audio/bump_1.ogg";
-import moveSound0 from "../audio/move_0.ogg";
-import moveSound1 from "../audio/move_1.ogg";
-import moveSound2 from "../audio/move_2.ogg";
-import moveSound3 from "../audio/move_3.ogg";
-import turnSound0 from "../audio/turn_0.ogg";
-import turnSound1 from "../audio/turn_1.ogg";
-import turnSound2 from "../audio/turn_2.ogg";
-import turnSound3 from "../audio/turn_3.ogg";
-import bumpSound0Fallback from "../audio/bump_0.mp3";
-import bumpSound1Fallback from "../audio/bump_1.mp3";
-import moveSound0Fallback from "../audio/move_0.mp3";
-import moveSound1Fallback from "../audio/move_1.mp3";
-import moveSound2Fallback from "../audio/move_2.mp3";
-import moveSound3Fallback from "../audio/move_3.mp3";
-import turnSound0Fallback from "../audio/turn_0.mp3";
-import turnSound1Fallback from "../audio/turn_1.mp3";
-import turnSound2Fallback from "../audio/turn_2.mp3";
-import turnSound3Fallback from "../audio/turn_3.mp3";
-import teleportSound from "../audio/teleport.ogg";
-import teleportSoundFallback from "../audio/teleport.mp3";
-import speakSound0 from "../audio/speak_0.ogg";
-import speakSound1 from "../audio/speak_1.ogg";
-import speakSound2 from "../audio/speak_2.ogg";
-import speakSound3 from "../audio/speak_3.ogg";
-import speakSound0Fallback from "../audio/speak_0.mp3";
-import speakSound1Fallback from "../audio/speak_1.mp3";
-import speakSound2Fallback from "../audio/speak_2.mp3";
-import speakSound3Fallback from "../audio/speak_3.mp3";
-import buttonPressOn from "../audio/button_press_on.ogg";
-import buttonPressOff from "../audio/button_press_off.ogg";
-import buttonPressOnFallback from "../audio/button_press_on.mp3";
-import buttonPressOffFallback from "../audio/button_press_off.mp3";
+import bumpSound0 from "../audio/sfx/bump_0.ogg";
+import bumpSound1 from "../audio/sfx/bump_1.ogg";
+import moveSound0 from "../audio/sfx/move_0.ogg";
+import moveSound1 from "../audio/sfx/move_1.ogg";
+import moveSound2 from "../audio/sfx/move_2.ogg";
+import moveSound3 from "../audio/sfx/move_3.ogg";
+import turnSound0 from "../audio/sfx/turn_0.ogg";
+import turnSound1 from "../audio/sfx/turn_1.ogg";
+import turnSound2 from "../audio/sfx/turn_2.ogg";
+import turnSound3 from "../audio/sfx/turn_3.ogg";
+import bumpSound0Fallback from "../audio/sfx/bump_0.mp3";
+import bumpSound1Fallback from "../audio/sfx/bump_1.mp3";
+import moveSound0Fallback from "../audio/sfx/move_0.mp3";
+import moveSound1Fallback from "../audio/sfx/move_1.mp3";
+import moveSound2Fallback from "../audio/sfx/move_2.mp3";
+import moveSound3Fallback from "../audio/sfx/move_3.mp3";
+import turnSound0Fallback from "../audio/sfx/turn_0.mp3";
+import turnSound1Fallback from "../audio/sfx/turn_1.mp3";
+import turnSound2Fallback from "../audio/sfx/turn_2.mp3";
+import turnSound3Fallback from "../audio/sfx/turn_3.mp3";
+import teleportSound from "../audio/sfx/teleport.ogg";
+import teleportSoundFallback from "../audio/sfx/teleport.mp3";
+import speakSound0 from "../audio/sfx/speak_0.ogg";
+import speakSound1 from "../audio/sfx/speak_1.ogg";
+import speakSound2 from "../audio/sfx/speak_2.ogg";
+import speakSound3 from "../audio/sfx/speak_3.ogg";
+import speakSound0Fallback from "../audio/sfx/speak_0.mp3";
+import speakSound1Fallback from "../audio/sfx/speak_1.mp3";
+import speakSound2Fallback from "../audio/sfx/speak_2.mp3";
+import speakSound3Fallback from "../audio/sfx/speak_3.mp3";
+import successSound from "../audio/sfx/success.ogg";
+import successSoundFallback from "../audio/sfx/success.mp3";
+import challengeSound from "../audio/sfx/challenge.ogg";
+import challengeSoundFallback from "../audio/sfx/challenge.mp3";
+import buttonPressOn from "../audio/sfx/button_press_on.ogg";
+import buttonPressOff from "../audio/sfx/button_press_off.ogg";
+import buttonPressOnFallback from "../audio/sfx/button_press_on.mp3";
+import buttonPressOffFallback from "../audio/sfx/button_press_off.mp3";
 import intro from "../audio/dialog/intro.ogg";
 import introFallback from "../audio/dialog/intro.mp3";
 import journeyNegResponse from "../audio/dialog/journey_neg_response.ogg";
@@ -184,6 +188,18 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         "button_press_off",
         "sfx",
         [buttonPressOff, buttonPressOffFallback],
+        0.8
+      ),
+      success: new Sound(
+        "success",
+        "sfx",
+        [successSound, successSoundFallback],
+        0.8
+      ),
+      challenge: new Sound(
+        "challenge",
+        "sfx",
+        [challengeSound, challengeSoundFallback],
         0.8
       ),
       dialog_intro: new Sound(

@@ -63,16 +63,24 @@ export default function Player(props: PlayerProps) {
     }
   }, [props.facing]);
 
-  const { getSound, stopAllSoundEffects } = useSoundManager();
+  const { getSound } = useSoundManager();
   const moveSound = useMemo(() => getSound("move"), [getSound]);
   const turnSound = useMemo(() => getSound("turn"), [getSound]);
   const teleportSound = useMemo(() => getSound("teleport"), [getSound]);
   const bumpSound = useMemo(() => getSound("bump"), [getSound]);
   const speakSound = useMemo(() => getSound("speak"), [getSound]);
 
+  const stopMySoundEffects = useCallback(() => {
+    moveSound.stop();
+    turnSound.stop();
+    bumpSound.stop();
+    teleportSound.stop();
+    speakSound.stop();
+  }, [moveSound, turnSound, bumpSound, teleportSound, speakSound]);
+
   useEffect(() => {
     if (!props.enableAnimations) {
-      stopAllSoundEffects();
+      stopMySoundEffects();
     } else if (props.animState === "moving") {
       moveSound.play();
     } else if (props.animState === "turning") {
@@ -87,7 +95,7 @@ export default function Player(props: PlayerProps) {
     }
   }, [
     props,
-    stopAllSoundEffects,
+    stopMySoundEffects,
     moveSound,
     turnSound,
     bumpSound,

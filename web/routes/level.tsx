@@ -3,6 +3,8 @@ import { Container, Flex, Text, Box, Stack } from "@chakra-ui/react";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 
+import { useRouter } from "react-router5";
+import { Unsubscribe } from "router5/dist/types/base";
 import { FuzzyStateWithLines, Game, RunResult } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
@@ -19,8 +21,12 @@ import ShowDialogButton from "../components/level/show_dialog_button";
 import ShowHintButton from "../components/level/show_hint_button";
 import { useHintsModal } from "../hooks/hints_modal_hooks";
 import { BG_INDEX, NAVBAR_HEIGHT } from "../lib/constants";
+import { useSoundManager } from "../hooks/sound_manager_hooks";
 
 const game = Game.new();
+
+// How long to wait before playing the challenge sound effect.
+const CHALLENGE_SOUND_DELAY_MS = 3400;
 
 export default function Level() {
   const [
@@ -28,6 +34,7 @@ export default function Level() {
     { markLevelCompleted, markLevelChallengeCompleted, updateLevelCode },
   ] = useSaveData();
   const currScene = useCurrScene();
+  const router = useRouter();
 
   // Note: unsafeSetEditorState should only be called in response to an onStateChange
   // event from the Editor component. It does not actually change the state inside the
@@ -43,6 +50,15 @@ export default function Level() {
   const [showErrorModal, _hidErrorModal, setErrorModalOnClose] =
     useErrorModal();
   const [showHintsModal] = useHintsModal();
+
+  // Load sound effects.
+  const { getSound } = useSoundManager();
+  const successSound = useMemo(() => getSound("success"), [getSound]);
+  const challengeSound = useMemo(() => getSound("challenge"), [getSound]);
+  const stopMySoundEffects = useCallback(() => {
+    successSound.stop();
+    challengeSound.stop();
+  }, [successSound, challengeSound]);
 
   const currLevel = useCallback(() => {
     if (!currScene || currScene.type !== "level" || !currScene.level) {
@@ -126,11 +142,27 @@ export default function Level() {
     setDialogVisible(shouldShowDialogTree());
   }, [shouldShowDialogTree]);
 
+  // Track the challenge sound timeout and cancel it if this component unmounts or route
+  // changes.
+  const challengeSoundTimeout = useRef<number | null>(null);
+  useEffect(() => {
+    const unsubscribe = router.subscribe((_transition) => {
+      if (challengeSoundTimeout.current !== null) {
+        clearTimeout(challengeSoundTimeout.current);
+      }
+    }) as Unsubscribe;
+    return unsubscribe;
+  }, [router]);
+
   const resetLevelState = useCallback(() => {
     setModalVisible(false);
     setBoardState(currLevel().initial_state);
     requestEditorState("editing");
-  }, [currLevel]);
+    stopMySoundEffects();
+    if (challengeSoundTimeout.current !== null) {
+      clearTimeout(challengeSoundTimeout.current);
+    }
+  }, [currLevel, stopMySoundEffects]);
 
   // Returns a function that can be used to run a script.
   // Passed through to the editor, which doesn't know about the game object or
@@ -169,11 +201,18 @@ export default function Level() {
         // Show the success modal.
         setModalVisible(true);
         setLastResult(result);
+        successSound.play();
 
         // Update the level status in local storage.
         markLevelCompleted(currLevel().short_name);
         if (result.passes_challenge) {
           markLevelChallengeCompleted(currLevel().short_name);
+          // If we passed the challenge, start a timer to play the special
+          // challenge sound effect. This delay lets it line up with the
+          // animations.
+          challengeSoundTimeout.current = window.setTimeout(() => {
+            challengeSound.play();
+          }, CHALLENGE_SOUND_DELAY_MS);
         }
       } else {
         // Show the failure modal.
@@ -185,12 +224,14 @@ export default function Level() {
       }
     },
     [
+      challengeSound,
       currLevel,
       markLevelChallengeCompleted,
       markLevelCompleted,
       resetLevelState,
       setErrorModalOnClose,
       showErrorModal,
+      successSound,
       updateLevelCode,
     ]
   );
