@@ -2,7 +2,11 @@ import { MdOutlineWarningAmber } from "react-icons/md";
 import { Box, Image } from "@chakra-ui/react";
 import { AnimateKeyframes } from "react-simple-animate";
 
-import { OBSTACLE_Z_INDEX, TILE_SIZE } from "../../lib/constants";
+import {
+  OBSTACLE_Z_INDEX,
+  SPRITE_DROP_SHADOW,
+  TILE_SIZE,
+} from "../../lib/constants";
 import rockImgUrl from "../../images/board/rock.png";
 // import RockPage from "./hover_info_pages/rock.mdx";
 import { Offset } from "../../lib/utils";
@@ -66,6 +70,7 @@ export default function Obstacle(props: ObstacleProps) {
         left={props.offset.left}
         top={props.offset.top}
         zIndex={OBSTACLE_Z_INDEX}
+        filter={SPRITE_DROP_SHADOW}
       />
     </>
   );
