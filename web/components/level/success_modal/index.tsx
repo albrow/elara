@@ -14,7 +14,6 @@ import { MdArrowForward, MdHome, MdReplay } from "react-icons/md";
 import { Animate, AnimateGroup } from "react-simple-animate";
 
 import type { RunResult } from "../../../../elara-lib/pkg/elara_lib";
-import { LEVEL_END_MODAL_Z_INDEX } from "../../../lib/constants";
 import { useCurrScene, useSceneNavigator } from "../../../hooks/scenes_hooks";
 import { getNextLevel } from "../../../lib/utils";
 import { Scene } from "../../../contexts/scenes";
@@ -71,7 +70,7 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
   }
 
   return (
-    <Box hidden={!props.visible} zIndex={LEVEL_END_MODAL_Z_INDEX}>
+    <Box hidden={!props.visible}>
       <Modal
         isOpen={props.visible}
         onClose={handleClose}
@@ -79,8 +78,8 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
         preserveScrollBarGap
         closeOnOverlayClick={false}
       >
-        <ModalOverlay zIndex={LEVEL_END_MODAL_Z_INDEX} />
-        <ModalContent minW="container.md" zIndex={LEVEL_END_MODAL_Z_INDEX + 1}>
+        <ModalOverlay />
+        <ModalContent minW="container.md">
           <ModalCloseButton />
           <ModalBody>
             <Text

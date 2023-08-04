@@ -11,7 +11,6 @@ import {
 import React, { useCallback } from "react";
 import { useRouter } from "react-router5";
 
-import { LEVEL_SELECT_MODAL_Z_INDEX } from "../../lib/constants";
 import { useLevels } from "../../hooks/scenes_hooks";
 import LevelLink from "./level_link";
 
@@ -37,7 +36,7 @@ export default function LevelSelectModal(props: LevelSelectModalProps) {
   }
 
   return (
-    <Box hidden={!props.visible} zIndex={LEVEL_SELECT_MODAL_Z_INDEX}>
+    <Box hidden={!props.visible}>
       <Modal
         isOpen={props.visible}
         onClose={handleClose}
@@ -46,13 +45,8 @@ export default function LevelSelectModal(props: LevelSelectModalProps) {
         preserveScrollBarGap
         motionPreset="slideInBottom"
       >
-        <ModalOverlay zIndex={LEVEL_SELECT_MODAL_Z_INDEX} />
-        <ModalContent
-          zIndex={LEVEL_SELECT_MODAL_Z_INDEX + 1}
-          bg="gray.800"
-          color="white"
-          border="1px solid black"
-        >
+        <ModalOverlay />
+        <ModalContent bg="gray.800" color="white" border="1px solid black">
           <ModalHeader>
             <Text
               fontSize="24px"

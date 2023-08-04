@@ -19,7 +19,6 @@ import {
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
 import { MdCheck } from "react-icons/md";
 
-import { TUTORIAL_MODAL_Z_INDEX } from "../lib/constants";
 import { SHORTS, ShortId } from "../lib/tutorial_shorts";
 import { useSaveData } from "../hooks/save_data_hooks";
 
@@ -105,7 +104,6 @@ export function ShortsModalProvider(props: PropsWithChildren<{}>) {
           <ModalOverlay />
           <ModalContent
             minW="container.md"
-            zIndex={TUTORIAL_MODAL_Z_INDEX + 1}
             top={{
               base: "0px",
               "2xl": "24px",

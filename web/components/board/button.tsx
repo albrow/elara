@@ -1,22 +1,23 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef } from "react";
 
-import { Offset } from "../../lib/utils";
+import { Offset, posToOffset, rowBasedZIndex } from "../../lib/utils";
 import {
   BOARD_TOTAL_HEIGHT,
   BOARD_TOTAL_WIDTH,
-  BUTTON_WIRE_INDEX,
+  BUTTON_WIRE_Z_INDEX,
   BUTTON_Z_INDEX,
   TILE_SIZE,
 } from "../../lib/constants";
 import buttonImgUrl from "../../images/board/button.png";
 import buttonPressedImgUrl from "../../images/board/button_pressed.png";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
+import { Pos } from "../../../elara-lib/pkg/elara_lib";
 import BoardHoverInfo from "./board_hover_info";
 import ButtonPage from "./hover_info_pages/button.mdx";
 
 interface ButtonProps {
-  offset: Offset;
+  pos: Pos;
   currentlyPressed: boolean;
   additionalInfo: string;
   connectionOffset: Offset | null;
@@ -45,16 +46,22 @@ export default function Button(props: ButtonProps) {
     [getSound]
   );
 
+  const offset = useMemo(() => posToOffset(props.pos), [props.pos]);
+  const zIndex = useMemo(
+    () => rowBasedZIndex(props.pos.y, BUTTON_Z_INDEX),
+    [props.pos.y]
+  );
+
   const wirePoints = useMemo(() => {
     if (!props.connectionOffset) {
       return "";
     }
-    return `${props.offset.leftNum + TILE_SIZE / 2},${
-      props.offset.topNum + TILE_SIZE * 0.75
+    return `${offset.leftNum + TILE_SIZE / 2},${
+      offset.topNum + TILE_SIZE * 0.75
     } ${props.connectionOffset.leftNum + TILE_SIZE / 2},${
       props.connectionOffset.topNum + TILE_SIZE / 2
     }`;
-  }, [props.connectionOffset, props.offset.leftNum, props.offset.topNum]);
+  }, [props.connectionOffset, offset.leftNum, offset.topNum]);
 
   useEffect(() => {
     if (!props.enableAnimations) {
@@ -106,7 +113,7 @@ export default function Button(props: ButtonProps) {
           w={BOARD_TOTAL_WIDTH}
           h={BOARD_TOTAL_HEIGHT}
           overflow="visible"
-          zIndex={BUTTON_WIRE_INDEX}
+          zIndex={BUTTON_WIRE_Z_INDEX}
         >
           <svg width="100%" height="100%">
             <polyline
@@ -140,31 +147,24 @@ export default function Button(props: ButtonProps) {
       {props.enableHoverInfo && (
         <BoardHoverInfo
           page={ButtonPage}
-          offset={props.offset}
+          offset={offset}
           additionalInfo={props.additionalInfo}
         />
       )}
-      <Box
+      <Image
+        ref={imgRef}
+        alt="button"
         position="absolute"
-        left={props.offset.left}
-        top={props.offset.top}
-        w={`${TILE_SIZE - 1}px`}
-        h={`${TILE_SIZE - 1}px`}
-        zIndex={BUTTON_Z_INDEX}
+        left={offset.left}
+        top={offset.top}
+        zIndex={zIndex}
+        src={props.currentlyPressed ? buttonPressedImgUrl : buttonImgUrl}
+        w="48px"
+        h="48px"
+        mt="1px"
+        ml="1px"
         filter="drop-shadow(-2px 3px 2px rgba(0, 0, 0, 0.3))"
-      >
-        <img
-          ref={imgRef}
-          alt="button"
-          src={props.currentlyPressed ? buttonPressedImgUrl : buttonImgUrl}
-          style={{
-            width: `${TILE_SIZE - 2}px`,
-            height: `${TILE_SIZE - 2}px`,
-            marginTop: "1px",
-            marginLeft: "1px",
-          }}
-        />
-      </Box>
+      />
     </>
   );
 }

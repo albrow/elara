@@ -8,7 +8,6 @@ import {
 import React, { useCallback } from "react";
 
 import { useSaveData } from "../../hooks/save_data_hooks";
-import { DIALOG_MODAL_Z_INDEX } from "../../lib/constants";
 import DialogTree from "./dialog_tree";
 
 export type LevelOutcome = "success" | "failure" | "no_objective";
@@ -35,7 +34,7 @@ export default function DialogModal(props: DialogModalProps) {
   }, [props, markDialogSeen]);
 
   return (
-    <Box hidden={!props.visible} zIndex={DIALOG_MODAL_Z_INDEX}>
+    <Box hidden={!props.visible}>
       <Modal
         isOpen={props.visible}
         onClose={handleClose}
@@ -44,11 +43,10 @@ export default function DialogModal(props: DialogModalProps) {
         closeOnEsc={false}
         closeOnOverlayClick={false}
       >
-        <ModalOverlay zIndex={DIALOG_MODAL_Z_INDEX} />
+        <ModalOverlay />
         <ModalContent
           className="light-scrollbar"
           minW="container.lg"
-          zIndex={DIALOG_MODAL_Z_INDEX + 1}
           bottom="16px"
           my={0}
           position="fixed"

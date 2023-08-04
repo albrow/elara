@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box } from "@chakra-ui/react";
-import { Offset } from "../../lib/utils";
 import { ENEMY_Z_INDEX, TILE_SIZE } from "../../lib/constants";
 import evelRoverUpImg from "../../images/board/evil_rover_up.png";
 import evilRoverDownImg from "../../images/board/evil_rover_down.png";
 import evilRoverLeftImg from "../../images/board/evil_rover_left.png";
 import evilRoverRightImg from "../../images/board/evil_rover_right.png";
 import lightningEffectUrl from "../../images/board/lightning.gif";
-import { TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
+import { Pos, TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
+import { posToOffset, rowBasedZIndex } from "../../lib/utils";
 import { getSpriteAnimations } from "./anim_utils";
 import BoardHoverInfo from "./board_hover_info";
 import MalfunctioningRoverPage from "./hover_info_pages/malfunctioning_rover.mdx";
 
 interface EnemyProps {
-  offset: Offset;
+  pos: Pos;
   animState: string;
   animData?: TeleAnimData;
   enableAnimations: boolean;
@@ -22,6 +22,12 @@ interface EnemyProps {
 }
 
 export default function Enemy(props: EnemyProps) {
+  const offset = useMemo(() => posToOffset(props.pos), [props.pos]);
+  const zIndex = useMemo(
+    () => rowBasedZIndex(props.pos.y, ENEMY_Z_INDEX),
+    [props.pos.y]
+  );
+
   const animation = useMemo(
     () =>
       getSpriteAnimations(
@@ -63,16 +69,16 @@ export default function Enemy(props: EnemyProps) {
   return (
     <>
       {props.enableHoverInfo && (
-        <BoardHoverInfo page={MalfunctioningRoverPage} offset={props.offset} />
+        <BoardHoverInfo page={MalfunctioningRoverPage} offset={offset} />
       )}
       {animation.definitions}
       <Box
         position="absolute"
-        left={props.offset.left}
-        top={props.offset.top}
+        left={offset.left}
+        top={offset.top}
         w={`${TILE_SIZE}px`}
         h={`${TILE_SIZE}px`}
-        zIndex={ENEMY_Z_INDEX}
+        zIndex={zIndex}
         style={animation.style}
       >
         <div
@@ -80,7 +86,7 @@ export default function Enemy(props: EnemyProps) {
             width: `${TILE_SIZE - 2}px`,
             height: `${TILE_SIZE - 2}px`,
             marginTop: "1px",
-            zIndex: ENEMY_Z_INDEX,
+            zIndex,
           }}
         >
           <img

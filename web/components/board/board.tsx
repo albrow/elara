@@ -122,50 +122,44 @@ export default function Board(props: BoardProps) {
           </tbody>
         </table>
       </div>
-      {(props.gameState.players as FuzzyPlayer[]).map((player, i) => {
-        const playerOffset = posToOffset(player.pos);
-        return (
-          <Player
-            // eslint-disable-next-line react/no-array-index-key
-            key={i}
-            offset={playerOffset}
-            energy={player.energy}
-            message={player.message}
-            animState={player.anim_state}
-            animData={player.anim_data}
-            facing={player.facing}
-            enableAnimations={props.enableAnimations}
-            enableHoverInfo={props.enableHoverInfo}
-          />
-        );
-      })}
+      {(props.gameState.players as FuzzyPlayer[]).map((player, i) => (
+        <Player
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          pos={player.pos}
+          energy={player.energy}
+          message={player.message}
+          animState={player.anim_state}
+          animData={player.anim_data}
+          facing={player.facing}
+          enableAnimations={props.enableAnimations}
+          enableHoverInfo={props.enableHoverInfo}
+        />
+      ))}
       {(props.gameState.goals as FuzzyGoal[]).map((goal, i) => (
         <Goal
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(goal.pos)}
+          pos={goal.pos}
           enableHoverInfo={props.enableHoverInfo}
         />
       ))}
       {(props.gameState.energy_cells as FuzzyEnergyCell[]).map(
-        (energyCell, i) => {
-          const cellOffset = posToOffset(energyCell.pos);
-          return (
-            <EnergyCell
-              collected={energyCell.collected}
-              // eslint-disable-next-line react/no-array-index-key
-              key={i}
-              offset={cellOffset}
-              enableHoverInfo={props.enableHoverInfo}
-            />
-          );
-        }
+        (energyCell, i) => (
+          <EnergyCell
+            collected={energyCell.collected}
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
+            pos={energyCell.pos}
+            enableHoverInfo={props.enableHoverInfo}
+          />
+        )
       )}
       {(props.gameState.enemies as FuzzyEnemy[]).map((enemy, i) => (
         <Enemy
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(enemy.pos)}
+          pos={enemy.pos}
           facing={enemy.facing}
           enableAnimations={props.enableAnimations}
           animState={enemy.anim_state}
@@ -177,7 +171,7 @@ export default function Board(props: BoardProps) {
         <Obstacle
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(obstacle.pos)}
+          pos={obstacle.pos}
           fuzzy={obstacle.fuzzy}
           enableHoverInfo={props.enableHoverInfo}
         />
@@ -186,7 +180,7 @@ export default function Board(props: BoardProps) {
         <Button
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(button.pos)}
+          pos={button.pos}
           currentlyPressed={button.currently_pressed}
           connectionOffset={getConnectionOffset(props.gameState, i)}
           additionalInfo={button.additional_info}
@@ -198,7 +192,7 @@ export default function Board(props: BoardProps) {
         <Gate
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(gate.pos)}
+          pos={gate.pos}
           open={gate.open}
           additionalInfo={gate.additional_info}
           enableHoverInfo={props.enableHoverInfo}
@@ -209,7 +203,7 @@ export default function Board(props: BoardProps) {
           <PasswordGate
             // eslint-disable-next-line react/no-array-index-key
             key={i}
-            offset={posToOffset(gate.pos)}
+            pos={gate.pos}
             open={gate.open}
             additionalInfo={gate.additional_info}
             enableHoverInfo={props.enableHoverInfo}
@@ -220,7 +214,7 @@ export default function Board(props: BoardProps) {
         <DataPoint
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(dataPoint.pos)}
+          pos={dataPoint.pos}
           reading={dataPoint.reading}
           additionalInfo={dataPoint.additional_info}
           enableHoverInfo={props.enableHoverInfo}
@@ -232,7 +226,7 @@ export default function Board(props: BoardProps) {
           <Telepad
             // eslint-disable-next-line react/no-array-index-key
             key={`entrance_${i}`}
-            offset={posToOffset(telepad.start_pos)}
+            pos={telepad.start_pos}
             kind="entrance"
             telepadIndex={i}
             enableHoverInfo={props.enableHoverInfo}
@@ -240,7 +234,7 @@ export default function Board(props: BoardProps) {
           <Telepad
             // eslint-disable-next-line react/no-array-index-key
             key={`exit_${i}`}
-            offset={posToOffset(telepad.end_pos)}
+            pos={telepad.end_pos}
             kind="exit"
             telepadIndex={i}
             enableHoverInfo={props.enableHoverInfo}

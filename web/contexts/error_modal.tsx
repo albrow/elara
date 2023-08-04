@@ -17,7 +17,6 @@ import {
   useState,
 } from "react";
 import { MdOutlineErrorOutline, MdReplay } from "react-icons/md";
-import { LEVEL_END_MODAL_Z_INDEX } from "../lib/constants";
 
 export type ErrorModalKind = "error" | "continue";
 
@@ -116,7 +115,7 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
   return (
     <ErrorModalContext.Provider value={providerValue}>
       {visible && (
-        <Box hidden={!visible} zIndex={LEVEL_END_MODAL_Z_INDEX}>
+        <Box hidden={!visible}>
           <Modal
             isOpen={visible}
             onClose={handleClose}
@@ -124,11 +123,8 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
             preserveScrollBarGap
             closeOnOverlayClick={false}
           >
-            <ModalOverlay zIndex={LEVEL_END_MODAL_Z_INDEX} />
-            <ModalContent
-              minW="container.md"
-              zIndex={LEVEL_END_MODAL_Z_INDEX + 1}
-            >
+            <ModalOverlay />
+            <ModalContent minW="container.md">
               <ModalCloseButton />
               <ModalBody>
                 <Text

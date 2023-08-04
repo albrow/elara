@@ -19,8 +19,8 @@ import { ShortsModalProvider } from "./contexts/shorts_modal";
 import { ErrorModalProvider } from "./contexts/error_modal";
 import {
   CHAKRA_TOOL_TIP_Z_INDEX,
-  ROVER_SPEECH_Z_INDEX,
-  TUTORIAL_MODAL_Z_INDEX,
+  ROVER_MESSAGE_Z_INDEX,
+  CHAKRA_MODAL_Z_INDEX,
 } from "./lib/constants";
 
 // This file doesn't play nicely with HMR/Fast refresh, so we just reload the page
@@ -53,17 +53,18 @@ const elaraTheme = extendTheme({
   components: {
     Tooltip: {
       variants: {
-        "speech-bubble": {
-          zIndex: ROVER_SPEECH_Z_INDEX,
+        "rover-message": {
+          zIndex: ROVER_MESSAGE_Z_INDEX,
         },
       },
     },
   },
   zIndices: {
-    // Fixes z-index
+    // Fixes z-indexes so they always sit in the correct order relative
+    // to our other UI elements.
     tooltip: CHAKRA_TOOL_TIP_Z_INDEX,
-    modal: TUTORIAL_MODAL_Z_INDEX,
-    modalOverlay: TUTORIAL_MODAL_Z_INDEX - 2,
+    modal: CHAKRA_MODAL_Z_INDEX,
+    modalOverlay: CHAKRA_MODAL_Z_INDEX - 2,
   },
 });
 

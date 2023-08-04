@@ -1,12 +1,8 @@
 import { Tooltip, PlacementWithLogical, Box } from "@chakra-ui/react";
 
 import { useCallback, useEffect, useMemo } from "react";
-import { Offset } from "../../lib/utils";
-import {
-  TILE_SIZE,
-  PLAYER_Z_INDEX,
-  PLAYER_MESSAGE_Z_INDEX,
-} from "../../lib/constants";
+import { posToOffset, rowBasedZIndex } from "../../lib/utils";
+import { TILE_SIZE, PLAYER_Z_INDEX } from "../../lib/constants";
 import groverUpUrl from "../../images/board/grover_up.png";
 import groverDownUrl from "../../images/board/grover_down.png";
 import groverLeftUrl from "../../images/board/grover_left.png";
@@ -19,7 +15,7 @@ import BoardHoverInfo from "./board_hover_info";
 import GroverPage from "./hover_info_pages/grover.mdx";
 
 interface PlayerProps {
-  offset: Offset;
+  pos: Pos;
   energy: number;
   message: string;
   animState: string;
@@ -29,7 +25,7 @@ interface PlayerProps {
   facing: string;
 }
 
-function speechBubblePlacement(pos: Pos | undefined): PlacementWithLogical {
+function roverMessagePlacement(pos: Pos | undefined): PlacementWithLogical {
   if (!pos) {
     return "auto";
   }
@@ -37,6 +33,12 @@ function speechBubblePlacement(pos: Pos | undefined): PlacementWithLogical {
 }
 
 export default function Player(props: PlayerProps) {
+  const offset = useMemo(() => posToOffset(props.pos), [props.pos]);
+  const zIndex = useMemo(
+    () => rowBasedZIndex(props.pos.y, PLAYER_Z_INDEX),
+    [props.pos.y]
+  );
+
   const animation = useMemo(
     () =>
       getSpriteAnimations(
@@ -98,16 +100,16 @@ export default function Player(props: PlayerProps) {
   return (
     <>
       {props.enableHoverInfo && (
-        <BoardHoverInfo page={GroverPage} offset={props.offset} />
+        <BoardHoverInfo page={GroverPage} offset={offset} />
       )}
       {animation.definitions}
       <Box
         position="absolute"
-        left={props.offset.left}
-        top={props.offset.top}
+        left={offset.left}
+        top={offset.top}
         w={`${TILE_SIZE}px`}
         h={`${TILE_SIZE}px`}
-        zIndex={PLAYER_Z_INDEX}
+        zIndex={zIndex}
         style={animation.style}
       >
         <Tooltip
@@ -116,22 +118,21 @@ export default function Player(props: PlayerProps) {
           label={props.message}
           bg="white"
           color="black"
-          zIndex={PLAYER_MESSAGE_Z_INDEX}
-          placement={speechBubblePlacement(props.offset.pos)}
+          placement={roverMessagePlacement(offset.pos)}
           fontFamily="monospace"
-          variant="speech-bubble"
+          variant="rover-message"
         >
           <div
             style={{
               width: `${TILE_SIZE - 2}px`,
               height: `${TILE_SIZE - 2}px`,
               marginTop: "1px",
-              zIndex: PLAYER_Z_INDEX,
+              zIndex,
               filter: "drop-shadow(-2px 3px 2px rgba(0, 0, 0, 0.3))",
             }}
           >
             <img alt="rover" className="playerImage" src={getRobotImgUrl()} />
-            <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.energy} />
+            <SpriteLabel zIndex={zIndex + 1} value={props.energy} />
           </div>
         </Tooltip>
       </Box>

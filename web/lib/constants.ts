@@ -1,3 +1,5 @@
+import { rowBasedZIndex } from "./utils";
+
 // Shared constants go here. Other constants should be
 // defined in their respective components.
 export const PROD_HOSTNAME = "play.elaragame.com";
@@ -36,30 +38,28 @@ export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
 // Some CSS properties need to be manually kept in sync with these values.
 // In such a case, there should be a comment above the CSS property explaining it.
 //
-export const NAVBAR_Z_INDEX = 2000;
-export const CHAKRA_TOOL_TIP_Z_INDEX = 1500; // Used for Chakra tooltips (not including rover messages).
-export const LEVEL_SELECT_MODAL_Z_INDEX = 1200;
-export const HINTS_MODAL_Z_INDEX = 1200;
-export const LEVEL_END_MODAL_Z_INDEX = 1200;
-export const JOURNAL_MODAL_Z_INDEX = 1200;
-export const TUTORIAL_MODAL_Z_INDEX = 1200;
-export const DIALOG_MODAL_Z_INDEX = 1150;
-export const CM_TOOL_TIP_Z_INDEX = 800; // Used for Codemirror tooltips (e.g. hover docs).
-export const AXIS_LABEL_Z_INDEX = 700;
-export const BOARD_HOVER_INFO_Z_INDEX = 600;
-export const ROVER_SPEECH_Z_INDEX = 400; // Special tooltip variant used only for rover messages.
-export const PLAYER_MESSAGE_Z_INDEX = ROVER_SPEECH_Z_INDEX + 10;
-export const ENEMY_Z_INDEX = 300;
-export const PLAYER_Z_INDEX = 200;
-export const ENERGY_CELL_Z_INDEX = 100;
-export const GOAL_Z_INDEX = 100;
-export const TELEPAD_Z_INDEX = 100;
-export const WALL_Z_INDEX = 100;
-export const BUTTON_Z_INDEX = 100;
-export const GATE_Z_INDEX = 100;
-export const DATA_POINT_Z_INDEX = 100;
-export const BUTTON_WIRE_INDEX = 50;
+// We start with the sprites, i.e. art that appears on the game board.
 export const BG_INDEX = -100;
+export const BUTTON_WIRE_Z_INDEX = 10;
+export const OBSTACLE_Z_INDEX = 20;
+export const DATA_POINT_Z_INDEX = 30;
+export const GATE_Z_INDEX = 40;
+export const BUTTON_Z_INDEX = 50;
+export const TELEPAD_Z_INDEX = 60;
+export const GOAL_Z_INDEX = 70;
+export const ENERGY_CELL_Z_INDEX = 80;
+export const PLAYER_Z_INDEX = 110;
+export const ENEMY_Z_INDEX = 120;
+
+// Other UI elements will always be rendered above the sprites.
+export const MAX_SPRITE_Z_INDEX = rowBasedZIndex(HEIGHT - 1, ENEMY_Z_INDEX);
+export const ROVER_MESSAGE_Z_INDEX = MAX_SPRITE_Z_INDEX + 10; // Special tooltip variant used only for rover messages.
+export const BOARD_HOVER_INFO_Z_INDEX = MAX_SPRITE_Z_INDEX + 20;
+export const AXIS_LABEL_Z_INDEX = MAX_SPRITE_Z_INDEX + 30;
+export const CM_TOOL_TIP_Z_INDEX = MAX_SPRITE_Z_INDEX + 40; // Used for Codemirror tooltips (e.g. hover docs).
+export const CHAKRA_MODAL_Z_INDEX = MAX_SPRITE_Z_INDEX + 50; // Used for Chakra modals.
+export const CHAKRA_TOOL_TIP_Z_INDEX = MAX_SPRITE_Z_INDEX + 60; // Used for Chakra tooltips (not including rover messages).
+export const NAVBAR_Z_INDEX = MAX_SPRITE_Z_INDEX + 200;
 
 // Various messages that are displayed to the user.
 export const CODE_LEN_EXPLANATION =

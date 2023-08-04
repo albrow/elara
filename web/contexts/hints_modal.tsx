@@ -18,7 +18,6 @@ import {
 } from "react";
 import { FaThumbsUp } from "react-icons/fa";
 
-import { HINTS_MODAL_Z_INDEX } from "../lib/constants";
 import { useCurrScene } from "../hooks/scenes_hooks";
 
 export const HintsModalContext = createContext<
@@ -87,7 +86,7 @@ export function HintsModalProvider(props: PropsWithChildren<{}>) {
   return (
     <HintsModalContext.Provider value={providerValue}>
       {visible && (
-        <Box hidden={!visible} zIndex={HINTS_MODAL_Z_INDEX}>
+        <Box hidden={!visible}>
           <Modal
             isOpen={visible}
             onClose={handleClose}
@@ -95,8 +94,8 @@ export function HintsModalProvider(props: PropsWithChildren<{}>) {
             preserveScrollBarGap
             closeOnOverlayClick={false}
           >
-            <ModalOverlay zIndex={HINTS_MODAL_Z_INDEX} />
-            <ModalContent minW="container.md" zIndex={HINTS_MODAL_Z_INDEX + 1}>
+            <ModalOverlay />
+            <ModalContent minW="container.md">
               <ModalCloseButton />
               <ModalBody>
                 <Text
