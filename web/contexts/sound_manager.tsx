@@ -194,7 +194,7 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         "success",
         "sfx",
         [successSound, successSoundFallback],
-        0.8
+        1.0
       ),
       challenge: new Sound(
         "challenge",
