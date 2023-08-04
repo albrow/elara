@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box } from "@chakra-ui/react";
-import { ENEMY_Z_INDEX, TILE_SIZE } from "../../lib/constants";
+import {
+  ENEMY_Z_INDEX,
+  SPRITE_DROP_SHADOW,
+  TILE_SIZE,
+} from "../../lib/constants";
 import evelRoverUpImg from "../../images/board/evil_rover_up.png";
 import evilRoverDownImg from "../../images/board/evil_rover_down.png";
 import evilRoverLeftImg from "../../images/board/evil_rover_left.png";
@@ -93,7 +97,7 @@ export default function Enemy(props: EnemyProps) {
               width: `${TILE_SIZE - 2}px`,
               height: `${TILE_SIZE - 2}px`,
               position: "absolute",
-              filter: "drop-shadow(-2px 3px 2px rgba(0, 0, 0, 0.3))",
+              filter: SPRITE_DROP_SHADOW,
             }}
           />
           <Box
