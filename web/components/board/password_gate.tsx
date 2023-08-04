@@ -1,8 +1,7 @@
 import { Offset } from "../../lib/utils";
-import { GATE_Z_INDEX, TILE_SIZE } from "../../lib/constants";
-import lockedImgUrl from "../../images/board/locked.png";
-import unlockedImgUrl from "../../images/board/unlocked.png";
-import speakerImgUrl from "../../images/board/speaker.png";
+import { GATE_Z_INDEX } from "../../lib/constants";
+import lockedImgUrl from "../../images/board/password_gate_locked.png";
+import unlockedImgUrl from "../../images/board/password_gate_unlocked.png";
 import BoardHoverInfo from "./board_hover_info";
 import PasswordGatePage from "./hover_info_pages/password_gate.mdx";
 
@@ -28,25 +27,11 @@ export default function PasswordGate(props: PasswordGateProps) {
         src={props.open ? unlockedImgUrl : lockedImgUrl}
         style={{
           position: "absolute",
-          width: `${TILE_SIZE - 1}px`,
-          height: `${TILE_SIZE - 1}px`,
+          width: `48px`,
+          height: `72px`,
           zIndex: GATE_Z_INDEX,
           left: props.offset.left,
-          top: props.offset.top,
-          opacity: props.open ? 0.4 : 1,
-        }}
-      />
-      <img
-        alt="speaker"
-        src={speakerImgUrl}
-        style={{
-          position: "absolute",
-          width: `${TILE_SIZE / 2}px`,
-          height: `${TILE_SIZE / 2}px`,
-          zIndex: GATE_Z_INDEX,
-          left: props.offset.left,
-          top: `${props.offset.topNum + TILE_SIZE / 2}px`,
-          opacity: props.open ? 0.4 : 1,
+          top: props.offset.topNum - 24,
         }}
       />
     </>
