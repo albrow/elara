@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
-    Actor, DataPoint, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
+    Actor, DataPoint, GateVariant, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
 };
 
 #[derive(Copy, Clone)]
@@ -48,6 +48,7 @@ let password = read_data();
             3,
             "turing".to_string(),
             false,
+            GateVariant::NESW,
             "The password for this gate is stored in the nearby data point.".into(),
         )];
         state.data_points = vec![DataPoint::new_with_info(

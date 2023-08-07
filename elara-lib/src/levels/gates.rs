@@ -1,7 +1,7 @@
 use super::{std_check_win, Level, Outcome};
 use crate::{
     script_runner::ScriptStats,
-    simulation::{Actor, Goal, Obstacle, Orientation, PasswordGate, Player, State},
+    simulation::{Actor, GateVariant, Goal, Obstacle, Orientation, PasswordGate, Player, State},
 };
 
 #[derive(Copy, Clone)]
@@ -44,6 +44,7 @@ move_forward(2);
             3,
             "lovelace".to_string(),
             false,
+            GateVariant::NESW,
             r#"The password for this gate is `"lovelace"`."#.to_string(),
         )];
         vec![state]

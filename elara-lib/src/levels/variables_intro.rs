@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
-    Actor, EnergyCell, Goal, Obstacle, Orientation, PasswordGate, Player, State,
+    Actor, EnergyCell, GateVariant, Goal, Obstacle, Orientation, PasswordGate, Player, State,
 };
 
 #[derive(Copy, Clone)]
@@ -74,9 +74,30 @@ let password = "supercalifragilisticexpialidocious";
             EnergyCell::new(5, 0),
         ];
         state.password_gates = vec![
-            PasswordGate::new_with_info(5, 6, PASSWORD.to_string(), false, GATE_INFO.into()),
-            PasswordGate::new_with_info(5, 4, PASSWORD.to_string(), false, GATE_INFO.into()),
-            PasswordGate::new_with_info(4, 3, PASSWORD.to_string(), false, GATE_INFO.into()),
+            PasswordGate::new_with_info(
+                5,
+                6,
+                PASSWORD.to_string(),
+                false,
+                GateVariant::NWSE,
+                GATE_INFO.into(),
+            ),
+            PasswordGate::new_with_info(
+                5,
+                4,
+                PASSWORD.to_string(),
+                false,
+                GateVariant::NWSE,
+                GATE_INFO.into(),
+            ),
+            PasswordGate::new_with_info(
+                4,
+                3,
+                PASSWORD.to_string(),
+                false,
+                GateVariant::NESW,
+                GATE_INFO.into(),
+            ),
         ];
         vec![state]
     }

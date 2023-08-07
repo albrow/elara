@@ -196,7 +196,9 @@ mod test {
     use super::*;
     use crate::{
         constants::MAX_ENERGY,
-        simulation::{Obstacle, PasswordGate, Player, PlayerAnimState, Pos, State, Telepad},
+        simulation::{
+            Gate, GateVariant, Obstacle, PasswordGate, Player, PlayerAnimState, Pos, State, Telepad,
+        },
     };
 
     #[test]
@@ -427,29 +429,48 @@ mod test {
         );
     }
 
-    #[test]
-    fn try_to_move_with_closed_gates() {
-        let bounds = Bounds {
-            min_x: 0,
-            max_x: 10,
-            min_y: 0,
-            max_y: 10,
-        };
-        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
-        let mut state = State::new();
-        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
-        state.password_gates = vec![
-            PasswordGate::new(0, 0, "lovelace".to_string(), false),
-            PasswordGate::new(1, 0, "lovelace".to_string(), false),
-            PasswordGate::new(2, 0, "lovelace".to_string(), false),
-            PasswordGate::new(2, 1, "lovelace".to_string(), false),
-            PasswordGate::new(2, 2, "lovelace".to_string(), false),
-            PasswordGate::new(1, 2, "lovelace".to_string(), false),
-            PasswordGate::new(0, 2, "lovelace".to_string(), false),
-            PasswordGate::new(0, 1, "lovelace".to_string(), false),
-        ];
+    /// Helper function that asserts that the player can move in any direction.
+    fn assert_player_can_move_in_any_direction(state: &mut State, actor: &PlayerChannelActor) {
+        state.player.facing = Orientation::Up;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 0)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 2)
+        );
+        state.player.facing = Orientation::Down;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(1, 2)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(1, 0)
+        );
+        state.player.facing = Orientation::Left;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(0, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(2, 1)
+        );
+        state.player.facing = Orientation::Right;
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Forward).0,
+            Pos::new(2, 1)
+        );
+        assert_eq!(
+            actor.try_to_move(&state, MoveDirection::Backward).0,
+            Pos::new(0, 1)
+        );
+    }
 
-        // We can't move past closed gates.
+    /// Helper function that asserts the player *cannot* move in any direction.
+    fn assert_player_cannot_move_in_any_direction(state: &mut State, actor: &PlayerChannelActor) {
         state.player.facing = Orientation::Up;
         assert_eq!(
             actor.try_to_move(&state, MoveDirection::Forward).0,
@@ -459,7 +480,7 @@ mod test {
             actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
-        state.player.facing = Orientation::Left;
+        state.player.facing = Orientation::Down;
         assert_eq!(
             actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(1, 1)
@@ -468,7 +489,7 @@ mod test {
             actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
-        state.player.facing = Orientation::Down;
+        state.player.facing = Orientation::Left;
         assert_eq!(
             actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(1, 1)
@@ -489,6 +510,32 @@ mod test {
     }
 
     #[test]
+    fn try_to_move_with_closed_gates() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.gates = vec![
+            Gate::new(0, 0, false, GateVariant::NESW),
+            Gate::new(1, 0, false, GateVariant::NESW),
+            Gate::new(2, 0, false, GateVariant::NESW),
+            Gate::new(2, 1, false, GateVariant::NESW),
+            Gate::new(2, 2, false, GateVariant::NESW),
+            Gate::new(1, 2, false, GateVariant::NESW),
+            Gate::new(0, 2, false, GateVariant::NESW),
+            Gate::new(0, 1, false, GateVariant::NESW),
+        ];
+
+        // We should not be able to move past closed gates.
+        assert_player_cannot_move_in_any_direction(&mut state, &actor)
+    }
+
+    #[test]
     fn try_to_move_with_open_gates() {
         let bounds = Bounds {
             min_x: 0,
@@ -499,54 +546,71 @@ mod test {
         let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
         let mut state = State::new();
         state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
-        state.password_gates = vec![
-            PasswordGate::new(0, 0, "lovelace".to_string(), true),
-            PasswordGate::new(1, 0, "lovelace".to_string(), true),
-            PasswordGate::new(2, 0, "lovelace".to_string(), true),
-            PasswordGate::new(2, 1, "lovelace".to_string(), true),
-            PasswordGate::new(2, 2, "lovelace".to_string(), true),
-            PasswordGate::new(1, 2, "lovelace".to_string(), true),
-            PasswordGate::new(0, 2, "lovelace".to_string(), true),
-            PasswordGate::new(0, 1, "lovelace".to_string(), true),
+        state.gates = vec![
+            Gate::new(0, 0, true, GateVariant::NWSE),
+            Gate::new(1, 0, true, GateVariant::NESW),
+            Gate::new(2, 0, true, GateVariant::NWSE),
+            Gate::new(2, 1, true, GateVariant::NESW),
+            Gate::new(2, 2, true, GateVariant::NWSE),
+            Gate::new(1, 2, true, GateVariant::NESW),
+            Gate::new(0, 2, true, GateVariant::NWSE),
+            Gate::new(0, 1, true, GateVariant::NESW),
         ];
 
-        // We *can* move past open gates.
-        state.player.facing = Orientation::Up;
-        assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
-            Pos::new(1, 0)
-        );
-        assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
-            Pos::new(1, 2)
-        );
-        state.player.facing = Orientation::Down;
-        assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
-            Pos::new(1, 2)
-        );
-        assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
-            Pos::new(1, 0)
-        );
-        state.player.facing = Orientation::Left;
-        assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
-            Pos::new(0, 1)
-        );
-        assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
-            Pos::new(2, 1)
-        );
-        state.player.facing = Orientation::Right;
-        assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
-            Pos::new(2, 1)
-        );
-        assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
-            Pos::new(0, 1)
-        );
+        // We should be able to move past open gates.
+        assert_player_can_move_in_any_direction(&mut state, &actor)
+    }
+
+    #[test]
+    fn try_to_move_with_closed_password_gates() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.password_gates = vec![
+            PasswordGate::new(0, 0, "lovelace".to_string(), false, GateVariant::NESW),
+            PasswordGate::new(1, 0, "lovelace".to_string(), false, GateVariant::NESW),
+            PasswordGate::new(2, 0, "lovelace".to_string(), false, GateVariant::NESW),
+            PasswordGate::new(2, 1, "lovelace".to_string(), false, GateVariant::NESW),
+            PasswordGate::new(2, 2, "lovelace".to_string(), false, GateVariant::NESW),
+            PasswordGate::new(1, 2, "lovelace".to_string(), false, GateVariant::NESW),
+            PasswordGate::new(0, 2, "lovelace".to_string(), false, GateVariant::NESW),
+            PasswordGate::new(0, 1, "lovelace".to_string(), false, GateVariant::NESW),
+        ];
+
+        // We can't move past closed password gates.
+        assert_player_cannot_move_in_any_direction(&mut state, &actor)
+    }
+
+    #[test]
+    fn try_to_move_with_open_password_gates() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.password_gates = vec![
+            PasswordGate::new(0, 0, "lovelace".to_string(), true, GateVariant::NWSE),
+            PasswordGate::new(1, 0, "lovelace".to_string(), true, GateVariant::NESW),
+            PasswordGate::new(2, 0, "lovelace".to_string(), true, GateVariant::NWSE),
+            PasswordGate::new(2, 1, "lovelace".to_string(), true, GateVariant::NESW),
+            PasswordGate::new(2, 2, "lovelace".to_string(), true, GateVariant::NWSE),
+            PasswordGate::new(1, 2, "lovelace".to_string(), true, GateVariant::NESW),
+            PasswordGate::new(0, 2, "lovelace".to_string(), true, GateVariant::NWSE),
+            PasswordGate::new(0, 1, "lovelace".to_string(), true, GateVariant::NESW),
+        ];
+
+        // We *can* move past open password gates.
+        assert_player_can_move_in_any_direction(&mut state, &actor)
     }
 
     #[test]

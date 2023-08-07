@@ -365,19 +365,24 @@ impl FuzzyState {
         }
 
         let password_gates = Array::new_with_length(state.password_gates.len() as u32);
-        for (i, fuzzy_password_gate) in state.password_gates.iter().enumerate() {
-            let password_gate = &fuzzy_password_gate.obj;
+        for (i, fuzzy_pw_gate) in state.password_gates.iter().enumerate() {
+            let pw_gate = &fuzzy_pw_gate.obj;
+            let variant = match pw_gate.variant {
+                simulation::GateVariant::NWSE => "nwse".to_string(),
+                simulation::GateVariant::NESW => "nesw".to_string(),
+            };
             password_gates.set(
                 i as u32,
                 JsValue::from(FuzzyPasswordGate {
                     pos: Pos {
-                        x: password_gate.pos.x as i32,
-                        y: password_gate.pos.y as i32,
+                        x: pw_gate.pos.x as i32,
+                        y: pw_gate.pos.y as i32,
                     },
-                    password: password_gate.password.clone(),
-                    open: password_gate.open,
-                    additional_info: password_gate.additional_info.clone(),
-                    fuzzy: fuzzy_password_gate.fuzzy,
+                    password: pw_gate.password.clone(),
+                    open: pw_gate.open,
+                    variant: variant,
+                    additional_info: pw_gate.additional_info.clone(),
+                    fuzzy: fuzzy_pw_gate.fuzzy,
                 }),
             );
         }
@@ -453,6 +458,10 @@ impl FuzzyState {
         let gates = Array::new_with_length(state.gates.len() as u32);
         for (i, fuzzy_gate) in state.gates.iter().enumerate() {
             let gate = &fuzzy_gate.obj;
+            let variant = match gate.variant {
+                simulation::GateVariant::NWSE => "nwse".to_string(),
+                simulation::GateVariant::NESW => "nesw".to_string(),
+            };
             gates.set(
                 i as u32,
                 JsValue::from(FuzzyGate {
@@ -461,6 +470,7 @@ impl FuzzyState {
                         y: gate.pos.y as i32,
                     },
                     open: gate.open,
+                    variant: variant,
                     additional_info: gate.additional_info.clone(),
                     fuzzy: fuzzy_gate.fuzzy,
                 }),
@@ -545,6 +555,7 @@ pub struct FuzzyPasswordGate {
     pub pos: Pos,
     pub password: String,
     pub open: bool,
+    pub variant: String, // GateVariant
     pub additional_info: String,
     pub fuzzy: bool,
 }
@@ -584,6 +595,7 @@ pub struct FuzzyButton {
 pub struct FuzzyGate {
     pub pos: Pos,
     pub open: bool,
+    pub variant: String, // GateVariant
     pub additional_info: String,
     pub fuzzy: bool,
 }

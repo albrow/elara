@@ -3,7 +3,8 @@ use crate::{
     actors::{Bounds, EvilRoverActor},
     constants::{HEIGHT, WIDTH},
     simulation::{
-        Actor, DataPoint, Enemy, Goal, Obstacle, Orientation, PasswordGate, Player, Pos, State,
+        Actor, DataPoint, Enemy, GateVariant, Goal, Obstacle, Orientation, PasswordGate, Player,
+        Pos, State,
     },
 };
 
@@ -53,6 +54,7 @@ impl Level for GateAndDataPointPartTwo {
             2,
             "hopper".into(),
             false,
+            GateVariant::NWSE,
             "The password for this gate is stored in the nearby data point.".into(),
         )];
         state.data_points = vec![DataPoint::new_with_info(

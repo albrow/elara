@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
-    Actor, DataPoint, Goal, Obstacle, Orientation, PasswordGate, Player, State,
+    Actor, DataPoint, GateVariant, Goal, Obstacle, Orientation, PasswordGate, Player, State,
 };
 
 #[derive(Copy, Clone)]
@@ -39,7 +39,13 @@ say(password);
             Obstacle::new(1, 3),
             Obstacle::new(2, 3),
         ];
-        state.password_gates = vec![PasswordGate::new(2, 1, "vaughan".to_string(), false)];
+        state.password_gates = vec![PasswordGate::new(
+            2,
+            1,
+            "vaughan".to_string(),
+            false,
+            GateVariant::NWSE,
+        )];
         state.data_points = vec![
             DataPoint::new(0, 0, "carver".into()),
             DataPoint::new(0, 1, "curie".into()),

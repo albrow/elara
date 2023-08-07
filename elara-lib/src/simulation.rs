@@ -397,32 +397,49 @@ impl Obstacle {
 }
 
 #[derive(Clone, PartialEq, Debug)]
+pub enum GateVariant {
+    NWSE,
+    NESW,
+}
+
+#[derive(Clone, PartialEq, Debug)]
 pub struct Gate {
     pub pos: Pos,
     pub open: bool,
+    /// Orientation of the gate. Either from Northwest to Southeast or from
+    /// Northeast to Southwest.
+    pub variant: GateVariant,
     /// Additional information that will be displayed in the UI.
     /// (e.g. explain what the password is or how to get it)
     pub additional_info: String,
 }
 
 impl Gate {
-    pub fn new(x: u32, y: u32, open: bool) -> Gate {
+    pub fn new(x: u32, y: u32, open: bool, variant: GateVariant) -> Gate {
         Gate {
             pos: Pos {
                 x: x as i32,
                 y: y as i32,
             },
             open,
+            variant,
             additional_info: String::new(),
         }
     }
-    pub fn new_with_info(x: u32, y: u32, open: bool, additional_info: String) -> Gate {
+    pub fn new_with_info(
+        x: u32,
+        y: u32,
+        open: bool,
+        variant: GateVariant,
+        additional_info: String,
+    ) -> Gate {
         Gate {
             pos: Pos {
                 x: x as i32,
                 y: y as i32,
             },
             open,
+            variant,
             additional_info,
         }
     }
@@ -433,13 +450,16 @@ pub struct PasswordGate {
     pub pos: Pos,
     pub open: bool,
     pub password: String,
+    /// Orientation of the gate. Either from Northwest to Southeast or from
+    /// Northeast to Southwest.
+    pub variant: GateVariant,
     /// Additional information that will be displayed in the UI.
     /// (e.g. explain what the password is or how to get it)
     pub additional_info: String,
 }
 
 impl PasswordGate {
-    pub fn new(x: u32, y: u32, password: String, open: bool) -> PasswordGate {
+    pub fn new(x: u32, y: u32, password: String, open: bool, variant: GateVariant) -> PasswordGate {
         PasswordGate {
             pos: Pos {
                 x: x as i32,
@@ -447,6 +467,7 @@ impl PasswordGate {
             },
             open,
             password,
+            variant,
             additional_info: String::new(),
         }
     }
@@ -455,7 +476,7 @@ impl PasswordGate {
         y: u32,
         password: String,
         open: bool,
-
+        variant: GateVariant,
         additional_info: String,
     ) -> PasswordGate {
         PasswordGate {
@@ -463,8 +484,9 @@ impl PasswordGate {
                 x: x as i32,
                 y: y as i32,
             },
-            open,
             password,
+            open,
+            variant,
             additional_info,
         }
     }

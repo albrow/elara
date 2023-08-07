@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
-    Actor, Button, ButtonConnection, Gate, Goal, Obstacle, Orientation, Player, State,
+    Actor, Button, ButtonConnection, Gate, GateVariant, Goal, Obstacle, Orientation, Player, State,
 };
 
 #[derive(Copy, Clone)]
@@ -38,6 +38,7 @@ move_forward(4);
             9,
             7,
             false,
+            GateVariant::NESW,
             "This gate can be unlocked by pressing the nearby button.".into(),
         )];
         state.obstacles = vec![

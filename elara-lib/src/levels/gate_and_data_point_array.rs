@@ -1,6 +1,6 @@
 use super::{std_check_win, Level, Outcome};
 use crate::simulation::{
-    Actor, DataPoint, Goal, Obstacle, Orientation, PasswordGate, Player, State,
+    Actor, DataPoint, GateVariant, Goal, Obstacle, Orientation, PasswordGate, Player, State,
 };
 
 #[derive(Copy, Clone)]
@@ -48,6 +48,7 @@ let array = read_data();
             6,
             "vaughan".to_string(),
             false,
+            GateVariant::NESW,
             "The nearby data point holds an array. The password for this gate is stored at index `2` of the array.".into(),
         )];
         state.data_points = vec![DataPoint::new_with_info(
