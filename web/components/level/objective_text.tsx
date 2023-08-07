@@ -4,8 +4,8 @@ import groverDownUrl from "../../images/board/grover_down.png";
 import energyCellImgUrl from "../../images/board/energy_cell.png";
 import dataPointImgUrl from "../../images/board/data_point.png";
 import buttonImgUrl from "../../images/board/button.png";
-import gateImgUrl from "../../images/board/gate_locked.png";
-import passwordGateImgUrl from "../../images/board/password_gate_locked.png";
+import gateImgUrl from "../../images/board/gate_ne_sw_locked.png";
+import passwordGateImgUrl from "../../images/board/pw_gate_ne_sw_locked.png";
 import MiniSprite from "./mini_sprite";
 
 export interface ObjectiveTextProps {

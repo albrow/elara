@@ -196,6 +196,8 @@ export default function Board(props: BoardProps) {
           open={gate.open}
           additionalInfo={gate.additional_info}
           enableHoverInfo={props.enableHoverInfo}
+          // TODO(albrow): Read this from gate data.
+          variant="nesw"
         />
       ))}
       {(props.gameState.password_gates as FuzzyPasswordGate[]).map(
@@ -207,6 +209,8 @@ export default function Board(props: BoardProps) {
             open={gate.open}
             additionalInfo={gate.additional_info}
             enableHoverInfo={props.enableHoverInfo}
+            // TODO(albrow): Read this from gate data.
+            variant="nesw"
           />
         )
       )}

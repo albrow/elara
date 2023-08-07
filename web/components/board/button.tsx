@@ -56,8 +56,8 @@ export default function Button(props: ButtonProps) {
     }
     return `${props.offset.leftNum + TILE_SIZE / 2},${
       props.offset.topNum + TILE_SIZE * 0.75
-    } ${props.connectionOffset.leftNum + TILE_SIZE * 0.76},${
-      props.connectionOffset.topNum + TILE_SIZE * 0.27
+    } ${props.connectionOffset.leftNum + TILE_SIZE * 0.92},${
+      props.connectionOffset.topNum + TILE_SIZE * 0.4
     }`;
   }, [props.connectionOffset, props.offset.leftNum, props.offset.topNum]);
 
