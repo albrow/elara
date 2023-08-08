@@ -70,6 +70,12 @@ fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
             return true;
         }
     }
+    // Buttons can also not be moved.
+    for button in &state.buttons {
+        if button.pos == *pos {
+            return true;
+        }
+    }
     false
 }
 

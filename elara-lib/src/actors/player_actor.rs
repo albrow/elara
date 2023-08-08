@@ -197,7 +197,8 @@ mod test {
     use crate::{
         constants::MAX_ENERGY,
         simulation::{
-            Gate, GateVariant, Obstacle, PasswordGate, Player, PlayerAnimState, Pos, State, Telepad,
+            Button, DataPoint, Gate, GateVariant, Obstacle, PasswordGate, Player, PlayerAnimState,
+            Pos, State, Telepad,
         },
     };
 
@@ -611,6 +612,54 @@ mod test {
 
         // We *can* move past open password gates.
         assert_player_can_move_in_any_direction(&mut state, &actor)
+    }
+
+    #[test]
+    fn try_to_move_with_buttons() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.buttons = vec![
+            Button::new(0, 0, ButtonConnection::None),
+            Button::new(1, 0, ButtonConnection::None),
+            Button::new(2, 0, ButtonConnection::None),
+            Button::new(2, 1, ButtonConnection::None),
+            Button::new(2, 2, ButtonConnection::None),
+            Button::new(1, 2, ButtonConnection::None),
+            Button::new(0, 2, ButtonConnection::None),
+            Button::new(0, 1, ButtonConnection::None),
+        ];
+        assert_player_cannot_move_in_any_direction(&mut state, &actor)
+    }
+
+    #[test]
+    fn try_to_move_with_data_points() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.data_points = vec![
+            DataPoint::new(0, 0, "apples".into()),
+            DataPoint::new(1, 0, "apples".into()),
+            DataPoint::new(2, 0, "apples".into()),
+            DataPoint::new(2, 1, "apples".into()),
+            DataPoint::new(2, 2, "apples".into()),
+            DataPoint::new(1, 2, "apples".into()),
+            DataPoint::new(0, 2, "apples".into()),
+            DataPoint::new(0, 1, "apples".into()),
+        ];
+        assert_player_cannot_move_in_any_direction(&mut state, &actor)
     }
 
     #[test]
