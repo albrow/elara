@@ -113,8 +113,8 @@ fn get_avail_funcs(level: &'static dyn Level, unlocked_funcs: &Vec<String>) -> V
     for func in unlocked_funcs {
         avail_funcs.insert(func.clone());
     }
-    for func in level.disabled_functions() {
-        avail_funcs.remove(func.clone());
+    for &func in level.disabled_functions() {
+        avail_funcs.remove(func);
     }
     avail_funcs.into_iter().collect()
 }
