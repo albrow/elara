@@ -1,9 +1,10 @@
 use super::{make_all_initial_states_for_telepads, std_check_win, Level, Outcome};
 use crate::{
+    actors::{BigEnemyActor, Bounds},
     script_runner::ScriptStats,
     simulation::{
         Actor, BigEnemy, Button, ButtonConnection, DataPoint, EnergyCell, Gate, GateVariant,
-        Obstacle, Orientation, PasswordGate, Player, State, Telepad,
+        Obstacle, Orientation, OrientationWithDiagonals, PasswordGate, Player, State, Telepad,
     },
 };
 
@@ -46,7 +47,7 @@ impl Level for BigEnemyLevel {
             Obstacle::new(10, 2),
             Obstacle::new(10, 5),
         ];
-        base_state.big_enemies = vec![BigEnemy::new(6, 1, Orientation::Down, false)];
+        base_state.big_enemies = vec![BigEnemy::new(6, 1, OrientationWithDiagonals::Down, false)];
         base_state.telepads = vec![
             Telepad::new((11, 0), (0, 7), Orientation::Up),
             Telepad::new((0, 0), (11, 7), Orientation::Up),
@@ -81,7 +82,7 @@ impl Level for BigEnemyLevel {
         make_all_initial_states_for_telepads(vec![base_state])
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
-        vec![]
+        vec![Box::new(BigEnemyActor::new(0, Bounds::default()))]
     }
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)

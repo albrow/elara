@@ -138,6 +138,7 @@ export function getSpriteAnimations(
       definitions: getSpriteAnimationDefinitions(animState, animData, animId),
     };
   }
+  // TODO(albrow): Add shutting down animation here?
 
   return {
     style: {

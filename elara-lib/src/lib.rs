@@ -147,18 +147,30 @@ impl Game {
             // Drain the channel.
             while let Ok(_) = self.player_action_rx.clone().borrow().try_recv() {}
             // Run the script.
-            let result = self.script_runner.run(
-                &avail_funcs,
-                level.disabled_functions(),
-                script.as_str(),
-            )?;
-            match result.outcome {
-                Outcome::Success => {
-                    successes.push(result);
+            let result =
+                self.script_runner
+                    .run(&avail_funcs, level.disabled_functions(), script.as_str());
+            match result {
+                Ok(result) => {
+                    // Check if the result passes the main objective.
+                    if result.outcome == Outcome::Success {
+                        successes.push(result);
+                    } else {
+                        return Ok(result);
+                    }
                 }
-                // Return the first failure.
-                _ => return Ok(result),
+                Err(err) => {
+                    log!("{}", err.message);
+                    return Err(err);
+                }
             }
+            // match result.outcome {
+            //     Outcome::Success => {
+            //         successes.push(result);
+            //     }
+            //     // Return the first failure.
+            //     _ => return Ok(result),
+            // }
         }
 
         // If we've reached here, it means the main objective for the level was met.

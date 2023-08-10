@@ -12,6 +12,7 @@ import {
   FuzzyTelepad,
   FuzzyButton,
   FuzzyGate,
+  FuzzyBigEnemy,
 } from "../../../elara-lib/pkg";
 import {
   AXIS_HEIGHT,
@@ -33,6 +34,7 @@ import Player from "./player";
 import Telepad from "./telepad";
 import Button from "./button";
 import Gate from "./gate";
+import BigEnemy from "./big_enemy";
 
 interface BoardProps {
   gameState: FuzzyState;
@@ -242,6 +244,18 @@ export default function Board(props: BoardProps) {
             enableHoverInfo={props.enableHoverInfo}
           />
         </Box>
+      ))}
+      {(props.gameState.big_enemies as FuzzyBigEnemy[]).map((enemy, i) => (
+        <BigEnemy
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          offset={posToOffset(enemy.pos)}
+          facing={enemy.facing}
+          enableAnimations={props.enableAnimations}
+          animState={enemy.anim_state}
+          animData={enemy.anim_data}
+          enableHoverInfo={props.enableHoverInfo}
+        />
       ))}
     </>
   );

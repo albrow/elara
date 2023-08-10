@@ -4,7 +4,8 @@ use wasm_bindgen::prelude::*;
 use crate::levels::Outcome;
 use crate::script_runner;
 use crate::simulation::{
-    BigEnemyAnimState, EnemyAnimState, Orientation, PlayerAnimState, TermData,
+    BigEnemyAnimState, EnemyAnimState, Orientation, OrientationWithDiagonals, PlayerAnimState,
+    TermData,
 };
 use crate::{levels, simulation};
 
@@ -508,10 +509,14 @@ impl FuzzyState {
                         y: big_enemy.pos.y as i32,
                     },
                     facing: match big_enemy.facing {
-                        Orientation::Up => "up".to_string(),
-                        Orientation::Down => "down".to_string(),
-                        Orientation::Left => "left".to_string(),
-                        Orientation::Right => "right".to_string(),
+                        OrientationWithDiagonals::Up => "up".to_string(),
+                        OrientationWithDiagonals::Down => "down".to_string(),
+                        OrientationWithDiagonals::Left => "left".to_string(),
+                        OrientationWithDiagonals::Right => "right".to_string(),
+                        OrientationWithDiagonals::UpLeft => "up_left".to_string(),
+                        OrientationWithDiagonals::UpRight => "up_right".to_string(),
+                        OrientationWithDiagonals::DownLeft => "down_left".to_string(),
+                        OrientationWithDiagonals::DownRight => "down_right".to_string(),
                     },
                     anim_state: anim_state.to_string(),
                     anim_data: anim_data,

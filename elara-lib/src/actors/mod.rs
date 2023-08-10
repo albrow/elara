@@ -1,4 +1,4 @@
-mod big_evil_rover_actor;
+mod big_enemy_actor;
 mod evil_rover_actor;
 mod player_actor;
 
@@ -7,7 +7,8 @@ use crate::{
     simulation::{Pos, State, Telepad},
 };
 
-pub use crate::actors::evil_rover_actor::EvilRoverActor;
+pub use big_enemy_actor::BigEnemyActor;
+pub use evil_rover_actor::EvilRoverActor;
 pub use player_actor::PlayerChannelActor;
 
 #[derive(PartialEq, Debug)]

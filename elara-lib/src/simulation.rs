@@ -193,7 +193,7 @@ pub enum Orientation {
 }
 
 impl Orientation {
-    pub fn flip(&self) -> Orientation {
+    pub fn flip(&self) -> Self {
         match self {
             Orientation::Up => Orientation::Down,
             Orientation::Down => Orientation::Up,
@@ -202,7 +202,7 @@ impl Orientation {
         }
     }
 
-    pub fn rotate_clockwise(&self) -> Orientation {
+    pub fn rotate_clockwise(&self) -> Self {
         match self {
             Orientation::Up => Orientation::Right,
             Orientation::Down => Orientation::Left,
@@ -211,12 +211,82 @@ impl Orientation {
         }
     }
 
-    pub fn rotate_counter_clockwise(&self) -> Orientation {
+    pub fn rotate_counter_clockwise(&self) -> Self {
         match self {
             Orientation::Up => Orientation::Left,
             Orientation::Down => Orientation::Right,
             Orientation::Left => Orientation::Down,
             Orientation::Right => Orientation::Up,
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug, Copy)]
+pub enum OrientationWithDiagonals {
+    Up,
+    Down,
+    Left,
+    Right,
+    UpLeft,
+    UpRight,
+    DownLeft,
+    DownRight,
+}
+
+impl OrientationWithDiagonals {
+    pub fn rotate_clockwise(&self) -> Self {
+        match self {
+            OrientationWithDiagonals::Up => OrientationWithDiagonals::UpRight,
+            OrientationWithDiagonals::Down => OrientationWithDiagonals::DownLeft,
+            OrientationWithDiagonals::Left => OrientationWithDiagonals::UpLeft,
+            OrientationWithDiagonals::Right => OrientationWithDiagonals::DownRight,
+            OrientationWithDiagonals::UpLeft => OrientationWithDiagonals::Up,
+            OrientationWithDiagonals::UpRight => OrientationWithDiagonals::Right,
+            OrientationWithDiagonals::DownLeft => OrientationWithDiagonals::Left,
+            OrientationWithDiagonals::DownRight => OrientationWithDiagonals::Down,
+        }
+    }
+
+    pub fn rotate_counter_clockwise(&self) -> Self {
+        match self {
+            OrientationWithDiagonals::Up => OrientationWithDiagonals::UpLeft,
+            OrientationWithDiagonals::Down => OrientationWithDiagonals::DownRight,
+            OrientationWithDiagonals::Left => OrientationWithDiagonals::DownLeft,
+            OrientationWithDiagonals::Right => OrientationWithDiagonals::UpRight,
+            OrientationWithDiagonals::UpLeft => OrientationWithDiagonals::Left,
+            OrientationWithDiagonals::UpRight => OrientationWithDiagonals::Up,
+            OrientationWithDiagonals::DownLeft => OrientationWithDiagonals::Down,
+            OrientationWithDiagonals::DownRight => OrientationWithDiagonals::Right,
+        }
+    }
+
+    pub fn clockwise_distance(&self, other: &Self) -> usize {
+        let mut curr = self.clone();
+        let mut dist = 0;
+        while curr != *other {
+            curr = curr.rotate_clockwise();
+            dist += 1;
+        }
+        dist
+    }
+
+    pub fn counter_clockwise_distance(&self, other: &Self) -> usize {
+        let mut curr = self.clone();
+        let mut dist = 0;
+        while curr != *other {
+            curr = curr.rotate_counter_clockwise();
+            dist += 1;
+        }
+        dist
+    }
+
+    pub fn is_diagonal(&self) -> bool {
+        match self {
+            OrientationWithDiagonals::UpLeft
+            | OrientationWithDiagonals::UpRight
+            | OrientationWithDiagonals::DownLeft
+            | OrientationWithDiagonals::DownRight => true,
+            _ => false,
         }
     }
 }
@@ -395,13 +465,13 @@ impl Enemy {
 #[derive(Clone, PartialEq, Debug)]
 pub struct BigEnemy {
     pub pos: Pos,
-    pub facing: Orientation,
+    pub facing: OrientationWithDiagonals,
     pub anim_state: BigEnemyAnimState,
     pub disabled: bool,
 }
 
 impl BigEnemy {
-    pub fn new(x: u32, y: u32, facing: Orientation, disabled: bool) -> BigEnemy {
+    pub fn new(x: u32, y: u32, facing: OrientationWithDiagonals, disabled: bool) -> BigEnemy {
         BigEnemy {
             pos: Pos {
                 x: x as i32,
