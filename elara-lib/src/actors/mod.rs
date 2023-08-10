@@ -1,3 +1,4 @@
+mod big_evil_rover_actor;
 mod evil_rover_actor;
 mod player_actor;
 

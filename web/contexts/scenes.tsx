@@ -310,6 +310,7 @@ const RAW_SCENES: RawScene[] = [
       "The shortest path to the goal is not necessarily the best path.",
     ]
   ),
+  levelScene("big_enemy", [], []),
 ];
 
 const getLevelIndexFromScene = (

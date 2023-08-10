@@ -144,6 +144,7 @@ pub struct State {
     pub password_gates: Vec<PasswordGate>,
     pub telepads: Vec<Telepad>,
     pub enemies: Vec<Enemy>,
+    pub big_enemies: Vec<BigEnemy>,
 }
 
 impl State {
@@ -159,6 +160,7 @@ impl State {
             data_points: vec![],
             telepads: vec![],
             enemies: vec![],
+            big_enemies: vec![],
         }
     }
 }
@@ -360,6 +362,16 @@ pub enum EnemyAnimState {
     Bumping(BumpAnimData),
 }
 
+/// The animation state of the big enemy sprite.
+#[derive(Clone, PartialEq, Debug)]
+pub enum BigEnemyAnimState {
+    Idle,
+    Moving,
+    Turning,
+    Bumping(BumpAnimData),
+    ShuttingDown,
+}
+
 #[derive(Clone, PartialEq, Debug)]
 pub struct Enemy {
     pub pos: Pos,
@@ -376,6 +388,28 @@ impl Enemy {
             },
             facing,
             anim_state: EnemyAnimState::Idle,
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct BigEnemy {
+    pub pos: Pos,
+    pub facing: Orientation,
+    pub anim_state: BigEnemyAnimState,
+    pub disabled: bool,
+}
+
+impl BigEnemy {
+    pub fn new(x: u32, y: u32, facing: Orientation, disabled: bool) -> BigEnemy {
+        BigEnemy {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            facing,
+            anim_state: BigEnemyAnimState::Idle,
+            disabled,
         }
     }
 }

@@ -1,5 +1,6 @@
 mod asteroid_strike;
 mod asteroid_strike_part_two;
+mod big_enemy;
 mod button_and_gate;
 mod buttons_part_one;
 mod data_point_demo;
@@ -32,7 +33,7 @@ use std::collections::HashMap;
 use crate::actors::Bounds;
 use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_ENERGY, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, Button, Gate, Orientation, Telepad};
+use crate::simulation::{Actor, BigEnemy, Button, Gate, Orientation, Telepad};
 use crate::simulation::{
     DataPoint, Enemy, EnergyCell, Goal, Obstacle, PasswordGate, Player, State,
 };
@@ -130,6 +131,7 @@ lazy_static! {
         m.insert(buttons_part_one::ButtonsPartOne{}.short_name(), Box::new(buttons_part_one::ButtonsPartOne{}));
         m.insert(button_and_gate::ButtonAndGate{}.short_name(), Box::new(button_and_gate::ButtonAndGate{}));
         m.insert(telepads_and_while_loop::TelepadsAndWhileLoop{}.short_name(), Box::new(telepads_and_while_loop::TelepadsAndWhileLoop{}));
+        m.insert(big_enemy::BigEnemyLevel{}.short_name(), Box::new(big_enemy::BigEnemyLevel{}));
 
         m
     };
@@ -167,6 +169,7 @@ pub struct FuzzyState {
     pub telepads: Vec<Fuzzy<Telepad>>,
     pub buttons: Vec<Fuzzy<Button>>,
     pub gates: Vec<Fuzzy<Gate>>,
+    pub big_enemies: Vec<Fuzzy<BigEnemy>>,
 }
 
 impl FuzzyState {
@@ -223,6 +226,12 @@ impl FuzzyState {
                 .collect(),
             gates: state
                 .gates
+                .clone()
+                .into_iter()
+                .map(|x| Fuzzy::new(x, false))
+                .collect(),
+            big_enemies: state
+                .big_enemies
                 .clone()
                 .into_iter()
                 .map(|x| Fuzzy::new(x, false))
@@ -426,6 +435,7 @@ mod tests {
             telepads: vec![],
             buttons: vec![],
             gates: vec![],
+            big_enemies: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -460,6 +470,7 @@ mod tests {
             telepads: vec![],
             buttons: vec![],
             gates: vec![],
+            big_enemies: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);
@@ -499,6 +510,7 @@ mod tests {
             telepads: vec![],
             buttons: vec![],
             gates: vec![],
+            big_enemies: vec![],
         };
         let actual = FuzzyState::from(states);
         assert_eq!(actual, expected);

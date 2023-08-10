@@ -3,7 +3,9 @@ use wasm_bindgen::prelude::*;
 
 use crate::levels::Outcome;
 use crate::script_runner;
-use crate::simulation::{EnemyAnimState, Orientation, PlayerAnimState, TermData};
+use crate::simulation::{
+    BigEnemyAnimState, EnemyAnimState, Orientation, PlayerAnimState, TermData,
+};
 use crate::{levels, simulation};
 
 #[wasm_bindgen(getter_with_clone)]
@@ -219,6 +221,13 @@ fn get_js_enemy_anim_data(anim_state: &EnemyAnimState) -> Option<JsValue> {
     }
 }
 
+fn get_js_big_enemy_anim_data(anim_state: &BigEnemyAnimState) -> Option<JsValue> {
+    match anim_state {
+        BigEnemyAnimState::Bumping(data) => Some(BumpAnimData::from(data).into()),
+        _ => None,
+    }
+}
+
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyState {
@@ -232,6 +241,7 @@ pub struct FuzzyState {
     pub telepads: Array,       // Array<FuzzyTelepad>
     pub buttons: Array,        // Array<FuzzyButton>
     pub gates: Array,          // Array<FuzzyGate>
+    pub big_enemies: Array,    // Array<FuzzyBigEnemy>
 }
 
 impl FuzzyState {
@@ -247,6 +257,7 @@ impl FuzzyState {
             telepads: Array::new(),
             buttons: Array::new(),
             gates: Array::new(),
+            big_enemies: Array::new(),
         }
     }
 
@@ -477,6 +488,39 @@ impl FuzzyState {
             );
         }
 
+        let big_enemies = Array::new_with_length(state.big_enemies.len() as u32);
+        for (i, fuzzy_big_enemy) in state.big_enemies.iter().enumerate() {
+            let big_enemy = &fuzzy_big_enemy.obj;
+            let anim_state = match big_enemy.anim_state {
+                BigEnemyAnimState::Idle => "idle",
+                BigEnemyAnimState::Moving => "moving",
+                BigEnemyAnimState::Turning => "turning",
+                BigEnemyAnimState::Bumping(_) => "bumping",
+                BigEnemyAnimState::ShuttingDown => "shutting_down",
+            };
+            let anim_data =
+                get_js_big_enemy_anim_data(&big_enemy.anim_state).unwrap_or(JsValue::UNDEFINED);
+            big_enemies.set(
+                i as u32,
+                JsValue::from(FuzzyBigEnemy {
+                    pos: Pos {
+                        x: big_enemy.pos.x as i32,
+                        y: big_enemy.pos.y as i32,
+                    },
+                    facing: match big_enemy.facing {
+                        Orientation::Up => "up".to_string(),
+                        Orientation::Down => "down".to_string(),
+                        Orientation::Left => "left".to_string(),
+                        Orientation::Right => "right".to_string(),
+                    },
+                    anim_state: anim_state.to_string(),
+                    anim_data: anim_data,
+                    disabled: big_enemy.disabled,
+                    fuzzy: fuzzy_big_enemy.fuzzy,
+                }),
+            );
+        }
+
         FuzzyState {
             players,
             energy_cells,
@@ -488,6 +532,7 @@ impl FuzzyState {
             telepads,
             buttons,
             gates,
+            big_enemies,
         }
     }
 }
@@ -539,6 +584,17 @@ pub struct FuzzyEnemy {
     pub anim_state: String, // EnemyAnimState
     pub anim_data: JsValue, // TeleAnimData | BumpAnimData | (other animation data types) | undefined
     pub facing: String,     // Orientation
+    pub fuzzy: bool,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct FuzzyBigEnemy {
+    pub pos: Pos,
+    pub anim_state: String, // EnemyAnimState
+    pub anim_data: JsValue, // TeleAnimData | BumpAnimData | (other animation data types) | undefined
+    pub facing: String,     // Orientation
+    pub disabled: bool,
     pub fuzzy: bool,
 }
 
