@@ -38,9 +38,10 @@ fn face_direction(direction) {
     fn initial_states(&self) -> Vec<State> {
         let mut base_state = State::new();
         base_state.player = Player::new(4, 7, 20, Orientation::Up);
-        base_state.goals = vec![Goal::new(4, 5)];
+        base_state.goals = vec![Goal::new(6, 2)];
         base_state.energy_cells = vec![
             EnergyCell::new(5, 0),
+            EnergyCell::new(5, 5),
             EnergyCell::new(0, 3),
             EnergyCell::new(11, 6),
         ];
@@ -82,45 +83,27 @@ fn face_direction(direction) {
             GateVariant::NESW,
             "This gate can be locked/unlocked by pressing the nearby button.".into(),
         )];
+        // TODO(albrow): Change the password to something else.
         base_state.data_points = vec![DataPoint::new_with_info(
             1,
             1,
             "password".into(),
-            "This data point will output the password for all of the password gates.".into(),
+            "This data point will output the password for the password gate.".into(),
         )];
-        base_state.password_gates = vec![
-            PasswordGate::new_with_info(
-                11,
-                3,
-                "password".into(),
-                false,
-                GateVariant::NWSE,
-                "The password for this gate can be found in the nearby data point.".into(),
-            ),
-            PasswordGate::new_with_info(
-                11,
-                4,
-                "password".into(),
-                false,
-                GateVariant::NWSE,
-                "The password for this gate can be found in the nearby data point.".into(),
-            ),
-            PasswordGate::new_with_info(
-                11,
-                5,
-                "password".into(),
-                false,
-                GateVariant::NWSE,
-                "The password for this gate can be found in the nearby data point.".into(),
-            ),
-        ];
+        base_state.password_gates = vec![PasswordGate::new_with_info(
+            11,
+            5,
+            "password".into(),
+            false,
+            GateVariant::NWSE,
+            "The password for this gate can be found in the nearby data point.".into(),
+        )];
         make_all_initial_states_for_telepads(vec![base_state])
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![Box::new(BigEnemyActor::new(0, Bounds::default()))]
     }
     fn check_win(&self, state: &State) -> Outcome {
-        // TODO(albrow): Check if G.R.O.V.E.R. is intersecting with G.R.E.T.A.
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
@@ -175,17 +158,13 @@ mod tests {
             face_direction("up");
             move_forward(1);
             say(password);
-            move_forward(1);
-            say(password);
-            move_forward(1);
-            say(password);
-            move_forward(1);
+            move_forward(3);
             press_button();
-            move_backward(1);
-            say(password);
-            move_backward(2);
+            move_backward(3);
             turn_left();
-            move_forward(7);
+            move_forward(6);
+            turn_right();
+            move_forward(4);
             turn_right();
             move_forward(1);"#;
         let result = game
@@ -216,17 +195,13 @@ mod tests {
             face_direction("up");
             move_forward(1);
             say(password);
-            move_forward(1);
-            say(password);
-            move_forward(1);
-            say(password);
-            move_forward(1);
+            move_forward(3);
             press_button();
-            move_backward(1);
-            say(password);
-            move_backward(2);
+            move_backward(3);
             turn_left();
-            move_forward(7);
+            move_forward(6);
+            turn_right();
+            move_forward(4);
             turn_right();
             move_forward(1);"#;
         let result = game
@@ -251,17 +226,13 @@ mod tests {
             move_forward(11);
             turn_left();
             say(password);
-            move_forward(1);
-            say(password);
-            move_forward(1);
-            say(password);
-            move_forward(1);
+            move_forward(3);
             press_button();
-            move_backward(1);
-            say(password);
-            move_backward(2);
+            move_backward(3);
             turn_left();
-            move_forward(7);
+            move_forward(6);
+            turn_right();
+            move_forward(4);
             turn_right();
             move_forward(1);";
         let result = game
