@@ -23,7 +23,16 @@ impl Level for BigEnemyLevel {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"move_forward(2);
+        r#"// You can use this face_direction function to have G.R.O.V.E.R.
+// face any direction you want! For example, to face up, you would
+// call face_direction("up").
+fn face_direction(direction) {
+  while get_orientation() != direction {
+    turn_left();
+  }
+}
+
+// ADD YOUR CODE BELOW:
 "#
     }
     fn initial_states(&self) -> Vec<State> {
