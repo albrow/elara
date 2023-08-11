@@ -30,10 +30,10 @@ mod variables_intro;
 
 use std::collections::HashMap;
 
-use crate::actors::Bounds;
+use crate::actors::{Bounds, BIG_ENEMY_SIZE};
 use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_ENERGY, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, BigEnemy, Button, Gate, Orientation, Telepad};
+use crate::simulation::{Actor, BigEnemy, Button, Gate, Orientation, Pos, Telepad};
 use crate::simulation::{
     DataPoint, Enemy, EnergyCell, Goal, Obstacle, PasswordGate, Player, State,
 };
@@ -138,10 +138,27 @@ lazy_static! {
 }
 
 fn is_destroyed_by_enemy(state: &State) -> bool {
-    state
+    // First check for regular sized enemies.
+    if state
         .enemies
         .iter()
         .any(|enemy| enemy.pos == state.player.pos)
+    {
+        return true;
+    }
+
+    // Then check for big enemies (which are size 3x3).
+    for big_enemy in &state.big_enemies {
+        for x in big_enemy.pos.x..big_enemy.pos.x + BIG_ENEMY_SIZE {
+            for y in big_enemy.pos.y..big_enemy.pos.y + BIG_ENEMY_SIZE {
+                if state.player.pos == (Pos { x, y }) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 fn did_reach_goal(state: &State) -> bool {

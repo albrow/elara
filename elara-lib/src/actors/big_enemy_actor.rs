@@ -1,10 +1,10 @@
 use crate::simulation::{
-    Actor, BigEnemyAnimState, BumpAnimData, Orientation, OrientationWithDiagonals, Pos, State,
+    Actor, BigEnemyAnimState, BumpAnimData, OrientationWithDiagonals, Pos, State,
 };
 
 use super::{can_move_to, Bounds, MoveDirection, TurnDirection};
 
-const BIG_ENEMY_SIZE: i32 = 3;
+pub const BIG_ENEMY_SIZE: i32 = 3;
 
 /// An actor for a much larger "malfunctioning" rover enemies which takes up a 3x3 grid.
 /// Similar to the smaller malfunctioning rovers, it always tries to chase
@@ -147,12 +147,19 @@ impl BigEnemyActor {
     fn get_next_action(&self, state: &State) -> BigEvilRoverAction {
         let player_pos = &state.player.pos;
         let enemy = &state.big_enemies[self.index];
+        // Note: BigEnemy.pos represents the top-left position (which is easier
+        // for drawing sprites on the screen), but when we are figuring out which
+        // way to move, it's better to consider the center position.
+        let center_pos = Pos::new(
+            enemy.pos.x + BIG_ENEMY_SIZE / 2,
+            enemy.pos.y + BIG_ENEMY_SIZE / 2,
+        );
 
         // Prioritize moving in the axis in which the player is the furthest away.
-        let x_dist = player_pos.x.abs_diff(enemy.pos.x);
-        let y_dist = player_pos.y.abs_diff(enemy.pos.y);
+        let x_dist = player_pos.x.abs_diff(center_pos.x);
+        let y_dist = player_pos.y.abs_diff(center_pos.y);
         if y_dist >= x_dist {
-            if player_pos.y < enemy.pos.y {
+            if player_pos.y < center_pos.y {
                 if can_move_entire_body(
                     state,
                     &self.bounds,
@@ -160,7 +167,7 @@ impl BigEnemyActor {
                 ) {
                     return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Up);
                 }
-            } else if player_pos.y > enemy.pos.y {
+            } else if player_pos.y > center_pos.y {
                 if can_move_entire_body(
                     state,
                     &self.bounds,
@@ -169,7 +176,7 @@ impl BigEnemyActor {
                     return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Down);
                 }
             }
-            if player_pos.x < enemy.pos.x {
+            if player_pos.x < center_pos.x {
                 if can_move_entire_body(
                     state,
                     &self.bounds,
@@ -177,7 +184,7 @@ impl BigEnemyActor {
                 ) {
                     return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Left);
                 }
-            } else if player_pos.x > enemy.pos.x {
+            } else if player_pos.x > center_pos.x {
                 if can_move_entire_body(
                     state,
                     &self.bounds,
@@ -190,7 +197,7 @@ impl BigEnemyActor {
             // turn toward the player (if we are not already facing them). If we are facing them,
             // we should do a bump animation. Note that we only need to check the y-axis here
             // since we know that is the axis in which the player is furthest away.
-            if player_pos.y < enemy.pos.y {
+            if player_pos.y < center_pos.y {
                 return self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Up);
             } else {
                 return self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Down);
@@ -198,7 +205,7 @@ impl BigEnemyActor {
         } else {
             // The player is further away in the x-axis, so we prioritize that while checking
             // movement options.
-            if player_pos.x < enemy.pos.x {
+            if player_pos.x < center_pos.x {
                 if can_move_entire_body(
                     state,
                     &self.bounds,
@@ -206,7 +213,7 @@ impl BigEnemyActor {
                 ) {
                     return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Left);
                 }
-            } else if player_pos.x > enemy.pos.x {
+            } else if player_pos.x > center_pos.x {
                 if can_move_entire_body(
                     state,
                     &self.bounds,
@@ -215,7 +222,7 @@ impl BigEnemyActor {
                     return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Right);
                 }
             }
-            if player_pos.y < enemy.pos.y {
+            if player_pos.y < center_pos.y {
                 if can_move_entire_body(
                     state,
                     &self.bounds,
@@ -223,7 +230,7 @@ impl BigEnemyActor {
                 ) {
                     return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Up);
                 }
-            } else if player_pos.y > enemy.pos.y {
+            } else if player_pos.y > center_pos.y {
                 if can_move_entire_body(
                     state,
                     &self.bounds,
@@ -234,7 +241,7 @@ impl BigEnemyActor {
             }
             // If we get here, we can't move toward the player. Bump or turn while prioritizing
             // the x-axis.
-            if player_pos.x < enemy.pos.x {
+            if player_pos.x < center_pos.x {
                 return self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Left);
             } else {
                 return self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Right);
@@ -303,7 +310,7 @@ mod test {
     use super::*;
     use crate::{
         constants::{HEIGHT, WIDTH},
-        simulation::{BigEnemy, Player},
+        simulation::{BigEnemy, Orientation, Player},
         state_maker::StateMaker,
     };
 

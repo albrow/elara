@@ -8,6 +8,7 @@ use crate::{
 };
 
 pub use big_enemy_actor::BigEnemyActor;
+pub use big_enemy_actor::BIG_ENEMY_SIZE;
 pub use evil_rover_actor::EvilRoverActor;
 pub use player_actor::PlayerChannelActor;
 

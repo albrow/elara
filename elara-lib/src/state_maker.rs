@@ -50,6 +50,7 @@ impl StateMaker {
         self
     }
 
+    #[allow(dead_code)]
     pub fn with_big_enemies(&mut self, big_enemies: Vec<BigEnemy>) -> &mut Self {
         self.state.big_enemies = big_enemies;
         self

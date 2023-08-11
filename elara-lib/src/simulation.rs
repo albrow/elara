@@ -464,6 +464,7 @@ impl Enemy {
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct BigEnemy {
+    /// The position of the top left corner of the enemy.
     pub pos: Pos,
     pub facing: OrientationWithDiagonals,
     pub anim_state: BigEnemyAnimState,
