@@ -107,7 +107,7 @@ fn face_direction(direction) {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Complete the objective without using any telepads.")
+        Some("Reach the goal without using any telepads.")
     }
     fn check_challenge(&self, states: &Vec<State>, _script: &str, _stats: &ScriptStats) -> bool {
         for state in states {
