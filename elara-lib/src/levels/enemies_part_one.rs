@@ -49,6 +49,17 @@ move_forward(3);
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
+    fn challenge(&self) -> Option<&'static str> {
+        Some("Reach the goal in 18 or fewer steps.")
+    }
+    fn check_challenge(
+        &self,
+        _states: &Vec<State>,
+        _script: &str,
+        stats: &crate::script_runner::ScriptStats,
+    ) -> bool {
+        stats.time_taken <= 18
+    }
 }
 
 #[cfg(test)]
@@ -86,5 +97,47 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
+    }
+
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &EnemiesPartOne {};
+
+        // This code beats the level, but doesn't satisfy the challenge conditions.
+        let script = r"
+            turn_right();
+            move_forward(6);
+            turn_left();
+            move_forward(3);
+            turn_left();
+            move_forward(6);
+        ";
+        let result = game
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, false);
+
+        // This code should beat the level and pass the challenge.
+        // There are probably other ways to do it, but just showing one is possible
+        // should be sufficient here.
+        let script = r#"
+            turn_right();
+            move_backward(2);
+            turn_left();
+            move_forward(4);
+            say("waiting");
+            move_backward(1);
+            turn_right();
+            move_backward(1);
+            say("waiting");
+            move_forward(3);
+        "#;
+        let result = game
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert_eq!(result.passes_challenge, true);
     }
 }
