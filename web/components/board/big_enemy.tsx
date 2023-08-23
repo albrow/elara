@@ -1,12 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Box } from "@chakra-ui/react";
-import { MdArrowCircleUp } from "react-icons/md";
-import { ENEMY_Z_INDEX, TILE_SIZE } from "../../lib/constants";
+import { Box, Img } from "@chakra-ui/react";
+
+import {
+  ENEMY_Z_INDEX,
+  SPRITE_DROP_SHADOW,
+  TILE_SIZE,
+} from "../../lib/constants";
 import { TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
 import { Offset } from "../../lib/utils";
-import { getSpriteAnimations } from "./anim_utils";
-import BoardHoverInfo from "./board_hover_info";
+import gretaUpUrl from "../../images/board/greta_up.png";
+import gretaDownUrl from "../../images/board/greta_down.png";
+import gretaLeftUrl from "../../images/board/greta_left.png";
+import gretaRightUrl from "../../images/board/greta_right.png";
+import lightningEffectUrl from "../../images/board/lightning.gif";
 import MalfunctioningRoverPage from "./hover_info_pages/malfunctioning_rover.mdx";
+import BoardHoverInfo from "./board_hover_info";
+import { getSpriteAnimations } from "./anim_utils";
 
 interface BigEnemyProps {
   offset: Offset;
@@ -29,25 +38,59 @@ export default function BigEnemy(props: BigEnemyProps) {
     [props.animData, props.animState, props.enableAnimations]
   );
 
-  // TODO(albrow): Add diagonal directions.
-  const arrowRotation = useMemo(() => {
+  const imgUrl = useMemo(() => {
+    switch (props.facing) {
+      case "up":
+      case "up_right":
+      case "up_left":
+        return gretaUpUrl;
+      case "down":
+      case "down_right":
+      case "down_left":
+        return gretaDownUrl;
+      case "left":
+        return gretaLeftUrl;
+      case "right":
+        return gretaRightUrl;
+      default:
+        throw new Error(`Invalid facing: ${props.facing}`);
+    }
+  }, [props.facing]);
+
+  const imgTransform = useMemo(() => {
+    // For now, we rotate the up and down images when the rover is facing diagonally.
+    // This means the perspective is slightly off and the image is blurry, but it should
+    // be good enough for now.
+    // TODO(albrow): Replace with hand-drawn diagonal pixel art.
     switch (props.facing) {
       case "up_right":
-        return 45;
-      case "right":
-        return 90;
+        return "rotateZ(45deg) scale(0.9)";
       case "down_right":
-        return 135;
-      case "down":
-        return 180;
+        return "rotateZ(-45deg) scale(0.9)";
       case "down_left":
-        return 225;
-      case "left":
-        return 270;
+        return "rotateZ(45deg) scale(0.9)";
       case "up_left":
-        return 315;
+        return "rotateZ(-45deg) scale(0.9)";
       default:
-        return 0;
+        return "none";
+    }
+  }, [props.facing]);
+
+  const lightningTransform = useMemo(() => {
+    // If the rover is facing to the side or diagonally, the perspective means that
+    // the body of the rover is smaller and offset. To compensate, we scale the
+    // lightning effect down so it matches more closely with the rover body.
+    switch (props.facing) {
+      case "down_left":
+      case "up_left":
+      case "up_right":
+      case "down_right":
+        return "translateY(10px) translateX(10px) scale(0.9)";
+      case "left":
+      case "right":
+        return "translateY(10px) scaleX(0.9)";
+      default:
+        return "none";
     }
   }, [props.facing]);
 
@@ -73,53 +116,42 @@ export default function BigEnemy(props: BigEnemyProps) {
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}
-        w={`${TILE_SIZE}px`}
-        h={`${TILE_SIZE}px`}
+        w={`${TILE_SIZE * 3}px`}
+        h={`${TILE_SIZE * 3}px`}
         zIndex={ENEMY_Z_INDEX}
         style={animation.style}
       >
+        <Img
+          position="absolute"
+          src={imgUrl}
+          top="1px"
+          left="1px"
+          w="144px"
+          h="144px"
+          zIndex={ENEMY_Z_INDEX + 1}
+          transform={imgTransform}
+          filter={SPRITE_DROP_SHADOW}
+        />
         <Box
-          w={`${TILE_SIZE * 3}px`}
-          h={`${TILE_SIZE * 3}px`}
-          border="3px solid red"
-          zIndex={ENEMY_Z_INDEX}
+          position="relative"
+          zIndex={ENEMY_Z_INDEX + 2}
+          transform={lightningTransform}
+          style={{
+            top: `${TILE_SIZE * 0.2}px`,
+            left: `${TILE_SIZE * 0.6}px`,
+            width: `${TILE_SIZE * 1.5}px`,
+            height: `${TILE_SIZE * 1.5}px`,
+          }}
         >
-          <Box
-            position="relative"
-            top="0"
-            left="0"
-            zIndex={ENEMY_Z_INDEX + 1}
-            transform={`rotateZ(${arrowRotation}deg)`}
-          >
-            <MdArrowCircleUp size={TILE_SIZE * 3} />
-          </Box>
-          {/* <Box
-            // If the rover is facing to the side, the perspective means that the body
-            // of the rover is shorter in the y dimension. To compensate, we scale the
-            // lightning effect down so it matches more closely with the rover body.
-            position="relative"
+          <img
+            ref={lightningImg}
+            src={lightningEffectUrl}
+            alt="lightning effect"
             style={{
-              transform:
-                props.facing === "left" || props.facing === "right"
-                  ? "scaleY(0.7)"
-                  : "none",
+              filter:
+                "drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.9)) saturate(200%) brightness(150%)",
             }}
-          >
-            <img
-              ref={lightningImg}
-              src={lightningEffectUrl}
-              alt="lightning effect"
-              style={{
-                top: `${TILE_SIZE * 0.2}px`,
-                left: `${TILE_SIZE * 0.2}px`,
-                width: `${TILE_SIZE * 1.5}px`,
-                height: `${TILE_SIZE * 1.5}px`,
-                zIndex: ENEMY_Z_INDEX + 2,
-                filter:
-                  "drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.9)) saturate(200%) brightness(150%)",
-              }}
-            />
-          </Box> */}
+          />
         </Box>
       </Box>
     </>
