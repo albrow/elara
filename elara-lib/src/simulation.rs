@@ -467,11 +467,10 @@ pub struct BigEnemy {
     pub pos: Pos,
     pub facing: OrientationWithDiagonals,
     pub anim_state: BigEnemyAnimState,
-    pub disabled: bool,
 }
 
 impl BigEnemy {
-    pub fn new(x: u32, y: u32, facing: OrientationWithDiagonals, disabled: bool) -> BigEnemy {
+    pub fn new(x: u32, y: u32, facing: OrientationWithDiagonals) -> BigEnemy {
         BigEnemy {
             pos: Pos {
                 x: x as i32,
@@ -479,7 +478,6 @@ impl BigEnemy {
             },
             facing,
             anim_state: BigEnemyAnimState::Idle,
-            disabled,
         }
     }
 }

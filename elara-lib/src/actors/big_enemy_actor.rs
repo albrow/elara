@@ -24,9 +24,6 @@ enum BigEvilRoverAction {
     Bump(Pos),
 }
 
-// TODO(albrow): Update this to account for the big enemy's increased size.
-// TODO(albrow): Make the big enemy take longer to turn?
-
 /// Returns true if we can move to the desired position. Accounts for the entire
 /// body of the enemy, not just one space.
 fn can_move_entire_body(state: &State, bounds: &Bounds, desired_pos: &Pos) -> bool {
@@ -106,9 +103,14 @@ impl BigEnemyActor {
         if curr_orientation == desired_direction {
             return BigEvilRoverAction::Move(MoveDirection::Forward);
         }
+        println!("desired_direction: {:?}", desired_direction);
         let clockwise_dist = curr_orientation.clockwise_distance(&desired_direction);
         let counter_clockwise_dist =
             curr_orientation.counter_clockwise_distance(&desired_direction);
+        println!(
+            "clockwise_dist: {}, counter_clockwise_dist: {}",
+            clockwise_dist, counter_clockwise_dist
+        );
         if clockwise_dist < counter_clockwise_dist {
             return BigEvilRoverAction::Turn(TurnDirection::Right);
         } else {
@@ -296,121 +298,240 @@ impl Actor for BigEnemyActor {
     }
 }
 
-// TODO(albrow): Update these tests.
 #[cfg(test)]
 mod test {
-    // use super::*;
-    // use crate::{
-    //     constants::{HEIGHT, WIDTH},
-    //     simulation::{BigEnemy, Orientation, Player},
-    //     state_maker::StateMaker,
-    // };
+    use super::*;
+    use crate::{
+        constants::{HEIGHT, WIDTH},
+        simulation::{BigEnemy, Orientation, Player},
+        state_maker::StateMaker,
+    };
 
-    // #[test]
-    // fn get_next_action() {
-    //     let mut base_state = StateMaker::new()
-    //         .with_player(Player::new(3, 3, 0, Orientation::Up))
-    //         .with_big_enemies(vec![BigEnemy::new(
-    //             3,
-    //             4,
-    //             OrientationWithDiagonals::Up,
-    //             false,
-    //         )])
-    //         .build();
-    //     let actor = BigEnemyActor::new(
-    //         0,
-    //         Bounds {
-    //             min_x: 0,
-    //             max_x: WIDTH as i32,
-    //             min_y: 0,
-    //             max_y: HEIGHT as i32,
-    //         },
-    //     );
+    #[test]
+    fn get_next_action() {
+        let mut base_state = StateMaker::new()
+            .with_player(Player::new(3, 3, 0, Orientation::Up))
+            .with_big_enemies(vec![BigEnemy::new(3, 4, OrientationWithDiagonals::Up)])
+            .build();
+        let actor = BigEnemyActor::new(
+            0,
+            Bounds {
+                min_x: 0,
+                max_x: WIDTH as i32,
+                min_y: 0,
+                max_y: HEIGHT as i32,
+            },
+        );
 
-    //     struct TestCase {
-    //         enemy_pos: Pos,
-    //         enemy_facing: OrientationWithDiagonals,
-    //         expected_action: BigEvilRoverAction,
-    //     }
-    //     let test_cases = vec![
-    //         TestCase {
-    //             // One space below player, facing up.
-    //             enemy_pos: Pos::new(3, 4),
-    //             enemy_facing: OrientationWithDiagonals::Up,
-    //             expected_action: BigEvilRoverAction::Move(MoveDirection::Forward),
-    //         },
-    //         TestCase {
-    //             // One space below player, facing right.
-    //             enemy_pos: Pos::new(3, 4),
-    //             enemy_facing: OrientationWithDiagonals::Right,
-    //             expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
-    //         },
-    //         TestCase {
-    //             // One space below player, facing left.
-    //             enemy_pos: Pos::new(3, 4),
-    //             enemy_facing: OrientationWithDiagonals::Left,
-    //             expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
-    //         },
-    //         TestCase {
-    //             // One space above player, facing down.
-    //             enemy_pos: Pos::new(3, 2),
-    //             enemy_facing: OrientationWithDiagonals::Down,
-    //             expected_action: BigEvilRoverAction::Move(MoveDirection::Forward),
-    //         },
-    //         TestCase {
-    //             // One space above player, facing right.
-    //             enemy_pos: Pos::new(3, 2),
-    //             enemy_facing: OrientationWithDiagonals::Right,
-    //             expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
-    //         },
-    //         TestCase {
-    //             // One space above player, facing left.
-    //             enemy_pos: Pos::new(3, 2),
-    //             enemy_facing: OrientationWithDiagonals::Left,
-    //             expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
-    //         },
-    //         TestCase {
-    //             // One space to the left of player, facing right.
-    //             enemy_pos: Pos::new(2, 3),
-    //             enemy_facing: OrientationWithDiagonals::Right,
-    //             expected_action: BigEvilRoverAction::Move(MoveDirection::Forward),
-    //         },
-    //         TestCase {
-    //             // One space to the left of player, facing up.
-    //             enemy_pos: Pos::new(2, 3),
-    //             enemy_facing: OrientationWithDiagonals::Up,
-    //             expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
-    //         },
-    //         TestCase {
-    //             // One space to the left of player, facing down.
-    //             enemy_pos: Pos::new(2, 3),
-    //             enemy_facing: OrientationWithDiagonals::Down,
-    //             expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
-    //         },
-    //         TestCase {
-    //             // One space to the right of player, facing left.
-    //             enemy_pos: Pos::new(4, 3),
-    //             enemy_facing: OrientationWithDiagonals::Left,
-    //             expected_action: BigEvilRoverAction::Move(MoveDirection::Forward),
-    //         },
-    //         TestCase {
-    //             // One space to the right of player, facing up.
-    //             enemy_pos: Pos::new(4, 3),
-    //             enemy_facing: OrientationWithDiagonals::Up,
-    //             expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
-    //         },
-    //         TestCase {
-    //             // One space to the right of player, facing down.
-    //             enemy_pos: Pos::new(4, 3),
-    //             enemy_facing: OrientationWithDiagonals::Down,
-    //             expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
-    //         },
-    //     ];
-    //     for tc in test_cases {
-    //         base_state.big_enemies[0].pos = tc.enemy_pos;
-    //         base_state.big_enemies[0].facing = tc.enemy_facing;
-    //         let action = actor.get_next_action(&base_state);
-    //         assert_eq!(action, tc.expected_action);
-    //     }
-    // }
+        struct TestCase {
+            description: &'static str,
+            enemy_pos: Pos,
+            enemy_facing: OrientationWithDiagonals,
+            expected_action: BigEvilRoverAction,
+        }
+        let test_cases = vec![
+            TestCase {
+                description: "One space below player, facing up",
+                enemy_pos: Pos::new(2, 4),
+                enemy_facing: OrientationWithDiagonals::Up,
+                expected_action: BigEvilRoverAction::Move(MoveDirection::Forward),
+            },
+            TestCase {
+                description: "One space below player, facing right",
+                enemy_pos: Pos::new(2, 4),
+                enemy_facing: OrientationWithDiagonals::Right,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space below player, facing left",
+                enemy_pos: Pos::new(2, 4),
+                enemy_facing: OrientationWithDiagonals::Left,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space below player, facing down",
+                enemy_pos: Pos::new(2, 4),
+                enemy_facing: OrientationWithDiagonals::Down,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space below player, facing up-left",
+                enemy_pos: Pos::new(2, 4),
+                enemy_facing: OrientationWithDiagonals::UpLeft,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space below player, facing up-right",
+                enemy_pos: Pos::new(2, 4),
+                enemy_facing: OrientationWithDiagonals::UpRight,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space below player, facing down-left",
+                enemy_pos: Pos::new(2, 4),
+                enemy_facing: OrientationWithDiagonals::DownLeft,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space below player, facing down-right",
+                enemy_pos: Pos::new(2, 4),
+                enemy_facing: OrientationWithDiagonals::DownRight,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space above player, facing up",
+                enemy_pos: Pos::new(2, 0),
+                enemy_facing: OrientationWithDiagonals::Up,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space above player, facing right",
+                enemy_pos: Pos::new(2, 0),
+                enemy_facing: OrientationWithDiagonals::Right,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space above player, facing left",
+                enemy_pos: Pos::new(2, 0),
+                enemy_facing: OrientationWithDiagonals::Left,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space above player, facing down",
+                enemy_pos: Pos::new(2, 0),
+                enemy_facing: OrientationWithDiagonals::Down,
+                expected_action: BigEvilRoverAction::Move(MoveDirection::Forward),
+            },
+            TestCase {
+                description: "One space above player, facing up-left",
+                enemy_pos: Pos::new(2, 0),
+                enemy_facing: OrientationWithDiagonals::UpLeft,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space above player, facing up-right",
+                enemy_pos: Pos::new(2, 0),
+                enemy_facing: OrientationWithDiagonals::UpRight,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space above player, facing down-left",
+                enemy_pos: Pos::new(2, 0),
+                enemy_facing: OrientationWithDiagonals::DownLeft,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space above player, facing down-right",
+                enemy_pos: Pos::new(2, 0),
+                enemy_facing: OrientationWithDiagonals::DownRight,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space to the right of player, facing up",
+                enemy_pos: Pos::new(6, 2),
+                enemy_facing: OrientationWithDiagonals::Up,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space to the right of player, facing right",
+                enemy_pos: Pos::new(6, 2),
+                enemy_facing: OrientationWithDiagonals::Right,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space to the right of player, facing left",
+                enemy_pos: Pos::new(6, 2),
+                enemy_facing: OrientationWithDiagonals::Left,
+                expected_action: BigEvilRoverAction::Move(MoveDirection::Forward),
+            },
+            TestCase {
+                description: "One space to the right of player, facing down",
+                enemy_pos: Pos::new(6, 2),
+                enemy_facing: OrientationWithDiagonals::Down,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space to the right of player, facing up-left",
+                enemy_pos: Pos::new(6, 2),
+                enemy_facing: OrientationWithDiagonals::UpLeft,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space to the right of player, facing up-right",
+                enemy_pos: Pos::new(6, 2),
+                enemy_facing: OrientationWithDiagonals::UpRight,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space to the right of player, facing down-left",
+                enemy_pos: Pos::new(6, 2),
+                enemy_facing: OrientationWithDiagonals::DownLeft,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space to the right of player, facing down-right",
+                enemy_pos: Pos::new(6, 2),
+                enemy_facing: OrientationWithDiagonals::DownRight,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space to the left of player, facing up",
+                enemy_pos: Pos::new(0, 2),
+                enemy_facing: OrientationWithDiagonals::Up,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space to the left of player, facing right",
+                enemy_pos: Pos::new(0, 2),
+                enemy_facing: OrientationWithDiagonals::Right,
+                expected_action: BigEvilRoverAction::Move(MoveDirection::Forward),
+            },
+            TestCase {
+                description: "One space to the left of player, facing left",
+                enemy_pos: Pos::new(0, 2),
+                enemy_facing: OrientationWithDiagonals::Left,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space to the left of player, facing down",
+                enemy_pos: Pos::new(0, 2),
+                enemy_facing: OrientationWithDiagonals::Down,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space to the left of player, facing up-left",
+                enemy_pos: Pos::new(0, 2),
+                enemy_facing: OrientationWithDiagonals::UpLeft,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space to the left of player, facing up-right",
+                enemy_pos: Pos::new(0, 2),
+                enemy_facing: OrientationWithDiagonals::UpRight,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Right),
+            },
+            TestCase {
+                description: "One space to the left of player, facing down-left",
+                enemy_pos: Pos::new(0, 2),
+                enemy_facing: OrientationWithDiagonals::DownLeft,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+            TestCase {
+                description: "One space to the left of player, facing down-right",
+                enemy_pos: Pos::new(0, 2),
+                enemy_facing: OrientationWithDiagonals::DownRight,
+                expected_action: BigEvilRoverAction::Turn(TurnDirection::Left),
+            },
+        ];
+        for (i, tc) in test_cases.iter().enumerate() {
+            base_state.big_enemies[0].pos = tc.enemy_pos.clone();
+            base_state.big_enemies[0].facing = tc.enemy_facing;
+            let action = actor.get_next_action(&base_state);
+            assert_eq!(
+                action, tc.expected_action,
+                "\n{}\n(Test case {})",
+                tc.description, i
+            );
+        }
+    }
 }

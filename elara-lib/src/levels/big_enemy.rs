@@ -65,7 +65,7 @@ fn face_direction(direction) {
             Obstacle::new(10, 5),
             Obstacle::new(11, 1),
         ];
-        base_state.big_enemies = vec![BigEnemy::new(3, 2, OrientationWithDiagonals::Down, false)];
+        base_state.big_enemies = vec![BigEnemy::new(3, 2, OrientationWithDiagonals::Down)];
         base_state.telepads = vec![
             Telepad::new((0, 7), (0, 0), Orientation::Up),
             Telepad::new((11, 0), (11, 7), Orientation::Up),

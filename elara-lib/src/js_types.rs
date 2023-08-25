@@ -519,7 +519,6 @@ impl FuzzyState {
                     },
                     anim_state: anim_state.to_string(),
                     anim_data: anim_data,
-                    disabled: big_enemy.disabled,
                     fuzzy: fuzzy_big_enemy.fuzzy,
                 }),
             );
@@ -598,7 +597,6 @@ pub struct FuzzyBigEnemy {
     pub anim_state: String, // EnemyAnimState
     pub anim_data: JsValue, // TeleAnimData | BumpAnimData | (other animation data types) | undefined
     pub facing: String,     // Orientation
-    pub disabled: bool,
     pub fuzzy: bool,
 }
 
