@@ -14,7 +14,7 @@ import gretaDownUrl from "../../images/board/greta_down.png";
 import gretaLeftUrl from "../../images/board/greta_left.png";
 import gretaRightUrl from "../../images/board/greta_right.png";
 import lightningEffectUrl from "../../images/board/lightning.gif";
-import MalfunctioningRoverPage from "./hover_info_pages/malfunctioning_rover.mdx";
+import GretaHoverPage from "./hover_info_pages/greta_malfunctioning.mdx";
 import BoardHoverInfo from "./board_hover_info";
 import { getSpriteAnimations } from "./anim_utils";
 
@@ -114,7 +114,12 @@ export default function BigEnemy(props: BigEnemyProps) {
   return (
     <>
       {props.enableHoverInfo && (
-        <BoardHoverInfo page={MalfunctioningRoverPage} offset={props.offset} />
+        <BoardHoverInfo
+          page={GretaHoverPage}
+          offset={props.offset}
+          width={3}
+          height={3}
+        />
       )}
       {animation.definitions}
       <Box

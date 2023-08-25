@@ -15,6 +15,12 @@ export interface BoardHoverInfoProps {
   // eslint-disable-next-line react/no-unused-prop-types
   page: <T extends MDXProps>(props: T) => JSX.Element;
   additionalInfo?: string;
+  // Width of the thing we're hovering over (in board spaces)
+  // Defaults to 1.
+  width?: number;
+  // Height of the thing we're hovering over (in board spaces)
+  // Defaults to 1.
+  height?: number;
 }
 
 export default function BoardHoverInfo(props: BoardHoverInfoProps) {
@@ -41,12 +47,12 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
   // Bottom offset is used to make sure the hover info doesn't hang off the top or
   // bottom of the screen.
   const bottomOffset = useMemo(() => {
-    if (props.offset.pos && props.offset.pos.y <= 4) {
+    if (props.offset.pos && props.offset.pos.y + props.height! <= 5) {
       return `auto`;
     }
 
     return `100%`;
-  }, [props.offset.pos]);
+  }, [props.height, props.offset.pos]);
 
   return (
     <Box
@@ -54,8 +60,8 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
       zIndex={BOARD_HOVER_INFO_Z_INDEX}
       left={props.offset.left}
       top={props.offset.top}
-      w={`${TILE_SIZE}px`}
-      h={`${TILE_SIZE}px`}
+      w={`${TILE_SIZE * props.width!}px`}
+      h={`${TILE_SIZE * props.height!}px`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       _hover={{ cursor: "help" }}
@@ -96,3 +102,8 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
     </Box>
   );
 }
+
+BoardHoverInfo.defaultProps = {
+  width: 1,
+  height: 1,
+};
