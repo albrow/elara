@@ -439,7 +439,6 @@ pub enum BigEnemyAnimState {
     Moving,
     Turning,
     Bumping(BumpAnimData),
-    ShuttingDown,
 }
 
 #[derive(Clone, PartialEq, Debug)]

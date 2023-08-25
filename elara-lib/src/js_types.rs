@@ -497,7 +497,6 @@ impl FuzzyState {
                 BigEnemyAnimState::Moving => "moving",
                 BigEnemyAnimState::Turning => "turning",
                 BigEnemyAnimState::Bumping(_) => "bumping",
-                BigEnemyAnimState::ShuttingDown => "shutting_down",
             };
             let anim_data =
                 get_js_big_enemy_anim_data(&big_enemy.anim_state).unwrap_or(JsValue::UNDEFINED);
