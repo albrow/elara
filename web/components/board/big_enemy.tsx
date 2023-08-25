@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Img } from "@chakra-ui/react";
+import { useImagePreloader } from "../../hooks/image_preloader";
 
 import {
   ENEMY_Z_INDEX,
@@ -27,6 +28,10 @@ interface BigEnemyProps {
 }
 
 export default function BigEnemy(props: BigEnemyProps) {
+  // Pre-load images to prevent flickering when rotating between
+  // diagonal directions.
+  useImagePreloader([gretaUpUrl, gretaDownUrl, gretaLeftUrl, gretaRightUrl]);
+
   const animation = useMemo(
     () =>
       getSpriteAnimations(
