@@ -123,23 +123,19 @@ fn face_direction(direction) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::levels::{Outcome, ERR_DESTROYED_BY_ENEMY};
+    use crate::levels::Outcome;
 
     #[test]
     fn level() {
         let mut game = crate::Game::new();
         const LEVEL: &'static dyn Level = &BigEnemyLevel {};
 
-        // Running the initial code should result in Outcome::Failure due to
-        // running out of energy.
+        // Running the initial code should result in Outcome::Continue.
         let script = LEVEL.initial_code();
         let result = game
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
-        assert_eq!(
-            result.outcome,
-            Outcome::Failure(String::from(ERR_DESTROYED_BY_ENEMY))
-        );
+        assert_eq!(result.outcome, Outcome::Continue);
 
         // Running this code should result in Outcome::Success.
         let script = r#"
