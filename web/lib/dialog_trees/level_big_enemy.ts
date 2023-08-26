@@ -50,7 +50,7 @@ export const NODES: {
     choiceIds: ["ack_telepad_plan"],
   },
   final_encouragement: {
-    text: "I don't know. But with everything you've learned so far, I know you can think of something! I'm counting on you!",
+    text: "I don't know. But with everything you've learned so far, I'm confident you can think of something! I'm counting on you!",
     choiceIds: [
       "express_final_doubt",
       "ask_kalina_to_finish",
@@ -88,7 +88,7 @@ export const CHOICES: {
     nextId: "sneak_past_greta",
   },
   greta_already_sees_grover: {
-    text: "It might be too late for that. She's looking right at G.R.O.V.E.R.!",
+    text: "It might be too late. She's looking right at G.R.O.V.E.R.!",
     nextId: "greta_telepad_plan_1",
   },
   ack_telepad_plan: {
