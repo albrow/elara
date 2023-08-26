@@ -7,7 +7,16 @@ use crate::{
         Obstacle, Orientation, OrientationWithDiagonals, PasswordGate, Player, PlayerAnimState,
         State, Telepad,
     },
+    state_maker::StateMaker,
 };
+
+lazy_static! {
+    // Possible passwords for the password gate.
+    // We use an array here to stop players from cheating by knowing the password
+    // ahead of time. Note it's still possible to cheat but it's a little harder and
+    // would require trying all of the possible passwords.
+    static ref POSSIBLE_PASSWORDS: Vec<&'static str> = vec!["carver", "curie", "vaughan"];
+}
 
 #[derive(Copy, Clone)]
 pub struct BigEnemyLevel {}
@@ -36,69 +45,76 @@ fn face_direction(direction) {
 "#
     }
     fn initial_states(&self) -> Vec<State> {
-        let mut base_state = State::new();
-        base_state.player = Player::new(4, 7, 20, Orientation::Up);
-        base_state.goals = vec![Goal::new(6, 2)];
-        base_state.energy_cells = vec![
-            EnergyCell::new(5, 0),
-            EnergyCell::new(5, 5),
-            EnergyCell::new(0, 3),
-            EnergyCell::new(11, 6),
-        ];
-        base_state.obstacles = vec![
-            // Obstacle::new(1, 3),
-            // Obstacle::new(1, 4),
-            Obstacle::new(1, 5),
-            Obstacle::new(2, 1),
-            Obstacle::new(2, 5),
-            Obstacle::new(3, 1),
-            Obstacle::new(7, 1),
-            Obstacle::new(7, 5),
-            Obstacle::new(8, 1),
-            Obstacle::new(8, 5),
-            Obstacle::new(9, 1),
-            Obstacle::new(9, 5),
-            Obstacle::new(10, 1),
-            Obstacle::new(10, 2),
-            Obstacle::new(10, 3),
-            Obstacle::new(10, 4),
-            Obstacle::new(10, 5),
-            Obstacle::new(11, 1),
-        ];
-        base_state.big_enemies = vec![BigEnemy::new(3, 2, OrientationWithDiagonals::Down)];
-        base_state.telepads = vec![
-            Telepad::new((0, 7), (0, 0), Orientation::Up),
-            Telepad::new((11, 0), (11, 7), Orientation::Up),
-        ];
-        base_state.buttons = vec![Button::new_with_info(
-            11,
-            2,
-            ButtonConnection::Gate(0),
-            "Press this button to lock/unlock one of the gates.".into(),
-        )];
-        base_state.gates = vec![Gate::new_with_info(
-            6,
-            3,
-            true,
-            GateVariant::NESW,
-            "This gate can be locked/unlocked by pressing the nearby button.".into(),
-        )];
-        // TODO(albrow): Change the password to something else.
-        base_state.data_points = vec![DataPoint::new_with_info(
-            1,
-            1,
-            "password".into(),
-            "This data point will output the password for the password gate.".into(),
-        )];
-        base_state.password_gates = vec![PasswordGate::new_with_info(
-            11,
-            5,
-            "password".into(),
-            false,
-            GateVariant::NWSE,
-            "The password for this gate can be found in the nearby data point.".into(),
-        )];
-        make_all_initial_states_for_telepads(vec![base_state])
+        // Create one possible state for each password.
+        let base_states = POSSIBLE_PASSWORDS
+            .clone()
+            .into_iter()
+            .map(|password| {
+                StateMaker::new()
+                    .with_player(Player::new(4, 7, 20, Orientation::Up))
+                    .with_goals(vec![Goal::new(6, 2)])
+                    .with_energy_cells(vec![
+                        EnergyCell::new(5, 0),
+                        EnergyCell::new(5, 5),
+                        EnergyCell::new(0, 3),
+                        EnergyCell::new(11, 6),
+                    ])
+                    .with_obstacles(vec![
+                        Obstacle::new(1, 5),
+                        Obstacle::new(2, 1),
+                        Obstacle::new(2, 5),
+                        Obstacle::new(3, 1),
+                        Obstacle::new(7, 1),
+                        Obstacle::new(7, 5),
+                        Obstacle::new(8, 1),
+                        Obstacle::new(8, 5),
+                        Obstacle::new(9, 1),
+                        Obstacle::new(9, 5),
+                        Obstacle::new(10, 1),
+                        Obstacle::new(10, 2),
+                        Obstacle::new(10, 3),
+                        Obstacle::new(10, 4),
+                        Obstacle::new(10, 5),
+                        Obstacle::new(11, 1),
+                    ])
+                    .with_big_enemies(vec![BigEnemy::new(3, 2, OrientationWithDiagonals::Down)])
+                    .with_telepads(vec![
+                        Telepad::new((0, 7), (0, 0), Orientation::Up),
+                        Telepad::new((11, 0), (11, 7), Orientation::Up),
+                    ])
+                    .with_buttons(vec![Button::new_with_info(
+                        11,
+                        2,
+                        ButtonConnection::Gate(0),
+                        "Press this button to lock/unlock one of the gates.".into(),
+                    )])
+                    .with_gates(vec![Gate::new_with_info(
+                        6,
+                        3,
+                        true,
+                        GateVariant::NESW,
+                        "This gate can be locked/unlocked by pressing the nearby button.".into(),
+                    )])
+                    .with_data_points(vec![DataPoint::new_with_info(
+                        1,
+                        1,
+                        password.into(),
+                        "This data point will output the password for the password gate.".into(),
+                    )])
+                    .with_password_gates(vec![PasswordGate::new_with_info(
+                        11,
+                        5,
+                        password.into(),
+                        false,
+                        GateVariant::NWSE,
+                        "The password for this gate can be found in the nearby data point.".into(),
+                    )])
+                    .build()
+            })
+            .collect();
+
+        // Then fill in the rest of the states to include all possible telepad orientations.
+        make_all_initial_states_for_telepads(base_states)
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
         vec![Box::new(BigEnemyActor::new(0, Bounds::default()))]
