@@ -310,7 +310,16 @@ const RAW_SCENES: RawScene[] = [
       "The shortest path to the goal is not necessarily the best path.",
     ]
   ),
-  levelScene("big_enemy", [], []),
+  levelScene(
+    "big_enemy",
+    [],
+    [
+      `Try reviewing the journal pages "Function Outputs" and "Creating Functions".`,
+      `You can also review the levels "Let Me In", "Forgotten Password", and "Up and Up and Up".`,
+      "Don't forget- you can hover over different objects on the map to see what they do.",
+      "One of the gates is currently open. What happens if you press the button to close it?",
+    ]
+  ),
 ];
 
 const getLevelIndexFromScene = (
