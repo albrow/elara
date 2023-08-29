@@ -4,7 +4,7 @@ import { Fragment, useCallback } from "react";
 import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { Scene } from "../../contexts/scenes";
-import DisablableLink from "../disablable_link";
+import DisablableLink from "../scene_link";
 
 interface LevelLinkProps {
   scene: Scene;
@@ -137,8 +137,7 @@ export default function LevelLink(props: LevelLinkProps) {
   //
   return (
     <DisablableLink
-      routeName={props.scene.routeName}
-      routeParams={props.scene.routeParams}
+      scene={props.scene}
       disabled={props.isLocked}
       onClick={props.onClick}
     >

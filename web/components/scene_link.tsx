@@ -1,10 +1,10 @@
 import { Box } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
-import { Link } from "react-router5";
+import { Scene } from "../contexts/scenes";
+import { useSceneNavigator } from "../hooks/scenes_hooks";
 
 export interface DisablableLinkProps {
-  routeName: string;
-  routeParams?: Record<string, any>;
+  scene: Scene;
   disabled?: boolean;
   onClick?: () => void;
 }
@@ -12,6 +12,7 @@ export interface DisablableLinkProps {
 export default function DisablableLink(
   props: PropsWithChildren<DisablableLinkProps>
 ) {
+  const { navigateToScene } = useSceneNavigator();
   if (props.disabled) {
     return <span>{props.children}</span>;
   }
@@ -19,18 +20,13 @@ export default function DisablableLink(
   return (
     <Box
       onClick={() => {
+        navigateToScene(props.scene);
         if (props.onClick) {
           props.onClick();
         }
       }}
     >
-      <Link routeName={props.routeName} routeParams={props.routeParams}>
-        {props.children}
-      </Link>
+      {props.children}
     </Box>
   );
 }
-
-DisablableLink.defaultProps = {
-  routeParams: {},
-};

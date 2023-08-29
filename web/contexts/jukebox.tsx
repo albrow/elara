@@ -84,7 +84,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         [gettingOffTheGround, gettingOffTheGroundFallback],
         1.0,
         true,
-        1000
+        10
       ),
       driftingIntoSpace: new Sound(
         "driftingIntoSpace",
@@ -92,7 +92,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         [driftingIntoSpace, driftingIntoSpaceFallback],
         1.0,
         true,
-        1000
+        10
       ),
       puttingItAllTogether: new Sound(
         "puttingItAllTogether",
@@ -115,6 +115,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
   }, [musicGain, musicDict]);
 
   const stopAllMusic = useCallback(() => {
+    console.log("Stopping all music.");
     Object.values(musicDict)
       .filter((sound) => sound.category === "music")
       .forEach((sound) => {
@@ -126,9 +127,11 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
   const requestSong = useCallback(
     (id: string) => {
       if (currentlyPlaying === id) {
+        console.log(`${id} is already playing.`);
         return;
       }
       if (id in musicDict) {
+        console.log(`Stopping previous music and playing ${id}.`);
         stopAllMusic();
         const song = musicDict[id];
         song.play();

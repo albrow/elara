@@ -4,7 +4,7 @@ import { Fragment, useCallback } from "react";
 
 import { MdLock } from "react-icons/md";
 import { Scene } from "../../contexts/scenes";
-import DisablableLink from "../disablable_link";
+import DisablableLink from "../scene_link";
 
 interface SceneLinkProps {
   scene: Scene;
@@ -67,8 +67,7 @@ export default function SceneLink(props: SceneLinkProps) {
 
   return (
     <DisablableLink
-      routeName={props.scene.routeName}
-      routeParams={props.scene.routeParams}
+      scene={props.scene}
       disabled={!props.scene.unlocked}
       onClick={props.onClick}
     >

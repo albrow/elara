@@ -73,12 +73,12 @@ export function useSceneNavigator() {
   const JOURNAL_PAGES = useJournalPages();
   const { getSoundOrNull } = useSoundManager();
   const soundTimeout = useRef<NodeJS.Timeout | null>(null);
+  const musicTimeout = useRef<NodeJS.Timeout | null>(null);
   const [_, { unlockFunctions }] = useSaveData();
   const { requestSong, stopAllMusic } = useJukebox();
 
   const navigateToScene = useCallback(
     (scene: Scene) => {
-      stopAllMusic();
       router.navigate(scene.routeName, scene.routeParams ?? {});
 
       // Check if the scene has an initial sound. If so, play it
@@ -94,7 +94,19 @@ export function useSceneNavigator() {
         }
       }
 
-      // TODO(albrow): Play a new song based on the scene.
+      // Check if the scene has music. If so, play it after a short delay.
+      console.log("scene.music", scene.music);
+      if (scene.music != null) {
+        if (musicTimeout.current) {
+          clearTimeout(musicTimeout.current);
+        }
+        musicTimeout.current = setTimeout(() => {
+          console.log(`requesting song: ${scene.music}`);
+          requestSong(scene.music!);
+        }, SOUND_DELAY_TIME_MS);
+      } else {
+        stopAllMusic();
+      }
 
       // If the scene we're navigating too has any new functions to unlock,
       // unlock them.
@@ -102,7 +114,7 @@ export function useSceneNavigator() {
         unlockFunctions(scene.newFunctions);
       }
     },
-    [getSoundOrNull, router, stopAllMusic, unlockFunctions]
+    [getSoundOrNull, requestSong, router, stopAllMusic, unlockFunctions]
   );
 
   const navigateToNextScene = useCallback(() => {

@@ -39,11 +39,40 @@ export interface Scene extends RawScene {
   index: number;
   levelIndex?: number;
   nextScene?: Scene;
+  // Music that should be played for this scene (if any).
+  music?: string;
 }
 
 const levelData: Map<string, LevelData> = new Map(
   Object.entries(get_level_data() as any)
 );
+
+const musicMap: Record<string, string> = {
+  movement: "gettingOffTheGround",
+  movement_part_two: "gettingOffTheGround",
+  energy_part_one: "gettingOffTheGround",
+  loops_part_one: "gettingOffTheGround",
+  loops_part_two: "gettingOffTheGround",
+  buttons_part_one: "gettingOffTheGround",
+  button_and_gate: "gettingOffTheGround",
+  data_points_part_one: "driftingIntoSpace",
+  gates: "driftingIntoSpace",
+  variables_intro: "driftingIntoSpace",
+  gate_and_data_point: "driftingIntoSpace",
+  gate_and_data_point_part_two: "driftingIntoSpace",
+  asteroid_strike: "driftingIntoSpace",
+  asteroid_strike_part_two: "driftingIntoSpace",
+  partly_disabled_movement: "gettingOffTheGround",
+  reimplement_turn_right: "gettingOffTheGround",
+  telepad_part_one: "gettingOffTheGround",
+  telepad_part_two: "gettingOffTheGround",
+  telepads_and_while_loop: "gettingOffTheGround",
+  enemies_part_one: "measuringTheChallenge",
+  enemies_part_two: "measuringTheChallenge",
+  enemies_with_telepad: "measuringTheChallenge",
+  enemies_and_asteroids: "measuringTheChallenge",
+  big_enemy: "puttingItAllTogether",
+};
 
 // Special levels used for runnable examples.
 export const SANDBOX_LEVEL = levelData.get("sandbox")!;
@@ -93,8 +122,6 @@ function journalScene(sectionName: string, newFunctions?: string[]): RawScene {
   };
 }
 
-// TODO(albrow): Define which functions should be unlocked at scene end
-// (or alternatively when the scene is unlocked).
 const RAW_SCENES: RawScene[] = [
   dialogScene("intro"),
   levelScene(
@@ -399,6 +426,7 @@ function processScenes(
       false,
     levelIndex: getLevelIndexFromScene(scenes, scene),
     unlocked: false, // Will update later.
+    music: musicMap[scene.level?.short_name!] ?? undefined,
   }));
 
   result = unlockScenes(result);
