@@ -8,11 +8,18 @@ import {
 } from "react";
 
 import { useSaveData } from "../hooks/save_data_hooks";
-import prelude from "../audio/music/prelude.ogg";
-import preludeFallback from "../audio/music/prelude.mp3";
 import { Playable } from "../lib/playables";
 import { Sound } from "../lib/playables/sound";
 import { volumeToGain } from "../lib/utils";
+
+import prelude from "../audio/music/prelude.ogg";
+import preludeFallback from "../audio/music/prelude.mp3";
+import gettingOffTheGround from "../audio/music/getting_off_the_ground.ogg";
+import gettingOffTheGroundFallback from "../audio/music/getting_off_the_ground.mp3";
+import driftingIntoSpace from "../audio/music/drifting_into_space.ogg";
+import driftingIntoSpaceFallback from "../audio/music/drifting_into_space.mp3";
+import puttingItAllTogether from "../audio/music/putting_it_all_together.ogg";
+import puttingItAllTogetherFallback from "../audio/music/putting_it_all_together.mp3";
 
 // How much to lower the music volume temporarily when ducking is enabled.
 const DUCK_LEVEL = 0.5;
@@ -70,6 +77,30 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         1.0,
         true,
         4000
+      ),
+      gettingOffTheGround: new Sound(
+        "gettingOffTheGround",
+        "music",
+        [gettingOffTheGround, gettingOffTheGroundFallback],
+        1.0,
+        true,
+        1000
+      ),
+      driftingIntoSpace: new Sound(
+        "driftingIntoSpace",
+        "music",
+        [driftingIntoSpace, driftingIntoSpaceFallback],
+        1.0,
+        true,
+        1000
+      ),
+      puttingItAllTogether: new Sound(
+        "puttingItAllTogether",
+        "music",
+        [puttingItAllTogether, puttingItAllTogetherFallback],
+        1.0,
+        true,
+        10
       ),
     }),
     []
