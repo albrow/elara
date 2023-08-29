@@ -43,8 +43,8 @@ export class RoundRobinSoundGroup implements Playable {
     this._sounds.forEach((sound) => sound.setCatGain(gain));
   }
 
-  play(): void {
-    this._sounds[this._currentSoundIndex].play();
+  play(fadeIn?: number): void {
+    this._sounds[this._currentSoundIndex].play(fadeIn);
     this._currentSoundIndex =
       (this._currentSoundIndex + 1) % this._sounds.length;
   }
@@ -53,7 +53,11 @@ export class RoundRobinSoundGroup implements Playable {
     this._sounds[this._currentSoundIndex].pause();
   }
 
-  stop(): void {
-    this._sounds.forEach((sound) => sound.stop());
+  stop(fadeOut?: number): void {
+    this._sounds.forEach((sound) => sound.stop(fadeOut));
+  }
+
+  isPlaying(): boolean {
+    return this._sounds[this._currentSoundIndex].isPlaying();
   }
 }

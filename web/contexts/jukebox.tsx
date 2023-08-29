@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -23,6 +24,8 @@ import puttingItAllTogetherFallback from "../audio/music/putting_it_all_together
 
 // How much to lower the music volume temporarily when ducking is enabled.
 const DUCK_LEVEL = 0.5;
+// How long it takes to fade out one song before playing the next.
+const FADE_OUT_TIME_MS = 1000;
 
 interface Jukebox {
   requestSong: (id: string) => void;
@@ -59,6 +62,8 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
   // tempMusicGain is used for ducking (i.e. temporary volume reduction)
   const [tempMusicGain, setTempMusicGain] = useState(1.0);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+  // timeout used to transition between songs
+  const transitionTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const musicGain = useMemo(
     () => volumeToGain(masterGain * relMusicGain * tempMusicGain),
@@ -114,31 +119,45 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
       });
   }, [musicGain, musicDict]);
 
-  const stopAllMusic = useCallback(() => {
-    console.log("Stopping all music.");
-    Object.values(musicDict)
-      .filter((sound) => sound.category === "music")
-      .forEach((sound) => {
-        sound.stop();
-      });
-    setCurrentlyPlaying(null);
-  }, [musicDict]);
+  const stopAllMusic = useCallback(
+    (fadeOut?: number) => {
+      Object.values(musicDict)
+        .filter((sound) => sound.category === "music")
+        .forEach((sound) => {
+          if (sound.isPlaying()) {
+            sound.stop(fadeOut);
+          }
+        });
+      setCurrentlyPlaying(null);
+    },
+    [musicDict]
+  );
 
   const requestSong = useCallback(
     (id: string) => {
+      if (musicDict[id] == null) {
+        throw new Error(`No song with id ${id}`);
+      }
       if (currentlyPlaying === id) {
         console.log(`${id} is already playing.`);
         return;
       }
-      if (id in musicDict) {
-        console.log(`Stopping previous music and playing ${id}.`);
-        stopAllMusic();
-        const song = musicDict[id];
-        song.play();
-        setCurrentlyPlaying(id);
+      const song = musicDict[id];
+      if (currentlyPlaying !== null) {
+        console.log(`Fading out previous music and playing ${id}.`);
+        stopAllMusic(FADE_OUT_TIME_MS);
+        if (transitionTimeout.current) {
+          clearTimeout(transitionTimeout.current);
+        }
+        transitionTimeout.current = setTimeout(() => {
+          console.log(`Fade out ended. Starting ${id}.`);
+          song.play();
+        }, FADE_OUT_TIME_MS);
       } else {
-        throw new Error(`No song with id ${id}`);
+        console.log(`No previous music playing. Starting ${id} immediately.`);
+        song.play();
       }
+      setCurrentlyPlaying(id);
     },
     [currentlyPlaying, musicDict, stopAllMusic]
   );

@@ -72,13 +72,14 @@ export class Sound implements Playable {
     this._howl?.mute(false);
   }
 
-  play() {
-    if (this._fadeIn > 0) {
+  play(fadeIn?: number) {
+    const fadeInVal = fadeIn ?? this._fadeIn;
+    if (fadeInVal > 0) {
       this._howl.volume(0);
     }
     this._howl?.play();
-    if (this._fadeIn > 0) {
-      this._howl.fade(0, this._getTotalGain(), this._fadeIn);
+    if (fadeInVal > 0) {
+      this._howl.fade(0, this._getTotalGain(), fadeInVal);
     }
   }
 
@@ -86,7 +87,18 @@ export class Sound implements Playable {
     this._howl?.pause();
   }
 
-  stop() {
-    this._howl?.stop();
+  stop(fadeOut?: number) {
+    if (fadeOut && fadeOut > 0) {
+      this._howl?.fade(this._getTotalGain(), 0, fadeOut).once("fade", () => {
+        this._howl?.stop();
+        this._howl?.volume(this._getTotalGain());
+      });
+    } else {
+      this._howl?.stop();
+    }
+  }
+
+  isPlaying(): boolean {
+    return this._howl?.playing() ?? false;
   }
 }
