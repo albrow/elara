@@ -19,7 +19,8 @@ const DUCK_LEVEL = 0.5;
 
 interface Jukebox {
   requestSong: (id: string) => void;
-  stopMusic: () => void;
+  stopSong: (id: string) => void;
+  stopAllMusic: () => void;
   duckMusic: () => void;
   unduckMusic: () => void;
 }
@@ -28,7 +29,10 @@ export const JukeboxContext = createContext<Jukebox>({
   requestSong: () => {
     throw new Error("JukeboxContext not initialized");
   },
-  stopMusic: () => {
+  stopSong: () => {
+    throw new Error("JukeboxContext not initialized");
+  },
+  stopAllMusic: () => {
     throw new Error("JukeboxContext not initialized");
   },
   duckMusic: () => {
@@ -79,12 +83,13 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
       });
   }, [musicGain, musicDict]);
 
-  const stopMusic = useCallback(() => {
+  const stopAllMusic = useCallback(() => {
     Object.values(musicDict)
       .filter((sound) => sound.category === "music")
       .forEach((sound) => {
         sound.stop();
       });
+    setCurrentlyPlaying(null);
   }, [musicDict]);
 
   const requestSong = useCallback(
@@ -93,7 +98,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         return;
       }
       if (id in musicDict) {
-        stopMusic();
+        stopAllMusic();
         const song = musicDict[id];
         song.play();
         setCurrentlyPlaying(id);
@@ -101,7 +106,20 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         throw new Error(`No song with id ${id}`);
       }
     },
-    [currentlyPlaying, musicDict, stopMusic]
+    [currentlyPlaying, musicDict, stopAllMusic]
+  );
+
+  const stopSong = useCallback(
+    (id: string) => {
+      if (id in musicDict) {
+        const song = musicDict[id];
+        song.stop();
+        setCurrentlyPlaying(null);
+      } else {
+        throw new Error(`No song with id ${id}`);
+      }
+    },
+    [musicDict]
   );
 
   const duckMusic = useCallback(() => {
@@ -115,11 +133,12 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
   const providerValue = useMemo(
     () => ({
       requestSong,
-      stopMusic,
+      stopSong,
+      stopAllMusic,
       duckMusic,
       unduckMusic,
     }),
-    [requestSong, duckMusic, stopMusic, unduckMusic]
+    [requestSong, stopSong, duckMusic, stopAllMusic, unduckMusic]
   );
 
   return (

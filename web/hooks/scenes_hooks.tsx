@@ -74,10 +74,11 @@ export function useSceneNavigator() {
   const { getSoundOrNull } = useSoundManager();
   const soundTimeout = useRef<NodeJS.Timeout | null>(null);
   const [_, { unlockFunctions }] = useSaveData();
-  const { requestSong } = useJukebox();
+  const { requestSong, stopAllMusic } = useJukebox();
 
   const navigateToScene = useCallback(
     (scene: Scene) => {
+      stopAllMusic();
       router.navigate(scene.routeName, scene.routeParams ?? {});
 
       // Check if the scene has an initial sound. If so, play it
@@ -93,13 +94,15 @@ export function useSceneNavigator() {
         }
       }
 
+      // TODO(albrow): Play a new song based on the scene.
+
       // If the scene we're navigating too has any new functions to unlock,
       // unlock them.
       if (scene.newFunctions != null && scene.newFunctions.length > 0) {
         unlockFunctions(scene.newFunctions);
       }
     },
-    [getSoundOrNull, router, unlockFunctions]
+    [getSoundOrNull, router, stopAllMusic, unlockFunctions]
   );
 
   const navigateToNextScene = useCallback(() => {
@@ -114,8 +117,10 @@ export function useSceneNavigator() {
   }, [currScene, navigateToScene]);
 
   const navigateToHub = useCallback(() => {
+    // TODO(albrow): Play ambient hub music.
+    stopAllMusic();
     router.navigate("hub");
-  }, [router]);
+  }, [router, stopAllMusic]);
 
   const navigateToTitle = useCallback(() => {
     router.navigate("title");
