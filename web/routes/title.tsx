@@ -17,6 +17,7 @@ import { humanFriendlyTimestamp } from "../lib/utils";
 import staryBgImg from "../images/starry_bg.webp";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import logoImg from "../images/logo.webp";
+import { useJukebox } from "../hooks/jukebox_hooks";
 
 export default function Title() {
   const [saveData, { resetAllSaveData }] = useSaveData();
@@ -24,6 +25,7 @@ export default function Title() {
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [confirmNewGameVisible, setConfirmNewGameVisible] = useState(false);
   const { navigateToHub } = useSceneNavigator();
+  const { stopAllMusic } = useJukebox();
 
   const hasExistingSave = useMemo(
     () =>
@@ -55,8 +57,9 @@ export default function Title() {
   }, []);
 
   const handleAbout = useCallback(() => {
+    stopAllMusic();
     router.navigate("about");
-  }, [router]);
+  }, [router, stopAllMusic]);
 
   return (
     <Box
