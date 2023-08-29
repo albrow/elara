@@ -62,8 +62,6 @@ import whoIam from "../audio/dialog/who_i_am.ogg";
 import whoIamFallback from "../audio/dialog/who_i_am.mp3";
 import whereYouAre from "../audio/dialog/where_you_are.ogg";
 import whereYouAreFallback from "../audio/dialog/where_you_are.mp3";
-import prelude from "../audio/music/prelude.ogg";
-import preludeFallback from "../audio/music/prelude.mp3";
 
 import { useSaveData } from "../hooks/save_data_hooks";
 import { volumeToGain } from "../lib/utils";
@@ -73,8 +71,6 @@ interface SoundManager {
   getSoundOrNull: (id: string) => Playable | null;
   playSound: (id: string) => void;
   stopAllSoundEffects: () => void;
-  setMasterGain: (gain: number) => void;
-  setSoundEffectsGain: (gain: number) => void;
 }
 
 export const SoundManagerContext = createContext<SoundManager>({
@@ -90,12 +86,6 @@ export const SoundManagerContext = createContext<SoundManager>({
   stopAllSoundEffects: () => {
     throw new Error("SoundManagerContext not initialized");
   },
-  setMasterGain: () => {
-    throw new Error("SoundManagerContext not initialized");
-  },
-  setSoundEffectsGain: () => {
-    throw new Error("SoundManagerContext not initialized");
-  },
 });
 
 export function SoundProvider(props: PropsWithChildren<{}>) {
@@ -109,20 +99,15 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const [relDialogGain, setRelDialogGain] = useState(
     saveData.settings.dialogVolume
   );
-  const [relMusicGain, setRelMusicGain] = useState(
-    saveData.settings.musicVolume
-  );
 
   // Recalculate relative and total gains whenever the settings change.
   useEffect(() => {
     setMasterGain(saveData.settings.masterVolume);
     setRelSfxGain(saveData.settings.soundEffectsVolume);
     setRelDialogGain(saveData.settings.dialogVolume);
-    setRelMusicGain(saveData.settings.musicVolume);
   }, [
     saveData.settings.dialogVolume,
     saveData.settings.masterVolume,
-    saveData.settings.musicVolume,
     saveData.settings.soundEffectsVolume,
   ]);
   const sfxGain = useMemo(
@@ -133,23 +118,11 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
     () => volumeToGain(masterGain * relDialogGain),
     [masterGain, relDialogGain]
   );
-  const musicGain = useMemo(
-    () => volumeToGain(masterGain * relMusicGain),
-    [masterGain, relMusicGain]
-  );
 
   // TODO(albrow): Sfx for reading data, collecting energy cells,
   // opening gates, being destroyed/attacked by malfunctioning rover.
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
-      // silence: new Sound(
-      //   "silence",
-      //   "sfx",
-      //   [
-      //     "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA",
-      //   ],
-      //   0
-      // ),
       move: new RoundRobinSoundGroup("move", [
         new Sound("move_0", "sfx", [moveSound0, moveSound0Fallback], 0.4),
         new Sound("move_1", "sfx", [moveSound1, moveSound1Fallback], 0.4),
@@ -238,14 +211,6 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         [whereYouAre, whereYouAreFallback],
         0.8
       ),
-      music_prelude: new Sound(
-        "music_prelude",
-        "music",
-        [prelude, preludeFallback],
-        1.0,
-        true,
-        4000
-      ),
     }),
     []
   );
@@ -265,13 +230,6 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         sound.setCatGain(dialogGain);
       });
   }, [dialogGain, soundDict]);
-  useEffect(() => {
-    Object.values(soundDict)
-      .filter((sound) => sound.category === "music")
-      .forEach((sound) => {
-        sound.setCatGain(musicGain);
-      });
-  }, [musicGain, soundDict]);
 
   // getSound is used when you need more control over the sound (e.g. need
   // to play, pause, stop, or add effects).
@@ -325,17 +283,8 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
       getSoundOrNull,
       playSound,
       stopAllSoundEffects,
-      setMasterGain,
-      setSoundEffectsGain: setRelSfxGain,
     }),
-    [
-      getSound,
-      getSoundOrNull,
-      playSound,
-      stopAllSoundEffects,
-      setMasterGain,
-      setRelSfxGain,
-    ]
+    [getSound, getSoundOrNull, playSound, stopAllSoundEffects]
   );
 
   return (

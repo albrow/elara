@@ -7,6 +7,7 @@ import { ScenesContext } from "../contexts/scenes";
 import { SOUND_DELAY_TIME_MS } from "../lib/constants";
 import { useSoundManager } from "./sound_manager_hooks";
 import { useSaveData } from "./save_data_hooks";
+import { useJukebox } from "./jukebox_hooks";
 
 function getSceneIndexFromRoute(
   scenes: Scene[],
@@ -70,9 +71,10 @@ export function useSceneNavigator() {
   const currScene = useCurrScene();
   const router = useRouter();
   const JOURNAL_PAGES = useJournalPages();
-  const { getSound, getSoundOrNull } = useSoundManager();
+  const { getSoundOrNull } = useSoundManager();
   const soundTimeout = useRef<NodeJS.Timeout | null>(null);
   const [_, { unlockFunctions }] = useSaveData();
+  const { requestSong } = useJukebox();
 
   const navigateToScene = useCallback(
     (scene: Scene) => {
@@ -117,21 +119,19 @@ export function useSceneNavigator() {
 
   const navigateToTitle = useCallback(() => {
     router.navigate("title");
-
     let timeout: NodeJS.Timeout | null = null;
-    const sound = getSound("music_prelude");
     if (timeout) {
       clearTimeout(timeout);
     }
     timeout = setTimeout(() => {
-      sound.play();
+      requestSong("prelude");
     }, SOUND_DELAY_TIME_MS);
     return () => {
       if (timeout) {
         clearTimeout(timeout);
       }
     };
-  }, [getSound, router]);
+  }, [requestSong, router]);
 
   const navigateToNextJournalPage = useCallback(() => {
     const unlockedPages = JOURNAL_PAGES.filter((page) => page.unlocked);

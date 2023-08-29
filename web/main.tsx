@@ -78,6 +78,7 @@ const elaraTheme = extendTheme({
   const { ScenesProvider } = await import("./contexts/scenes");
   const { HintsModalProvider } = await import("./contexts/hints_modal");
   const { SoundProvider } = await import("./contexts/sound_manager");
+  const { JukeboxProvider } = await import("./contexts/jukebox");
 
   const routes: Route[] = [
     {
@@ -138,15 +139,17 @@ const elaraTheme = extendTheme({
         <ChakraProvider theme={elaraTheme} resetCSS>
           <SaveDataProvider>
             <SoundProvider>
-              <ScenesProvider>
-                <ShortsModalProvider>
-                  <ErrorModalProvider>
-                    <HintsModalProvider>
-                      <Root />
-                    </HintsModalProvider>
-                  </ErrorModalProvider>
-                </ShortsModalProvider>
-              </ScenesProvider>
+              <JukeboxProvider>
+                <ScenesProvider>
+                  <ShortsModalProvider>
+                    <ErrorModalProvider>
+                      <HintsModalProvider>
+                        <Root />
+                      </HintsModalProvider>
+                    </ErrorModalProvider>
+                  </ShortsModalProvider>
+                </ScenesProvider>
+              </JukeboxProvider>
             </SoundProvider>
           </SaveDataProvider>
         </ChakraProvider>
