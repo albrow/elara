@@ -19,6 +19,8 @@ import gettingOffTheGround from "../audio/music/getting_off_the_ground.ogg";
 import gettingOffTheGroundFallback from "../audio/music/getting_off_the_ground.mp3";
 import driftingIntoSpace from "../audio/music/drifting_into_space.ogg";
 import driftingIntoSpaceFallback from "../audio/music/drifting_into_space.mp3";
+import lookingAhead from "../audio/music/looking_ahead.ogg";
+import lookingAheadFallback from "../audio/music/looking_ahead.mp3";
 import measuringTheChallenge from "../audio/music/measuring_the_challenge.ogg";
 import measuringTheChallengeFallback from "../audio/music/measuring_the_challenge.mp3";
 import puttingItAllTogether from "../audio/music/putting_it_all_together.ogg";
@@ -97,6 +99,14 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         "driftingIntoSpace",
         "music",
         [driftingIntoSpace, driftingIntoSpaceFallback],
+        1.0,
+        true,
+        10
+      ),
+      lookingAhead: new Sound(
+        "lookingAhead",
+        "music",
+        [lookingAhead, lookingAheadFallback],
         1.0,
         true,
         10
