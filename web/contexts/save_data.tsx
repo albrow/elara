@@ -14,7 +14,7 @@ import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
 import { SectionName } from "../components/journal/sections";
 
-export const SAVE_DATA_VERSION = 14;
+export const SAVE_DATA_VERSION = 15;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 // Amount of time (in milliseconds) to wait for further updates before
@@ -65,7 +65,7 @@ export interface SaveData {
 
 const DEFUALT_SETTINGS: Settings = {
   masterVolume: 0.8,
-  musicVolume: 0.8,
+  musicVolume: 0.6,
   soundEffectsVolume: 1,
   dialogVolume: 1,
 };
@@ -296,6 +296,20 @@ function migrateSaveData(saveData: SaveData): SaveData {
       }
       return treeName;
     });
+  }
+
+  // Version 15 changed the default musicVolume from 0.8 to 0.6.
+  // We also want to change the user's current musicVolume to 0.6
+  // if it was previousy set to anything above 0.6. In other words,
+  // 0.6 is the new default maximum volume (but users can still
+  // increase it later if they want to). The reason for this change is
+  // that the new mastered music is slightly louder than before.
+  if (newData.version === 14) {
+    newData.version = 15;
+
+    if (newData.settings.musicVolume > 0.6) {
+      newData.settings.musicVolume = 0.6;
+    }
   }
 
   return newData;
@@ -679,7 +693,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["intro"],
           seenTutorialShorts: [],
-          settings: DEFUALT_SETTINGS,
+          settings: { ...DEFUALT_SETTINGS, musicVolume: 0.9 },
           seenJournalPages: ["functions", "comments", "strings", "loops"],
         };
 
