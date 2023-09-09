@@ -282,6 +282,83 @@ fn convert_var_not_found_error(var_name: &str, pos: &rhai::Position) -> BetterEr
     }
 }
 
+fn convert_missing_comma_separate_args_error(
+    script: String,
+    desc: &str,
+    pos: &rhai::Position,
+) -> BetterError {
+    // Note: There are really two underlying reasons why this error message may appear
+    // (the Rhai parser does not distinguish between them):
+    //
+    //  1. The function call is missing a comma between two or more arguments.
+    //  2. The function call is missing a closing parenthesis.
+    //
+    // We want to narrow down which of these is the case so we can give a better error message.
+    // Or, as a fallback, we just mention both possibilities in the error message.
+
+    // First, extract the function name from the error description.
+    // Descriptions have the form: `to separate the arguments to function call 'say'`
+    let re = Regex::new(r"to separate the arguments to function call '(.*)'$").unwrap();
+    let captures = re.captures(desc).unwrap();
+    let fn_name = captures.get(1).unwrap().as_str();
+
+    // Find the line where the function call is.
+    let mut line = pos.line().unwrap();
+    while line >= 1 {
+        let prev_line = script.lines().nth(line - 1).unwrap();
+        if prev_line.contains(fn_name) {
+            break;
+        }
+        line = line - 1;
+    }
+
+    // Find the position of the function call on the line.
+    let mut col = pos.position().unwrap();
+    let line_text = script.lines().nth(line - 1).unwrap();
+    let mut fn_name_found = false;
+    for c in line_text.chars() {
+        if c == '(' {
+            fn_name_found = true;
+            continue;
+        }
+        if fn_name_found {
+            if c == ')' {
+                break;
+            }
+            col = col + 1;
+        }
+    }
+
+    // If the function is a built-in function, we know for sure whether or not it
+    // should have multiple arguments. This helps us narrow down the error message.
+    if let Some(builtin_fn) = BUILTIN_FUNCTIONS.get(fn_name) {
+        if builtin_fn.arg_types.len() <= 1 {
+            return BetterError {
+                message: format!(
+                    "Syntax Error: Missing a closing parenthesis ')' for the {} function.",
+                    fn_name
+                ),
+                line: Some(line),
+                col: Some(col),
+            };
+        }
+    }
+
+    // Otherwise, if the function is not a built-in function, or if it has more than
+    // one argument, we can't narrow down the error message. The error message should
+    // mention both possibilities.
+    return BetterError {
+        message: format!(
+            "Syntax Error: Might be a missing closing parenthesis ')' for the \
+            {} function. Or if the function expects more than one input, you might \
+            be missing a comma ',' to separate them.",
+            fn_name
+        ),
+        line: Some(line),
+        col: Some(col),
+    };
+}
+
 pub fn convert_err(
     avail_funcs: &Vec<String>,
     disabled_funcs: &'static Vec<&'static str>,
@@ -303,6 +380,9 @@ pub fn convert_err(
         ) => {
             if token == ";" {
                 return convert_missing_semicolon_error(script.as_str(), desc, pos);
+            }
+            if token == "," && desc.as_str().contains("to separate the arguments") {
+                return convert_missing_comma_separate_args_error(script, desc, pos);
             }
         }
         EvalAltResult::ErrorFunctionNotFound(ref fn_sig, ref pos) => {
