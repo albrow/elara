@@ -7,6 +7,8 @@ export const MIN_BG_WIDTH = "980px";
 
 // How long to wait when navigating to a new scene before playing the sound.
 export const SOUND_DELAY_TIME_MS = 100;
+// How long it takes to fade out one song before playing the next.
+export const MUSIC_FADE_OUT_TIME_MS = 1000;
 
 // Constants related to the game board and game logic.
 export const WIDTH = 12;

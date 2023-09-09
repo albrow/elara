@@ -12,6 +12,7 @@ import { useSaveData } from "../hooks/save_data_hooks";
 import { Playable } from "../lib/playables";
 import { Sound } from "../lib/playables/sound";
 import { volumeToGain } from "../lib/utils";
+import { MUSIC_FADE_OUT_TIME_MS } from "../lib/constants";
 
 import prelude from "../audio/music/prelude.ogg";
 import preludeFallback from "../audio/music/prelude.mp3";
@@ -28,13 +29,11 @@ import puttingItAllTogetherFallback from "../audio/music/putting_it_all_together
 
 // How much to lower the music volume temporarily when ducking is enabled.
 const DUCK_LEVEL = 0.5;
-// How long it takes to fade out one song before playing the next.
-const FADE_OUT_TIME_MS = 1000;
 
 interface Jukebox {
   requestSong: (id: string) => void;
   stopSong: (id: string) => void;
-  stopAllMusic: () => void;
+  stopAllMusic: (fadeOut?: number) => void;
   duckMusic: () => void;
   unduckMusic: () => void;
 }
@@ -159,22 +158,18 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         throw new Error(`No song with id ${id}`);
       }
       if (currentlyPlaying === id) {
-        console.log(`${id} is already playing.`);
         return;
       }
       const song = musicDict[id];
       if (currentlyPlaying !== null) {
-        console.log(`Fading out previous music and playing ${id}.`);
-        stopAllMusic(FADE_OUT_TIME_MS);
+        stopAllMusic(MUSIC_FADE_OUT_TIME_MS);
         if (transitionTimeout.current) {
           clearTimeout(transitionTimeout.current);
         }
         transitionTimeout.current = setTimeout(() => {
-          console.log(`Fade out ended. Starting ${id}.`);
           song.play();
-        }, FADE_OUT_TIME_MS);
+        }, MUSIC_FADE_OUT_TIME_MS);
       } else {
-        console.log(`No previous music playing. Starting ${id} immediately.`);
         song.play();
       }
       setCurrentlyPlaying(id);

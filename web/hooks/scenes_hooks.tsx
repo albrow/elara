@@ -4,7 +4,7 @@ import type { State } from "router5";
 
 import type { Scene } from "../contexts/scenes";
 import { ScenesContext } from "../contexts/scenes";
-import { SOUND_DELAY_TIME_MS } from "../lib/constants";
+import { MUSIC_FADE_OUT_TIME_MS, SOUND_DELAY_TIME_MS } from "../lib/constants";
 import { useSoundManager } from "./sound_manager_hooks";
 import { useSaveData } from "./save_data_hooks";
 import { useJukebox } from "./jukebox_hooks";
@@ -95,17 +95,15 @@ export function useSceneNavigator() {
       }
 
       // Check if the scene has music. If so, play it after a short delay.
-      console.log("scene.music", scene.music);
       if (scene.music != null) {
         if (musicTimeout.current) {
           clearTimeout(musicTimeout.current);
         }
         musicTimeout.current = setTimeout(() => {
-          console.log(`requesting song: ${scene.music}`);
           requestSong(scene.music!);
         }, SOUND_DELAY_TIME_MS);
       } else {
-        stopAllMusic();
+        stopAllMusic(MUSIC_FADE_OUT_TIME_MS);
       }
 
       // If the scene we're navigating too has any new functions to unlock,
@@ -130,7 +128,7 @@ export function useSceneNavigator() {
 
   const navigateToHub = useCallback(() => {
     // TODO(albrow): Play ambient hub music.
-    stopAllMusic();
+    stopAllMusic(MUSIC_FADE_OUT_TIME_MS);
     router.navigate("hub");
   }, [router, stopAllMusic]);
 
