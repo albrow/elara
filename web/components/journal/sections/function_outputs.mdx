@@ -1,5 +1,6 @@
 import RunnableExample from "../runnable_example";
 import YoutubeVideo from "../youtube_video";
+import Card from "../card";
 
 import { SANDBOX_WITH_DATA_POINT_LEVEL } from "../../../contexts/scenes";
 
@@ -11,15 +12,13 @@ Some functions may have an output, also called a "return value". If a
 function has an output, it just means that it spits out a result whenever
 it is called, and you can do things with the result.
 
-ℹ️ **Tip:** Not all functions have an output. For example, the `move_forward` and
-`turn_left` functions do not output anything.
+<Card type="tip">Not all functions have an output. For example, the `move_forward` and `turn_left` functions do not output anything.</Card>
 
 Let's take a look at a function called `get_orientation`. It outputs a string
 based on which way the rover is facing. So for example, if the rover is facing to the
 right, the `get_orientation` function will output `"right"`.
 
-💡 **Try it:** Try adding more turns to the code below and see how the output
-of `get_orientation` changes.
+<Card type="try_it">Try adding more turns to the code below and see how the output of the `get_orientation` function changes.</Card>
 
 <RunnableExample
   code={`// The get_orientation function outputs the direction the
@@ -37,8 +36,7 @@ The example below introduces a "data point". Data points are scattered throughou
 Elara and can hold all kinds of information. The `read_data` function outputs whatever
 data was stored in the data point.
 
-⚠️ **Warning** The `read_data` function only works if the rover is next to a data
-point. Otherwise, the function will cause an error.
+<Card type="warning">The `read_data` function only works if the rover is next to a data point. Otherwise, it will cause an error.</Card>
 
 <RunnableExample
   code={`// This code uses the *output* from the read_data function as
