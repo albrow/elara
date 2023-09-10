@@ -40,6 +40,7 @@ export interface Scene extends RawScene {
   index: number;
   levelIndex?: number;
   nextScene?: Scene;
+  prevScene?: Scene;
   // Music that should be played for this scene (if any).
   music?: string;
 }
@@ -427,25 +428,28 @@ function processScenes(
   seenCutscenes: string[],
   scenes: RawScene[]
 ): Scene[] {
-  let result: Scene[] = scenes.map((scene, index) => ({
-    ...scene,
-    index,
-    completed: isSceneCompleted(
-      levelStates,
-      seenJournalPages,
-      seenDialogTrees,
-      seenCutscenes,
-      scene
-    ),
-    challengeCompleted:
-      (scene.type === "level" &&
-        levelStates[scene.level?.short_name!] &&
-        levelStates[scene.level?.short_name!].challengeCompleted) ||
-      false,
-    levelIndex: getLevelIndexFromScene(scenes, scene),
-    unlocked: false, // Will be automatically set later.
-    music: musicMap[scene.level?.short_name!] ?? undefined,
-  }));
+  let result: Scene[] = scenes.map(
+    (scene, index) =>
+      ({
+        ...scene,
+        index,
+        completed: isSceneCompleted(
+          levelStates,
+          seenJournalPages,
+          seenDialogTrees,
+          seenCutscenes,
+          scene
+        ),
+        challengeCompleted:
+          (scene.type === "level" &&
+            levelStates[scene.level?.short_name!] &&
+            levelStates[scene.level?.short_name!].challengeCompleted) ||
+          false,
+        levelIndex: getLevelIndexFromScene(scenes, scene),
+        unlocked: false, // Will be automatically set later.
+        music: musicMap[scene.level?.short_name!] ?? undefined,
+      } as Scene)
+  );
 
   result = unlockScenes(result);
 
@@ -453,6 +457,9 @@ function processScenes(
   for (const s of result) {
     if (s.index < result.length - 1) {
       s.nextScene = result[s.index + 1];
+    }
+    if (s.index > 0) {
+      s.prevScene = result[s.index - 1];
     }
   }
 

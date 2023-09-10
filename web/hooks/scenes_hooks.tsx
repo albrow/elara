@@ -66,6 +66,18 @@ export function useNextUnlockedScene() {
   return scenes[0];
 }
 
+// Returns the next level which will be unlocked. I.e. the furst
+// level which is not unlocked.
+export function useNextLevelToBeUnlocked() {
+  const levels = useLevels();
+  for (let i = 0; i < levels.length; i += 1) {
+    if (!levels[i].unlocked) {
+      return levels[i];
+    }
+  }
+  return levels[levels.length - 1];
+}
+
 // A custom hook that allows for navigating between scenes.
 export function useSceneNavigator() {
   const currScene = useCurrScene();

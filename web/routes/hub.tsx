@@ -31,6 +31,15 @@ export default function Hub() {
     document.title = "Elara | Hub";
   }, [route.name]);
 
+  // Automatically navigate to the next unlocked scene if it is a cutscene.
+  // This helps prevent players from getting stuck since the cutscene must
+  // be completed before they can continue.
+  useEffect(() => {
+    if (nextUnlockedScene.type === "cutscene") {
+      navigateToScene(nextUnlockedScene);
+    }
+  }, [navigateToScene, nextUnlockedScene]);
+
   const journalUnlocked = useMemo(
     () => JOURNAL_PAGES[0].unlocked,
     [JOURNAL_PAGES]

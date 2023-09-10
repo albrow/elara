@@ -1,10 +1,14 @@
-import { Badge, Box, Button, Text } from "@chakra-ui/react";
-import { Fragment, useCallback } from "react";
+import { Badge, Box, Button, Text, Tooltip } from "@chakra-ui/react";
+import { Fragment, useCallback, useMemo } from "react";
 
 import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { Scene } from "../../contexts/scenes";
 import DisablableLink from "../scene_link";
+import {
+  useNextLevelToBeUnlocked,
+  useNextUnlockedScene,
+} from "../../hooks/scenes_hooks";
 
 interface LevelLinkProps {
   scene: Scene;
@@ -13,6 +17,9 @@ interface LevelLinkProps {
 }
 
 export default function LevelLink(props: LevelLinkProps) {
+  const nextLevelToBeUnlocked = useNextLevelToBeUnlocked();
+  const nextUnlockedScene = useNextUnlockedScene();
+
   const getHoverStyle = useCallback(() => {
     let style = {};
     if (!props.isLocked) {
@@ -130,6 +137,37 @@ export default function LevelLink(props: LevelLinkProps) {
     props.scene.type,
   ]);
 
+  // If the level is locked, we want to show a tooltip explaining why.
+  // However, we only need to show this tooltip in certain cases.
+  const enableLockExplanationTooltip = useMemo(
+    () =>
+      props.isLocked &&
+      nextLevelToBeUnlocked.name === props.scene.name &&
+      nextUnlockedScene.type !== "level",
+    [
+      nextLevelToBeUnlocked.name,
+      nextUnlockedScene.type,
+      props.isLocked,
+      props.scene.name,
+    ]
+  );
+
+  const lockExplanationText = useMemo(() => {
+    if (nextUnlockedScene.type === "cutscene") {
+      return `You must watch a cutscene first. (Beat the previous level, then press "Play Cutscene").`;
+    }
+    if (nextUnlockedScene.type === "dialog") {
+      return "Answer the video call to unlock this level.";
+    }
+    if (nextUnlockedScene.type === "journal") {
+      return "Read the latest journal page(s) to unlock this level.";
+    }
+    if (nextUnlockedScene.type === "level") {
+      return "Beat the previous level to unlock this one.";
+    }
+    throw new Error(`Unexpected scene type: ${nextUnlockedScene.type}`);
+  }, [nextUnlockedScene.type]);
+
   // TODO(albrow):
   //
   //    1. Show a preview for each level (thumbnail + brief description). Either a screen shot or render of the level at ~50% scale.
@@ -141,27 +179,40 @@ export default function LevelLink(props: LevelLinkProps) {
       disabled={props.isLocked}
       onClick={props.onClick}
     >
-      <Button
-        background="transparent"
-        _hover={getHoverStyle()}
-        w="100%"
-        textAlign="left"
-        justifyContent="left"
-        isDisabled={props.isLocked}
-        h="max-content"
-        px="14px"
-        py="6px"
-        mb="2px"
+      <Tooltip
+        label={lockExplanationText}
+        placement="bottom"
+        bgColor="red.700"
+        isDisabled={!enableLockExplanationTooltip}
+        mt="-10px"
       >
-        <Box>
-          <Text as="span" display="inline" fontWeight="bold" color="gray.300">
-            <Text display="inline" verticalAlign="middle" align="left" mr="8px">
-              {getSceneName()}
+        <Button
+          background="transparent"
+          _hover={getHoverStyle()}
+          w="100%"
+          textAlign="left"
+          justifyContent="left"
+          isDisabled={props.isLocked}
+          h="max-content"
+          px="14px"
+          py="6px"
+          mb="2px"
+        >
+          <Box>
+            <Text as="span" display="inline" fontWeight="bold" color="gray.300">
+              <Text
+                display="inline"
+                verticalAlign="middle"
+                align="left"
+                mr="8px"
+              >
+                {getSceneName()}
+              </Text>
+              {getSceneIcons()}
             </Text>
-            {getSceneIcons()}
-          </Text>
-        </Box>
-      </Button>
+          </Box>
+        </Button>
+      </Tooltip>
     </DisablableLink>
   );
 }
