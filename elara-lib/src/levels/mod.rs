@@ -23,6 +23,7 @@ mod partly_disabled_movement;
 mod reimplement_turn_right;
 mod sandbox;
 mod sandbox_with_data_point;
+mod server_room;
 mod telepad_part_one;
 mod telepad_part_two;
 mod telepads_and_while_loop;
@@ -132,6 +133,7 @@ lazy_static! {
         m.insert(button_and_gate::ButtonAndGate{}.short_name(), Box::new(button_and_gate::ButtonAndGate{}));
         m.insert(telepads_and_while_loop::TelepadsAndWhileLoop{}.short_name(), Box::new(telepads_and_while_loop::TelepadsAndWhileLoop{}));
         m.insert(big_enemy::BigEnemyLevel{}.short_name(), Box::new(big_enemy::BigEnemyLevel{}));
+        m.insert(server_room::ServerRoom{}.short_name(), Box::new(server_room::ServerRoom{}));
 
         m
     };

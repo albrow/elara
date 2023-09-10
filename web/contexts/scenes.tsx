@@ -360,6 +360,7 @@ const RAW_SCENES: RawScene[] = [
       "One of the gates is currently open. What happens if you press the button to close it?",
     ]
   ),
+  levelScene("server_room", [], []),
 ];
 
 const getLevelIndexFromScene = (

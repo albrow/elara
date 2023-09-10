@@ -30,6 +30,7 @@ import EnergyCell from "./energy_cell";
 import PasswordGate from "./password_gate";
 import Goal from "./goal";
 import Rock from "./rock";
+import Server from "./server";
 import Player from "./player";
 import Telepad from "./telepad";
 import Button from "./button";
@@ -169,15 +170,30 @@ export default function Board(props: BoardProps) {
           enableHoverInfo={props.enableHoverInfo}
         />
       ))}
-      {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => (
-        <Rock
-          // eslint-disable-next-line react/no-array-index-key
-          key={i}
-          offset={posToOffset(obstacle.pos)}
-          fuzzy={obstacle.fuzzy}
-          enableHoverInfo={props.enableHoverInfo}
-        />
-      ))}
+      {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => {
+        switch (obstacle.kind) {
+          case "rock":
+            return (
+              <Rock
+                // eslint-disable-next-line react/no-array-index-key
+                key={i}
+                offset={posToOffset(obstacle.pos)}
+                fuzzy={obstacle.fuzzy}
+                enableHoverInfo={props.enableHoverInfo}
+              />
+            );
+          case "server":
+            return (
+              <Server
+                // eslint-disable-next-line react/no-array-index-key
+                key={i}
+                offset={posToOffset(obstacle.pos)}
+              />
+            );
+          default:
+            throw new Error(`Unknown obstacle kind: ${obstacle.kind}`);
+        }
+      })}
       {(props.gameState.buttons as FuzzyButton[]).map((button, i) => (
         <Button
           // eslint-disable-next-line react/no-array-index-key
