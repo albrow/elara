@@ -29,7 +29,7 @@ import Enemy from "./enemy";
 import EnergyCell from "./energy_cell";
 import PasswordGate from "./password_gate";
 import Goal from "./goal";
-import Obstacle from "./obstacle";
+import Rock from "./rock";
 import Player from "./player";
 import Telepad from "./telepad";
 import Button from "./button";
@@ -170,7 +170,7 @@ export default function Board(props: BoardProps) {
         />
       ))}
       {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => (
-        <Obstacle
+        <Rock
           // eslint-disable-next-line react/no-array-index-key
           key={i}
           offset={posToOffset(obstacle.pos)}

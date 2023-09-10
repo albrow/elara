@@ -371,6 +371,10 @@ impl FuzzyState {
                         x: obstacle.pos.x as i32,
                         y: obstacle.pos.y as i32,
                     },
+                    kind: match obstacle.kind {
+                        simulation::ObstacleKind::Rock => "rock".to_string(),
+                        simulation::ObstacleKind::Server => "server".to_string(),
+                    },
                     fuzzy: fuzzy_obstacle.fuzzy,
                 }),
             );
@@ -600,10 +604,11 @@ pub struct FuzzyBigEnemy {
     pub fuzzy: bool,
 }
 
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct FuzzyObstacle {
     pub pos: Pos,
+    pub kind: String, // ObstacleKind
     pub fuzzy: bool,
 }
 

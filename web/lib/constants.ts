@@ -42,7 +42,7 @@ export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
 // We start with the sprites, i.e. art that appears on the game board.
 export const BG_INDEX = -100;
 export const BUTTON_WIRE_Z_INDEX = 10;
-export const OBSTACLE_Z_INDEX = 20;
+export const ROCK_Z_INDEX = 20;
 export const DATA_POINT_Z_INDEX = 30;
 export const UNLOCKED_GATE_Z_INDEX = 40;
 export const BUTTON_Z_INDEX = 50;

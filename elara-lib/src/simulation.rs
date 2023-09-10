@@ -483,17 +483,39 @@ impl BigEnemy {
 }
 
 #[derive(Clone, PartialEq, Debug)]
+/// The kind of obstacle. This determines how the obstacle is drawn, but
+/// doesn't affect the behavior of the simulation.
+pub enum ObstacleKind {
+    Rock,
+    Server,
+}
+
+#[derive(Clone, PartialEq, Debug)]
 pub struct Obstacle {
     pub pos: Pos,
+    pub kind: ObstacleKind,
 }
 
 impl Obstacle {
+    /// Creates a new obstacle with the default kind (Rock).
     pub fn new(x: u32, y: u32) -> Obstacle {
         Obstacle {
             pos: Pos {
                 x: x as i32,
                 y: y as i32,
             },
+            kind: ObstacleKind::Rock,
+        }
+    }
+
+    /// Creates a new obstacle with the given kind.
+    pub fn new_with_kind(x: u32, y: u32, kind: ObstacleKind) -> Obstacle {
+        Obstacle {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            kind,
         }
     }
 }

@@ -3,23 +3,22 @@ import { Box, Image } from "@chakra-ui/react";
 import { AnimateKeyframes } from "react-simple-animate";
 
 import {
-  OBSTACLE_Z_INDEX,
+  ROCK_Z_INDEX,
   SPRITE_DROP_SHADOW,
   TILE_SIZE,
 } from "../../lib/constants";
 import rockImgUrl from "../../images/board/rock.png";
-// import RockPage from "./hover_info_pages/rock.mdx";
 import { Offset } from "../../lib/utils";
 import AsteroidWarningPage from "./hover_info_pages/asteroid_warning.mdx";
 import BoardHoverInfo from "./board_hover_info";
 
-interface ObstacleProps {
+interface RockProps {
   offset: Offset;
   fuzzy: boolean;
   enableHoverInfo: boolean;
 }
 
-export default function Obstacle(props: ObstacleProps) {
+export default function Rock(props: RockProps) {
   if (props.fuzzy) {
     // "Fuzzy" in this context means that there may or may not be an
     // asteroid strike at this location. Use a flashing warning icon to
@@ -35,7 +34,7 @@ export default function Obstacle(props: ObstacleProps) {
           top={props.offset.top}
           w={`${TILE_SIZE}px`}
           h={`${TILE_SIZE}px`}
-          zIndex={OBSTACLE_Z_INDEX}
+          zIndex={ROCK_Z_INDEX}
           pt="5px"
         >
           <AnimateKeyframes
@@ -58,20 +57,16 @@ export default function Obstacle(props: ObstacleProps) {
     );
   }
   return (
-    <>
-      {/* Removing hover info for now because it can clutter the UI. Might reconsider later. */}
-      {/* <BoardHoverInfo page={RockPage} offset={offset} /> */}
-      <Image
-        alt="rock"
-        src={rockImgUrl}
-        w="48px"
-        h="48px"
-        position="absolute"
-        left={props.offset.left}
-        top={props.offset.top}
-        zIndex={OBSTACLE_Z_INDEX}
-        filter={SPRITE_DROP_SHADOW}
-      />
-    </>
+    <Image
+      alt="rock"
+      src={rockImgUrl}
+      w="48px"
+      h="48px"
+      position="absolute"
+      left={props.offset.left}
+      top={props.offset.top}
+      zIndex={ROCK_Z_INDEX}
+      filter={SPRITE_DROP_SHADOW}
+    />
   );
 }
