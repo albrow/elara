@@ -74,6 +74,7 @@ const musicMap: Record<string, string> = {
   enemies_with_telepad: "measuringTheChallenge",
   enemies_and_asteroids: "measuringTheChallenge",
   big_enemy: "puttingItAllTogether",
+  server_room: "notTheEnd",
 };
 
 // Special levels used for runnable examples.

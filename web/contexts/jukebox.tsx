@@ -26,6 +26,8 @@ import measuringTheChallenge from "../audio/music/measuring_the_challenge.ogg";
 import measuringTheChallengeFallback from "../audio/music/measuring_the_challenge.mp3";
 import puttingItAllTogether from "../audio/music/putting_it_all_together.ogg";
 import puttingItAllTogetherFallback from "../audio/music/putting_it_all_together.mp3";
+import notTheEnd from "../audio/music/not_the_end.ogg";
+import notTheEndFallback from "../audio/music/not_the_end.mp3";
 
 // How much to lower the music volume temporarily when ducking is enabled.
 const DUCK_LEVEL = 0.5;
@@ -122,6 +124,14 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         "puttingItAllTogether",
         "music",
         [puttingItAllTogether, puttingItAllTogetherFallback],
+        1.0,
+        true,
+        10
+      ),
+      notTheEnd: new Sound(
+        "notTheEnd",
+        "music",
+        [notTheEnd, notTheEndFallback],
         1.0,
         true,
         10
