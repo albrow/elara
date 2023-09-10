@@ -24,7 +24,7 @@ export default function Title() {
   const router = useRouter();
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [confirmNewGameVisible, setConfirmNewGameVisible] = useState(false);
-  const { navigateToHub } = useSceneNavigator();
+  const { navigateToHub, navigateToCutscene } = useSceneNavigator();
   const { stopAllMusic } = useJukebox();
 
   const hasExistingSave = useMemo(
@@ -37,8 +37,8 @@ export default function Title() {
 
   const handleNewGameConfirm = useCallback(() => {
     resetAllSaveData();
-    navigateToHub();
-  }, [navigateToHub, resetAllSaveData]);
+    navigateToCutscene("intro");
+  }, [navigateToCutscene, resetAllSaveData]);
 
   const handleNewGame = useCallback(() => {
     if (hasExistingSave) {

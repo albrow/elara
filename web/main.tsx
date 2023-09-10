@@ -114,6 +114,10 @@ const elaraTheme = extendTheme({
       path: "/journal/:sectionName",
     },
     {
+      name: "cutscene",
+      path: "/cutscene/:cutsceneId",
+    },
+    {
       name: "end",
       path: "/end",
     },

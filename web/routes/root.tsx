@@ -2,6 +2,7 @@ import { useRouteNode } from "react-router5";
 import { useCallback, useMemo } from "react";
 
 import Navbar from "../components/settings/navbar/navbar";
+import Cutscene from "./cutscene";
 import Title from "./title";
 import Loading from "./loading";
 import About from "./about";
@@ -45,8 +46,11 @@ export default function Root() {
     if (route.name === "end") {
       return <End />;
     }
+    if (route.name === "cutscene") {
+      return <Cutscene cutsceneId={route.params.cutsceneId} />;
+    }
     throw new Error(`Unknown route: ${route.name}`);
-  }, [route.name, route.params.destination]);
+  }, [route.name, route.params.cutsceneId, route.params.destination]);
 
   const shouldShowNavbar = useMemo(
     () =>

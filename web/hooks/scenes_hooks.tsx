@@ -164,12 +164,21 @@ export function useSceneNavigator() {
     navigateToScene(newestPage);
   }, [JOURNAL_PAGES, navigateToScene]);
 
+  const navigateToCutscene = useCallback(
+    (cutsceneId: string) => {
+      stopAllMusic(MUSIC_FADE_OUT_TIME_MS);
+      router.navigate("cutscene", { cutsceneId });
+    },
+    [router, stopAllMusic]
+  );
+
   return {
     navigateToScene,
     navigateToNextScene,
     navigateToHub,
     navigateToTitle,
     navigateToNextJournalPage,
+    navigateToCutscene,
   };
 }
 
