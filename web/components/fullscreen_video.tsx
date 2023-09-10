@@ -92,15 +92,25 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
     if (showPlayButtonTimeout.current) {
       clearTimeout(showPlayButtonTimeout.current);
     }
-    setShowPlayButton(false);
-    playerRef.current.play();
+    try {
+      playerRef.current.play();
+      setShowPlayButton(false);
+    } catch (e) {
+      // On some browsers/platforms, the video will not play unless the user has interacted with the iframe
+      // at least once. The play button unfortunately doesn't count since it is part of the main page.
+      // eslint-disable-next-line no-alert
+      alert(
+        "Your browser does not support autoplay. Please click on the background of the video first, then click the play button."
+      );
+      setShowPlayButton(true);
+    }
   }, [playerRef]);
 
   return (
     <>
       <Box w="100vw" h="100vh">
+        {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
         <iframe
-          title="video"
           ref={videoIframeRef}
           src={`https://player.vimeo.com/video/${props.videoId}?autoplay=true&controls=false&loop=false&dnt=true&pip=false`}
           width="100%"
@@ -110,6 +120,7 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
           webkitallowfullscreen="true"
           mozallowfullscreen="true"
           allowFullScreen
+          allow="autoplay; fullscreen"
         />
       </Box>
       {showPlayButton && (
