@@ -10,13 +10,14 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import React, { useCallback, useMemo } from "react";
-import { MdArrowForward, MdHome, MdReplay } from "react-icons/md";
+import { MdArrowForward, MdHome, MdMovie, MdReplay } from "react-icons/md";
 import { Animate, AnimateGroup } from "react-simple-animate";
 
 import type { RunResult } from "../../../../elara-lib/pkg/elara_lib";
 import { useCurrScene, useSceneNavigator } from "../../../hooks/scenes_hooks";
 import { getNextLevel } from "../../../lib/utils";
 import { Scene } from "../../../contexts/scenes";
+import { useSaveData } from "../../../hooks/save_data_hooks";
 import ModalStats from "./modal_stats";
 import ModalObjective from "./modal_objective";
 import ModalChallenge from "./modal_challenge";
@@ -37,6 +38,7 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
     throw new Error("currLevel must be non-null");
   }
   const nextLevel = useMemo(() => getNextLevel(currScene!), [currScene]);
+  const [{ seenCutscenes }] = useSaveData();
 
   // const isLastScene = useMemo(() => currScene?.nextScene == null, [currScene]);
 
@@ -60,6 +62,18 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
     },
     [handleClose, navigateToScene]
   );
+
+  // Returns the cutscene id of the next scene if it is a cutscene, or null
+  // if the next scene is not a cutscene.
+  const nextCutsceneId = useMemo(() => {
+    if (!currScene) {
+      return null;
+    }
+    if (currScene.nextScene?.type === "cutscene") {
+      return currScene.nextScene.cutsceneId;
+    }
+    return null;
+  }, [currScene]);
 
   if (!props.visible) {
     return null;
@@ -113,10 +127,29 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                     Keep Playing
                     <MdReplay size="1.3em" style={{ marginLeft: "0.2rem" }} />
                   </Button>
-                  <Button colorScheme="blue" onClick={navigateToHub} ml="5px">
-                    Back to Hub
-                    <MdHome size="1.3em" style={{ marginLeft: "0.2rem" }} />
-                  </Button>
+                  {nextCutsceneId &&
+                    !seenCutscenes.includes(nextCutsceneId) && (
+                      <Button
+                        ml="5px"
+                        colorScheme="purple"
+                        onClick={() => {
+                          handleClose();
+                          navigateToScene(currScene!.nextScene!);
+                        }}
+                      >
+                        Play Cutscene
+                        <MdMovie
+                          size="1.3em"
+                          style={{ marginLeft: "0.2rem" }}
+                        />
+                      </Button>
+                    )}
+                  {!nextCutsceneId && (
+                    <Button colorScheme="blue" onClick={navigateToHub} ml="5px">
+                      Back to Hub
+                      <MdHome size="1.3em" style={{ marginLeft: "0.2rem" }} />
+                    </Button>
+                  )}
                   {nextLevel?.unlocked && (
                     <Button
                       colorScheme="teal"

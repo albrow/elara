@@ -64,7 +64,7 @@ export function getChallengeProgress(
   };
 }
 
-// Returns the next level that appears after the given scene, or
+// Returns the next *level* that appears after the given scene, or
 // undefined if scene is the last level.
 export function getNextLevel(scene: Scene): Scene | undefined {
   let ptr = scene;
@@ -77,7 +77,7 @@ export function getNextLevel(scene: Scene): Scene | undefined {
   return undefined;
 }
 
-// Returns the next journal page that appears after the given scene, or
+// Returns the next *journal page* that appears after the given scene, or
 // undefined if scene is the last journal page.
 export function getNextJournalPage(scene: Scene): Scene | undefined {
   let ptr = scene;

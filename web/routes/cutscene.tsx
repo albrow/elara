@@ -14,11 +14,14 @@ export default function Cutscene(props: CutsceneProps) {
 
   const videoId = useMemo(() => {
     if (props.cutsceneId === "intro") return 862764545;
+    if (props.cutsceneId === "midgame") return 862789284;
     throw new Error(`Unknown cutscene: ${props.cutsceneId}`);
   }, [props.cutsceneId]);
 
   const navigateToNext = useCallback(() => {
     if (props.cutsceneId === "intro") {
+      navigateToHub();
+    } else if (props.cutsceneId === "midgame") {
       navigateToHub();
     } else {
       throw new Error(`Unknown cutscene: ${props.cutsceneId}`);

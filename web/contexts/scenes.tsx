@@ -14,14 +14,15 @@ import { useSaveData } from "../hooks/save_data_hooks";
 import { SectionName } from "../components/journal/sections";
 import type { LevelState } from "./save_data";
 
-export type SceneType = "level" | "dialog" | "journal";
+export type SceneType = "level" | "dialog" | "journal" | "cutscene";
 
 interface RawScene {
   type: SceneType;
   name: string;
   routeName: string;
   routeParams?: Record<string, any>;
-  level?: LevelData;
+  level?: LevelData; // Undefined for non-level scenes.
+  cutsceneId?: string; // Undefined for non-cutscene scenes.
   tutorialShorts?: ShortId[];
   hints?: string[];
   // A sound effect to be played immediately after navigating to this scene.
@@ -119,6 +120,16 @@ function journalScene(sectionName: string, newFunctions?: string[]): RawScene {
     routeName: "journal_section",
     routeParams: { sectionName },
     newFunctions,
+  };
+}
+
+function cutsceneScene(cutsceneId: string): RawScene {
+  return {
+    type: "cutscene",
+    name: titleCase(cutsceneId.split("_").join(" ")),
+    routeName: "cutscene",
+    routeParams: { cutsceneId },
+    cutsceneId,
   };
 }
 
@@ -315,6 +326,7 @@ const RAW_SCENES: RawScene[] = [
       "The malfunctioning rover will chase G.R.O.V.E.R. around, but it's not very smart and can be easily outmaneuvered.",
     ]
   ),
+  cutsceneScene("midgame"),
   levelScene(
     "enemies_part_two",
     [],
@@ -361,6 +373,7 @@ function isSceneCompleted(
   levelStates: Record<string, LevelState>,
   seenJournalPages: SectionName[],
   seenDialogTrees: string[],
+  seenCutscenes: string[],
   scene: RawScene
 ) {
   if (scene.type === "level") {
@@ -372,6 +385,9 @@ function isSceneCompleted(
   }
   if (scene.type === "dialog") {
     return seenDialogTrees.includes(scene.routeParams?.treeName!);
+  }
+  if (scene.type === "cutscene") {
+    return seenCutscenes.includes(scene.routeParams?.cutsceneId!);
   }
   throw new Error(`Unknown scene type: ${scene.type}`);
 }
@@ -408,6 +424,7 @@ function processScenes(
   levelStates: Record<string, LevelState>,
   seenJournalPages: SectionName[],
   seenDialogTrees: string[],
+  seenCutscenes: string[],
   scenes: RawScene[]
 ): Scene[] {
   let result: Scene[] = scenes.map((scene, index) => ({
@@ -417,6 +434,7 @@ function processScenes(
       levelStates,
       seenJournalPages,
       seenDialogTrees,
+      seenCutscenes,
       scene
     ),
     challengeCompleted:
@@ -425,7 +443,7 @@ function processScenes(
         levelStates[scene.level?.short_name!].challengeCompleted) ||
       false,
     levelIndex: getLevelIndexFromScene(scenes, scene),
-    unlocked: false, // Will update later.
+    unlocked: false, // Will be automatically set later.
     music: musicMap[scene.level?.short_name!] ?? undefined,
   }));
 
@@ -444,11 +462,18 @@ function processScenes(
 export const ScenesContext = createContext<Scene[]>([]);
 
 export function ScenesProvider(props: PropsWithChildren<{}>) {
-  const [{ levelStates, seenJournalPages, seenDialogTrees }, _] = useSaveData();
+  const [{ levelStates, seenJournalPages, seenDialogTrees, seenCutscenes }, _] =
+    useSaveData();
   const providerValue = useMemo(
     () =>
-      processScenes(levelStates, seenJournalPages, seenDialogTrees, RAW_SCENES),
-    [levelStates, seenDialogTrees, seenJournalPages]
+      processScenes(
+        levelStates,
+        seenJournalPages,
+        seenDialogTrees,
+        seenCutscenes,
+        RAW_SCENES
+      ),
+    [levelStates, seenCutscenes, seenDialogTrees, seenJournalPages]
   );
 
   return (
