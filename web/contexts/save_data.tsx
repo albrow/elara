@@ -14,7 +14,7 @@ import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
 import { SectionName } from "../components/journal/sections";
 
-export const SAVE_DATA_VERSION = 15;
+export const SAVE_DATA_VERSION = 16;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 // Amount of time (in milliseconds) to wait for further updates before
@@ -61,6 +61,8 @@ export interface SaveData {
   // When the save data was last committed to local storage.
   // Measured as milliseconds since the UNIX epoch.
   lastUpdated?: number;
+  // Which cutscenes have already been seen.
+  seenCutscenes: string[];
 }
 
 const DEFUALT_SETTINGS: Settings = {
@@ -86,6 +88,8 @@ const DEFAULT_SAVE_DATA: SaveData = {
   settings: DEFUALT_SETTINGS,
   seenJournalPages: [],
   unlockedFunctions: DEFAULT_UNLOCKED_FUNCTIONS,
+  seenCutscenes: [],
+
   // lastUpdated is intentially omitted from the default save data.
   // it will be set automatically when the save data is committed to
   // local storage.
@@ -104,6 +108,7 @@ export interface SaveDataManager {
   markJournalPageSeen: (sectionName: SectionName) => void;
   resetAllSaveData: () => void;
   unlockFunctions: (newFunctions: string[]) => void;
+  markCutsceneSeen: (cutsceneId: string) => void;
 }
 
 // Actually saves the data to local storage.
@@ -312,6 +317,14 @@ function migrateSaveData(saveData: SaveData): SaveData {
     }
   }
 
+  // Version 16 added seenCutscenes.
+  if (newData.version === 15) {
+    newData.version = 16;
+    // Since some prior save data exists, we can safely assume that the
+    // intro cutscene has already been seen.
+    newData.seenCutscenes = ["intro"];
+  }
+
   return newData;
 }
 
@@ -366,6 +379,9 @@ export const SaveDataContext = createContext<
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
     unlockFunctions: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
+    markCutsceneSeen: () => {
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
   },
@@ -536,6 +552,17 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
     [setSaveData]
   );
 
+  const markCutsceneSeen = useCallback(
+    (cutsceneId: string) => {
+      const newSaveData = clone(saveDataRef.current);
+      const seenCutscenes = new Set(newSaveData.seenCutscenes);
+      seenCutscenes.add(cutsceneId);
+      newSaveData.seenCutscenes = [...seenCutscenes];
+      setSaveData(newSaveData);
+    },
+    [setSaveData]
+  );
+
   const providerValue = useMemo(
     () =>
       [
@@ -553,6 +580,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
           markJournalPageSeen,
           resetAllSaveData,
           unlockFunctions,
+          markCutsceneSeen,
         },
       ] as const,
     [
@@ -569,6 +597,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       markJournalPageSeen,
       resetAllSaveData,
       unlockFunctions,
+      markCutsceneSeen,
     ]
   );
 
@@ -610,6 +639,7 @@ if (import.meta.vitest) {
             "say",
             "press_button",
           ],
+          seenCutscenes: ["intro", "midgame"],
         };
         save(saveData);
         // Wait for debounce
@@ -630,6 +660,7 @@ if (import.meta.vitest) {
           settings: DEFUALT_SETTINGS,
           seenJournalPages: [],
           unlockedFunctions: DEFAULT_UNLOCKED_FUNCTIONS,
+          seenCutscenes: [],
         } as SaveData);
       });
 
@@ -655,6 +686,7 @@ if (import.meta.vitest) {
             "say",
             "press_button",
           ],
+          seenCutscenes: ["intro", "midgame"],
         };
         window.localStorage.setItem(
           LOCAL_STORAGE_KEY,
@@ -732,6 +764,7 @@ if (import.meta.vitest) {
             "say",
             "press_button",
           ],
+          seenCutscenes: ["intro"],
         };
 
         const gotData = load();

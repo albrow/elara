@@ -73,9 +73,10 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
         duration={1.0}
       >
         <Box
+          zIndex={100}
           position="fixed"
           right="32px"
-          top="8px"
+          top="16px"
           py="16px"
           px="24px"
           borderRadius="8px"
