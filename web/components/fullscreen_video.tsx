@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Player from "@vimeo/player";
 import { Box, Button, Text } from "@chakra-ui/react";
-import { MdSkipNext } from "react-icons/md";
+import { MdPlayArrow, MdSkipNext } from "react-icons/md";
 import { Animate } from "react-simple-animate";
 
 import { useSceneNavigator } from "../hooks/scenes_hooks";
@@ -11,11 +11,19 @@ export interface FullscreenVideoProps {
   onEnd: () => void;
 }
 
+// How long to wait before showing the play button.
+// This is a fallback for platforms where autoplay doesn't work.
+const FALLBACK_PLAY_BUTTON_DELAY = 1500;
+
 export default function FullscreenVideo(props: FullscreenVideoProps) {
   const videoIframeRef = useRef<HTMLIFrameElement>(null);
+  const playerRef = useRef<Player | null>(null);
   const { navigateToHub } = useSceneNavigator();
   const [isWaitingForSkipConfirm, setIsWaitingForSkipConfirm] =
     useState<boolean>(false);
+  const [showPlayButton, setShowPlayButton] = useState<boolean>(false);
+  const [hasStarted, setHasStarted] = useState<boolean>(false);
+  const showPlayButtonTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleSkipOrEnd = useCallback(() => {
     videoIframeRef.current?.remove();
@@ -30,6 +38,30 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
     setIsWaitingForSkipConfirm(false);
   }, []);
 
+  const onVideoLoad = useCallback(() => {
+    // Show the play button if the video hasn't started
+    // after some period of time. This is a fallback for platforms
+    // where autoplay doesn't work.
+    if (showPlayButtonTimeout.current) {
+      clearTimeout(showPlayButtonTimeout.current);
+    }
+    showPlayButtonTimeout.current = setTimeout(() => {
+      if (!hasStarted) {
+        setShowPlayButton(true);
+      } else {
+        setShowPlayButton(false);
+      }
+    }, FALLBACK_PLAY_BUTTON_DELAY);
+  }, [hasStarted]);
+
+  const onVideoStarted = useCallback(() => {
+    setHasStarted(true);
+    if (showPlayButtonTimeout.current) {
+      clearTimeout(showPlayButtonTimeout.current);
+    }
+    setShowPlayButton(false);
+  }, [showPlayButtonTimeout, setShowPlayButton, setHasStarted]);
+
   useEffect(() => {
     if (!videoIframeRef.current) return;
     const player = new Player(videoIframeRef.current, {
@@ -40,10 +72,29 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
       dnt: true,
       pip: false,
     });
-    player.on("ended", () => {
-      handleSkipOrEnd();
-    });
-  }, [handleSkipOrEnd, navigateToHub, props, props.videoId, videoIframeRef]);
+    playerRef.current = player;
+    player.on("play", onVideoStarted);
+    player.on("loaded", onVideoLoad);
+    player.on("ended", handleSkipOrEnd);
+  }, [
+    handleSkipOrEnd,
+    hasStarted,
+    navigateToHub,
+    onVideoLoad,
+    onVideoStarted,
+    props,
+    props.videoId,
+    videoIframeRef,
+  ]);
+
+  const manualPlay = useCallback(() => {
+    if (!playerRef.current) return;
+    if (showPlayButtonTimeout.current) {
+      clearTimeout(showPlayButtonTimeout.current);
+    }
+    setShowPlayButton(false);
+    playerRef.current.play();
+  }, [playerRef]);
 
   return (
     <>
@@ -61,6 +112,19 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
           allowFullScreen
         />
       </Box>
+      {showPlayButton && (
+        <Box
+          zIndex={200}
+          position="fixed"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+        >
+          <Button onClick={manualPlay} variant="unstyled">
+            <MdPlayArrow size="5em" color="white" />
+          </Button>
+        </Box>
+      )}
       <Animate
         play
         start={{
