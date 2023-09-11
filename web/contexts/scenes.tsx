@@ -362,6 +362,7 @@ const RAW_SCENES: RawScene[] = [
     ]
   ),
   levelScene("server_room", [], []),
+  cutsceneScene("end"),
 ];
 
 const getLevelIndexFromScene = (

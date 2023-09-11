@@ -35,7 +35,7 @@ export default function Hub() {
   // This helps prevent players from getting stuck since the cutscene must
   // be completed before they can continue.
   useEffect(() => {
-    if (nextUnlockedScene.type === "cutscene") {
+    if (nextUnlockedScene.type === "cutscene" && !nextUnlockedScene.completed) {
       navigateToScene(nextUnlockedScene);
     }
   }, [navigateToScene, nextUnlockedScene]);
