@@ -9,6 +9,9 @@ import { useSceneNavigator } from "../hooks/scenes_hooks";
 export interface FullscreenVideoProps {
   videoId: number;
   onEnd: () => void;
+  // If provided, pressing the skip button will skip to the next checkpoint
+  // (in seconds) instead of the end of the video.
+  checkpoints?: number[];
 }
 
 // How long to wait before showing the play button.
@@ -25,17 +28,45 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
   const [hasStarted, setHasStarted] = useState<boolean>(false);
   const showPlayButtonTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const handleSkipOrEnd = useCallback(() => {
+  const onEnd = useCallback(() => {
     videoIframeRef.current?.remove();
     props.onEnd();
   }, [props]);
 
+  const onSkipConfirm = useCallback(async () => {
+    if (props.checkpoints && props.checkpoints.length > 0) {
+      // Check if there are any checkpoints remaining after the current time.
+      const currentTime = await playerRef.current?.getCurrentTime();
+      if (currentTime) {
+        const nextCheckpoint = props.checkpoints.find(
+          (checkpoint) => checkpoint > currentTime
+        );
+        if (nextCheckpoint) {
+          // Skip to the next checkpoint.
+          playerRef.current?.setCurrentTime(nextCheckpoint);
+          setIsWaitingForSkipConfirm(false);
+          playerRef.current?.play();
+          return;
+        }
+      }
+    }
+
+    // No checkpoints remaining, so skip to the end.
+    onEnd();
+  }, [onEnd, props.checkpoints, playerRef]);
+
   const waitForSkipConfirm = useCallback(() => {
     setIsWaitingForSkipConfirm(true);
+    if (playerRef.current) {
+      playerRef.current.pause();
+    }
   }, []);
 
-  const handleSkipCancel = useCallback(() => {
+  const onSkipCancel = useCallback(() => {
     setIsWaitingForSkipConfirm(false);
+    if (playerRef.current) {
+      playerRef.current.play();
+    }
   }, []);
 
   const onVideoLoad = useCallback(() => {
@@ -75,9 +106,9 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
     playerRef.current = player;
     player.on("play", onVideoStarted);
     player.on("loaded", onVideoLoad);
-    player.on("ended", handleSkipOrEnd);
+    player.on("ended", onSkipConfirm);
   }, [
-    handleSkipOrEnd,
+    onSkipConfirm,
     hasStarted,
     navigateToHub,
     onVideoLoad,
@@ -164,7 +195,7 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
                 sure?
               </Text>
               <Button
-                onClick={() => handleSkipCancel()}
+                onClick={() => onSkipCancel()}
                 variant="outline"
                 mr="10px"
                 size="sm"
@@ -181,7 +212,7 @@ export default function FullscreenVideo(props: FullscreenVideoProps) {
                 No
               </Button>
               <Button
-                onClick={() => handleSkipOrEnd()}
+                onClick={() => onSkipConfirm()}
                 variant="outline"
                 size="sm"
                 color="white"
