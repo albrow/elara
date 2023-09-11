@@ -64,12 +64,15 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
   );
 
   // Returns the cutscene id of the next scene if it is a cutscene, or null
-  // if the next scene is not a cutscene.
+  // if the next scene should not be a cutscene.
   const nextCutsceneId = useMemo(() => {
     if (!currScene) {
       return null;
     }
-    if (currScene.nextScene?.type === "cutscene") {
+    if (
+      currScene.nextScene?.type === "cutscene" &&
+      !currScene.nextScene.completed
+    ) {
       return currScene.nextScene.cutsceneId;
     }
     return null;
