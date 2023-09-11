@@ -90,9 +90,6 @@ export default function Enemy(props: EnemyProps) {
           <img
             alt="enemy"
             src={getRobotImgUrl()}
-            // We use the same image as for G.R.O.V.E.R. but with a filter
-            // that makes the malfunctioning rover look darker and more red in hue.
-            // TODO(albrow): Replace this with a separate sprite.
             style={{
               width: `${TILE_SIZE - 2}px`,
               height: `${TILE_SIZE - 2}px`,
