@@ -62,6 +62,28 @@ import whoIam from "../audio/dialog/who_i_am.ogg";
 import whoIamFallback from "../audio/dialog/who_i_am.mp3";
 import whereYouAre from "../audio/dialog/where_you_are.ogg";
 import whereYouAreFallback from "../audio/dialog/where_you_are.mp3";
+import cantCallSomeone from "../audio/dialog/cant_call_someone.ogg";
+import cantCallSomeoneFallback from "../audio/dialog/cant_call_someone.mp3";
+import cantDisableRemotely from "../audio/dialog/cant_disable_remotely.ogg";
+import cantDisableRemotelyFallback from "../audio/dialog/cant_disable_remotely.mp3";
+import clarifyAllRovers from "../audio/dialog/clarify_all_rovers.ogg";
+import clarifyAllRoversFallback from "../audio/dialog/clarify_all_rovers.mp3";
+import confirmKalinaSafe from "../audio/dialog/confirm_kalina_safe.ogg";
+import confirmKalinaSafeFallback from "../audio/dialog/confirm_kalina_safe.mp3";
+import explainMoonbaseAttack1 from "../audio/dialog/explain_moonbase_attack_1.ogg";
+import explainMoonbaseAttack1Fallback from "../audio/dialog/explain_moonbase_attack_1.mp3";
+import explainRepairProblem1 from "../audio/dialog/explain_repair_problem_1.ogg";
+import explainRepairProblem1Fallback from "../audio/dialog/explain_repair_problem_1.mp3";
+import explainShutdownPlan1 from "../audio/dialog/explain_shutdown_plan_1.ogg";
+import explainShutdownPlan1Fallback from "../audio/dialog/explain_shutdown_plan_1.mp3";
+import jokeDifficultFirstDay from "../audio/dialog/joke_difficult_first_day.ogg";
+import jokeDifficultFirstDayFallback from "../audio/dialog/joke_difficult_first_day.mp3";
+import kalinaCanHelpFromAfar from "../audio/dialog/kalina_can_help_from_afar.ogg";
+import kalinaCanHelpFromAfarFallback from "../audio/dialog/kalina_can_help_from_afar.mp3";
+import moonbaseDamageDetails from "../audio/dialog/moonbase_damage_details.ogg";
+import moonbaseDamageDetailsFallback from "../audio/dialog/moonbase_damage_details.mp3";
+import kalinaInTrouble from "../audio/dialog/kalina_in_trouble.ogg";
+import kalinaInTroubleFallback from "../audio/dialog/kalina_in_trouble.mp3";
 
 import { useSaveData } from "../hooks/save_data_hooks";
 import { volumeToGain } from "../lib/utils";
@@ -209,6 +231,72 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         "dialog_where_you_are",
         "dialog",
         [whereYouAre, whereYouAreFallback],
+        0.8
+      ),
+      dialog_cant_call_someone: new Sound(
+        "dialog_cant_call_someone",
+        "dialog",
+        [cantCallSomeone, cantCallSomeoneFallback],
+        0.8
+      ),
+      dialog_cant_disable_remotely: new Sound(
+        "dialog_cant_disable_remotely",
+        "dialog",
+        [cantDisableRemotely, cantDisableRemotelyFallback],
+        0.8
+      ),
+      dialog_clarify_all_rovers: new Sound(
+        "dialog_clarify_all_rovers",
+        "dialog",
+        [clarifyAllRovers, clarifyAllRoversFallback],
+        0.8
+      ),
+      dialog_confirm_kalina_safe: new Sound(
+        "dialog_confirm_kalina_safe",
+        "dialog",
+        [confirmKalinaSafe, confirmKalinaSafeFallback],
+        0.8
+      ),
+      dialog_explain_moonbase_attack_1: new Sound(
+        "dialog_explain_moonbase_attack_1",
+        "dialog",
+        [explainMoonbaseAttack1, explainMoonbaseAttack1Fallback],
+        0.8
+      ),
+      dialog_explain_repair_problem_1: new Sound(
+        "dialog_explain_repair_problem_1",
+        "dialog",
+        [explainRepairProblem1, explainRepairProblem1Fallback],
+        0.8
+      ),
+      dialog_explain_shutdown_plan_1: new Sound(
+        "dialog_explain_shutdown_plan_1",
+        "dialog",
+        [explainShutdownPlan1, explainShutdownPlan1Fallback],
+        0.8
+      ),
+      dialog_joke_difficult_first_day: new Sound(
+        "dialog_joke_difficult_first_day",
+        "dialog",
+        [jokeDifficultFirstDay, jokeDifficultFirstDayFallback],
+        0.8
+      ),
+      dialog_kalina_can_help_from_afar: new Sound(
+        "dialog_kalina_can_help_from_afar",
+        "dialog",
+        [kalinaCanHelpFromAfar, kalinaCanHelpFromAfarFallback],
+        0.8
+      ),
+      dialog_moonbase_damage_details: new Sound(
+        "dialog_moonbase_damage_details",
+        "dialog",
+        [moonbaseDamageDetails, moonbaseDamageDetailsFallback],
+        0.8
+      ),
+      dialog_kalina_in_trouble: new Sound(
+        "dialog_kalina_in_trouble",
+        "dialog",
+        [kalinaInTrouble, kalinaInTroubleFallback],
         0.8
       ),
     }),

@@ -106,12 +106,13 @@ function levelScene(
 }
 
 function dialogScene(treeName: keyof typeof TREES): RawScene {
+  const { startId } = TREES[treeName];
   return {
     type: "dialog",
     name: `${TREES[treeName].name}`,
     routeName: "dialog",
     routeParams: { treeName },
-    initialSound: `dialog_${treeName}`,
+    initialSound: `dialog_${startId}`,
   };
 }
 
@@ -329,6 +330,7 @@ const RAW_SCENES: RawScene[] = [
     ]
   ),
   cutsceneScene("midgame"),
+  dialogScene("kalina_in_trouble"),
   levelScene(
     "enemies_part_two",
     [],
