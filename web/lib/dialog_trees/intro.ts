@@ -2,13 +2,18 @@ import { DialogChoice, DialogNode, DialogTrees } from ".";
 
 export type NodeIds =
   | "intro"
+  | "intro_2"
+  | "ask_about_journey"
   | "journey_neg_response"
   | "journey_pos_response"
   | "who_i_am"
   | "where_i_am"
   | "where_you_are"
-  | "offer_intro_end";
+  | "offer_intro_end"
+  | "offer_intro_end_b"
+  | "offer_intro_end_c";
 export type ChoiceIds =
+  | "greet_kalina"
   | "journey_negative"
   | "journey_positive"
   | "where_are_you"
@@ -18,7 +23,16 @@ export type ChoiceIds =
 
 export const NODES: { [key in NodeIds]: DialogNode } = {
   intro: {
-    text: "Welcome to Elara! My name is Kalina. How was your journey here?",
+    text: "Hey there! You must be the new intern.",
+    choiceIds: [],
+    nextId: "intro_2",
+  },
+  intro_2: {
+    text: "Welcome to Elara! My name is Kalina.",
+    choiceIds: ["greet_kalina"],
+  },
+  ask_about_journey: {
+    text: "How was your journey here?",
     choiceIds: ["journey_negative", "journey_positive"],
   },
   journey_neg_response: {
@@ -41,7 +55,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
       "Well, you already know my name. I'm an engineer here at Ganymede Robotics. " +
       "I'm also responsible for training new interns, which includes you!",
     choiceIds: [],
-    nextId: "offer_intro_end",
+    nextId: "offer_intro_end_b",
   },
   where_you_are: {
     text:
@@ -49,15 +63,27 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
       "If you look out the window, you should see a weirdly shaped moon. That's Elara! " +
       "You're currently orbiting around it in a small module.",
     choiceIds: [],
-    nextId: "offer_intro_end",
+    nextId: "offer_intro_end_c",
   },
   offer_intro_end: {
-    text: "Ready to get started with training or do you have any other questions?",
+    text: "So.. ready to get started with training or do you have any other questions?",
+    choiceIds: ["who_are_you", "where_am_i", "where_are_you", "intro_end"],
+  },
+  offer_intro_end_b: {
+    text: "Anything else you want to know before we get started?",
+    choiceIds: ["who_are_you", "where_am_i", "where_are_you", "intro_end"],
+  },
+  offer_intro_end_c: {
+    text: "Anyways, I'm ready to get started when you are. How about it?",
     choiceIds: ["who_are_you", "where_am_i", "where_are_you", "intro_end"],
   },
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
+  greet_kalina: {
+    text: "Nice to meet you!",
+    nextId: "ask_about_journey",
+  },
   journey_negative: {
     text: "Still feeling a little space-lagged.",
     nextId: "journey_neg_response",

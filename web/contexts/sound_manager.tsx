@@ -52,6 +52,8 @@ import buttonPressOnFallback from "../audio/sfx/button_press_on.mp3";
 import buttonPressOffFallback from "../audio/sfx/button_press_off.mp3";
 import intro from "../audio/dialog/intro.ogg";
 import introFallback from "../audio/dialog/intro.mp3";
+import askAboutJourney from "../audio/dialog/ask_about_journey.ogg";
+import askAboutJourneyFallback from "../audio/dialog/ask_about_journey.mp3";
 import journeyNegResponse from "../audio/dialog/journey_neg_response.ogg";
 import journeyNegResponseFallback from "../audio/dialog/journey_neg_response.mp3";
 import journeyPosResponse from "../audio/dialog/journey_pos_response.ogg";
@@ -201,6 +203,12 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         "dialog_intro",
         "dialog",
         [intro, introFallback],
+        0.8
+      ),
+      dialog_ask_about_journey: new Sound(
+        "dialog_ask_about_journey",
+        "dialog",
+        [askAboutJourney, askAboutJourneyFallback],
         0.8
       ),
       dialog_journey_neg_response: new Sound(
