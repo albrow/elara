@@ -14,14 +14,14 @@ export interface StatsProps {
 
 export default function ModalStats(props: StatsProps) {
   return (
-    <Flex w="65%" mx="auto" my="18px" justifyContent="space-between">
+    <Flex mx="auto" my="18px" w="fit-content">
       <Animate
         sequenceIndex={props.animIndexStart}
         delay={0.2}
         start={{ opacity: 0 }}
         end={{ opacity: 1 }}
       >
-        <Badge colorScheme="purple" px="9px" py="3px" fontSize="sm">
+        <Badge colorScheme="purple" px="9px" py="3px" fontSize="sm" mr="5px">
           <Flex direction="row" mt="0.12rem">
             <MdOutlineTimer
               size="1.2em"
@@ -40,7 +40,7 @@ export default function ModalStats(props: StatsProps) {
         start={{ opacity: 0 }}
         end={{ opacity: 1 }}
       >
-        <Badge colorScheme="blue" px="9px" py="3px" fontSize="sm">
+        <Badge colorScheme="blue" px="9px" py="3px" fontSize="sm" mr="5px">
           <Flex direction="row" mt="0.12rem">
             <BsLightningChargeFill
               size="1.2em"
