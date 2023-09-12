@@ -87,7 +87,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
     ],
   },
   cant_call_someone: {
-    text: "There's no one else here on Elara since they automated most operations a few years back. It would take days or even weeks to send someone else here. We're in space after all.",
+    text: "There's no one else here on Elara since they automated most operations a few years back. Space is really big, and Jupiter's moons are pretty far apart. It would take days or even weeks to send someone else here.",
     choiceIds: [
       "ask_alternate_call_someone",
       "ask_alternate_remote_disable",
@@ -108,7 +108,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
     nextId: "joke_difficult_first_day_2",
   },
   joke_difficult_first_day_2: {
-    text: "What a crazy first day as an intern, huh?",
+    text: "Not exactly what you expected when you signed up for the internship, huh?",
     choiceIds: ["ack_first_day_joke"],
   },
   kalina_can_help_from_afar: {
