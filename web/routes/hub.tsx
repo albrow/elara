@@ -151,7 +151,7 @@ export default function Hub() {
                 left="-30%"
                 zIndex={BG_Z_INDEX + 5}
               >
-                <BlinkingText text="Click Here!" />
+                <BlinkingText text="Incoming Call!" />
               </Box>
             )}
           </Box>
