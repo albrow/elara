@@ -7,6 +7,7 @@ import movingTakesEnergyUrl from "../images/shorts/moving_takes_energy.gif";
 import howToGetMoreEnergyUrl from "../images/shorts/how_to_get_more_energy.gif";
 import howToViewFunctionListUrl from "../images/shorts/how_to_view_function_list.gif";
 import extraChallengesUrl from "../images/shorts/extra_challenges.gif";
+import showHintsAndDialogUrl from "../images/shorts/show_hints_and_dialog.gif";
 
 export interface TutorialShort {
   title: string;
@@ -59,6 +60,11 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     title: "Extra challenges",
     text: "Some levels have optional challenges, but don't worry if you can't do them right away. You can always try again later!",
     imageUrl: extraChallengesUrl,
+  },
+  show_hints_and_dialog: {
+    title: "Hints and dialog",
+    text: 'If you\'re feeling stuck, you can press the lightbulb icon near the top of the screen to get a hint. If a level has dialog, you can also press the "Show dialog" button to see the dialog again.',
+    imageUrl: showHintsAndDialogUrl,
   },
 };
 

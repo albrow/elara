@@ -179,7 +179,7 @@ const RAW_SCENES: RawScene[] = [
   ),
   levelScene(
     "loops_part_two",
-    [],
+    ["show_hints_and_dialog"],
     [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
       "Don't forget to include the `loop` keyword right before the opening curly brace (`{`).",
