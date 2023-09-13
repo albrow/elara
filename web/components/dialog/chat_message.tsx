@@ -1,11 +1,10 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
+import { compiler } from "markdown-to-jsx";
 
 export interface ChatMessageProps {
   text: string;
   fromPlayer: boolean;
 }
-
-// TODO(albrow): Support code in chat messages. Maybe delimitted by backticks?
 
 export default function ChatMessage(props: ChatMessageProps) {
   return (
@@ -30,8 +29,8 @@ export default function ChatMessage(props: ChatMessageProps) {
         <Text as="span" fontWeight="bold" mr="8px">
           {props.fromPlayer ? "You:" : "Kalina:"}
         </Text>
-        <Text as="span" fontSize="1.1rem">
-          {props.text}
+        <Text as="span" fontSize="1.1rem" className="dialog-md-content">
+          {compiler(props.text)}
         </Text>
       </Box>
     </Flex>

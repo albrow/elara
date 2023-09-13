@@ -34,12 +34,12 @@ export const NODES: {
     choiceIds: ["ack_while_loop_idea"],
   },
   explain_face_up_func: {
-    text: `I'll get the code started for you by creating a new function called "face_up" which uses the while loop idea.`,
+    text: "I'll get the code started for you by creating a new function called `face_up` which uses the while loop idea.",
     choiceIds: [],
     nextId: "explain_face_up_func_2",
   },
   explain_face_up_func_2: {
-    text: `Then you can use the "face_up" function in your code. It should make these telepads a lot easier to deal with!`,
+    text: "Then you can use the `face_up` function in your code. It should make these telepads a lot easier to deal with!",
     choiceIds: ["ack_face_up_func"],
   },
 };

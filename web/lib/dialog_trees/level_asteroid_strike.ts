@@ -45,21 +45,21 @@ export const NODES: {
   explain_possible_paths: {
     text:
       `The safe direction seems random and can change over time, so you need to ` +
-      `handle *both* cases. Basically, if the data point says "left", then you ` +
-      `should go left. If it says "right", then you should go right.`,
+      `handle *both* cases. Basically, if the data point outputs \`"left"\`, then you ` +
+      `should go left. If it outputs \`"right"\`, then you should go right.`,
     choiceIds: ["ack_possible_paths"],
   },
   explain_asteroid_strike_existing_code_1: {
     text:
       `I've already written some code for you that reads the data ` +
-      `and stores it in a variable called safe_direction.`,
+      "and stores it in a variable called `safe_direction`.",
     choiceIds: [],
     nextId: "explain_asteroid_strike_existing_code_2",
   },
   explain_asteroid_strike_existing_code_2: {
     text:
       `I also started the if statement for you. You just need to add some code to ` +
-      `handle the case where safe_direction is "right".`,
+      `handle the case where \`safe_direction\` is \`"right"\`.`,
     choiceIds: ["ack_asteroid_strike_existing_code"],
   },
 };

@@ -10,11 +10,11 @@ export const NODES: {
     text:
       `Looks like a password gate is blocking the way! Instead of a button, this ` +
       `kind of gate can be opened or closed by saying the password. First move ` +
-      `G.R.O.V.E.R. next to the gate, then say the password using the "say" function.`,
+      "G.R.O.V.E.R. next to the gate, then say the password using the `say` function.",
     choiceIds: ["request_password"],
   },
   provide_password: {
-    text: `You're in luck! I remember the password for this gate. It's "lovelace".`,
+    text: `You're in luck! I remember the password for this gate. It's \`"lovelace"\`.`,
     choiceIds: ["ack_password"],
   },
 };

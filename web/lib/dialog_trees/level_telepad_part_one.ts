@@ -15,7 +15,7 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   explain_telepads: {
-    text: `One of the things we're researching here at Moonbase Bravo is teleportation technology.`,
+    text: `One of the things we're researching here at Moonbase Beta is teleportation technology.`,
     choiceIds: [],
     nextId: "explain_telepads_2",
   },
@@ -34,7 +34,7 @@ export const NODES: {
   },
   explain_telepads_code: {
     text:
-      `In order to deal with this side-effect, you'll need to use the get_orientation function ` +
+      "In order to deal with this side-effect, you'll need to use the `get_orientation` function " +
       `to figure out which way G.R.O.V.E.R. is facing after teleporting. Then use an if statement ` +
       `to handle each possible orientation.`,
     choiceIds: [],

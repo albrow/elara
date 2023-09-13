@@ -15,7 +15,7 @@ export const NODES: {
   grover_is_repaired: {
     text:
       "Nice work! G.R.O.V.E.R. is repaired and ready to go. You " +
-      "can use the move_forward and turn_right functions again.",
+      "can use the `move_forward` and `turn_right` functions again.",
     choiceIds: ["ack_grover_repaired"],
   },
   remind_about_user_defined_functions: {

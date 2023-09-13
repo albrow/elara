@@ -42,13 +42,21 @@ export const NODES: {
   },
   not_might_makes_a_right: {
     text: `I have heard the saying "might makes right", but that's not what I had in mind. Guess again?`,
-    choiceIds: ["guess_three_lefts_make_a_right"],
+    choiceIds: [
+      "guess_might_makes_a_right",
+      "guess_three_lefts_make_a_right",
+      "guess_two_negatives",
+    ],
   },
   not_two_negatives: {
     text:
       `Sure, if you multiply two negative numbers together you get a positive number, ` +
       `but I was thinking of something different. Guess again?`,
-    choiceIds: ["guess_three_lefts_make_a_right"],
+    choiceIds: [
+      "guess_might_makes_a_right",
+      "guess_three_lefts_make_a_right",
+      "guess_two_negatives",
+    ],
   },
   how_to_use_three_lefts: {
     text:

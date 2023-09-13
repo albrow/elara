@@ -33,19 +33,19 @@ export const NODES: {
     choiceIds: ["ready_to_shutdown"],
   },
   server_room_data_points_1: {
-    text: "By the way, if you come across any data points, you might be interested in reading them.",
+    text: "By the way, if you come across some data points in the server room, you could try reading them.",
     choiceIds: [],
     nextId: "server_room_data_points_2",
   },
   server_room_data_points_2: {
-    text: "Moonbase Alpha is the oldest building on Elara, so you might find some messages from the engineers who originally built it.",
+    text: "Moonbase Alpha is the oldest building on Elara, and these data points can contain some interesting messages from the engineers who originally built it.",
     choiceIds: [
       "ask_how_to_read_server_room_data_points",
       "ack_server_room_data_points",
     ],
   },
   remind_how_to_read_data_points_1: {
-    text: "All you have to do is move G.R.O.V.E.R. next to a data point and then call say(read_data()).",
+    text: "All you have to do is move G.R.O.V.E.R. next to a data point and then call `say(read_data());`.",
     choiceIds: [],
     nextId: "remind_how_to_read_data_points_2",
   },

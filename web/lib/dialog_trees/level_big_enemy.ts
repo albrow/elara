@@ -46,7 +46,7 @@ export const NODES: {
     nextId: "greta_telepad_plan_3",
   },
   greta_telepad_plan_3: {
-    text: "I can help you get started with a handy function I wrote called face_direction. I added some comments to explain how it works.",
+    text: "I can help you get started with a handy function I wrote called `face_direction`. I added some comments to explain how it works.",
     choiceIds: ["ack_telepad_plan"],
   },
   final_encouragement: {

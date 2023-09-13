@@ -62,13 +62,13 @@ export const NODES: {
   explain_data_point_2: {
     text:
       "You can interact with data points by moving G.R.O.V.E.R. next to them and calling the " +
-      "read_data function.",
+      "`read_data` function.",
     choiceIds: ["ack_data_points"],
   },
   remind_use_say_to_get_recipe: {
     text:
       "So all you need to do is have G.R.O.V.E.R. read the hummus recipe from the data point and " +
-      "say it using the say function.",
+      "say it using the `say` function.",
     choiceIds: ["ack_use_say_to_get_recipe"],
   },
 };
