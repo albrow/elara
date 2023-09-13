@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { MdHome, MdSettings } from "react-icons/md";
+import { FaBullhorn } from "react-icons/fa";
 import { useState } from "react";
 
 import { NAVBAR_HEIGHT, NAVBAR_Z_INDEX } from "../../../lib/constants";
@@ -27,14 +28,29 @@ export default function Navbar() {
         top="0"
         p={2}
       >
-        <NavbarButton onClick={() => navigateToHub()}>
+        <NavbarButton
+          onClick={() => {
+            setSettingsVisible(false);
+            navigateToHub();
+          }}
+        >
           <MdHome size="0.9em" style={{ marginRight: "0.2rem" }} />
           Hub
         </NavbarButton>
-        <NavbarButton onClick={() => setSettingsVisible(true)}>
+        <NavbarButton onClick={() => setSettingsVisible(!settingsVisible)}>
           <MdSettings size="0.9em" style={{ marginRight: "0.2rem" }} />
           Settings
         </NavbarButton>
+        <a
+          href="https://forms.gle/PZkMf5LkPwLunfNu7"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <NavbarButton onClick={() => setSettingsVisible(false)}>
+            <FaBullhorn size="0.9em" style={{ marginRight: "0.3rem" }} />
+            Feedback
+          </NavbarButton>
+        </a>
       </Box>
     </>
   );
