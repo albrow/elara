@@ -6,8 +6,8 @@ import type { Scene } from "../contexts/scenes";
 import { ScenesContext } from "../contexts/scenes";
 import { MUSIC_FADE_OUT_TIME_MS, SOUND_DELAY_TIME_MS } from "../lib/constants";
 import { useSoundManager } from "./sound_manager_hooks";
-import { useSaveData } from "./save_data_hooks";
 import { useJukebox } from "./jukebox_hooks";
+import { useFunctionUnlockedModal } from "./function_unlocked_modal_hooks";
 
 function getSceneIndexFromRoute(
   scenes: Scene[],
@@ -86,8 +86,8 @@ export function useSceneNavigator() {
   const { getSoundOrNull } = useSoundManager();
   const soundTimeout = useRef<NodeJS.Timeout | null>(null);
   const musicTimeout = useRef<NodeJS.Timeout | null>(null);
-  const [_, { unlockFunctions }] = useSaveData();
   const { requestSong, stopAllMusic } = useJukebox();
+  const [showFunctionUnlockedModal] = useFunctionUnlockedModal();
 
   const navigateToScene = useCallback(
     (scene: Scene) => {
@@ -119,12 +119,19 @@ export function useSceneNavigator() {
       }
 
       // If the scene we're navigating too has any new functions to unlock,
-      // unlock them.
+      // show the function unlocked modal.
       if (scene.newFunctions != null && scene.newFunctions.length > 0) {
-        unlockFunctions(scene.newFunctions);
+        console.log(`calling showFunctionUnlockedModal(${scene.newFunctions})`);
+        showFunctionUnlockedModal(scene.newFunctions);
       }
     },
-    [getSoundOrNull, requestSong, router, stopAllMusic, unlockFunctions]
+    [
+      getSoundOrNull,
+      requestSong,
+      router,
+      showFunctionUnlockedModal,
+      stopAllMusic,
+    ]
   );
 
   const navigateToNextScene = useCallback(() => {

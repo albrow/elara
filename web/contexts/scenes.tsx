@@ -170,7 +170,7 @@ const RAW_SCENES: RawScene[] = [
   journalScene("loops"),
   levelScene(
     "loops_part_one",
-    [],
+    ["show_hints_and_dialog"],
     [
       `You can use the "reset" (🔄) button to reset to the starting code for this level.`,
       "Line 6 of the starting code says `turn_left();`. Try changing that line to something else.",
@@ -179,7 +179,7 @@ const RAW_SCENES: RawScene[] = [
   ),
   levelScene(
     "loops_part_two",
-    ["show_hints_and_dialog"],
+    [],
     [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
       "Don't forget to include the `loop` keyword right before the opening curly brace (`{`).",
@@ -201,7 +201,7 @@ const RAW_SCENES: RawScene[] = [
       "Remember, the `press_button` function only works if G.R.O.V.E.R. is next to the button (he doesn't need to be facing it).",
     ]
   ),
-  journalScene("function_outputs", ["read_data", "get_orientation"]),
+  journalScene("function_outputs", ["get_orientation", "read_data"]),
   levelScene(
     "data_points_part_one",
     [],
