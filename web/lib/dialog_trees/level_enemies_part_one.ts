@@ -19,7 +19,7 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   evil_rover_no_walls: {
-    text: "Look out! There's another malfunctioning rover ahead. It looks like there are no walls blocking it this time.",
+    text: "Look out! There's another malfunctioning rover ahead. It looks like there are no rocks blocking it this time.",
     choiceIds: ["what_is_evil_rover_doing", "what_is_cause_of_malfunction"],
   },
   explain_evil_rover_will_chase: {
