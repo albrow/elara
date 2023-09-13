@@ -19,7 +19,7 @@ impl Level for ReimplementTurnRight {
         "reimplement_turn_right"
     }
     fn objective(&self) -> &'static str {
-        "Finish defining the new_turn_right function, then move the rover ({robot}) to the goal ({goal})."
+        "Finish the `new_turn_right` function, then move the rover ({robot}) to the goal ({goal})."
     }
     fn disabled_functions(&self) -> &'static Vec<&'static str> {
         &DISABLED_FUNCS

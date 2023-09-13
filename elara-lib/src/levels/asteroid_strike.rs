@@ -103,7 +103,7 @@ if safe_direction == "right" {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal without using the read_data function.")
+        Some("Reach the goal without using the `read_data` function.")
     }
     fn check_challenge(&self, _states: &Vec<State>, script: &str, _stats: &ScriptStats) -> bool {
         // Strip the comments first, then check if the script contains "read_data".

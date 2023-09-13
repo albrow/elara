@@ -18,7 +18,7 @@ impl Level for DataPointsPartOne {
         "data_points_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Use the say function to find out what the data point ({dataPoint}) holds."
+        "Use the `say` function to find out what the data point ({dataPoint}) holds."
     }
     fn initial_code(&self) -> &'static str {
         r#"// The read_data function outputs the data from a point, but only
