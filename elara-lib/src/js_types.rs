@@ -398,6 +398,7 @@ impl FuzzyState {
                     open: pw_gate.open,
                     variant: variant,
                     additional_info: pw_gate.additional_info.clone(),
+                    wrong_password: pw_gate.wrong_password,
                     fuzzy: fuzzy_pw_gate.fuzzy,
                 }),
             );
@@ -620,6 +621,7 @@ pub struct FuzzyPasswordGate {
     pub open: bool,
     pub variant: String, // GateVariant
     pub additional_info: String,
+    pub wrong_password: bool,
     pub fuzzy: bool,
 }
 

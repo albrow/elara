@@ -227,6 +227,8 @@ export default function Board(props: BoardProps) {
             additionalInfo={gate.additional_info}
             enableHoverInfo={props.enableHoverInfo}
             variant={gate.variant as "nwse" | "nesw"}
+            wrongPassword={gate.wrong_password}
+            playerPos={props.gameState.players[0].pos}
           />
         )
       )}
