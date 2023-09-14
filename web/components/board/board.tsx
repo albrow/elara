@@ -229,6 +229,7 @@ export default function Board(props: BoardProps) {
             variant={gate.variant as "nwse" | "nesw"}
             wrongPassword={gate.wrong_password}
             playerPos={props.gameState.players[0].pos}
+            enableAnimations={props.enableAnimations}
           />
         )
       )}

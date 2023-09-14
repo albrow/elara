@@ -1,6 +1,8 @@
 import { Box, Image, Tooltip } from "@chakra-ui/react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import {
+  DEFAULT_STEP_TIME,
   LOCKED_GATE_Z_INDEX,
   SPRITE_DROP_SHADOW,
   TILE_SIZE,
@@ -14,8 +16,13 @@ import neswOverlayImgUrl from "../../images/board/pw_gate_ne_sw_overlay.gif";
 import nwseOverlayImgUrl from "../../images/board/pw_gate_nw_se_overlay.gif";
 import { Offset } from "../../lib/utils";
 import { Pos } from "../../../elara-lib/pkg/elara_lib";
+import { useSoundManager } from "../../hooks/sound_manager_hooks";
 import BoardHoverInfo from "./board_hover_info";
 import PasswordGatePage from "./hover_info_pages/password_gate.mdx";
+
+// Amount of time (in milliseocnds) to wait before playing the "wrong password"
+// sound effect if the wrong password is used.
+const WRONG_PASSWORD_DELAY_MS = 250;
 
 export interface PasswordGateProps {
   offset: Offset;
@@ -28,9 +35,68 @@ export interface PasswordGateProps {
   // Used to determine where to place the "wrong password"
   // indicator.
   playerPos: Pos;
+  // Whether to enable motion-based animations and sound effects.
+  enableAnimations: boolean;
 }
 
 export default function PasswordGate(props: PasswordGateProps) {
+  const { getSound } = useSoundManager();
+  const wrongPasswordSound = useMemo(
+    () => getSound("wrong_password"),
+    [getSound]
+  );
+  const wrongPasswordTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [showWrongPassword, setShowWrongPassword] = useState(false);
+
+  const stopMySoundEffects = useCallback(() => {
+    wrongPasswordSound.stop();
+    if (wrongPasswordTimeout.current) {
+      clearTimeout(wrongPasswordTimeout.current);
+    }
+  }, [wrongPasswordSound]);
+
+  // If the wrong password was not said on this simulation step, stop
+  // all the timers and sound effects.
+  useEffect(() => {
+    if (!props.wrongPassword) {
+      stopMySoundEffects();
+      if (wrongPasswordTimeout.current) {
+        clearTimeout(wrongPasswordTimeout.current);
+      }
+      setShowWrongPassword(false);
+    }
+  }, [props.wrongPassword, stopMySoundEffects]);
+
+  // If the wrong password was said on this simulation step and
+  // animations are enabled, play the sound effect and show the
+  // "wrong password" indicator after a short delay.
+  useEffect(() => {
+    if (!props.enableAnimations) {
+      stopMySoundEffects();
+    } else if (props.wrongPassword) {
+      if (wrongPasswordTimeout.current) {
+        clearTimeout(wrongPasswordTimeout.current);
+      }
+      wrongPasswordTimeout.current = setTimeout(() => {
+        if (!props.enableAnimations) {
+          return;
+        }
+        wrongPasswordSound.play();
+        setShowWrongPassword(true);
+
+        // Hide the indicator again after a short delay.
+        wrongPasswordTimeout.current = setTimeout(() => {
+          setShowWrongPassword(false);
+        }, DEFAULT_STEP_TIME - WRONG_PASSWORD_DELAY_MS);
+      }, WRONG_PASSWORD_DELAY_MS);
+    }
+    return () => {
+      if (wrongPasswordTimeout.current) {
+        clearTimeout(wrongPasswordTimeout.current);
+      }
+    };
+  }, [props, stopMySoundEffects, props.enableAnimations, wrongPasswordSound]);
+
   const imgUrl = useMemo(() => {
     if (props.variant === "nwse") {
       return props.open ? nwseUnlockedImgUrl : nwseLockedImgUrl;
@@ -103,7 +169,15 @@ export default function PasswordGate(props: PasswordGateProps) {
           label="Wrong password"
           bgColor="red.600"
           hasArrow
-          isOpen={props.wrongPassword}
+          isOpen={
+            // Show the wrong password indicator if the wrong password was said
+            // if animations are enabled, showWrongPassword will control the visibility
+            // of the indicator. This lets us show the indicator after a short delay.
+            // If animations are disabled, we just show the indicator immediately if
+            // the wrong password was said.
+            showWrongPassword ||
+            (props.wrongPassword && !props.enableAnimations)
+          }
           placement={getWrongPasswordPlacement()}
           variant="rover-message" // Not technically a rover message, but this gives us the right z-index.
         >

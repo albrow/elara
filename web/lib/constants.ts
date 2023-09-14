@@ -25,6 +25,7 @@ export const SPRITE_DROP_SHADOW = "drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.3))";
 
 // Game speed and animations.
 export const DEFAULT_GAME_SPEED = 1; // steps per second
+export const DEFAULT_STEP_TIME = 1000 / DEFAULT_GAME_SPEED; // milliseconds
 export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
 
 // Constants related to the game's UI.

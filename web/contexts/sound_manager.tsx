@@ -50,6 +50,8 @@ import buttonPressOn from "../audio/sfx/button_press_on.ogg";
 import buttonPressOff from "../audio/sfx/button_press_off.ogg";
 import buttonPressOnFallback from "../audio/sfx/button_press_on.mp3";
 import buttonPressOffFallback from "../audio/sfx/button_press_off.mp3";
+import wrongPassword from "../audio/sfx/wrong_password.ogg";
+import wrongPasswordFallback from "../audio/sfx/wrong_password.mp3";
 import intro from "../audio/dialog/intro.ogg";
 import introFallback from "../audio/dialog/intro.mp3";
 import askAboutJourney from "../audio/dialog/ask_about_journey.ogg";
@@ -198,6 +200,12 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         "sfx",
         [challengeSound, challengeSoundFallback],
         0.8
+      ),
+      wrong_password: new Sound(
+        "wrong_password",
+        "sfx",
+        [wrongPassword, wrongPasswordFallback],
+        0.5
       ),
       dialog_intro: new Sound(
         "dialog_intro",
