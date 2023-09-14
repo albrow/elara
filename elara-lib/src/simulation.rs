@@ -145,6 +145,7 @@ pub struct State {
     pub telepads: Vec<Telepad>,
     pub enemies: Vec<Enemy>,
     pub big_enemies: Vec<BigEnemy>,
+    pub asteroid_warnings: Vec<AsteroidWarning>,
 }
 
 impl State {
@@ -161,6 +162,10 @@ impl State {
             telepads: vec![],
             enemies: vec![],
             big_enemies: vec![],
+            // TODO(albrow): Automatically generate asteroid warnings
+            // based on possible locations of asteroids. Could be done in
+            // levels/mod.rs?
+            asteroid_warnings: vec![],
         }
     }
 }
@@ -488,6 +493,7 @@ impl BigEnemy {
 pub enum ObstacleKind {
     Rock,
     Server,
+    Asteroid,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -518,6 +524,11 @@ impl Obstacle {
             kind,
         }
     }
+}
+
+#[derive(Clone, PartialEq, Debug, Hash, Eq)]
+pub struct AsteroidWarning {
+    pub pos: Pos,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -689,7 +700,7 @@ impl DataPoint {
     }
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, Hash, Eq)]
 pub struct Pos {
     pub x: i32,
     pub y: i32,

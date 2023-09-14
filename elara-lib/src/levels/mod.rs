@@ -29,15 +29,12 @@ mod telepad_part_two;
 mod telepads_and_while_loop;
 mod variables_intro;
 
-use std::collections::HashMap;
-
 use crate::actors::{Bounds, BIG_ENEMY_SIZE};
 use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_ENERGY, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, BigEnemy, Button, Gate, Orientation, Pos, Telepad};
-use crate::simulation::{
-    DataPoint, Enemy, EnergyCell, Goal, Obstacle, PasswordGate, Player, State,
-};
+use crate::simulation::State;
+use crate::simulation::{Actor, AsteroidWarning, ObstacleKind, Orientation, Pos};
+use std::collections::{HashMap, HashSet};
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum Outcome {
@@ -63,9 +60,6 @@ pub trait Level {
     fn initial_states(&self) -> Vec<State>;
     fn actors(&self) -> Vec<Box<dyn Actor>>;
     fn check_win(&self, state: &State) -> Outcome;
-    fn initial_fuzzy_state(&self) -> FuzzyState {
-        FuzzyState::from(self.initial_states())
-    }
     fn bounds(&self) -> Bounds {
         Bounds {
             min_x: 0,
@@ -82,6 +76,15 @@ pub trait Level {
     }
     fn check_challenge(&self, _states: &Vec<State>, _script: &str, _stats: &ScriptStats) -> bool {
         false
+    }
+
+    /// Returns the combined initial state (i.e. what should be shown
+    /// in the UI when the level is loaded). This is automatically implemented
+    /// for each level.
+    fn combined_initial_state(&self) -> State {
+        let mut initial_state = self.initial_states()[0].clone();
+        initial_state.asteroid_warnings = generate_asteroid_warnings(self.initial_states());
+        initial_state
     }
 }
 
@@ -172,153 +175,50 @@ fn did_reach_goal(state: &State) -> bool {
     false
 }
 
-/// A representation of multiple possible initial states in which any
-/// object that could have more than one state is marked as "fuzzy".
-/// When the level is loaded and the simulation is run, the "fuzziness"
-/// goes away and a discrete initial state is chosen.
-#[derive(PartialEq, Debug)]
-pub struct FuzzyState {
-    pub players: Vec<Fuzzy<Player>>,
-    pub energy_cells: Vec<Fuzzy<EnergyCell>>,
-    pub goals: Vec<Fuzzy<Goal>>,
-    pub enemies: Vec<Fuzzy<Enemy>>,
-    pub obstacles: Vec<Fuzzy<Obstacle>>,
-    pub password_gates: Vec<Fuzzy<PasswordGate>>,
-    pub data_points: Vec<Fuzzy<DataPoint>>,
-    pub telepads: Vec<Fuzzy<Telepad>>,
-    pub buttons: Vec<Fuzzy<Button>>,
-    pub gates: Vec<Fuzzy<Gate>>,
-    pub big_enemies: Vec<Fuzzy<BigEnemy>>,
-}
+/// Returns asteroid warnings based on the given possible initial states.
+/// An AsteroidWarning is generated any time that an asteroid may exist in
+/// one state but not another.
+pub fn generate_asteroid_warnings(initial_states: Vec<State>) -> Vec<AsteroidWarning> {
+    if initial_states.len() == 0 {
+        panic!("Error computing fuzzy state: states cannot be empty");
+    }
 
-impl FuzzyState {
-    pub fn from_single_state(state: &State) -> Self {
-        Self {
-            players: vec![Fuzzy::new(state.player.clone(), false)],
-            energy_cells: state
-                .energy_cells
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
-            goals: state
-                .goals
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
-            enemies: state
-                .enemies
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
-            obstacles: state
-                .obstacles
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
-            password_gates: state
-                .password_gates
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
-            data_points: state
-                .data_points
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
-            telepads: state
-                .telepads
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
-            buttons: state
-                .buttons
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
-            gates: state
-                .gates
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
-            big_enemies: state
-                .big_enemies
-                .clone()
-                .into_iter()
-                .map(|x| Fuzzy::new(x, false))
-                .collect(),
+    // Start by looking at only the first possible state.
+    let first_state = &initial_states[0];
+    let first_state_asteroids = first_state
+        .obstacles
+        .iter()
+        .filter(|x| x.kind == ObstacleKind::Asteroid);
+    let mut warnings = HashSet::new();
+
+    // Iterate through the remaining states (i.e. starting at index 1), and if
+    // any asteroids exist in the first state but not in another, add a corresponding
+    // warning.
+    for state in initial_states.iter().skip(1) {
+        // If an asteroid is present in first_state state but not this one, add a warning.
+        for asteroid in first_state_asteroids.clone() {
+            if !state.obstacles.contains(asteroid) {
+                warnings.insert(AsteroidWarning {
+                    pos: asteroid.pos.clone(),
+                });
+            }
+        }
+
+        // Likewise if an asteroid is present in this state but not first_state, add a warning.
+        let this_state_asteroids = state
+            .obstacles
+            .iter()
+            .filter(|x| x.kind == ObstacleKind::Asteroid);
+        for asteroid in this_state_asteroids {
+            if !first_state.obstacles.contains(asteroid) {
+                warnings.insert(AsteroidWarning {
+                    pos: asteroid.pos.clone(),
+                });
+            }
         }
     }
 
-    // Given all possible initial states for a level, return a FuzzyState
-    // representation in which any objects that differ between states are
-    // marked as "fuzzy".
-    pub fn from(possible_states: Vec<State>) -> Self {
-        if possible_states.len() == 0 {
-            panic!("Error computing fuzzy state: states cannot be empty");
-        }
-
-        // Start by looking at only the first possible state.
-        let mut fuzzy_state = Self::from_single_state(&possible_states[0]);
-
-        // Iterate through the remaining states (i.e. starting at index 1), and if
-        // any objects differ between the first state and the current state, mark
-        // them as fuzzy.
-        for state in possible_states.iter().skip(1) {
-            if !fuzzy_state
-                .players
-                .contains(&Fuzzy::new(state.player.clone(), false))
-            {
-                for player in fuzzy_state.players.iter_mut() {
-                    player.fuzzy = true;
-                }
-                fuzzy_state
-                    .players
-                    .push(Fuzzy::new(state.player.clone(), true));
-            }
-            // If a goal is present in one state but not the other, mark it as fuzzy.
-            for goal in fuzzy_state.goals.iter_mut() {
-                if !state.goals.contains(&goal.obj) && !goal.fuzzy {
-                    goal.fuzzy = true;
-                }
-            }
-            for goal in state.goals.iter() {
-                if !fuzzy_state.goals.contains(&Fuzzy::new(goal.clone(), false)) {
-                    fuzzy_state.goals.push(Fuzzy::new(goal.clone(), true));
-                }
-            }
-            // If an obstacle is present in one state but not the other, mark it as fuzzy.
-            for obstacle in fuzzy_state.obstacles.iter_mut() {
-                if !state.obstacles.contains(&obstacle.obj) && !obstacle.fuzzy {
-                    obstacle.fuzzy = true;
-                }
-            }
-            for obstacle in state.obstacles.iter() {
-                if !fuzzy_state
-                    .obstacles
-                    .contains(&Fuzzy::new(obstacle.clone(), false))
-                {
-                    fuzzy_state
-                        .obstacles
-                        .push(Fuzzy::new(obstacle.clone(), true));
-                }
-            }
-
-            // TODO(albrow): Some vectors inside State (e.g., buttons, gates) are not currently
-            // marked as fuzzy since there is no level which has different states for them. We
-            // might need this later on though!
-        }
-
-        fuzzy_state
-    }
+    warnings.into_iter().collect()
 }
 
 /// An implementation of Level::check_win which covers some common
@@ -415,127 +315,58 @@ pub fn make_all_initial_states_for_telepads(states: Vec<State>) -> Vec<State> {
     new_states
 }
 
-#[derive(Debug, PartialEq)]
-pub struct Fuzzy<T> {
-    pub obj: T,
-    pub fuzzy: bool,
-}
-
-impl<T> Fuzzy<T> {
-    pub fn new(obj: T, fuzzy: bool) -> Self {
-        Self { obj, fuzzy }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::{
-        simulation::{Orientation, Pos},
+        simulation::{Obstacle, Orientation, Pos, Telepad},
         state_maker::StateMaker,
     };
 
     #[test]
-    fn to_fuzzy_state() {
-        // Given one possible initial state, the fuzzy state should be identical,
-        // with all objects marked as non-fuzzy.
-        let states = vec![StateMaker::new()
-            .with_player(Player::new(0, 0, 10, Orientation::Down))
-            .with_goals(vec![Goal::new(2, 2)])
-            .build()];
-        let expected = FuzzyState {
-            players: vec![Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), false)],
-            energy_cells: vec![],
-            goals: vec![Fuzzy::new(Goal::new(2, 2), false)],
-            enemies: vec![],
-            obstacles: vec![],
-            password_gates: vec![],
-            data_points: vec![],
-            telepads: vec![],
-            buttons: vec![],
-            gates: vec![],
-            big_enemies: vec![],
-        };
-        let actual = FuzzyState::from(states);
-        assert_eq!(actual, expected);
-
-        // Given two possible player positions, both should be marked as fuzzy.
-        let states = vec![
+    fn asteroid_warnings() {
+        let initial_states = vec![
             StateMaker::new()
-                .with_player(Player::new(0, 0, 10, Orientation::Down))
-                .with_goals(vec![Goal::new(2, 2)])
+                .with_obstacles(vec![
+                    Obstacle::new_with_kind(0, 1, ObstacleKind::Rock),
+                    Obstacle::new_with_kind(0, 2, ObstacleKind::Asteroid),
+                    Obstacle::new_with_kind(0, 3, ObstacleKind::Asteroid),
+                ])
                 .build(),
             StateMaker::new()
-                .with_player(Player::new(1, 1, 10, Orientation::Down))
-                .with_goals(vec![Goal::new(2, 2)])
+                .with_obstacles(vec![
+                    Obstacle::new_with_kind(0, 1, ObstacleKind::Rock),
+                    Obstacle::new_with_kind(0, 2, ObstacleKind::Asteroid),
+                    Obstacle::new_with_kind(0, 4, ObstacleKind::Asteroid),
+                ])
+                .build(),
+            StateMaker::new()
+                .with_obstacles(vec![
+                    Obstacle::new_with_kind(0, 1, ObstacleKind::Rock),
+                    Obstacle::new_with_kind(0, 2, ObstacleKind::Asteroid),
+                    Obstacle::new_with_kind(0, 5, ObstacleKind::Asteroid),
+                ])
                 .build(),
         ];
-        let expected = FuzzyState {
-            players: vec![
-                Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), true),
-                Fuzzy::new(Player::new(1, 1, 10, Orientation::Down), true),
-            ],
-            energy_cells: vec![],
-            goals: vec![Fuzzy::new(
-                Goal {
-                    pos: Pos::new(2, 2),
+
+        // Note: Warnings can come out in any order, so we sort them by y position
+        // before comparing.
+        let mut warnings = generate_asteroid_warnings(initial_states);
+        warnings.sort_by(|a, b| a.pos.y.cmp(&b.pos.y));
+        assert_eq!(
+            warnings,
+            vec![
+                AsteroidWarning {
+                    pos: Pos::new(0, 3)
                 },
-                false,
-            )],
-            enemies: vec![],
-            obstacles: vec![],
-            password_gates: vec![],
-            data_points: vec![],
-            telepads: vec![],
-            buttons: vec![],
-            gates: vec![],
-            big_enemies: vec![],
-        };
-        let actual = FuzzyState::from(states);
-        assert_eq!(actual, expected);
-
-        // Given two possible goal positions, both should be marked as fuzzy.
-        let states = vec![
-            StateMaker::new()
-                .with_player(Player::new(0, 0, 10, Orientation::Down))
-                .with_goals(vec![Goal::new(2, 2)])
-                .build(),
-            StateMaker::new()
-                .with_player(Player::new(0, 0, 10, Orientation::Down))
-                .with_goals(vec![Goal::new(3, 3)])
-                .build(),
-        ];
-        let expected = FuzzyState {
-            players: vec![Fuzzy::new(Player::new(0, 0, 10, Orientation::Down), false)],
-            energy_cells: vec![],
-            goals: vec![
-                Fuzzy::new(
-                    Goal {
-                        pos: Pos::new(2, 2),
-                    },
-                    true,
-                ),
-                Fuzzy::new(
-                    Goal {
-                        pos: Pos::new(3, 3),
-                    },
-                    true,
-                ),
-            ],
-            enemies: vec![],
-            obstacles: vec![],
-            password_gates: vec![],
-            data_points: vec![],
-            telepads: vec![],
-            buttons: vec![],
-            gates: vec![],
-            big_enemies: vec![],
-        };
-        let actual = FuzzyState::from(states);
-        assert_eq!(actual, expected);
-
-        // TODO(albrow): Expand on tests when we support fuzziness for
-        // energy cells, enemies, obstacles, etc.
+                AsteroidWarning {
+                    pos: Pos::new(0, 4)
+                },
+                AsteroidWarning {
+                    pos: Pos::new(0, 5)
+                },
+            ]
+        );
     }
 
     #[test]

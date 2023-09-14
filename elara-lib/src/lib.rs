@@ -235,8 +235,3 @@ pub fn get_level_data() -> js_sys::Object {
 pub fn new_pos() -> js_types::Pos {
     js_types::Pos { x: 0, y: 0 }
 }
-
-#[wasm_bindgen]
-pub fn new_state() -> js_types::FuzzyState {
-    js_types::FuzzyState::new()
-}

@@ -4,8 +4,8 @@ use wasm_bindgen::prelude::*;
 use crate::levels::Outcome;
 use crate::script_runner;
 use crate::simulation::{
-    BigEnemyAnimState, EnemyAnimState, Orientation, OrientationWithDiagonals, PlayerAnimState,
-    TermData,
+    BigEnemyAnimState, EnemyAnimState, GateVariant, ObstacleKind, Orientation,
+    OrientationWithDiagonals, PlayerAnimState, TermData,
 };
 use crate::{levels, simulation};
 
@@ -20,19 +20,19 @@ pub struct RhaiError {
 /// a simulation run.
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyStateWithLines {
-    pub state: FuzzyState,
+pub struct StateWithLines {
+    pub state: State,
     pub lines: Array, // Array<number>
 }
 
 #[wasm_bindgen]
-impl FuzzyStateWithLines {
-    pub fn new() -> FuzzyStateWithLines {
-        FuzzyStateWithLines {
-            state: FuzzyState::new(),
-            lines: Array::new_with_length(0),
-        }
-    }
+impl StateWithLines {
+    // pub fn new() -> StateWithLines {
+    //     StateWithLines {
+    //         state: State::new(),
+    //         lines: Array::new_with_length(0),
+    //     }
+    // }
 }
 
 #[wasm_bindgen]
@@ -83,8 +83,8 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
         }
         states_array.set(
             i as u32,
-            JsValue::from(FuzzyStateWithLines {
-                state: FuzzyState::from(levels::FuzzyState::from_single_state(state)),
+            JsValue::from(StateWithLines {
+                state: State::from(state.clone()),
                 lines: lines_array,
             }),
         );
@@ -108,7 +108,7 @@ pub struct LevelData {
     pub name: String,
     pub short_name: String,
     pub objective: String,
-    pub initial_state: FuzzyState,
+    pub initial_state: State,
     pub initial_code: String,
     pub disabled_funcs: Array, // Array<String>
     pub challenge: String,
@@ -125,7 +125,7 @@ impl LevelData {
             short_name: level.short_name().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
-            initial_state: FuzzyState::from(level.initial_fuzzy_state()),
+            initial_state: State::from(level.combined_initial_state()),
             disabled_funcs,
             challenge: level.challenge().unwrap_or_default().to_string(),
         }
@@ -231,107 +231,74 @@ fn get_js_big_enemy_anim_data(anim_state: &BigEnemyAnimState) -> Option<JsValue>
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyState {
-    pub players: Array,        // Array<FuzzyPlayer>
-    pub energy_cells: Array,   // Array<FuzzyEnergyCell>
-    pub goals: Array,          // Array<FuzzyGoal>
-    pub enemies: Array,        // Array<FuzzyEnemy>
-    pub obstacles: Array,      // Array<FuzzyObstacle>
-    pub password_gates: Array, // Array<FuzzyPasswordGate>
-    pub data_points: Array,    // Array<FuzzyDataPoint>
-    pub telepads: Array,       // Array<FuzzyTelepad>
-    pub buttons: Array,        // Array<FuzzyButton>
-    pub gates: Array,          // Array<FuzzyGate>
-    pub big_enemies: Array,    // Array<FuzzyBigEnemy>
+pub struct State {
+    pub player: Player,
+    pub energy_cells: Array,   // Array<EnergyCell>
+    pub goals: Array,          // Array<Goal>
+    pub enemies: Array,        // Array<Enemy>
+    pub obstacles: Array,      // Array<Obstacle>
+    pub password_gates: Array, // Array<PasswordGate>
+    pub data_points: Array,    // Array<DataPoint>
+    pub telepads: Array,       // Array<Telepad>
+    pub buttons: Array,        // Array<Button>
+    pub gates: Array,          // Array<Gate>
+    pub big_enemies: Array,    // Array<BigEnemy>
 }
 
-impl FuzzyState {
-    pub fn new() -> Self {
-        FuzzyState {
-            players: Array::new(),
-            energy_cells: Array::new(),
-            goals: Array::new(),
-            enemies: Array::new(),
-            obstacles: Array::new(),
-            password_gates: Array::new(),
-            data_points: Array::new(),
-            telepads: Array::new(),
-            buttons: Array::new(),
-            gates: Array::new(),
-            big_enemies: Array::new(),
-        }
-    }
+impl State {
+    // pub fn new() -> Self {
+    //     State {
+    //         player: Player {
+    //             pos: Pos { x: 0, y: 0 },
+    //             energy: 0,
+    //             message: String::new(),
+    //             anim_state: String::new(),
+    //             anim_data: JsValue::UNDEFINED,
+    //             facing: String::new(),
+    //         },
+    //         energy_cells: Array::new(),
+    //         goals: Array::new(),
+    //         enemies: Array::new(),
+    //         obstacles: Array::new(),
+    //         password_gates: Array::new(),
+    //         data_points: Array::new(),
+    //         telepads: Array::new(),
+    //         buttons: Array::new(),
+    //         gates: Array::new(),
+    //         big_enemies: Array::new(),
+    //     }
+    // }
 
-    pub fn from(state: levels::FuzzyState) -> Self {
-        let players = Array::new_with_length(state.players.len() as u32);
-        for (i, fuzzy_player) in state.players.iter().enumerate() {
-            let anim_state = match fuzzy_player.obj.anim_state {
-                PlayerAnimState::Idle => "idle",
-                PlayerAnimState::Moving => "moving",
-                PlayerAnimState::Turning => "turning",
-                PlayerAnimState::Teleporting(_) => "teleporting",
-                PlayerAnimState::Bumping(_) => "bumping",
-            };
-            let facing = match fuzzy_player.obj.facing {
-                Orientation::Up => "up",
-                Orientation::Down => "down",
-                Orientation::Left => "left",
-                Orientation::Right => "right",
-            };
-            let anim_data =
-                get_js_player_anim_data(&fuzzy_player.obj.anim_state).unwrap_or(JsValue::UNDEFINED);
-            let player = &fuzzy_player.obj;
-            players.set(
-                i as u32,
-                JsValue::from(FuzzyPlayer {
-                    pos: Pos {
-                        x: player.pos.x as i32,
-                        y: player.pos.y as i32,
-                    },
-                    energy: player.energy as i32,
-                    message: player.message.clone(),
-                    anim_state: anim_state.to_string(),
-                    anim_data: anim_data,
-                    facing: facing.to_string(),
-                    fuzzy: fuzzy_player.fuzzy,
-                }),
-            );
-        }
-
+    pub fn from(state: simulation::State) -> Self {
         let energy_cells = Array::new_with_length(state.energy_cells.len() as u32);
-        for (i, fuzzy_energy_cell) in state.energy_cells.iter().enumerate() {
-            let energy_cell = &fuzzy_energy_cell.obj;
+        for (i, energy_cell) in state.energy_cells.iter().enumerate() {
             energy_cells.set(
                 i as u32,
-                JsValue::from(FuzzyEnergyCell {
+                JsValue::from(EnergyCell {
                     pos: Pos {
                         x: energy_cell.pos.x as i32,
                         y: energy_cell.pos.y as i32,
                     },
                     collected: energy_cell.collected,
-                    fuzzy: fuzzy_energy_cell.fuzzy,
                 }),
             );
         }
 
         let goals = Array::new_with_length(state.goals.len() as u32);
-        for (i, fuzzy_goal) in state.goals.iter().enumerate() {
-            let goal = &fuzzy_goal.obj;
+        for (i, goal) in state.goals.iter().enumerate() {
             goals.set(
                 i as u32,
-                JsValue::from(FuzzyGoal {
+                JsValue::from(Goal {
                     pos: Pos {
                         x: goal.pos.x as i32,
                         y: goal.pos.y as i32,
                     },
-                    fuzzy: fuzzy_goal.fuzzy,
                 }),
             );
         }
 
         let enemies = Array::new_with_length(state.enemies.len() as u32);
-        for (i, fuzzy_enemy) in state.enemies.iter().enumerate() {
-            let enemy = &fuzzy_enemy.obj;
+        for (i, enemy) in state.enemies.iter().enumerate() {
             let anim_state = match enemy.anim_state {
                 EnemyAnimState::Idle => "idle",
                 EnemyAnimState::Moving => "moving",
@@ -348,7 +315,7 @@ impl FuzzyState {
             let anim_data = get_js_enemy_anim_data(&enemy.anim_state).unwrap_or(JsValue::UNDEFINED);
             enemies.set(
                 i as u32,
-                JsValue::from(FuzzyEnemy {
+                JsValue::from(Enemy {
                     pos: Pos {
                         x: enemy.pos.x as i32,
                         y: enemy.pos.y as i32,
@@ -356,40 +323,37 @@ impl FuzzyState {
                     anim_state: anim_state.to_string(),
                     anim_data: anim_data,
                     facing: facing.to_string(),
-                    fuzzy: fuzzy_enemy.fuzzy,
                 }),
             );
         }
 
         let obstacles = Array::new_with_length(state.obstacles.len() as u32);
-        for (i, fuzzy_obstacle) in state.obstacles.iter().enumerate() {
-            let obstacle = &fuzzy_obstacle.obj;
+        for (i, obstacle) in state.obstacles.iter().enumerate() {
             obstacles.set(
                 i as u32,
-                JsValue::from(FuzzyObstacle {
+                JsValue::from(Obstacle {
                     pos: Pos {
                         x: obstacle.pos.x as i32,
                         y: obstacle.pos.y as i32,
                     },
                     kind: match obstacle.kind {
-                        simulation::ObstacleKind::Rock => "rock".to_string(),
-                        simulation::ObstacleKind::Server => "server".to_string(),
+                        ObstacleKind::Rock => "rock".to_string(),
+                        ObstacleKind::Server => "server".to_string(),
+                        ObstacleKind::Asteroid => "asteroid".to_string(),
                     },
-                    fuzzy: fuzzy_obstacle.fuzzy,
                 }),
             );
         }
 
         let password_gates = Array::new_with_length(state.password_gates.len() as u32);
-        for (i, fuzzy_pw_gate) in state.password_gates.iter().enumerate() {
-            let pw_gate = &fuzzy_pw_gate.obj;
+        for (i, pw_gate) in state.password_gates.iter().enumerate() {
             let variant = match pw_gate.variant {
-                simulation::GateVariant::NWSE => "nwse".to_string(),
-                simulation::GateVariant::NESW => "nesw".to_string(),
+                GateVariant::NWSE => "nwse".to_string(),
+                GateVariant::NESW => "nesw".to_string(),
             };
             password_gates.set(
                 i as u32,
-                JsValue::from(FuzzyPasswordGate {
+                JsValue::from(PasswordGate {
                     pos: Pos {
                         x: pw_gate.pos.x as i32,
                         y: pw_gate.pos.y as i32,
@@ -399,17 +363,15 @@ impl FuzzyState {
                     variant: variant,
                     additional_info: pw_gate.additional_info.clone(),
                     wrong_password: pw_gate.wrong_password,
-                    fuzzy: fuzzy_pw_gate.fuzzy,
                 }),
             );
         }
 
         let data_points = Array::new_with_length(state.data_points.len() as u32);
-        for (i, fuzzy_data_point) in state.data_points.iter().enumerate() {
-            let data_point = &fuzzy_data_point.obj;
+        for (i, data_point) in state.data_points.iter().enumerate() {
             data_points.set(
                 i as u32,
-                JsValue::from(FuzzyDataPoint {
+                JsValue::from(DataPoint {
                     pos: Pos {
                         x: data_point.pos.x as i32,
                         y: data_point.pos.y as i32,
@@ -417,17 +379,15 @@ impl FuzzyState {
                     data: term_data_to_js(&data_point.data),
                     reading: data_point.reading,
                     additional_info: data_point.additional_info.clone(),
-                    fuzzy: fuzzy_data_point.fuzzy,
                 }),
             );
         }
 
         let telepads = Array::new_with_length(state.telepads.len() as u32);
-        for (i, fuzzy_telepad) in state.telepads.iter().enumerate() {
-            let telepad = &fuzzy_telepad.obj;
+        for (i, telepad) in state.telepads.iter().enumerate() {
             telepads.set(
                 i as u32,
-                JsValue::from(FuzzyTelepad {
+                JsValue::from(Telepad {
                     start_pos: Pos {
                         x: telepad.start_pos.x as i32,
                         y: telepad.start_pos.y as i32,
@@ -442,17 +402,15 @@ impl FuzzyState {
                         Orientation::Left => "left".to_string(),
                         Orientation::Right => "right".to_string(),
                     },
-                    fuzzy: fuzzy_telepad.fuzzy,
                 }),
             );
         }
 
         let buttons = Array::new_with_length(state.buttons.len() as u32);
-        for (i, fuzzy_button) in state.buttons.iter().enumerate() {
-            let button = &fuzzy_button.obj;
+        for (i, button) in state.buttons.iter().enumerate() {
             buttons.set(
                 i as u32,
-                JsValue::from(FuzzyButton {
+                JsValue::from(Button {
                     pos: Pos {
                         x: button.pos.x as i32,
                         y: button.pos.y as i32,
@@ -467,21 +425,19 @@ impl FuzzyState {
                     },
                     currently_pressed: button.currently_pressed,
                     additional_info: button.additional_info.clone(),
-                    fuzzy: fuzzy_button.fuzzy,
                 }),
             );
         }
 
         let gates = Array::new_with_length(state.gates.len() as u32);
-        for (i, fuzzy_gate) in state.gates.iter().enumerate() {
-            let gate = &fuzzy_gate.obj;
+        for (i, gate) in state.gates.iter().enumerate() {
             let variant = match gate.variant {
                 simulation::GateVariant::NWSE => "nwse".to_string(),
                 simulation::GateVariant::NESW => "nesw".to_string(),
             };
             gates.set(
                 i as u32,
-                JsValue::from(FuzzyGate {
+                JsValue::from(Gate {
                     pos: Pos {
                         x: gate.pos.x as i32,
                         y: gate.pos.y as i32,
@@ -489,14 +445,12 @@ impl FuzzyState {
                     open: gate.open,
                     variant: variant,
                     additional_info: gate.additional_info.clone(),
-                    fuzzy: fuzzy_gate.fuzzy,
                 }),
             );
         }
 
         let big_enemies = Array::new_with_length(state.big_enemies.len() as u32);
-        for (i, fuzzy_big_enemy) in state.big_enemies.iter().enumerate() {
-            let big_enemy = &fuzzy_big_enemy.obj;
+        for (i, big_enemy) in state.big_enemies.iter().enumerate() {
             let anim_state = match big_enemy.anim_state {
                 BigEnemyAnimState::Idle => "idle",
                 BigEnemyAnimState::Moving => "moving",
@@ -507,7 +461,7 @@ impl FuzzyState {
                 get_js_big_enemy_anim_data(&big_enemy.anim_state).unwrap_or(JsValue::UNDEFINED);
             big_enemies.set(
                 i as u32,
-                JsValue::from(FuzzyBigEnemy {
+                JsValue::from(BigEnemy {
                     pos: Pos {
                         x: big_enemy.pos.x as i32,
                         y: big_enemy.pos.y as i32,
@@ -524,13 +478,12 @@ impl FuzzyState {
                     },
                     anim_state: anim_state.to_string(),
                     anim_data: anim_data,
-                    fuzzy: fuzzy_big_enemy.fuzzy,
                 }),
             );
         }
 
-        FuzzyState {
-            players,
+        State {
+            player: Player::from(state.player),
             energy_cells,
             goals,
             enemies,
@@ -560,107 +513,126 @@ fn term_data_to_js(data: &TermData) -> JsValue {
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyPlayer {
+pub struct Player {
     pub pos: Pos,
     pub energy: i32,
     pub message: String,
     pub anim_state: String, // PlayerAnimState
     pub anim_data: JsValue, // TeleAnimData | BumpAnimData |(other animation data types) | undefined
     pub facing: String,     // Orientation
-    pub fuzzy: bool,
+}
+
+impl Player {
+    pub fn from(player: simulation::Player) -> Self {
+        let anim_state = match player.anim_state {
+            PlayerAnimState::Idle => "idle",
+            PlayerAnimState::Moving => "moving",
+            PlayerAnimState::Turning => "turning",
+            PlayerAnimState::Teleporting(_) => "teleporting",
+            PlayerAnimState::Bumping(_) => "bumping",
+        };
+        let facing = match player.facing {
+            Orientation::Up => "up",
+            Orientation::Down => "down",
+            Orientation::Left => "left",
+            Orientation::Right => "right",
+        };
+        let anim_data = get_js_player_anim_data(&player.anim_state).unwrap_or(JsValue::UNDEFINED);
+        Self {
+            pos: Pos {
+                x: player.pos.x as i32,
+                y: player.pos.y as i32,
+            },
+            energy: player.energy as i32,
+            message: player.message.clone(),
+            anim_state: anim_state.to_string(),
+            anim_data: anim_data,
+            facing: facing.to_string(),
+        }
+    }
 }
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub struct FuzzyGoal {
+pub struct Goal {
     pub pos: Pos,
-    pub fuzzy: bool,
 }
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub struct FuzzyEnergyCell {
+pub struct EnergyCell {
     pub pos: Pos,
     pub collected: bool,
-    pub fuzzy: bool,
 }
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyEnemy {
+pub struct Enemy {
     pub pos: Pos,
     pub anim_state: String, // EnemyAnimState
     pub anim_data: JsValue, // TeleAnimData | BumpAnimData | (other animation data types) | undefined
     pub facing: String,     // Orientation
-    pub fuzzy: bool,
 }
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyBigEnemy {
+pub struct BigEnemy {
     pub pos: Pos,
     pub anim_state: String, // EnemyAnimState
     pub anim_data: JsValue, // TeleAnimData | BumpAnimData | (other animation data types) | undefined
     pub facing: String,     // Orientation
-    pub fuzzy: bool,
 }
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyObstacle {
+pub struct Obstacle {
     pub pos: Pos,
     pub kind: String, // ObstacleKind
-    pub fuzzy: bool,
 }
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyPasswordGate {
+pub struct PasswordGate {
     pub pos: Pos,
     pub password: String,
     pub open: bool,
     pub variant: String, // GateVariant
     pub additional_info: String,
     pub wrong_password: bool,
-    pub fuzzy: bool,
 }
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyDataPoint {
+pub struct DataPoint {
     pub pos: Pos,
     pub data: JsValue, // string | string[]
     pub reading: bool,
     pub additional_info: String,
-    pub fuzzy: bool,
 }
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyTelepad {
+pub struct Telepad {
     pub start_pos: Pos,
     pub end_pos: Pos,
     pub end_facing: String, // Orientation
-    pub fuzzy: bool,
 }
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyButton {
+pub struct Button {
     pub pos: Pos,
     pub currently_pressed: bool,
     pub additional_info: String,
     pub connection_type: String, // ButtonConnection
     pub connection_index: i32,   // E.g., for ButtonConnection::Gate, the index of the gate.
-    pub fuzzy: bool,
 }
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
-pub struct FuzzyGate {
+pub struct Gate {
     pub pos: Pos,
     pub open: bool,
     pub variant: String, // GateVariant
     pub additional_info: String,
-    pub fuzzy: bool,
 }
