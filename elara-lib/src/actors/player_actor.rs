@@ -46,6 +46,11 @@ impl Actor for PlayerChannelActor {
             button.currently_pressed = false;
         }
 
+        // Reset the "wrong password" state of all password gates.
+        for gate in state.password_gates.iter_mut() {
+            gate.wrong_password = false;
+        }
+
         let rx = self.rx.clone();
         match rx.borrow().try_recv() {
             Ok(Action::Wait) => {}
@@ -91,6 +96,9 @@ impl Actor for PlayerChannelActor {
                         let gate = &state.password_gates[gate_index];
                         if message == gate.password {
                             state.password_gates[gate_index].open = !gate.open;
+                        } else {
+                            // Indicate that the wrong password was said.
+                            state.password_gates[gate_index].wrong_password = true;
                         }
                     });
 
@@ -687,6 +695,79 @@ mod test {
                     exit_pos: Pos::new(4, 4),
                 })
             )
+        );
+    }
+
+    #[test]
+    fn say_affects_password_gates() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let (tx, rx) = mpsc::channel();
+        let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.password_gates = vec![PasswordGate::new(
+            0,
+            1,
+            "password".into(),
+            false,
+            GateVariant::NESW,
+        )];
+
+        // Say the wrong password.
+        tx.send(Action::Say("wrong password".to_string())).unwrap();
+        let new_state = actor.apply(state.clone());
+
+        // The PasswordGate should be updated to indicate the wrong password was said.
+        assert_eq!(
+            new_state.password_gates[0],
+            PasswordGate {
+                pos: Pos::new(0, 1),
+                password: "password".to_string(),
+                open: false,
+                variant: GateVariant::NESW,
+                additional_info: String::new(),
+                wrong_password: true,
+            }
+        );
+
+        // Take any other action (e.g. turn)
+        tx.send(Action::Turn(TurnDirection::Right)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+
+        // The wrong_password field should now be set to false, but the gate
+        // should still be closed.
+        assert_eq!(
+            new_state.password_gates[0],
+            PasswordGate {
+                pos: Pos::new(0, 1),
+                password: "password".to_string(),
+                open: false,
+                variant: GateVariant::NESW,
+                additional_info: String::new(),
+                wrong_password: false,
+            }
+        );
+
+        // Say the correct password.
+        tx.send(Action::Say("password".to_string())).unwrap();
+        let new_state = actor.apply(new_state.clone());
+
+        // The PasswordGate should be updated to indicate the wrong password was said.
+        assert_eq!(
+            new_state.password_gates[0],
+            PasswordGate {
+                pos: Pos::new(0, 1),
+                password: "password".to_string(),
+                open: true,
+                variant: GateVariant::NESW,
+                additional_info: String::new(),
+                wrong_password: false,
+            }
         );
     }
 }

@@ -580,6 +580,9 @@ pub struct PasswordGate {
     /// Additional information that will be displayed in the UI.
     /// (e.g. explain what the password is or how to get it)
     pub additional_info: String,
+    // An indicator of whether the player has said the wrong password
+    // in the current step of the simulation.
+    pub wrong_password: bool,
 }
 
 impl PasswordGate {
@@ -593,6 +596,7 @@ impl PasswordGate {
             password,
             variant,
             additional_info: String::new(),
+            wrong_password: false,
         }
     }
     pub fn new_with_info(
@@ -612,6 +616,7 @@ impl PasswordGate {
             open,
             variant,
             additional_info,
+            wrong_password: false,
         }
     }
 }

@@ -21,6 +21,7 @@ export interface PasswordGateProps {
   additionalInfo: string;
   enableHoverInfo: boolean;
   variant: "nwse" | "nesw";
+  // wrongPassword: boolean;
 }
 
 export default function PasswordGate(props: PasswordGateProps) {
