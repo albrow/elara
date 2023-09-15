@@ -78,13 +78,10 @@ pub trait Level {
         false
     }
 
-    /// Returns the combined initial state (i.e. what should be shown
-    /// in the UI when the level is loaded). This is automatically implemented
-    /// for each level.
-    fn combined_initial_state(&self) -> State {
-        let mut initial_state = self.initial_states()[0].clone();
-        initial_state.asteroid_warnings = generate_asteroid_warnings(self.initial_states());
-        initial_state
+    /// Returns asteroid warnings based on the given possible initial states
+    /// for this level.
+    fn asteroid_warnings(&self) -> Vec<AsteroidWarning> {
+        generate_asteroid_warnings(self.initial_states())
     }
 }
 

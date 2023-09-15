@@ -112,6 +112,7 @@ pub struct LevelData {
     pub initial_code: String,
     pub disabled_funcs: Array, // Array<String>
     pub challenge: String,
+    pub asteroid_warnings: Array, // Array<AsteroidWarning>
 }
 
 impl LevelData {
@@ -120,14 +121,24 @@ impl LevelData {
         for func in level.disabled_functions() {
             disabled_funcs.push(&JsValue::from(func.to_string()));
         }
+        let asteroid_warnings = Array::new();
+        for warning in level.asteroid_warnings() {
+            asteroid_warnings.push(&JsValue::from(AsteroidWarning {
+                pos: Pos {
+                    x: warning.pos.x as i32,
+                    y: warning.pos.y as i32,
+                },
+            }));
+        }
         Self {
             name: level.name().to_string(),
             short_name: level.short_name().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
-            initial_state: State::from(level.combined_initial_state()),
+            initial_state: State::from(level.initial_states()[0].clone()),
             disabled_funcs,
             challenge: level.challenge().unwrap_or_default().to_string(),
+            asteroid_warnings,
         }
     }
 }
@@ -146,6 +157,12 @@ pub fn to_level_data_obj(levels: levels::LEVELS) -> Object {
         }
     }
     obj
+}
+
+#[wasm_bindgen]
+#[derive(Clone, PartialEq, Debug)]
+pub struct AsteroidWarning {
+    pub pos: Pos,
 }
 
 /// Special metadata which can be used for teleportation animations in the UI.
