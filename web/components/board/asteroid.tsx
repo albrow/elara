@@ -70,89 +70,59 @@ export default function Asteroid(props: AsteroidProps) {
   );
 
   return (
-    <>
-      <AnimateGroup play>
-        <Box
-          left={props.offset.left}
-          top={props.offset.top}
-          position="absolute"
-          w={`${TILE_SIZE}px`}
-          h={`${TILE_SIZE}px`}
-          zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
-        >
-          <Animate
-            play
-            sequenceId={1}
-            duration={0.6}
-            start={{ transform: `translate(${xOffset}px, -500px) scale(1.5)` }}
-            end={{ transform: "translate(0, 0) scale(1.0)" }}
-            onComplete={onFallAnimationComplete}
-          >
-            <Image
-              position="absolute"
-              alt="rock"
-              // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
-              src={rockImgUrl}
-              w="48px"
-              h="48px"
-              zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
-              filter={SPRITE_DROP_SHADOW}
-            />
-          </Animate>
-        </Box>
+    <AnimateGroup play>
+      <Box
+        left={props.offset.left}
+        top={props.offset.top}
+        position="absolute"
+        w={`${TILE_SIZE}px`}
+        h={`${TILE_SIZE}px`}
+        zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
+      >
         <Animate
           play
-          sequenceId={2}
-          delay={1}
-          duration={1.5}
-          start={{ opacity: 1.0 }}
-          end={{ opacity: 0 }}
-          onComplete={() => {
-            stopMySoundEffects();
-          }}
+          sequenceId={1}
+          duration={0.6}
+          start={{ transform: `translate(${xOffset}px, -500px) scale(1.5)` }}
+          end={{ transform: "translate(0, 0) scale(1.0)" }}
+          onComplete={onFallAnimationComplete}
         >
           <Image
-            left={`${props.offset.leftNum - 8}px`}
-            top={`${props.offset.topNum - 8}px`}
-            display={hasImpacted ? "block" : "none"}
             position="absolute"
-            alt=""
-            w="66px"
-            h="66px"
-            src={impactImgUrl}
+            alt="rock"
+            // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
+            src={rockImgUrl}
+            w="48px"
+            h="48px"
+            zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
             filter={SPRITE_DROP_SHADOW}
-            zIndex={ROCK_Z_INDEX - 1}
           />
         </Animate>
-      </AnimateGroup>
-      {/* {showImpact && (
-        <Box
-          left={`${props.offset.leftNum - 7}px`}
-          top={`${props.offset.topNum - 7}px`}
+      </Box>
+      <Animate
+        play
+        sequenceId={2}
+        delay={1}
+        duration={1.5}
+        start={{ opacity: 1.0 }}
+        end={{ opacity: 0 }}
+        onComplete={() => {
+          stopMySoundEffects();
+        }}
+      >
+        <Image
+          left={`${props.offset.leftNum - 8}px`}
+          top={`${props.offset.topNum - 8}px`}
+          display={hasImpacted ? "block" : "none"}
           position="absolute"
-          w="64px"
-          h="64px"
+          alt=""
+          w="66px"
+          h="66px"
+          src={impactImgUrl}
+          filter={SPRITE_DROP_SHADOW}
           zIndex={ROCK_Z_INDEX - 1}
-        >
-          <Animate
-            play={showImpact}
-            duration={1}
-            delay={5}
-            start={{ opacity: 1.0 }}
-            end={{ opacity: 0 }}
-          >
-            <Image
-              position="absolute"
-              alt=""
-              // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
-              src={impactImgUrl}
-              w="64px"
-              h="64px"
-              filter={SPRITE_DROP_SHADOW}
-            />
-          </Animate>
-        </Box>
-      )} */}
-    </>
+        />
+      </Animate>
+    </AnimateGroup>
   );
 }
