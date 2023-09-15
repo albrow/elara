@@ -83,6 +83,29 @@ pub trait Level {
     fn asteroid_warnings(&self) -> Vec<AsteroidWarning> {
         generate_asteroid_warnings(self.initial_states())
     }
+    /// Returns an initial state which only contains elements which are present
+    /// in ALL possible initial states. E.g. if an asteroid is present in one state
+    /// but not another, it will not be included in the filtered state. Note that this
+    /// only considers the position of elements, not their details (e.g. it doesn't consider
+    /// what data a DataPoint holds).
+    fn filtered_initial_state(&self) -> State {
+        // For now, asteroids are the only thing we need to worry about. We can simplify
+        // this by re-using our asteroid warnings logic.
+        let warnings = self.asteroid_warnings();
+
+        // Then remove any asteroids with a position equal to a warning's position.
+        let mut filtered_state = self.initial_states()[0].clone();
+        filtered_state.obstacles = filtered_state
+            .obstacles
+            .into_iter()
+            .filter(|x| {
+                !warnings
+                    .iter()
+                    .any(|warning| warning.pos == x.pos && x.kind == ObstacleKind::Asteroid)
+            })
+            .collect();
+        filtered_state
+    }
 }
 
 // Special constants for sandbox levels. Used in some tests.

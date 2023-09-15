@@ -135,7 +135,7 @@ impl LevelData {
             short_name: level.short_name().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
-            initial_state: State::from(level.initial_states()[0].clone()),
+            initial_state: State::from(level.filtered_initial_state()),
             disabled_funcs,
             challenge: level.challenge().unwrap_or_default().to_string(),
             asteroid_warnings,

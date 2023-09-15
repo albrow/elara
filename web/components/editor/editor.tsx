@@ -21,7 +21,7 @@ import debounce from "lodash.debounce";
 import { useRouter } from "react-router5";
 import { highlightLines, unhighlightAll } from "../../lib/highlight_line";
 import {
-  FuzzyStateWithLines,
+  StateWithLines,
   RhaiError,
   RunResult,
   // eslint-disable-next-line camelcase
@@ -164,7 +164,7 @@ interface EditorProps {
   availableFunctions: string[];
   // Which functions are disabled for this level (if any).
   disabledFunctions?: string[];
-  onStep?: (step: FuzzyStateWithLines) => void;
+  onStep?: (step: StateWithLines) => void;
   onCancel?: (script: string) => void;
   onStateChange?: (state: EditorState) => void;
   // Whether to automatically reset the editor state when the replay is done.
@@ -368,7 +368,7 @@ export default function Editor(props: EditorProps) {
   }, [props.code, setCode]);
 
   const onReplayStep = useCallback(
-    (i: number, step: FuzzyStateWithLines) => {
+    (i: number, step: StateWithLines) => {
       setStepIndex(i);
       if (step.lines) {
         setActiveLines(step.lines);

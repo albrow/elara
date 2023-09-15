@@ -5,7 +5,7 @@ import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 
 import { useRouter } from "react-router5";
 import { Unsubscribe } from "router5/dist/types/base";
-import { FuzzyStateWithLines, Game, RunResult } from "../../elara-lib/pkg";
+import { StateWithLines, Game, RunResult } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
 import ObjectiveText from "../components/level/objective_text";
@@ -178,7 +178,7 @@ export default function Level() {
     [availFuncs, currLevel, updateLevelCode]
   );
 
-  const onEditorStep = useCallback((step: FuzzyStateWithLines) => {
+  const onEditorStep = useCallback((step: StateWithLines) => {
     setBoardState(step.state);
   }, []);
 
@@ -402,6 +402,8 @@ export default function Level() {
               // discrete steps.
               enableAnimations={editorState === "running"}
               enableHoverInfo={editorState !== "running"}
+              showInitialState={editorState === "editing"}
+              asteroidWarnings={currLevel().asteroid_warnings}
             />
           </Box>
         </Stack>

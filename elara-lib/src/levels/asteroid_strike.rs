@@ -2,7 +2,7 @@ use rhai::Engine;
 
 use super::{std_check_win, Level, Outcome};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, DataPoint, Orientation};
+use crate::simulation::{Actor, DataPoint, ObstacleKind, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
@@ -74,7 +74,13 @@ if safe_direction == "right" {
         vec![
             StateMaker::new()
                 .with_player(Player::new(5, 7, 12, Orientation::Up))
-                .with_obstacles([self.obstacles().clone(), vec![Obstacle::new(6, 5)]].concat())
+                .with_obstacles(
+                    [
+                        self.obstacles().clone(),
+                        vec![Obstacle::new_with_kind(6, 5, ObstacleKind::Asteroid)],
+                    ]
+                    .concat(),
+                )
                 .with_goals(vec![Goal::new(2, 5), Goal::new(8, 5)])
                 .with_data_points(vec![DataPoint::new_with_info(
                     5,
@@ -85,7 +91,13 @@ if safe_direction == "right" {
                 .build(),
             StateMaker::new()
                 .with_player(Player::new(5, 7, 12, Orientation::Up))
-                .with_obstacles([self.obstacles().clone(), vec![Obstacle::new(4, 5)]].concat())
+                .with_obstacles(
+                    [
+                        self.obstacles().clone(),
+                        vec![Obstacle::new_with_kind(4, 5, ObstacleKind::Asteroid)],
+                    ]
+                    .concat(),
+                )
                 .with_goals(vec![Goal::new(2, 5), Goal::new(8, 5)])
                 .with_data_points(vec![DataPoint::new_with_info(
                     5,

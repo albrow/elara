@@ -1,18 +1,18 @@
 import { Box } from "@chakra-ui/react";
 
 import {
-  FuzzyDataPoint,
-  FuzzyEnemy,
-  FuzzyEnergyCell,
-  FuzzyGoal,
-  FuzzyObstacle,
-  FuzzyPasswordGate,
-  FuzzyPlayer,
-  FuzzyState,
-  FuzzyTelepad,
-  FuzzyButton,
-  FuzzyGate,
-  FuzzyBigEnemy,
+  DataPoint as RDataPoint,
+  Enemy as REnemy,
+  EnergyCell as REnergyCell,
+  Goal as RGoal,
+  Obstacle as RObstacle,
+  PasswordGate as RPasswordGate,
+  State as RState,
+  Telepad as RTelepad,
+  Button as RButton,
+  Gate as RGate,
+  BigEnemy as RBigEnemy,
+  AsteroidWarning as RAsteroidWarning,
 } from "../../../elara-lib/pkg";
 import {
   AXIS_HEIGHT,
@@ -36,16 +36,21 @@ import Telepad from "./telepad";
 import Button from "./button";
 import Gate from "./gate";
 import BigEnemy from "./big_enemy";
+import AsteroidWarning from "./asteroid_warning";
 
 interface BoardProps {
-  gameState: FuzzyState;
+  gameState: RState;
+  asteroidWarnings: RAsteroidWarning[];
   enableAnimations: boolean;
   enableHoverInfo: boolean;
+  // Whether or not to show the initial, pre-run state of the board.
+  // E.g., this includes whether or not to show asteroid warnings.
+  showInitialState: boolean;
 }
 
 // Returns the offset for whatever the button is connected to.
 function getConnectionOffset(
-  state: FuzzyState,
+  state: RState,
   buttonIndex: number
 ): Offset | null {
   if (buttonIndex >= state.buttons.length) {
@@ -125,21 +130,30 @@ export default function Board(props: BoardProps) {
           </tbody>
         </table>
       </div>
-      {(props.gameState.players as FuzzyPlayer[]).map((player, i) => (
-        <Player
-          // eslint-disable-next-line react/no-array-index-key
-          key={i}
-          offset={posToOffset(player.pos)}
-          energy={player.energy}
-          message={player.message}
-          animState={player.anim_state}
-          animData={player.anim_data}
-          facing={player.facing}
-          enableAnimations={props.enableAnimations}
-          enableHoverInfo={props.enableHoverInfo}
-        />
-      ))}
-      {(props.gameState.goals as FuzzyGoal[]).map((goal, i) => (
+
+      {props.showInitialState &&
+        (props.asteroidWarnings as RAsteroidWarning[]).map(
+          (asteroidWarning, i) => (
+            <AsteroidWarning
+              // eslint-disable-next-line react/no-array-index-key
+              key={i}
+              offset={posToOffset(asteroidWarning.pos)}
+              enableHoverInfo={props.enableHoverInfo}
+            />
+          )
+        )}
+
+      <Player
+        offset={posToOffset(props.gameState.player.pos)}
+        energy={props.gameState.player.energy}
+        message={props.gameState.player.message}
+        animState={props.gameState.player.anim_state}
+        animData={props.gameState.player.anim_data}
+        facing={props.gameState.player.facing}
+        enableAnimations={props.enableAnimations}
+        enableHoverInfo={props.enableHoverInfo}
+      />
+      {(props.gameState.goals as RGoal[]).map((goal, i) => (
         <Goal
           // eslint-disable-next-line react/no-array-index-key
           key={i}
@@ -147,18 +161,16 @@ export default function Board(props: BoardProps) {
           enableHoverInfo={props.enableHoverInfo}
         />
       ))}
-      {(props.gameState.energy_cells as FuzzyEnergyCell[]).map(
-        (energyCell, i) => (
-          <EnergyCell
-            collected={energyCell.collected}
-            // eslint-disable-next-line react/no-array-index-key
-            key={i}
-            offset={posToOffset(energyCell.pos)}
-            enableHoverInfo={props.enableHoverInfo}
-          />
-        )
-      )}
-      {(props.gameState.enemies as FuzzyEnemy[]).map((enemy, i) => (
+      {(props.gameState.energy_cells as REnergyCell[]).map((energyCell, i) => (
+        <EnergyCell
+          collected={energyCell.collected}
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          offset={posToOffset(energyCell.pos)}
+          enableHoverInfo={props.enableHoverInfo}
+        />
+      ))}
+      {(props.gameState.enemies as REnemy[]).map((enemy, i) => (
         <Enemy
           // eslint-disable-next-line react/no-array-index-key
           key={i}
@@ -170,7 +182,7 @@ export default function Board(props: BoardProps) {
           enableHoverInfo={props.enableHoverInfo}
         />
       ))}
-      {(props.gameState.obstacles as FuzzyObstacle[]).map((obstacle, i) => {
+      {(props.gameState.obstacles as RObstacle[]).map((obstacle, i) => {
         switch (obstacle.kind) {
           case "rock":
             return (
@@ -178,8 +190,6 @@ export default function Board(props: BoardProps) {
                 // eslint-disable-next-line react/no-array-index-key
                 key={i}
                 offset={posToOffset(obstacle.pos)}
-                fuzzy={obstacle.fuzzy}
-                enableHoverInfo={props.enableHoverInfo}
               />
             );
           case "server":
@@ -190,11 +200,20 @@ export default function Board(props: BoardProps) {
                 offset={posToOffset(obstacle.pos)}
               />
             );
+          case "asteroid":
+            return (
+              // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
+              <Rock
+                // eslint-disable-next-line react/no-array-index-key
+                key={i}
+                offset={posToOffset(obstacle.pos)}
+              />
+            );
           default:
             throw new Error(`Unknown obstacle kind: ${obstacle.kind}`);
         }
       })}
-      {(props.gameState.buttons as FuzzyButton[]).map((button, i) => (
+      {(props.gameState.buttons as RButton[]).map((button, i) => (
         <Button
           // eslint-disable-next-line react/no-array-index-key
           key={i}
@@ -206,7 +225,7 @@ export default function Board(props: BoardProps) {
           enableHoverInfo={props.enableHoverInfo}
         />
       ))}
-      {(props.gameState.gates as FuzzyGate[]).map((gate, i) => (
+      {(props.gameState.gates as RGate[]).map((gate, i) => (
         <Gate
           // eslint-disable-next-line react/no-array-index-key
           key={i}
@@ -217,23 +236,21 @@ export default function Board(props: BoardProps) {
           variant={gate.variant as "nwse" | "nesw"}
         />
       ))}
-      {(props.gameState.password_gates as FuzzyPasswordGate[]).map(
-        (gate, i) => (
-          <PasswordGate
-            // eslint-disable-next-line react/no-array-index-key
-            key={i}
-            offset={posToOffset(gate.pos)}
-            open={gate.open}
-            additionalInfo={gate.additional_info}
-            enableHoverInfo={props.enableHoverInfo}
-            variant={gate.variant as "nwse" | "nesw"}
-            wrongPassword={gate.wrong_password}
-            playerPos={props.gameState.players[0].pos}
-            enableAnimations={props.enableAnimations}
-          />
-        )
-      )}
-      {(props.gameState.data_points as FuzzyDataPoint[]).map((dataPoint, i) => (
+      {(props.gameState.password_gates as RPasswordGate[]).map((gate, i) => (
+        <PasswordGate
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          offset={posToOffset(gate.pos)}
+          open={gate.open}
+          additionalInfo={gate.additional_info}
+          enableHoverInfo={props.enableHoverInfo}
+          variant={gate.variant as "nwse" | "nesw"}
+          wrongPassword={gate.wrong_password}
+          playerPos={props.gameState.player.pos}
+          enableAnimations={props.enableAnimations}
+        />
+      ))}
+      {(props.gameState.data_points as RDataPoint[]).map((dataPoint, i) => (
         <DataPoint
           // eslint-disable-next-line react/no-array-index-key
           key={i}
@@ -243,7 +260,7 @@ export default function Board(props: BoardProps) {
           enableHoverInfo={props.enableHoverInfo}
         />
       ))}
-      {(props.gameState.telepads as FuzzyTelepad[]).map((telepad, i) => (
+      {(props.gameState.telepads as RTelepad[]).map((telepad, i) => (
         // eslint-disable-next-line react/no-array-index-key
         <Box key={i}>
           <Telepad
@@ -264,7 +281,7 @@ export default function Board(props: BoardProps) {
           />
         </Box>
       ))}
-      {(props.gameState.big_enemies as FuzzyBigEnemy[]).map((enemy, i) => (
+      {(props.gameState.big_enemies as RBigEnemy[]).map((enemy, i) => (
         <BigEnemy
           // eslint-disable-next-line react/no-array-index-key
           key={i}
