@@ -30,6 +30,7 @@ import EnergyCell from "./energy_cell";
 import PasswordGate from "./password_gate";
 import Goal from "./goal";
 import Rock from "./rock";
+import Asteroid from "./asteroid";
 import Server from "./server";
 import Player from "./player";
 import Telepad from "./telepad";
@@ -202,8 +203,7 @@ export default function Board(props: BoardProps) {
             );
           case "asteroid":
             return (
-              // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
-              <Rock
+              <Asteroid
                 // eslint-disable-next-line react/no-array-index-key
                 key={i}
                 offset={posToOffset(obstacle.pos)}

@@ -55,6 +55,7 @@ export const PLAYER_Z_INDEX = 110;
 export const ENEMY_Z_INDEX = 120;
 export const LOCKED_GATE_Z_INDEX = 130;
 export const SERVER_Z_INDEX = 140;
+export const ASTEROID_Z_INDEX = 150;
 
 export const ROVER_MESSAGE_Z_INDEX = 1010; // Special tooltip variant used only for rover messages.
 export const BOARD_HOVER_INFO_Z_INDEX = 1020;
