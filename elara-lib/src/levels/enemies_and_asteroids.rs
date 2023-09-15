@@ -1,7 +1,7 @@
 use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EvilRoverActor};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, DataPoint, Enemy, EnergyCell, Orientation};
+use crate::simulation::{Actor, DataPoint, Enemy, EnergyCell, ObstacleKind, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
@@ -88,7 +88,10 @@ impl Level for EnemiesAndAsteroids {
                 .with_obstacles(
                     [
                         self.obstacles().clone(),
-                        vec![Obstacle::new(4, 0), Obstacle::new(4, 4)],
+                        vec![
+                            Obstacle::new_with_kind(4, 0, ObstacleKind::Asteroid),
+                            Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
+                        ],
                     ]
                     .concat(),
                 )
@@ -104,7 +107,10 @@ impl Level for EnemiesAndAsteroids {
                 .with_obstacles(
                     [
                         self.obstacles().clone(),
-                        vec![Obstacle::new(6, 0), Obstacle::new(6, 4)],
+                        vec![
+                            Obstacle::new_with_kind(6, 0, ObstacleKind::Asteroid),
+                            Obstacle::new_with_kind(6, 4, ObstacleKind::Asteroid),
+                        ],
                     ]
                     .concat(),
                 )

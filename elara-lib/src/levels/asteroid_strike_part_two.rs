@@ -1,5 +1,5 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, DataPoint, Orientation};
+use crate::simulation::{Actor, DataPoint, ObstacleKind, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
@@ -71,7 +71,10 @@ impl Level for AsteroidStrikePartTwo {
                 .with_obstacles(
                     [
                         self.obstacles().clone(),
-                        vec![Obstacle::new(5, 3), Obstacle::new(4, 4)],
+                        vec![
+                            Obstacle::new_with_kind(5, 3, ObstacleKind::Asteroid),
+                            Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
+                        ],
                     ]
                     .concat(),
                 )
@@ -88,7 +91,10 @@ impl Level for AsteroidStrikePartTwo {
                 .with_obstacles(
                     [
                         self.obstacles().clone(),
-                        vec![Obstacle::new(4, 2), Obstacle::new(4, 4)],
+                        vec![
+                            Obstacle::new_with_kind(4, 2, ObstacleKind::Asteroid),
+                            Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
+                        ],
                     ]
                     .concat(),
                 )
@@ -105,7 +111,10 @@ impl Level for AsteroidStrikePartTwo {
                 .with_obstacles(
                     [
                         self.obstacles().clone(),
-                        vec![Obstacle::new(4, 2), Obstacle::new(5, 3)],
+                        vec![
+                            Obstacle::new_with_kind(4, 2, ObstacleKind::Asteroid),
+                            Obstacle::new_with_kind(5, 3, ObstacleKind::Asteroid),
+                        ],
                     ]
                     .concat(),
                 )
