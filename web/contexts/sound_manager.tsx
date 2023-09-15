@@ -52,6 +52,10 @@ import buttonPressOnFallback from "../audio/sfx/button_press_on.mp3";
 import buttonPressOffFallback from "../audio/sfx/button_press_off.mp3";
 import wrongPassword from "../audio/sfx/wrong_password.ogg";
 import wrongPasswordFallback from "../audio/sfx/wrong_password.mp3";
+import asteroidFalling from "../audio/sfx/asteroid_falling.ogg";
+import asteroidFallingFallback from "../audio/sfx/asteroid_falling.mp3";
+import asteroidImpact from "../audio/sfx/asteroid_impact.ogg";
+import asteroidImpactFallback from "../audio/sfx/asteroid_impact.mp3";
 import intro from "../audio/dialog/intro.ogg";
 import introFallback from "../audio/dialog/intro.mp3";
 import askAboutJourney from "../audio/dialog/ask_about_journey.ogg";
@@ -205,6 +209,18 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         "wrong_password",
         "sfx",
         [wrongPassword, wrongPasswordFallback],
+        0.5
+      ),
+      asteroid_falling: new Sound(
+        "asteroid_falling",
+        "sfx",
+        [asteroidFalling, asteroidFallingFallback],
+        0.5
+      ),
+      asteroid_impact: new Sound(
+        "asteroid_impact",
+        "sfx",
+        [asteroidImpact, asteroidImpactFallback],
         0.5
       ),
       dialog_intro: new Sound(

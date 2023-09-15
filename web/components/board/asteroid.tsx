@@ -1,7 +1,8 @@
 import { Box, Image } from "@chakra-ui/react";
 import { Animate, AnimateGroup } from "react-simple-animate";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { once } from "lodash";
 
-import { useState } from "react";
 import {
   ASTEROID_Z_INDEX,
   ROCK_Z_INDEX,
@@ -11,6 +12,7 @@ import {
 import rockImgUrl from "../../images/board/rock.png";
 import impactImgUrl from "../../images/board/impact.png";
 import { Offset } from "../../lib/utils";
+import { useSoundManager } from "../../hooks/sound_manager_hooks";
 
 interface AsteroidProps {
   offset: Offset;
@@ -18,7 +20,54 @@ interface AsteroidProps {
 
 export default function Asteroid(props: AsteroidProps) {
   const xOffset = Math.random() * 200 - 100;
-  const [showImpact, setShowImpact] = useState(false);
+  const [hasImpacted, setHasImpacted] = useState(false);
+
+  const { getSound } = useSoundManager();
+  const fallingSound = useMemo(() => getSound("asteroid_falling"), [getSound]);
+  const impactSound = useMemo(() => getSound("asteroid_impact"), [getSound]);
+
+  const stopMySoundEffects = useCallback(() => {
+    fallingSound.stop();
+    impactSound.stop();
+  }, [fallingSound, impactSound]);
+
+  // Stop all sound effects when the component unmounts.
+  useEffect(
+    () => () => {
+      // console.log("Stop asteroid sound effects");
+      stopMySoundEffects();
+    },
+    [stopMySoundEffects]
+  );
+
+  // Play the falling sound effect when the component mounts.
+  useEffect(() => {
+    if (!hasImpacted) {
+      if (fallingSound.isPlaying()) {
+        return;
+      }
+      stopMySoundEffects();
+      fallingSound.play();
+    }
+  }, [fallingSound, hasImpacted, props.offset, stopMySoundEffects]);
+
+  // Play the impact sound effect when the asteroid hits the ground.
+  const playImpactSound = useCallback(() => {
+    if (impactSound.isPlaying()) {
+      return;
+    }
+    stopMySoundEffects();
+    impactSound.play();
+  }, [impactSound, stopMySoundEffects]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onFallAnimationComplete = useCallback(
+    once(() => {
+      playImpactSound();
+      setHasImpacted(true);
+    }),
+    [playImpactSound]
+  );
 
   return (
     <>
@@ -29,7 +78,7 @@ export default function Asteroid(props: AsteroidProps) {
           position="absolute"
           w={`${TILE_SIZE}px`}
           h={`${TILE_SIZE}px`}
-          zIndex={showImpact ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
+          zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
         >
           <Animate
             play
@@ -37,9 +86,7 @@ export default function Asteroid(props: AsteroidProps) {
             duration={0.6}
             start={{ transform: `translate(${xOffset}px, -500px) scale(1.5)` }}
             end={{ transform: "translate(0, 0) scale(1.0)" }}
-            onComplete={() => {
-              setShowImpact(true);
-            }}
+            onComplete={onFallAnimationComplete}
           >
             <Image
               position="absolute"
@@ -48,7 +95,7 @@ export default function Asteroid(props: AsteroidProps) {
               src={rockImgUrl}
               w="48px"
               h="48px"
-              zIndex={showImpact ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
+              zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
               filter={SPRITE_DROP_SHADOW}
             />
           </Animate>
@@ -60,11 +107,14 @@ export default function Asteroid(props: AsteroidProps) {
           duration={1.5}
           start={{ opacity: 1.0 }}
           end={{ opacity: 0 }}
+          onComplete={() => {
+            stopMySoundEffects();
+          }}
         >
           <Image
             left={`${props.offset.leftNum - 8}px`}
             top={`${props.offset.topNum - 8}px`}
-            display={showImpact ? "block" : "none"}
+            display={hasImpacted ? "block" : "none"}
             position="absolute"
             alt=""
             w="66px"
