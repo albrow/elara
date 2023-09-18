@@ -4,9 +4,9 @@ import { Box, Button, Text } from "@chakra-ui/react";
 import { MdPlayArrow, MdSkipNext } from "react-icons/md";
 import { Animate } from "react-simple-animate";
 
-import { useSceneNavigator } from "../hooks/scenes_hooks";
+import { useSceneNavigator } from "../../hooks/scenes_hooks";
 
-export interface FullscreenVideoProps {
+export interface FullscreenVimeoVideoProps {
   videoId: number;
   onEnd: () => void;
   // If provided, pressing the skip button will skip to the next checkpoint
@@ -18,7 +18,7 @@ export interface FullscreenVideoProps {
 // This is a fallback for platforms where autoplay doesn't work.
 const FALLBACK_PLAY_BUTTON_DELAY = 1500;
 
-export default function FullscreenVideo(props: FullscreenVideoProps) {
+export default function FullscreenVimeoVideo(props: FullscreenVimeoVideoProps) {
   const videoIframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<Player | null>(null);
   const { navigateToHub } = useSceneNavigator();

@@ -1,6 +1,7 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import FullscreenVideo from "../components/fullscreen_video";
+import FullscreenYouTubeVideo from "../components/cutscene/fullscreen_youtube_video";
+import FullscreenVimeoVideo from "../components/cutscene/fullscreen_vimeo_video";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import { useSaveData } from "../hooks/save_data_hooks";
 
@@ -9,7 +10,8 @@ export interface CutsceneProps {
 }
 
 interface CutsceneMetadata {
-  videoId: number;
+  vimeoVideoId: number;
+  youTubeVideoId: string;
   navigateOnEnd: () => void;
   checkpoints?: number[];
 }
@@ -17,6 +19,31 @@ interface CutsceneMetadata {
 export default function Cutscene(props: CutsceneProps) {
   const { navigateToHub } = useSceneNavigator();
   const [_, { markCutsceneSeen }] = useSaveData();
+  const [isVimeoBlocked, setIsVimeoBlocked] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Vimeo is blocked in some school systems. If we detect this,
+    // fallback to the YouTube player.
+    const req = new Request(
+      `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(
+        "https://vimeo.com/53145852"
+      )}`
+    );
+
+    fetch(req)
+      .then((res) => {
+        if (res.status === 404) {
+          setIsVimeoBlocked(false);
+          return;
+        }
+        if (!res.ok) {
+          setIsVimeoBlocked(true);
+        }
+      })
+      .catch(() => {
+        setIsVimeoBlocked(true);
+      });
+  }, []);
 
   const CUTSCENE_METADATA: Record<
     CutsceneProps["cutsceneId"],
@@ -24,19 +51,22 @@ export default function Cutscene(props: CutsceneProps) {
   > = useMemo(
     () => ({
       intro: {
-        videoId: 862764545,
+        vimeoVideoId: 862764545,
+        youTubeVideoId: "S1VpIP7ns9Y",
         navigateOnEnd: () => {
           navigateToHub();
         },
       },
       midgame: {
-        videoId: 862789284,
+        vimeoVideoId: 862789284,
+        youTubeVideoId: "aloLB3FONN0",
         navigateOnEnd: () => {
           navigateToHub();
         },
       },
       end: {
-        videoId: 862987802,
+        vimeoVideoId: 862987802,
+        youTubeVideoId: "T75iBxx6nbQ",
         navigateOnEnd: () => {
           navigateToHub();
         },
@@ -49,7 +79,7 @@ export default function Cutscene(props: CutsceneProps) {
   if (!CUTSCENE_METADATA[props.cutsceneId]) {
     throw new Error(`Unknown cutscene ID: ${props.cutsceneId}`);
   }
-  const { videoId, navigateOnEnd, checkpoints } =
+  const { vimeoVideoId, youTubeVideoId, navigateOnEnd, checkpoints } =
     CUTSCENE_METADATA[props.cutsceneId];
 
   const onEnd = useCallback(() => {
@@ -57,9 +87,15 @@ export default function Cutscene(props: CutsceneProps) {
     navigateOnEnd();
   }, [markCutsceneSeen, navigateOnEnd, props.cutsceneId]);
 
-  return (
-    <FullscreenVideo
-      videoId={videoId}
+  return isVimeoBlocked ? (
+    <FullscreenYouTubeVideo
+      videoId={youTubeVideoId}
+      onEnd={onEnd}
+      checkpoints={checkpoints}
+    />
+  ) : (
+    <FullscreenVimeoVideo
+      videoId={vimeoVideoId}
       onEnd={onEnd}
       checkpoints={checkpoints}
     />
