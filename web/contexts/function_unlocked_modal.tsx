@@ -63,7 +63,6 @@ export function FunctionUnlockedModalProvider(props: PropsWithChildren<{}>) {
     // eslint-disable-next-line no-restricted-syntax
     for (const functionName of functionsToUnlock) {
       if (!saveData.unlockedFunctions.includes(functionName)) {
-        console.log(`${functionName} is not unlocked yet. Should show modal.`);
         return true;
       }
     }
@@ -71,7 +70,6 @@ export function FunctionUnlockedModalProvider(props: PropsWithChildren<{}>) {
   }, [saveData.unlockedFunctions, functionsToUnlock]);
 
   const showFunctionUnlockedModal = useCallback((functions: string[]) => {
-    console.log("setting functions to unlock to ", functions);
     setFunctionsToUnlock(functions);
   }, []);
 

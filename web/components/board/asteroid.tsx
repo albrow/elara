@@ -34,7 +34,6 @@ export default function Asteroid(props: AsteroidProps) {
   // Stop all sound effects when the component unmounts.
   useEffect(
     () => () => {
-      // console.log("Stop asteroid sound effects");
       stopMySoundEffects();
     },
     [stopMySoundEffects]

@@ -121,7 +121,6 @@ export function useSceneNavigator() {
       // If the scene we're navigating too has any new functions to unlock,
       // show the function unlocked modal.
       if (scene.newFunctions != null && scene.newFunctions.length > 0) {
-        console.log(`calling showFunctionUnlockedModal(${scene.newFunctions})`);
         showFunctionUnlockedModal(scene.newFunctions);
       }
     },
