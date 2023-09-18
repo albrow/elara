@@ -61,14 +61,15 @@ export default function FullscreenYouTubeVideo(
 
   return (
     <>
-      <Box w="100%" h="100%">
-        <AspectRatio ratio={16 / 9}>
+      <Box w="100%" h="100%" maxH="100vh" overflow="hidden">
+        <AspectRatio ratio={16 / 9} maxH="100vh">
           <ReactPlayer
             ref={playerRef}
             style={{
               position: "absolute",
               top: "auto",
               left: "auto",
+              maxHeight: "100vh",
             }}
             url={`https://www.youtube.com/embed/${props.videoId}`}
             width="100%"
