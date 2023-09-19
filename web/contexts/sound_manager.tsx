@@ -154,182 +154,210 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
   const soundDict: Record<string, Playable> = useMemo(
     () => ({
       move: new RoundRobinSoundGroup("move", [
-        new Sound("move_0", "sfx", [moveSound0, moveSound0Fallback], 0.4),
-        new Sound("move_1", "sfx", [moveSound1, moveSound1Fallback], 0.4),
-        new Sound("move_2", "sfx", [moveSound2, moveSound2Fallback], 0.4),
-        new Sound("move_3", "sfx", [moveSound3, moveSound3Fallback], 0.4),
+        new Sound("move_0", "sfx", [moveSound0, moveSound0Fallback], {
+          baseGain: 0.4,
+        }),
+        new Sound("move_1", "sfx", [moveSound1, moveSound1Fallback], {
+          baseGain: 0.4,
+        }),
+        new Sound("move_2", "sfx", [moveSound2, moveSound2Fallback], {
+          baseGain: 0.4,
+        }),
+        new Sound("move_3", "sfx", [moveSound3, moveSound3Fallback], {
+          baseGain: 0.4,
+        }),
       ]),
       turn: new RoundRobinSoundGroup("turn", [
-        new Sound("turn_0", "sfx", [turnSound0, turnSound0Fallback], 0.4),
-        new Sound("turn_1", "sfx", [turnSound1, turnSound1Fallback], 0.4),
-        new Sound("turn_2", "sfx", [turnSound2, turnSound2Fallback], 0.4),
-        new Sound("turn_3", "sfx", [turnSound3, turnSound3Fallback], 0.4),
+        new Sound("turn_0", "sfx", [turnSound0, turnSound0Fallback], {
+          baseGain: 0.4,
+        }),
+        new Sound("turn_1", "sfx", [turnSound1, turnSound1Fallback], {
+          baseGain: 0.4,
+        }),
+        new Sound("turn_2", "sfx", [turnSound2, turnSound2Fallback], {
+          baseGain: 0.4,
+        }),
+        new Sound("turn_3", "sfx", [turnSound3, turnSound3Fallback], {
+          baseGain: 0.4,
+        }),
       ]),
       bump: new RoundRobinSoundGroup("bump", [
-        new Sound("bump_0", "sfx", [bumpSound0, bumpSound0Fallback], 0.4),
-        new Sound("bump_1", "sfx", [bumpSound1, bumpSound1Fallback], 0.4),
+        new Sound("bump_0", "sfx", [bumpSound0, bumpSound0Fallback], {
+          baseGain: 0.4,
+        }),
+        new Sound("bump_1", "sfx", [bumpSound1, bumpSound1Fallback], {
+          baseGain: 0.4,
+        }),
       ]),
       teleport: new Sound(
         "teleport",
         "sfx",
         [teleportSound, teleportSoundFallback],
-        0.7
+        { baseGain: 0.7 }
       ),
       speak: new RoundRobinSoundGroup("speak", [
-        new Sound("speak_0", "sfx", [speakSound0, speakSound0Fallback], 0.08),
-        new Sound("speak_1", "sfx", [speakSound1, speakSound1Fallback], 0.08),
-        new Sound("speak_2", "sfx", [speakSound2, speakSound2Fallback], 0.08),
-        new Sound("speak_3", "sfx", [speakSound3, speakSound3Fallback], 0.08),
+        new Sound("speak_0", "sfx", [speakSound0, speakSound0Fallback], {
+          baseGain: 0.08,
+        }),
+        new Sound("speak_1", "sfx", [speakSound1, speakSound1Fallback], {
+          baseGain: 0.08,
+        }),
+        new Sound("speak_2", "sfx", [speakSound2, speakSound2Fallback], {
+          baseGain: 0.08,
+        }),
+        new Sound("speak_3", "sfx", [speakSound3, speakSound3Fallback], {
+          baseGain: 0.08,
+        }),
       ]),
       button_press_on: new Sound(
         "button_press_on",
         "sfx",
         [buttonPressOn, buttonPressOnFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       button_press_off: new Sound(
         "button_press_off",
         "sfx",
         [buttonPressOff, buttonPressOffFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       success: new Sound(
         "success",
         "sfx",
         [successSound, successSoundFallback],
-        1.0
+        { baseGain: 1.0 }
       ),
       challenge: new Sound(
         "challenge",
         "sfx",
         [challengeSound, challengeSoundFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       wrong_password: new Sound(
         "wrong_password",
         "sfx",
         [wrongPassword, wrongPasswordFallback],
-        0.5
+        { baseGain: 0.5 }
       ),
       asteroid_falling: new Sound(
         "asteroid_falling",
         "sfx",
         [asteroidFalling, asteroidFallingFallback],
-        0.5
+        { baseGain: 0.5 }
       ),
       asteroid_impact: new Sound(
         "asteroid_impact",
         "sfx",
         [asteroidImpact, asteroidImpactFallback],
-        0.5
+        { baseGain: 0.25 }
       ),
       dialog_intro: new Sound(
         "dialog_intro",
         "dialog",
         [intro, introFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_ask_about_journey: new Sound(
         "dialog_ask_about_journey",
         "dialog",
         [askAboutJourney, askAboutJourneyFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_journey_neg_response: new Sound(
         "dialog_journey_neg_response",
         "dialog",
         [journeyNegResponse, journeyNegResponseFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_journey_pos_response: new Sound(
         "dialog_journey_pos_response",
         "dialog",
         [journeyPosResponse, journeyPosResponseFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_where_i_am: new Sound(
         "dialog_where_i_am",
         "dialog",
         [whereIam, whereIamFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_who_i_am: new Sound(
         "dialog_who_i_am",
         "dialog",
         [whoIam, whoIamFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_where_you_are: new Sound(
         "dialog_where_you_are",
         "dialog",
         [whereYouAre, whereYouAreFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_cant_call_someone: new Sound(
         "dialog_cant_call_someone",
         "dialog",
         [cantCallSomeone, cantCallSomeoneFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_cant_disable_remotely: new Sound(
         "dialog_cant_disable_remotely",
         "dialog",
         [cantDisableRemotely, cantDisableRemotelyFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_clarify_all_rovers: new Sound(
         "dialog_clarify_all_rovers",
         "dialog",
         [clarifyAllRovers, clarifyAllRoversFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_confirm_kalina_safe: new Sound(
         "dialog_confirm_kalina_safe",
         "dialog",
         [confirmKalinaSafe, confirmKalinaSafeFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_explain_moonbase_attack_1: new Sound(
         "dialog_explain_moonbase_attack_1",
         "dialog",
         [explainMoonbaseAttack1, explainMoonbaseAttack1Fallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_explain_repair_problem_1: new Sound(
         "dialog_explain_repair_problem_1",
         "dialog",
         [explainRepairProblem1, explainRepairProblem1Fallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_explain_shutdown_plan_1: new Sound(
         "dialog_explain_shutdown_plan_1",
         "dialog",
         [explainShutdownPlan1, explainShutdownPlan1Fallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_joke_difficult_first_day: new Sound(
         "dialog_joke_difficult_first_day",
         "dialog",
         [jokeDifficultFirstDay, jokeDifficultFirstDayFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_kalina_can_help_from_afar: new Sound(
         "dialog_kalina_can_help_from_afar",
         "dialog",
         [kalinaCanHelpFromAfar, kalinaCanHelpFromAfarFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_moonbase_damage_details: new Sound(
         "dialog_moonbase_damage_details",
         "dialog",
         [moonbaseDamageDetails, moonbaseDamageDetailsFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
       dialog_kalina_in_trouble: new Sound(
         "dialog_kalina_in_trouble",
         "dialog",
         [kalinaInTrouble, kalinaInTroubleFallback],
-        0.8
+        { baseGain: 0.8 }
       ),
     }),
     []

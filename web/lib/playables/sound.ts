@@ -2,6 +2,21 @@ import { Howl } from "howler";
 
 import { Playable, SoundCategory } from ".";
 
+export interface SoundOptions {
+  // The "base" or "internal" gain of the sound, from 0.0 to 1.0 (default 1.0).
+  // Independent of other volume controls. This is useful for adjusting specific
+  // sounds that are too loud or too quiet.
+  baseGain?: number;
+  // Whether or not the sound should loop (default false).
+  loop?: boolean;
+  // Number of milliseconds to fade the sound in when playing it (default 0).
+  fadeIn?: number;
+  // Whether or not the sound should be streamed (default false). Streamed sounds
+  // will be loaded in as-needed instead of loaded all at once. Recommended for
+  // larger/longer sounds.
+  stream?: boolean;
+}
+
 export class Sound implements Playable {
   readonly id: string;
 
@@ -19,15 +34,15 @@ export class Sound implements Playable {
 
   private _fadeIn: number;
 
+  private _stream: boolean;
+
   /**
    * This is the most basic implementation of Playable.
    *
    * @param id A unique identifier for the sound.
    * @param category The category that the sound belongs to, i.e. "sfx", "music", "dialog"
    * @param sources An array of source URLs for the sound
-   * @param baseGain The "base" or "internal" gain of the sound, from 0.0 to 1.0 (default 1.0).
-   *    Independent of other volume controls. This is useful for adjusting specific sounds that
-   *    are too loud or too quiet.
+   * @param baseGain
    * @param loop Whether or not the sound should loop (default false).
    * @param fadeIn Number of milliseconds to fade the sound in when playing it.
    */
@@ -35,21 +50,24 @@ export class Sound implements Playable {
     id: string,
     category: SoundCategory,
     sources: string[],
-    baseGain: number = 1.0,
-    loop: boolean = false,
-    fadeIn: number = 0.0
+    opts: SoundOptions = {}
   ) {
     this.id = id;
     this.category = category;
     this._sources = sources;
-    this._baseGain = baseGain;
+    this._baseGain = opts.baseGain || 1.0;
     this._catGain = 1.0;
-    this._loop = loop;
-    this._fadeIn = fadeIn;
+    this._loop = opts.loop || false;
+    this._fadeIn = opts.fadeIn || 0;
+    this._stream = opts.stream || false;
     this._howl = new Howl({
       src: this._sources,
       volume: this._baseGain,
       loop: this._loop,
+      // Note Howler.js uses the HTML5 API for streaming, so that's
+      // why we're using the HTML5 property here.
+      // See: https://github.com/goldfire/howler.js#streaming-audio-for-live-audio-or-large-files
+      html5: this._stream,
     });
   }
 
@@ -79,7 +97,9 @@ export class Sound implements Playable {
     }
     this._howl?.play();
     if (fadeInVal > 0) {
-      this._howl.fade(0, this._getTotalGain(), fadeInVal);
+      this._howl?.once("play", () => {
+        this._howl.fade(0, this._getTotalGain(), fadeInVal);
+      });
     }
   }
 
@@ -95,6 +115,15 @@ export class Sound implements Playable {
       });
     } else {
       this._howl?.stop();
+    }
+    this._howl?.once("stop", () => this._afterStop());
+  }
+
+  private _afterStop() {
+    if (this._stream) {
+      // If the sound is streamed, we should unload it after it's stopped.
+      // This helps save memory.
+      this._howl?.unload();
     }
   }
 

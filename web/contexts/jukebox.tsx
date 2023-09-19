@@ -80,61 +80,69 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
 
   const musicDict: Record<string, Playable> = useMemo(
     () => ({
-      prelude: new Sound(
-        "prelude",
-        "music",
-        [prelude, preludeFallback],
-        1.0,
-        true,
-        4000
-      ),
+      prelude: new Sound("prelude", "music", [prelude, preludeFallback], {
+        loop: true,
+        fadeIn: 4000,
+      }),
       gettingOffTheGround: new Sound(
         "gettingOffTheGround",
         "music",
         [gettingOffTheGround, gettingOffTheGroundFallback],
-        1.0,
-        true,
-        10
+        {
+          loop: true,
+          fadeIn: 10,
+          stream: true,
+        }
       ),
       driftingIntoSpace: new Sound(
         "driftingIntoSpace",
         "music",
         [driftingIntoSpace, driftingIntoSpaceFallback],
-        1.0,
-        true,
-        10
+        {
+          loop: true,
+          fadeIn: 10,
+          stream: true,
+        }
       ),
       lookingAhead: new Sound(
         "lookingAhead",
         "music",
         [lookingAhead, lookingAheadFallback],
-        1.0,
-        true,
-        10
+        {
+          loop: true,
+          fadeIn: 10,
+          stream: true,
+        }
       ),
       measuringTheChallenge: new Sound(
         "measuringTheChallenge",
         "music",
         [measuringTheChallenge, measuringTheChallengeFallback],
-        1.0,
-        true,
-        10
+        {
+          loop: true,
+          fadeIn: 10,
+          stream: true,
+        }
       ),
       puttingItAllTogether: new Sound(
         "puttingItAllTogether",
         "music",
         [puttingItAllTogether, puttingItAllTogetherFallback],
-        1.0,
-        true,
-        10
+        {
+          loop: true,
+          fadeIn: 10,
+          stream: true,
+        }
       ),
       notTheEnd: new Sound(
         "notTheEnd",
         "music",
         [notTheEnd, notTheEndFallback],
-        1.0,
-        true,
-        10
+        {
+          loop: true,
+          fadeIn: 10,
+          stream: true,
+        }
       ),
     }),
     []
