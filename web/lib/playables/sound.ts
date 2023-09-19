@@ -68,6 +68,7 @@ export class Sound implements Playable {
       // why we're using the HTML5 property here.
       // See: https://github.com/goldfire/howler.js#streaming-audio-for-live-audio-or-large-files
       html5: this._stream,
+      preload: !this._stream,
     });
   }
 
@@ -95,7 +96,14 @@ export class Sound implements Playable {
     if (fadeInVal > 0) {
       this._howl.volume(0);
     }
-    this._howl?.play();
+    if (this._howl?.state() === "loaded") {
+      this._howl?.play();
+    } else {
+      this._howl?.once("load", () => {
+        this._howl?.play();
+      });
+      this._howl?.load();
+    }
     if (fadeInVal > 0) {
       this._howl?.once("play", () => {
         this._howl.fade(0, this._getTotalGain(), fadeInVal);
