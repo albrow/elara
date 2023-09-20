@@ -83,6 +83,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
       prelude: new Sound("prelude", "music", [prelude, preludeFallback], {
         loop: true,
         fadeIn: 4000,
+        stream: true,
       }),
       gettingOffTheGround: new Sound(
         "gettingOffTheGround",
