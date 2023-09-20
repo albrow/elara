@@ -89,6 +89,7 @@ export default function MiniBoard(props: MiniBoardProps) {
             reading={gate.reading}
             animatePos={shouldAnimSpritePos()}
             enableHoverInfo={false}
+            enableSfx={props.enableAnimations}
           />
         ))}
         <Player
