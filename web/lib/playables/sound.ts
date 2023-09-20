@@ -3,18 +3,22 @@ import { Howl } from "howler";
 import { Playable, SoundCategory } from ".";
 
 export interface SoundOptions {
-  // The "base" or "internal" gain of the sound, from 0.0 to 1.0 (default 1.0).
-  // Independent of other volume controls. This is useful for adjusting specific
-  // sounds that are too loud or too quiet.
+  /**
+   * The "base" or "internal" gain of the sound, from 0.0 to 1.0 (default 1.0).
+   * Independent of other volume controls. This is useful for adjusting specific
+   * sounds that are too loud or too quiet.
+   */
   baseGain?: number;
-  // Whether or not the sound should loop (default false).
+  /** Whether or not the sound should loop (default false). */
   loop?: boolean;
-  // Number of milliseconds to fade the sound in when playing it (default 0).
+  /** Number of milliseconds to fade the sound in when playing it (default 0). */
   fadeIn?: number;
-  // Whether or not the sound should be streamed (default false). Streamed sounds
-  // will be loaded in as-needed instead of loaded all at once. Recommended for
-  // larger/longer sounds.
-  stream?: boolean;
+  /**
+   * Whether or not the sound should be preloaded (default true). If true, the sound
+   * will be loaded immediately, but will not be played until play() is called. If false,
+   * the sound will be loaded when play() is called.
+   */
+  preload?: boolean;
 }
 
 export class Sound implements Playable {
@@ -34,7 +38,7 @@ export class Sound implements Playable {
 
   private _fadeIn: number;
 
-  private _stream: boolean;
+  private _preload: boolean;
 
   /**
    * This is the most basic implementation of Playable.
@@ -59,16 +63,16 @@ export class Sound implements Playable {
     this._catGain = 1.0;
     this._loop = opts.loop || false;
     this._fadeIn = opts.fadeIn || 0;
-    this._stream = opts.stream || false;
+    this._preload = opts.preload || true;
     this._howl = new Howl({
       src: this._sources,
       volume: this._baseGain,
       loop: this._loop,
-      // Note Howler.js uses the HTML5 API for streaming, so that's
-      // why we're using the HTML5 property here.
-      // See: https://github.com/goldfire/howler.js#streaming-audio-for-live-audio-or-large-files
-      html5: this._stream,
-      preload: !this._stream,
+      // Note(albrow): Ideally we would set "html5" to true here, but there is a bug
+      // where sounds do not loop seamlessly when using the HTML5 audio API. That means
+      // we *must* wait until the sound is fully loaded before playing it, which is not
+      // ideal.
+      preload: this._preload,
     });
   }
 
@@ -124,15 +128,10 @@ export class Sound implements Playable {
     } else {
       this._howl?.stop();
     }
-    this._howl?.once("stop", () => this._afterStop());
   }
 
-  private _afterStop() {
-    if (this._stream) {
-      // If the sound is streamed, we should unload it after it's stopped.
-      // This helps save memory.
-      this._howl?.unload();
-    }
+  unload() {
+    this._howl?.unload();
   }
 
   isPlaying(): boolean {

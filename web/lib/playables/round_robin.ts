@@ -60,4 +60,8 @@ export class RoundRobinSoundGroup implements Playable {
   isPlaying(): boolean {
     return this._sounds[this._currentSoundIndex].isPlaying();
   }
+
+  unload(): void {
+    this._sounds.forEach((sound) => sound.unload());
+  }
 }

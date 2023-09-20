@@ -29,8 +29,15 @@ import puttingItAllTogetherFallback from "../audio/music/putting_it_all_together
 import notTheEnd from "../audio/music/not_the_end.ogg";
 import notTheEndFallback from "../audio/music/not_the_end.mp3";
 
-// How much to lower the music volume temporarily when ducking is enabled.
+/** How much to lower the music volume temporarily when ducking is enabled. */
 const DUCK_LEVEL = 0.5;
+/**
+ * How many songs should be loaded in memory before we start unloading them.
+ * Why set this to anything greater than 1? It helps reduce thrashing when going
+ * back and forth between two songs, for examples as is typical when transitioning
+ * between the hub and a level. Thrashing would result in unnecessary network requests.
+ */
+const MAX_SONGS_IN_MEMORY = 2;
 
 interface Jukebox {
   requestSong: (id: string) => void;
@@ -66,9 +73,16 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
   );
   // tempMusicGain is used for ducking (i.e. temporary volume reduction)
   const [tempMusicGain, setTempMusicGain] = useState(1.0);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   // timeout used to transition between songs
   const transitionTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  /**
+   * Keeps track of recently played songs in a queue. This is so we know
+   * which songs to unload when we need to free up memory.
+   * _unsafeSetRecentlyPlayedSongs should not be called directly. Instead
+   * use pushRecentlyPlayedSong.
+   */
+  const [_, _unsafeSetRecentlyPlayedSongs] = useState<string[]>([]);
 
   const musicGain = useMemo(
     () => volumeToGain(masterGain * relMusicGain * tempMusicGain),
@@ -83,7 +97,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
       prelude: new Sound("prelude", "music", [prelude, preludeFallback], {
         loop: true,
         fadeIn: 4000,
-        stream: true,
+        preload: false,
       }),
       gettingOffTheGround: new Sound(
         "gettingOffTheGround",
@@ -92,7 +106,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         {
           loop: true,
           fadeIn: 10,
-          stream: true,
+          preload: false,
         }
       ),
       driftingIntoSpace: new Sound(
@@ -102,7 +116,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         {
           loop: true,
           fadeIn: 10,
-          stream: true,
+          preload: false,
         }
       ),
       lookingAhead: new Sound(
@@ -112,7 +126,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         {
           loop: true,
           fadeIn: 10,
-          stream: true,
+          preload: false,
         }
       ),
       measuringTheChallenge: new Sound(
@@ -122,7 +136,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         {
           loop: true,
           fadeIn: 10,
-          stream: true,
+          preload: false,
         }
       ),
       puttingItAllTogether: new Sound(
@@ -132,7 +146,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         {
           loop: true,
           fadeIn: 10,
-          stream: true,
+          preload: false,
         }
       ),
       notTheEnd: new Sound(
@@ -142,13 +156,50 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
         {
           loop: true,
           fadeIn: 10,
-          stream: true,
+          preload: false,
         }
       ),
     }),
     []
   );
 
+  const pushRecentlyPlayedSong = useCallback(
+    (id: string) => {
+      _unsafeSetRecentlyPlayedSongs((prev) => {
+        let next = [...prev];
+        next.push(id);
+
+        // Remove duplicates while preserving order and recency.
+        next = next
+          .reverse()
+          .filter((item, index) => next.indexOf(item) === index)
+          .reverse();
+
+        // Remove the oldest song if we've exceeded the max.
+        if (next.length > MAX_SONGS_IN_MEMORY) {
+          const oldSong = next.shift();
+          if (oldSong) {
+            musicDict[oldSong].unload();
+          }
+        }
+        return next;
+      });
+    },
+    [musicDict]
+  );
+
+  const currentlyPlaying = useCallback(() => {
+    // Iterate through muscDict to find which song is currently playing.
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [id, song] of Object.entries(musicDict)) {
+      if (song.isPlaying()) {
+        return id;
+      }
+    }
+    return null;
+  }, [musicDict]);
+
+  // Automatically respond to changes in musicGain.
   useEffect(() => {
     Object.values(musicDict)
       .filter((sound) => sound.category === "music")
@@ -166,7 +217,6 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
             sound.stop(fadeOut);
           }
         });
-      setCurrentlyPlaying(null);
     },
     [musicDict]
   );
@@ -176,11 +226,11 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
       if (musicDict[id] == null) {
         throw new Error(`No song with id ${id}`);
       }
-      if (currentlyPlaying === id) {
+      if (currentlyPlaying() === id) {
         return;
       }
       const song = musicDict[id];
-      if (currentlyPlaying !== null) {
+      if (currentlyPlaying() !== null) {
         stopAllMusic(MUSIC_FADE_OUT_TIME_MS);
         if (transitionTimeout.current) {
           clearTimeout(transitionTimeout.current);
@@ -191,9 +241,9 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
       } else {
         song.play();
       }
-      setCurrentlyPlaying(id);
+      pushRecentlyPlayedSong(id);
     },
-    [currentlyPlaying, musicDict, stopAllMusic]
+    [currentlyPlaying, musicDict, pushRecentlyPlayedSong, stopAllMusic]
   );
 
   const stopSong = useCallback(
@@ -201,7 +251,6 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
       if (id in musicDict) {
         const song = musicDict[id];
         song.stop();
-        setCurrentlyPlaying(null);
       } else {
         throw new Error(`No song with id ${id}`);
       }
