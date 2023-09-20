@@ -34,10 +34,10 @@ const DUCK_LEVEL = 0.5;
 /**
  * How many songs should be loaded in memory before we start unloading them.
  * Why set this to anything greater than 1? It helps reduce thrashing when going
- * back and forth between two songs, for examples as is typical when transitioning
+ * back and forth between two songs, e.g., as is typical when transitioning
  * between the hub and a level. Thrashing would result in unnecessary network requests.
  */
-const MAX_SONGS_IN_MEMORY = 2;
+const MAX_SONGS_IN_MEMORY = 4;
 
 interface Jukebox {
   requestSong: (id: string) => void;
