@@ -63,15 +63,17 @@ export class Sound implements Playable {
     this._catGain = 1.0;
     this._loop = opts.loop || false;
     this._fadeIn = opts.fadeIn || 0;
-    this._preload = opts.preload || true;
+    this._preload = opts.preload === undefined ? true : opts.preload;
     this._howl = new Howl({
       src: this._sources,
       volume: this._baseGain,
       loop: this._loop,
-      // Note(albrow): Ideally we would set "html5" to true here, but there is a bug
-      // where sounds do not loop seamlessly when using the HTML5 audio API. That means
-      // we *must* wait until the sound is fully loaded before playing it, which is not
+      // Note(albrow): Ideally we would set "html5" to true when preload is false, but
+      // there is a bug where sounds do not loop seamlessly when using the HTML5 audio API.
+      // That means we *must* wait until the sound is fully loaded before playing it, which
+      // is not
       // ideal.
+      // html5: !this._preload,
       preload: this._preload,
     });
   }

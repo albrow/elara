@@ -85,7 +85,6 @@ export function useSceneNavigator() {
   const JOURNAL_PAGES = useJournalPages();
   const { getSoundOrNull } = useSoundManager();
   const soundTimeout = useRef<NodeJS.Timeout | null>(null);
-  const musicTimeout = useRef<NodeJS.Timeout | null>(null);
   const { requestSong, stopAllMusic } = useJukebox();
   const [showFunctionUnlockedModal] = useFunctionUnlockedModal();
 
@@ -106,14 +105,9 @@ export function useSceneNavigator() {
         }
       }
 
-      // Check if the scene has music. If so, play it after a short delay.
+      // Check if the scene has music. If so, request it immediately.
       if (scene.music != null) {
-        if (musicTimeout.current) {
-          clearTimeout(musicTimeout.current);
-        }
-        musicTimeout.current = setTimeout(() => {
-          requestSong(scene.music!);
-        }, SOUND_DELAY_TIME_MS);
+        requestSong(scene.music!);
       } else {
         stopAllMusic(MUSIC_FADE_OUT_TIME_MS);
       }
