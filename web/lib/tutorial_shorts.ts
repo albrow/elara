@@ -8,6 +8,8 @@ import howToGetMoreEnergyUrl from "../images/shorts/how_to_get_more_energy.gif";
 import howToViewFunctionListUrl from "../images/shorts/how_to_view_function_list.gif";
 import extraChallengesUrl from "../images/shorts/extra_challenges.gif";
 import showHintsAndDialogUrl from "../images/shorts/show_hints_and_dialog.gif";
+import hoverOverTextUrl from "../images/shorts/hover_over_text.gif";
+import hoverOverBoardUrl from "../images/shorts/hover_over_board.gif";
 
 export interface TutorialShort {
   title: string;
@@ -18,12 +20,12 @@ export interface TutorialShort {
 export const SHORTS: { [key: string]: TutorialShort } = {
   how_to_run_code: {
     title: "How to run code",
-    text: `Press "deploy" and then "play" to run your code. The code will cause the rover to move around and do things.`,
+    text: `Press "Deploy" and then "Play" to run your code. The code will cause the rover to move around and do things.`,
     imageUrl: howToRunCodeUrl,
   },
   how_to_pause_and_step: {
     title: "One step at a time",
-    text: "Alternatively, you can use the buttons or the slider to step through your code one step at a time.",
+    text: "You can use the buttons or drag the slider to step forward or backward through your code. This is useful for slowing things down or skipping ahead.",
     imageUrl: howToPauseAndStepUrl,
   },
   how_to_see_errors: {
@@ -65,6 +67,16 @@ export const SHORTS: { [key: string]: TutorialShort } = {
     title: "Hints and dialog",
     text: 'If you\'re feeling stuck, you can press the lightbulb icon near the top of the screen to get a hint. If a level has dialog, you can also press the "Show dialog" button to see the dialog again.',
     imageUrl: showHintsAndDialogUrl,
+  },
+  hover_over_text: {
+    title: "Hover over functions",
+    text: "If you hover over a function that is highlighted in purple, you can learn more about how it works and see some examples.",
+    imageUrl: hoverOverTextUrl,
+  },
+  hover_over_board: {
+    title: "Hover over the board",
+    text: "You can also hover over the board to see more info on the different things G.R.O.V.E.R. can interact with.",
+    imageUrl: hoverOverBoardUrl,
   },
 };
 

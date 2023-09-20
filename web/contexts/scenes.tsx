@@ -140,12 +140,7 @@ const RAW_SCENES: RawScene[] = [
   dialogScene("intro"),
   levelScene(
     "movement",
-    [
-      "how_to_run_code",
-      "how_to_pause_and_step",
-      "where_to_find_objectives",
-      "how_to_see_errors",
-    ],
+    ["how_to_run_code", "where_to_find_objectives", "how_to_see_errors"],
     [
       "Find the line of code that says `move_forward(1);`. Try changing the number `1` to a different number.",
       "The `turn_right` function doesn't expect any inputs, so you don't need to put anything in between the parentheses. (You'll learn more about function inputs soon.)",
@@ -170,7 +165,7 @@ const RAW_SCENES: RawScene[] = [
   journalScene("loops"),
   levelScene(
     "loops_part_one",
-    ["show_hints_and_dialog"],
+    ["show_hints_and_dialog", "how_to_pause_and_step"],
     [
       `You can use the "reset" (🔄) button to reset to the starting code for this level.`,
       "Line 6 of the starting code says `turn_left();`. Try changing that line to something else.",
@@ -196,7 +191,7 @@ const RAW_SCENES: RawScene[] = [
   ),
   levelScene(
     "button_and_gate",
-    [],
+    ["hover_over_text", "hover_over_board"],
     [
       "Remember, the `press_button` function only works if G.R.O.V.E.R. is next to the button (he doesn't need to be facing it).",
     ]
