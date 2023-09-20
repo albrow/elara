@@ -258,6 +258,7 @@ export default function Board(props: BoardProps) {
           reading={dataPoint.reading}
           additionalInfo={dataPoint.additional_info}
           enableHoverInfo={props.enableHoverInfo}
+          enableSfx={props.enableAnimations}
         />
       ))}
       {(props.gameState.telepads as RTelepad[]).map((telepad, i) => (

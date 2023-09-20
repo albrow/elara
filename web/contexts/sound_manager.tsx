@@ -42,6 +42,8 @@ import speakSound0Fallback from "../audio/sfx/speak_0.mp3";
 import speakSound1Fallback from "../audio/sfx/speak_1.mp3";
 import speakSound2Fallback from "../audio/sfx/speak_2.mp3";
 import speakSound3Fallback from "../audio/sfx/speak_3.mp3";
+import readingData from "../audio/sfx/reading_data.ogg";
+import readingDataFallback from "../audio/sfx/reading_data.mp3";
 import successSound from "../audio/sfx/success.ogg";
 import successSoundFallback from "../audio/sfx/success.mp3";
 import challengeSound from "../audio/sfx/challenge.ogg";
@@ -209,6 +211,12 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
           baseGain: 0.08,
         }),
       ]),
+      reading_data: new Sound(
+        "reading_data",
+        "sfx",
+        [readingData, readingDataFallback],
+        { baseGain: 0.8 }
+      ),
       button_press_on: new Sound(
         "button_press_on",
         "sfx",
