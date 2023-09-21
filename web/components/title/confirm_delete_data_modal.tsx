@@ -11,13 +11,15 @@ import {
 } from "@chakra-ui/react";
 import { MdOutlineCancel, MdOutlineDeleteForever } from "react-icons/md";
 
-export interface ConfirmNewGameModalProps {
+export interface ConfirmDeleteExistingDataModalProps {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   onConfirm: () => void;
 }
 
-export default function ConfirmNewGameModal(props: ConfirmNewGameModalProps) {
+export default function ConfirmDeleteExistingDataModal(
+  props: ConfirmDeleteExistingDataModalProps
+) {
   return (
     <Modal isOpen={props.visible} onClose={() => props.setVisible(false)}>
       <ModalOverlay />

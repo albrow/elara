@@ -12,18 +12,21 @@ import {
 import { Animate } from "react-simple-animate";
 import { useSaveData } from "../hooks/save_data_hooks";
 import SettingsModal from "../components/settings/navbar/settings_modal";
-import ConfirmNewGameModal from "../components/title/confirm_new_game_modal";
+import ConfirmDeleteDataModal from "../components/title/confirm_delete_data_modal";
 import { humanFriendlyTimestamp } from "../lib/utils";
 import staryBgImg from "../images/starry_bg.webp";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import logoImg from "../images/logo.webp";
 import { useJukebox } from "../hooks/jukebox_hooks";
+import { NewGameModal } from "../components/title/new_game_modal";
 
 export default function Title() {
   const [saveData, { resetAllSaveData }] = useSaveData();
   const router = useRouter();
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const [confirmNewGameVisible, setConfirmNewGameVisible] = useState(false);
+  const [confirmDeleteDataModalVisble, setConfirmDeleteDataModalVisible] =
+    useState(false);
+  const [newGameModalVisible, setNewGameModalVisible] = useState(false);
   const { navigateToHub, navigateToCutscene } = useSceneNavigator();
   const { stopAllMusic } = useJukebox();
 
@@ -35,28 +38,38 @@ export default function Title() {
     [saveData]
   );
 
-  const handleNewGameConfirm = useCallback(() => {
-    resetAllSaveData();
+  const startNewGame = useCallback(() => {
+    setNewGameModalVisible(false);
     navigateToCutscene("intro");
-  }, [navigateToCutscene, resetAllSaveData]);
+  }, [navigateToCutscene]);
 
-  const handleNewGame = useCallback(() => {
+  const onNewGame = useCallback(() => {
     if (hasExistingSave) {
-      setConfirmNewGameVisible(true);
+      setConfirmDeleteDataModalVisible(true);
     } else {
-      handleNewGameConfirm();
+      setNewGameModalVisible(true);
     }
-  }, [hasExistingSave, handleNewGameConfirm]);
+  }, [
+    hasExistingSave,
+    setConfirmDeleteDataModalVisible,
+    setNewGameModalVisible,
+  ]);
 
-  const handleContinue = useCallback(() => {
+  const onConfirmDeleteData = useCallback(() => {
+    resetAllSaveData();
+    setConfirmDeleteDataModalVisible(false);
+    setNewGameModalVisible(true);
+  }, [resetAllSaveData]);
+
+  const onContinue = useCallback(() => {
     navigateToHub();
   }, [navigateToHub]);
 
-  const handleSettings = useCallback(() => {
+  const onSettings = useCallback(() => {
     setSettingsVisible(true);
   }, []);
 
-  const handleAbout = useCallback(() => {
+  const onAbout = useCallback(() => {
     stopAllMusic();
     router.navigate("about");
   }, [router, stopAllMusic]);
@@ -74,10 +87,18 @@ export default function Title() {
         visible={settingsVisible}
         setVisible={setSettingsVisible}
       />
-      <ConfirmNewGameModal
-        visible={confirmNewGameVisible}
-        setVisible={setConfirmNewGameVisible}
-        onConfirm={handleNewGameConfirm}
+      <ConfirmDeleteDataModal
+        visible={confirmDeleteDataModalVisble}
+        setVisible={setConfirmDeleteDataModalVisible}
+        onConfirm={onConfirmDeleteData}
+      />
+      <NewGameModal
+        visible={newGameModalVisible}
+        setVisible={setNewGameModalVisible}
+        onProceed={startNewGame}
+        onCancel={() => {
+          setNewGameModalVisible(false);
+        }}
       />
       <Container
         maxW="container.md"
@@ -110,7 +131,7 @@ export default function Title() {
         >
           {hasExistingSave && (
             <Box minW="fit-content" mb="10px">
-              <Button w="100%" size="lg" onClick={handleContinue}>
+              <Button w="100%" size="lg" onClick={onContinue}>
                 <MdPlayCircle style={{ marginRight: "0.2em" }} />
                 Continue
               </Button>
@@ -127,15 +148,15 @@ export default function Title() {
               )}
             </Box>
           )}
-          <Button size="lg" onClick={handleNewGame}>
+          <Button size="lg" onClick={onNewGame}>
             <MdSave style={{ marginRight: "0.2em" }} />
             New Game
           </Button>
-          <Button size="lg" onClick={handleSettings}>
+          <Button size="lg" onClick={onSettings}>
             <MdSettings style={{ marginRight: "0.2em" }} />
             Settings
           </Button>
-          <Button size="lg" onClick={handleAbout}>
+          <Button size="lg" onClick={onAbout}>
             <MdOutlineHelp style={{ marginRight: "0.3em" }} />
             About
           </Button>
