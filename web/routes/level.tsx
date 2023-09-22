@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Container, Flex, Text, Box, Stack } from "@chakra-ui/react";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
-
 import { useRouter } from "react-router5";
 import { Unsubscribe } from "router5/dist/types/base";
+
 import { StateWithLines, Game, RunResult } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
@@ -22,6 +22,7 @@ import ShowHintButton from "../components/level/show_hint_button";
 import { useHintsModal } from "../hooks/hints_modal_hooks";
 import { BG_INDEX, NAVBAR_HEIGHT } from "../lib/constants";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
+import { ErrorType } from "../contexts/error_modal";
 
 const game = Game.new();
 
@@ -47,7 +48,7 @@ export default function Level() {
   const [requestedEditorState, requestEditorState] =
     useState<EditorState | null>(null);
 
-  const [showErrorModal, _hidErrorModal, setErrorModalOnClose] =
+  const [showErrorModal, _hideErrorModal, setErrorModalOnClose] =
     useErrorModal();
   const [showHintsModal] = useHintsModal();
 
@@ -216,11 +217,12 @@ export default function Level() {
         }
       } else {
         // Show the failure modal.
+        const modalKind = result.outcome === "continue" ? "continue" : "error";
+        const modalError =
+          result.outcome === "continue" ? undefined : result.outcome;
+        const modalErrType = result.err_type as ErrorType;
         setErrorModalOnClose(resetLevelState);
-        showErrorModal(
-          result.outcome === "continue" ? "continue" : "error",
-          result.outcome === "continue" ? undefined : result.outcome
-        );
+        showErrorModal(modalKind, modalError, modalErrType);
       }
     },
     [

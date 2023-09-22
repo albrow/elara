@@ -8,6 +8,7 @@ import {
   Box,
   ModalCloseButton,
   Flex,
+  Image,
 } from "@chakra-ui/react";
 import {
   createContext,
@@ -17,12 +18,18 @@ import {
   useState,
 } from "react";
 import { MdOutlineErrorOutline, MdReplay } from "react-icons/md";
+import { compiler } from "markdown-to-jsx";
+
+import errorNoButtonImg from "../images/error_messages/error_no_button.png";
+import errorNoDataPointImg from "../images/error_messages/error_no_data_point.png";
 
 export type ErrorModalKind = "error" | "continue";
 
+export type ErrorType = "err_no_data_point" | "err_no_button";
+
 export const ErrorModalContext = createContext<
   readonly [
-    (kind: ErrorModalKind, error?: string) => void,
+    (kind: ErrorModalKind, error?: string, errType?: ErrorType) => void,
     () => void,
     (onClose: () => void) => void
   ]
@@ -41,6 +48,7 @@ export const ErrorModalContext = createContext<
 export function ErrorModalProvider(props: PropsWithChildren<{}>) {
   const [visible, setVisible] = useState<boolean>(false);
   const [modalKind, setModalKind] = useState<ErrorModalKind>("error");
+  const [errType, setErrType] = useState<string | undefined>(undefined);
   const [givenOnClose, setGivenOnClose] = useState<(() => void) | undefined>(
     undefined
   );
@@ -55,11 +63,15 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
     [setGivenOnClose]
   );
 
-  const showErrorModal = useCallback((kind: ErrorModalKind, error?: string) => {
-    setModalKind(kind);
-    setErrorMessage(error);
-    setVisible(true);
-  }, []);
+  const showErrorModal = useCallback(
+    (kind: ErrorModalKind, error?: string, errorType?: string) => {
+      setModalKind(kind);
+      setErrorMessage(error);
+      setVisible(true);
+      setErrType(errorType);
+    },
+    []
+  );
 
   const hideErrorModal = useCallback(() => {
     setVisible(false);
@@ -93,8 +105,31 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
     return "An unexpected error occurred. Please try again.";
   }, [modalKind, errorMessage]);
 
-  const getIcon = useCallback(() => {
+  const getIconOrImage = useCallback(() => {
     if (modalKind === "error") {
+      if (errType === "err_no_button") {
+        return (
+          <Image
+            src={errorNoButtonImg}
+            alt="No button error"
+            maxW="500px"
+            margin="auto"
+          />
+        );
+      }
+      if (errType === "err_no_data_point") {
+        return (
+          <Image
+            src={errorNoDataPointImg}
+            alt="No data point error"
+            maxW="500px"
+            margin="auto"
+          />
+        );
+      }
+      if (errType !== undefined) {
+        throw new Error(`Unknown error type: ${errType}`);
+      }
       return (
         <MdOutlineErrorOutline
           style={{ margin: "auto", display: "block" }}
@@ -110,7 +145,21 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
         color="var(--chakra-colors-blue-400)"
       />
     );
-  }, [modalKind]);
+  }, [errType, modalKind]);
+
+  const formattedMessage = useMemo(() => {
+    if (errType === "err_no_button") {
+      return compiler(
+        "The `press_button` function only works if G.R.O.V.E.R. is next to a button. (He _doesn't_ have to be facing it)."
+      );
+    }
+    if (errType === "err_no_data_point") {
+      return compiler(
+        "The `read_data` function only works if G.R.O.V.E.R. is next to a data point. (He _doesn't_ have to be facing it.)"
+      );
+    }
+    return message;
+  }, [errType, message]);
 
   return (
     <ErrorModalContext.Provider value={providerValue}>
@@ -136,15 +185,18 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
                 >
                   {title}
                 </Text>
-                <Box my="20px">{getIcon()}</Box>
+                <Box my="20px" mx="auto">
+                  {getIconOrImage()}
+                </Box>
                 <Box maxW="500px" mx="auto">
                   <Text
                     fontSize={18}
                     lineHeight="1.4em"
                     mt="18px"
                     align="center"
+                    className="md-content"
                   >
-                    {message}
+                    {formattedMessage}
                   </Text>
                 </Box>
                 <Flex mt={10} mb={3} justifyContent="right" w="100%">

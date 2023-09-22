@@ -11,6 +11,7 @@ import {
 } from "../../../elara-lib/pkg/elara_lib";
 import { useErrorModal } from "../../hooks/error_modal_hooks";
 import { useSaveData } from "../../hooks/save_data_hooks";
+import { ErrorType } from "../../contexts/error_modal";
 import MiniBoard from "./mini_board";
 
 export interface RunnableExampleProps {
@@ -57,7 +58,11 @@ export default function RunnableExample(props: RunnableExampleProps) {
     (_script: string, result: RunResult) => {
       if (!["success", "continue", "no_objective"].includes(result.outcome)) {
         setErrorModalOnClose(resetState);
-        showErrorModal("error", result.outcome);
+        const modalKind = result.outcome === "continue" ? "continue" : "error";
+        const modalError =
+          result.outcome === "continue" ? undefined : result.outcome;
+        const modalErrType = result.err_type as ErrorType;
+        showErrorModal(modalKind, modalError, modalErrType);
       }
       resetState();
     },

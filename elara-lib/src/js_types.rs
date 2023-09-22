@@ -1,6 +1,7 @@
 use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
+use crate::constants::{ERR_NO_BUTTON, ERR_NO_DATA_POINT};
 use crate::levels::Outcome;
 use crate::script_runner;
 use crate::simulation::{
@@ -66,8 +67,9 @@ impl From<&script_runner::ScriptStats> for ScriptStats {
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Clone, PartialEq, Debug)]
 pub struct RunResult {
-    pub states: Array,   // Array<FuzzyStateWithLines>
-    pub outcome: String, // "success" | "continue" | "other failure message"
+    pub states: Array,            // Array<FuzzyStateWithLines>
+    pub outcome: String,          // "success" | "continue" | "other failure message"
+    pub err_type: Option<String>, // "err_no_button" | "err_no_data_point"
     pub stats: ScriptStats,
     pub passes_challenge: bool,
 }
@@ -89,16 +91,29 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
             }),
         );
     }
+    let err_type = match &result.outcome {
+        Outcome::Failure(message) => {
+            if message.contains(ERR_NO_BUTTON) {
+                Some(String::from("err_no_button"))
+            } else if message.contains(ERR_NO_DATA_POINT) {
+                Some(String::from("err_no_data_point"))
+            } else {
+                None
+            }
+        }
+        _ => None,
+    };
     RunResult {
         states: states_array,
-        outcome: match result.outcome.clone() {
+        outcome: match &result.outcome {
             Outcome::Success => String::from("success"),
-            Outcome::Failure(msg) => msg,
+            Outcome::Failure(msg) => msg.clone(),
             Outcome::Continue => String::from("continue"),
             Outcome::NoObjective => String::from("no_objective"),
         },
         stats: ScriptStats::from(&result.stats),
         passes_challenge: result.passes_challenge,
+        err_type: err_type,
     }
 }
 
