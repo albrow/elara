@@ -215,7 +215,7 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         "reading_data",
         "sfx",
         [readingData, readingDataFallback],
-        { baseGain: 0.8 }
+        { baseGain: 0.3 }
       ),
       button_press_on: new Sound(
         "button_press_on",
