@@ -33,6 +33,7 @@ fn face_up() {
 move_forward(2);
 face_up();
 move_forward(3);
+// ADD YOUR CODE BELOW:
 
 "#
     }
