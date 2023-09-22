@@ -19,30 +19,31 @@ impl Level for ReimplementTurnRight {
         "reimplement_turn_right"
     }
     fn objective(&self) -> &'static str {
-        "Finish the `new_turn_right` function, then move the rover ({robot}) to the goal ({goal})."
+        "Finish the `three_lefts` function, then move the rover ({robot}) to the goal ({goal})."
     }
     fn disabled_functions(&self) -> &'static Vec<&'static str> {
         &DISABLED_FUNCS
     }
     fn initial_code(&self) -> &'static str {
-        r"fn new_turn_right() {
+        r#"// This function "turns right" by turning left three times.
+fn three_lefts() {
   // ADD YOUR CODE HERE
   
 }
 
-// Using the new_turn_right function, this code will move
+// Using the three_lefts function, this code will move
 // the rover all the way to the goal! If you did it right,
 // you DON'T need to change the following code.
 move_backward(4);
-new_turn_right();
+three_lefts();
 move_backward(4);
-new_turn_right();
+three_lefts();
 move_backward(3);
-new_turn_right();
+three_lefts();
 move_backward(2);
-new_turn_right();
+three_lefts();
 move_backward(1);
-"
+"#
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
@@ -110,20 +111,20 @@ mod tests {
 
         // This is an example solution that should result in Outcome::Success.
         let script = r"
-            fn new_turn_right() {
+            fn three_lefts() {
                 turn_left();
                 turn_left();
                 turn_left();
             }
 
             move_backward(4);
-            new_turn_right();
+            three_lefts();
             move_backward(4);
-            new_turn_right();
+            three_lefts();
             move_backward(3);
-            new_turn_right();
+            three_lefts();
             move_backward(2);
-            new_turn_right();
+            three_lefts();
             move_backward(1);
         ";
         let result = game
@@ -139,20 +140,20 @@ mod tests {
 
         // This code beats the level, but doesn't satisfy the challenge conditions.
         let script = r"
-            fn new_turn_right() {
+            fn three_lefts() {
                 turn_left();
                 turn_left();
                 turn_left();
             }
 
             move_backward(4);
-            new_turn_right();
+            three_lefts();
             move_backward(4);
-            new_turn_right();
+            three_lefts();
             move_backward(3);
-            new_turn_right();
+            three_lefts();
             move_backward(2);
-            new_turn_right();
+            three_lefts();
             move_backward(1);
         ";
         let result = game
