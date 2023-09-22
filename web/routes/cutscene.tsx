@@ -51,8 +51,8 @@ export default function Cutscene(props: CutsceneProps) {
   > = useMemo(
     () => ({
       intro: {
-        vimeoVideoId: 862764545,
-        youTubeVideoId: "S1VpIP7ns9Y",
+        vimeoVideoId: 867291789,
+        youTubeVideoId: "xoE_SUpf2HM",
         navigateOnEnd: () => {
           navigateToHub();
         },

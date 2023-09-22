@@ -5,6 +5,7 @@ import { MdPlayArrow, MdSkipNext } from "react-icons/md";
 import { Animate } from "react-simple-animate";
 
 import { useSceneNavigator } from "../../hooks/scenes_hooks";
+import { useSaveData } from "../../hooks/save_data_hooks";
 
 export interface FullscreenVimeoVideoProps {
   videoId: number;
@@ -27,6 +28,13 @@ export default function FullscreenVimeoVideo(props: FullscreenVimeoVideoProps) {
   const [showPlayButton, setShowPlayButton] = useState<boolean>(false);
   const [hasStarted, setHasStarted] = useState<boolean>(false);
   const showPlayButtonTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [saveData, _] = useSaveData();
+
+  // Automatically adjust volume based on master volume setting.
+  useEffect(() => {
+    if (!playerRef.current) return;
+    playerRef.current.setVolume(saveData.settings.masterVolume);
+  }, [saveData.settings.masterVolume]);
 
   const onEnd = useCallback(() => {
     videoIframeRef.current?.remove();
@@ -95,6 +103,7 @@ export default function FullscreenVimeoVideo(props: FullscreenVimeoVideoProps) {
 
   useEffect(() => {
     if (!videoIframeRef.current) return;
+    if (playerRef.current) return;
     const player = new Player(videoIframeRef.current, {
       id: props.videoId,
       autoplay: true,
@@ -104,6 +113,7 @@ export default function FullscreenVimeoVideo(props: FullscreenVimeoVideoProps) {
       pip: false,
     });
     playerRef.current = player;
+    player.setVolume(saveData.settings.masterVolume);
     player.on("play", onVideoStarted);
     player.on("loaded", onVideoLoad);
     player.on("ended", onSkipConfirm);
@@ -116,6 +126,7 @@ export default function FullscreenVimeoVideo(props: FullscreenVimeoVideoProps) {
     props,
     props.videoId,
     videoIframeRef,
+    saveData.settings.masterVolume,
   ]);
 
   const manualPlay = useCallback(() => {

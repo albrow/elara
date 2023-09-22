@@ -1,9 +1,10 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Box, Button, Text, AspectRatio } from "@chakra-ui/react";
 import { MdSkipNext } from "react-icons/md";
 import { Animate } from "react-simple-animate";
 
-import ReactPlayer from "react-player/youtube";
+import ReactPlayer, { YouTubePlayerProps } from "react-player/youtube";
+import { useSaveData } from "../../hooks/save_data_hooks";
 
 // import { useSceneNavigator } from "../../hooks/scenes_hooks";
 
@@ -22,6 +23,16 @@ export default function FullscreenYouTubeVideo(
   const [isWaitingForSkipConfirm, setIsWaitingForSkipConfirm] =
     useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [saveData, _] = useSaveData();
+
+  // Automatically adjust volume based on master volume setting.
+  useEffect(() => {
+    if (!playerRef.current) return;
+    playerRef.current.setState((state: YouTubePlayerProps) => ({
+      ...state,
+      volume: saveData.settings.masterVolume,
+    }));
+  }, [saveData.settings.masterVolume]);
 
   const onEnd = useCallback(() => {
     props.onEnd();
@@ -76,6 +87,7 @@ export default function FullscreenYouTubeVideo(
             height="100%"
             playing={isPlaying}
             onEnded={onEnd}
+            volume={saveData.settings.masterVolume}
           />
         </AspectRatio>
       </Box>
