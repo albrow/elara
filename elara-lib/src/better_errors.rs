@@ -244,22 +244,28 @@ fn convert_missing_semicolon_error(script: &str, desc: &str, pos: &rhai::Positio
 }
 
 lazy_static! {
-    /// A map of common keyword typos to helpful hints.
-    static ref KEYWORD_HINTS: HashMap<&'static str, &'static str> = {
+    /// A map of common variable name typos to helpful hints.
+    static ref UNDEF_VARIABLE_HINTS: HashMap<&'static str, &'static str> = {
         let mut m: HashMap<&'static str, &'static str> = HashMap::new();
         m.insert("Loop", "Did you mean loop with a lowercase 'l'?");
         m.insert("Let", "Did you mean let with a lowercase 'l'?");
         m.insert("If", "Did you mean if with a lowercase 'i'?");
+        m.insert("lovelace", "If you wanted this to be a string, maybe you forgot the quotation marks?");
+        m.insert("left", "If you wanted this to be a string, maybe you forgot the quotation marks?");
+        m.insert("right", "If you wanted this to be a string, maybe you forgot the quotation marks?");
+        m.insert("top", "If you wanted this to be a string, maybe you forgot the quotation marks?");
+        m.insert("middle", "If you wanted this to be a string, maybe you forgot the quotation marks?");
+        m.insert("bottom", "If you wanted this to be a string, maybe you forgot the quotation marks?");
         m
     };
 }
 
 fn convert_var_not_found_error(var_name: &str, pos: &rhai::Position) -> BetterError {
-    if KEYWORD_HINTS.contains_key(var_name) {
+    if UNDEF_VARIABLE_HINTS.contains_key(var_name) {
         return BetterError {
             message: format!(
                 r#"Error: Variable not found: {}. (Hint: {})"#,
-                var_name, KEYWORD_HINTS[var_name]
+                var_name, UNDEF_VARIABLE_HINTS[var_name]
             ),
             line: pos.line(),
             col: pos.position(),
