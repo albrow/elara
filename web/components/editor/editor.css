@@ -89,13 +89,14 @@ call stack (i.e. it highlights function calls higher up in the stack). */
 /* Override comment styles. For example, we don't want hover effects
 for hoverables inside of comments. */
 .cm-comment {
-  color: var(--chakra-colors-green-600);
+  color: var(--chakra-colors-green-500);
+  font-weight: 600;
   text-decoration: none;
   display: inline-block; /* This is needed to override parent text-decoration styles. */
 }
 
 .cm-comment:hover {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* Override string styles. */
