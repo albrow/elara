@@ -127,7 +127,7 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
               >
                 <Flex mt={10} mb={3} justifyContent="right" w="100%">
                   <Button colorScheme="blackAlpha" onClick={handleClose}>
-                    Keep Playing
+                    Play Level Again
                     <MdReplay size="1.3em" style={{ marginLeft: "0.2rem" }} />
                   </Button>
                   {nextCutsceneId &&
