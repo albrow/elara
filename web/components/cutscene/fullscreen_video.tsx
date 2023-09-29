@@ -12,8 +12,6 @@ import {
   getYouTubeEmbedURLFromId,
 } from "../../lib/utils";
 
-// import { useSceneNavigator } from "../../hooks/scenes_hooks";
-
 export interface FullscreenYouTubeVideoProps {
   vimeoVideoId: number;
   youtubeVideoId: string;
