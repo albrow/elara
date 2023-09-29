@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
-import FullscreenYouTubeVideo from "../components/cutscene/fullscreen_youtube_video";
-import FullscreenVimeoVideo from "../components/cutscene/fullscreen_vimeo_video";
+import FullscreenVideo from "../components/cutscene/fullscreen_video";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import { useSaveData } from "../hooks/save_data_hooks";
 
@@ -19,31 +18,6 @@ interface CutsceneMetadata {
 export default function Cutscene(props: CutsceneProps) {
   const { navigateToHub } = useSceneNavigator();
   const [_, { markCutsceneSeen }] = useSaveData();
-  const [isVimeoBlocked, setIsVimeoBlocked] = useState<boolean>(false);
-
-  useEffect(() => {
-    // Vimeo is blocked in some school systems. If we detect this,
-    // fallback to the YouTube player.
-    const req = new Request(
-      `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(
-        "https://vimeo.com/53145852"
-      )}`
-    );
-
-    fetch(req)
-      .then((res) => {
-        if (res.status === 404) {
-          setIsVimeoBlocked(false);
-          return;
-        }
-        if (!res.ok) {
-          setIsVimeoBlocked(true);
-        }
-      })
-      .catch(() => {
-        setIsVimeoBlocked(true);
-      });
-  }, []);
 
   const CUTSCENE_METADATA: Record<
     CutsceneProps["cutsceneId"],
@@ -87,15 +61,10 @@ export default function Cutscene(props: CutsceneProps) {
     navigateOnEnd();
   }, [markCutsceneSeen, navigateOnEnd, props.cutsceneId]);
 
-  return isVimeoBlocked ? (
-    <FullscreenYouTubeVideo
-      videoId={youTubeVideoId}
-      onEnd={onEnd}
-      checkpoints={checkpoints}
-    />
-  ) : (
-    <FullscreenVimeoVideo
-      videoId={vimeoVideoId}
+  return (
+    <FullscreenVideo
+      youtubeVideoId={youTubeVideoId}
+      vimeoVideoId={vimeoVideoId}
       onEnd={onEnd}
       checkpoints={checkpoints}
     />

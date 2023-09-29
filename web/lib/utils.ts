@@ -117,3 +117,11 @@ export function humanFriendlyTimestamp(timestamp: number): string {
     minute: "numeric",
   })}`;
 }
+
+export function getYouTubeEmbedURLFromId(id: string): string {
+  return `https://www.youtube.com/embed/${id}`;
+}
+
+export function getVimeoEmbedURLFromId(id: number): string {
+  return `https://player.vimeo.com/video/${id}`;
+}

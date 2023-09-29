@@ -3,13 +3,20 @@ import { Box, Button, Text, AspectRatio } from "@chakra-ui/react";
 import { MdSkipNext } from "react-icons/md";
 import { Animate } from "react-simple-animate";
 
-import ReactPlayer, { YouTubePlayerProps } from "react-player/youtube";
+import ReactPlayer from "react-player";
+import { YouTubePlayerProps } from "react-player/youtube";
+import { VimeoPlayerProps } from "react-player/vimeo";
 import { useSaveData } from "../../hooks/save_data_hooks";
+import {
+  getVimeoEmbedURLFromId,
+  getYouTubeEmbedURLFromId,
+} from "../../lib/utils";
 
 // import { useSceneNavigator } from "../../hooks/scenes_hooks";
 
 export interface FullscreenYouTubeVideoProps {
-  videoId: string;
+  vimeoVideoId: number;
+  youtubeVideoId: string;
   onEnd: () => void;
   // If provided, pressing the skip button will skip to the next checkpoint
   // (in seconds) instead of the end of the video.
@@ -24,14 +31,19 @@ export default function FullscreenYouTubeVideo(
     useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [saveData, _] = useSaveData();
+  const [currVideoUrl, setCurrVideoUrl] = useState<string>(
+    getVimeoEmbedURLFromId(props.vimeoVideoId)
+  );
 
   // Automatically adjust volume based on master volume setting.
   useEffect(() => {
     if (!playerRef.current) return;
-    playerRef.current.setState((state: YouTubePlayerProps) => ({
-      ...state,
-      volume: saveData.settings.masterVolume,
-    }));
+    playerRef.current.setState(
+      (state: YouTubePlayerProps | VimeoPlayerProps) => ({
+        ...state,
+        volume: saveData.settings.masterVolume,
+      })
+    );
   }, [saveData.settings.masterVolume]);
 
   const onEnd = useCallback(() => {
@@ -70,6 +82,13 @@ export default function FullscreenYouTubeVideo(
     setIsPlaying(true);
   }, []);
 
+  const fallbackToYouTube = useCallback(() => {
+    const youtubeURL = getYouTubeEmbedURLFromId(props.youtubeVideoId);
+    if (currVideoUrl !== youtubeURL) {
+      setCurrVideoUrl(youtubeURL);
+    }
+  }, [currVideoUrl, props.youtubeVideoId]);
+
   return (
     <>
       <Box w="100%" h="100%" maxH="100vh" overflow="hidden">
@@ -82,11 +101,13 @@ export default function FullscreenYouTubeVideo(
               left: "auto",
               maxHeight: "100vh",
             }}
-            url={`https://www.youtube.com/embed/${props.videoId}`}
+            controls={false}
+            url={currVideoUrl}
             width="100%"
             height="100%"
             playing={isPlaying}
             onEnded={onEnd}
+            onError={fallbackToYouTube}
             volume={saveData.settings.masterVolume}
           />
         </AspectRatio>
