@@ -35,6 +35,7 @@ export default defineConfig(async () => {
     // See: https://vitest.dev/guide/in-source.html#production-build
     define: {
       "import.meta.vitest": "undefined",
+      APP_VERSION: JSON.stringify(process.env.npm_package_version),
     },
   };
 });

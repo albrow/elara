@@ -162,7 +162,7 @@ export default function Title() {
         bottom="10px"
         right="10px"
       >
-        (early alpha version)
+        public beta version {APP_VERSION}
       </Text>
     </Box>
   );
