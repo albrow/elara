@@ -1,12 +1,14 @@
 import { DialogChoice, DialogNode, DialogTrees } from ".";
 
 export type NodeIds =
+  | "explain_grover_is_repaired"
   | "explain_telepads"
   | "explain_telepads_2"
   | "explain_telepads_catch"
   | "explain_telepads_code"
   | "explain_telepads_code_2";
 export type ChoiceIds =
+  | "ack_grover_is_repaired"
   | "ask_telepad_catch"
   | "ack_telepads_catch"
   | "ack_telepads_code";
@@ -14,14 +16,18 @@ export type ChoiceIds =
 export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
+  explain_grover_is_repaired: {
+    text: "Nice work! G.R.O.V.E.R. is all patched up and ready to go. You can use the `turn_right` and `move_forward` functions again.",
+    choiceIds: ["ack_grover_is_repaired"],
+  },
   explain_telepads: {
-    text: `One of the things we're researching here at Moonbase Beta is teleportation technology.`,
+    text: `Part of my job on Moonbase Beta is to help test new research projects. I'm really excited to show you what the Ganymede Robotics research team has been cooking up!`,
     choiceIds: [],
     nextId: "explain_telepads_2",
   },
   explain_telepads_2: {
     text:
-      `We created a device called a "telepad" that can teleport relatively small ` +
+      `They've created a device called a "telepad" that can teleport relatively small ` +
       `objects across short distances. But... there's a catch!`,
     choiceIds: ["ask_telepad_catch"],
   },
@@ -51,6 +57,10 @@ export const NODES: {
 export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
+  ack_grover_is_repaired: {
+    text: "Great! What's next?",
+    nextId: "explain_telepads",
+  },
   ask_telepad_catch: {
     text: "What's the catch?",
     nextId: "explain_telepads_catch",
@@ -67,6 +77,6 @@ export const CHOICES: {
 export const TREES: DialogTrees = {
   level_telepad_part_one: {
     name: "Unintended Effects",
-    startId: "explain_telepads",
+    startId: "explain_grover_is_repaired",
   },
 };
