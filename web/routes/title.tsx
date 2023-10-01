@@ -1,7 +1,6 @@
 import { Box, Button, Container, Flex, Img, Text } from "@chakra-ui/react";
 
 import { useCallback, useMemo, useState } from "react";
-import { useRouter } from "react-router5";
 import {
   MdPlayCircle,
   MdSave,
@@ -17,18 +16,15 @@ import { humanFriendlyTimestamp } from "../lib/utils";
 import staryBgImg from "../images/starry_bg.webp";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import logoImg from "../images/logo.webp";
-import { useJukebox } from "../hooks/jukebox_hooks";
 import { NewGameModal } from "../components/title/new_game_modal";
 
 export default function Title() {
   const [saveData, { resetAllSaveData }] = useSaveData();
-  const router = useRouter();
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [confirmDeleteDataModalVisble, setConfirmDeleteDataModalVisible] =
     useState(false);
   const [newGameModalVisible, setNewGameModalVisible] = useState(false);
   const { navigateToHub, navigateToCutscene } = useSceneNavigator();
-  const { stopAllMusic } = useJukebox();
 
   const hasExistingSave = useMemo(
     () =>
@@ -68,11 +64,6 @@ export default function Title() {
   const onSettings = useCallback(() => {
     setSettingsVisible(true);
   }, []);
-
-  const onAbout = useCallback(() => {
-    stopAllMusic();
-    router.navigate("about");
-  }, [router, stopAllMusic]);
 
   return (
     <Box
@@ -156,10 +147,12 @@ export default function Title() {
             <MdSettings style={{ marginRight: "0.2em" }} />
             Settings
           </Button>
-          <Button size="lg" onClick={onAbout}>
-            <MdOutlineHelp style={{ marginRight: "0.3em" }} />
-            About
-          </Button>
+          <a href="https://elaragame.com" target="_blank" rel="noreferrer">
+            <Button size="lg" w="100%">
+              <MdOutlineHelp style={{ marginRight: "0.3em" }} />
+              About
+            </Button>
+          </a>
         </Flex>
       </Container>
       <Text

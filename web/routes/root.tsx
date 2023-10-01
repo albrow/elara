@@ -5,7 +5,6 @@ import Navbar from "../components/settings/navbar/navbar";
 import Cutscene from "./cutscene";
 import Title from "./title";
 import Loading from "./loading";
-import About from "./about";
 import Hub from "./hub";
 import Level from "./level";
 import Journal from "./journal";
@@ -39,9 +38,6 @@ export default function Root() {
     }
     if (route.name === "journal_section") {
       return <Journal />;
-    }
-    if (route.name === "about") {
-      return <About />;
     }
     if (route.name === "end") {
       return <End />;
