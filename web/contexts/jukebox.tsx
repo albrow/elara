@@ -67,7 +67,7 @@ export const JukeboxContext = createContext<Jukebox>({
 
 export function JukeboxProvider(props: PropsWithChildren<{}>) {
   const [saveData] = useSaveData();
-  const [masterGain] = useState(saveData.settings.masterVolume);
+  const [masterGain, setMasterGain] = useState(saveData.settings.masterVolume);
   const [relMusicGain, setRelMusicGain] = useState(
     saveData.settings.musicVolume
   );
@@ -76,14 +76,11 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
   // timeout used to transition between songs
   const transitionTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  /**
-   * Keeps track of recently played songs in a queue. This is so we know
-   * which songs to unload when we need to free up memory.
-   * _unsafeSetRecentlyPlayedSongs should not be called directly. Instead
-   * use pushRecentlyPlayedSong.
-   */
-  const [_, _unsafeSetRecentlyPlayedSongs] = useState<string[]>([]);
-
+  // Recalculate music volume/gain whenever the settings change.
+  useEffect(() => {
+    setMasterGain(saveData.settings.masterVolume);
+    setRelMusicGain(saveData.settings.musicVolume);
+  }, [saveData.settings.masterVolume, saveData.settings.musicVolume]);
   const musicGain = useMemo(
     () => volumeToGain(masterGain * relMusicGain * tempMusicGain),
     [masterGain, relMusicGain, tempMusicGain]
@@ -91,6 +88,14 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
   useEffect(() => {
     setRelMusicGain(saveData.settings.musicVolume);
   }, [saveData.settings.musicVolume]);
+
+  /**
+   * Keeps track of recently played songs in a queue. This is so we know
+   * which songs to unload when we need to free up memory.
+   * _unsafeSetRecentlyPlayedSongs should not be called directly. Instead
+   * use pushRecentlyPlayedSong.
+   */
+  const [_, _unsafeSetRecentlyPlayedSongs] = useState<string[]>([]);
 
   const musicDict: Record<string, Playable> = useMemo(
     () => ({
