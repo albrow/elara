@@ -13,6 +13,7 @@
     "dev": "vite",
     "dev:host": "vite --host",
     "build": "npm run build:wasm && tsc --noEmit && vite build",
+    "build:itchio": "npm run build:wasm && tsc --noEmit && vite build --config vite.itchio.config.ts",
     "test": "npm run test:rust && npm run test:rust-wasm && npm run test:js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
   },
