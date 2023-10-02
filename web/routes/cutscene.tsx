@@ -40,7 +40,7 @@ export default function Cutscene(props: CutsceneProps) {
       },
       end: {
         vimeoVideoId: 862987802,
-        youTubeVideoId: "T75iBxx6nbQ",
+        youTubeVideoId: "hatwp7_PFso",
         navigateOnEnd: () => {
           navigateToHub();
         },
