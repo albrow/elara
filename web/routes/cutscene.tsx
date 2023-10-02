@@ -13,6 +13,7 @@ interface CutsceneMetadata {
   youTubeVideoId: string;
   navigateOnEnd: () => void;
   checkpoints?: number[];
+  isWIP?: boolean;
 }
 
 export default function Cutscene(props: CutsceneProps) {
@@ -37,6 +38,7 @@ export default function Cutscene(props: CutsceneProps) {
         navigateOnEnd: () => {
           navigateToHub();
         },
+        isWIP: true,
       },
       end: {
         vimeoVideoId: 862987802,
@@ -45,6 +47,7 @@ export default function Cutscene(props: CutsceneProps) {
           navigateToHub();
         },
         checkpoints: [60, 94],
+        isWIP: true,
       },
     }),
     [navigateToHub]
@@ -53,7 +56,7 @@ export default function Cutscene(props: CutsceneProps) {
   if (!CUTSCENE_METADATA[props.cutsceneId]) {
     throw new Error(`Unknown cutscene ID: ${props.cutsceneId}`);
   }
-  const { vimeoVideoId, youTubeVideoId, navigateOnEnd, checkpoints } =
+  const { vimeoVideoId, youTubeVideoId, navigateOnEnd, checkpoints, isWIP } =
     CUTSCENE_METADATA[props.cutsceneId];
 
   const onEnd = useCallback(() => {
@@ -67,6 +70,7 @@ export default function Cutscene(props: CutsceneProps) {
       vimeoVideoId={vimeoVideoId}
       onEnd={onEnd}
       checkpoints={checkpoints}
+      showWIP={isWIP || false}
     />
   );
 }

@@ -19,6 +19,8 @@ export interface FullscreenYouTubeVideoProps {
   // If provided, pressing the skip button will skip to the next checkpoint
   // (in seconds) instead of the end of the video.
   checkpoints?: number[];
+  // Wether or not to show a disclaimer about the video being a work in progress.
+  showWIP?: boolean;
 }
 
 export default function FullscreenYouTubeVideo(
@@ -110,6 +112,35 @@ export default function FullscreenYouTubeVideo(
           />
         </AspectRatio>
       </Box>
+      {props.showWIP && (
+        <Animate
+          play={isPlaying}
+          start={{
+            opacity: 0,
+          }}
+          end={{
+            opacity: 1,
+          }}
+          delay={8.0}
+          duration={0.5}
+        >
+          <Box position="fixed" bottom="0px" left="0px" width="100%">
+            <Text
+              textAlign="center"
+              verticalAlign="middle"
+              color="white"
+              textShadow="outline"
+              mx="auto"
+              bg="blackAlpha.700"
+              py="3px"
+              fontSize="sm"
+              fontStyle="italic"
+            >
+              Video is a work-in-progress. Sound will be added later.
+            </Text>
+          </Box>
+        </Animate>
+      )}
       <Animate
         play
         start={{
