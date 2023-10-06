@@ -23,6 +23,7 @@ import { useHintsModal } from "../hooks/hints_modal_hooks";
 import { BG_INDEX, NAVBAR_HEIGHT } from "../lib/constants";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
 import { ErrorType } from "../contexts/error_modal";
+import LevelTitle from "../components/level/level_title";
 
 const game = Game.new();
 
@@ -336,18 +337,19 @@ export default function Level() {
         maxW="container.xl"
         mt={`${NAVBAR_HEIGHT}px`}
       >
-        <Box pt="15px">
+        <Box pt="12px">
           <Flex>
-            <Text fontSize="2xl" fontWeight="bold" mb={1}>
-              Level {currScene?.levelIndex}: {currLevel().name}
-            </Text>
+            <LevelTitle
+              title={currLevel().name}
+              levelIndex={currScene?.levelIndex || 0}
+            />
             {currScene?.hints != null && currScene?.hints.length > 0 && (
-              <Box ml="17px" my="auto" mt="3px">
+              <Box ml="8px" my="auto" mt="3px">
                 <ShowHintButton onClick={showHintsModal} />
               </Box>
             )}
             {getDialogTree() !== null && (
-              <Box ml="17px" my="auto" mt="3px">
+              <Box ml="12px" my="auto" mt="3px">
                 <ShowDialogButton onClick={() => setDialogVisible(true)} />
               </Box>
             )}
