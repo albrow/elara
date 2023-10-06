@@ -92,10 +92,16 @@ export function NewGameModal(props: NewGameModalProps) {
     >
       <ModalOverlay />
       <ModalContent
-        minW="container.md"
+        w="container.md"
+        maxW="100%"
         top={{
           base: "0px",
           "2xl": "24px",
+        }}
+        my={{
+          base: "0px",
+          md: "24px",
+          lg: "48px",
         }}
         py="24px"
         px="12px"
@@ -103,13 +109,23 @@ export function NewGameModal(props: NewGameModalProps) {
       >
         <ModalCloseButton />
         <ModalBody>
-          <Text fontSize="2xl" fontWeight="bold" align="center">
+          <Text
+            fontSize={{ base: "xl", md: "2xl" }}
+            fontWeight="bold"
+            align="center"
+          >
             {currTip.title}
           </Text>
           <Box display="inline-block" width="100%" mt="16px" mb="16px">
             {currTip.icon({ size: "96px", style: { margin: "auto" } })}
           </Box>
-          <Text fontSize="lg" mb="32px" maxW="80%" mx="auto" textAlign="center">
+          <Text
+            fontSize={{ base: "md", md: "lg" }}
+            mb="32px"
+            maxW="80%"
+            mx="auto"
+            textAlign="center"
+          >
             {currTip.text}
           </Text>
         </ModalBody>
