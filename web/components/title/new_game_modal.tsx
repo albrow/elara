@@ -31,7 +31,7 @@ const TIPS: NewGameTip[] = [
   },
   {
     title: "Local Autosave Only",
-    text: "Your progress will be automatically saved, but only on this computer and this browser. If you change to a different computer, a different browser, or clear your browser's local storage, your progress will be lost.",
+    text: "Your progress will be automatically saved. However, if you change to a different computer, a different browser, or clear your browser's local storage, your progress will be lost.",
     icon: MdSave,
   },
   {
