@@ -80,6 +80,9 @@ const elaraTheme = extendTheme({
   const { HintsModalProvider } = await import("./contexts/hints_modal");
   const { SoundProvider } = await import("./contexts/sound_manager");
   const { JukeboxProvider } = await import("./contexts/jukebox");
+  const { LevelSelectModalProvider } = await import(
+    "./contexts/level_select_modal"
+  );
 
   const routes: Route[] = [
     {
@@ -150,7 +153,9 @@ const elaraTheme = extendTheme({
                     <ErrorModalProvider>
                       <HintsModalProvider>
                         <FunctionUnlockedModalProvider>
-                          <Root />
+                          <LevelSelectModalProvider>
+                            <Root />
+                          </LevelSelectModalProvider>
                         </FunctionUnlockedModalProvider>
                       </HintsModalProvider>
                     </ErrorModalProvider>

@@ -3,12 +3,12 @@ import { Fragment, useCallback, useMemo } from "react";
 
 import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 import { BsStar, BsStarFill } from "react-icons/bs";
-import { Scene } from "../../contexts/scenes";
-import DisablableLink from "../scene_link";
+import { Scene } from "../contexts/scenes";
 import {
   useNextLevelToBeUnlocked,
   useNextUnlockedScene,
-} from "../../hooks/scenes_hooks";
+} from "../hooks/scenes_hooks";
+import DisablableLink from "./scene_link";
 
 interface LevelLinkProps {
   scene: Scene;
