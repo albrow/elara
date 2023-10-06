@@ -6,6 +6,7 @@ import {
   MdSave,
   MdSettings,
   MdOutlineHelp,
+  MdNewspaper,
 } from "react-icons/md";
 
 import { Animate } from "react-simple-animate";
@@ -17,6 +18,7 @@ import staryBgImg from "../images/starry_bg.webp";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import logoImg from "../images/logo.webp";
 import { NewGameModal } from "../components/title/new_game_modal";
+import { ChangelogModal } from "../components/title/changelog_modal";
 
 export default function Title() {
   const [saveData, { resetAllSaveData }] = useSaveData();
@@ -24,6 +26,7 @@ export default function Title() {
   const [confirmDeleteDataModalVisble, setConfirmDeleteDataModalVisible] =
     useState(false);
   const [newGameModalVisible, setNewGameModalVisible] = useState(false);
+  const [changelogModalVisible, setChangelogModalVisisble] = useState(false);
   const { navigateToHub, navigateToCutscene } = useSceneNavigator();
 
   const hasExistingSave = useMemo(
@@ -65,6 +68,10 @@ export default function Title() {
     setSettingsVisible(true);
   }, []);
 
+  const onChangelog = useCallback(() => {
+    setChangelogModalVisisble(true);
+  }, []);
+
   return (
     <Box
       w="100%"
@@ -82,6 +89,10 @@ export default function Title() {
         visible={confirmDeleteDataModalVisble}
         setVisible={setConfirmDeleteDataModalVisible}
         onConfirm={onConfirmDeleteData}
+      />
+      <ChangelogModal
+        visible={changelogModalVisible}
+        setVisible={setChangelogModalVisisble}
       />
       <NewGameModal
         visible={newGameModalVisible}
@@ -153,6 +164,10 @@ export default function Title() {
               About
             </Button>
           </a>
+          <Button size="lg" onClick={onChangelog}>
+            <MdNewspaper style={{ marginRight: "0.2em" }} />
+            What&apos;s New
+          </Button>
         </Flex>
       </Container>
       <Text
