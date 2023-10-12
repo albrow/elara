@@ -740,6 +740,13 @@ fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {
                 in_block_comment = false;
             }
         }
+        // Check if the next line is an opening bracket. This should be allowed.
+        if let Some(next_line) = lines.get(i + 1) {
+            let trimmed_next = next_line.trim();
+            if trimmed_next.starts_with("{") {
+                continue;
+            }
+        }
         if !in_block_comment && !trimmed.ends_with(';') {
             let line_num: u16 = (i + 1).try_into().unwrap();
             let col: u16 = (line.len() - 1).try_into().unwrap();
@@ -906,6 +913,29 @@ mod test {
             }
         "#;
         assert!(check_semicolons(source).is_err());
+
+        // Should not be a missing semicolon error if a bracket is on
+        // the next line. This is a regression test for
+        // https://github.com/albrow/elara/issues/67
+        let source = r"
+            loop
+            {
+                move_forward(1);
+            }
+            if true
+            {
+                move_forward(1);
+            }
+            else
+            {
+                move_forward(1);
+            }
+            while true
+            {
+                move_forward(1);
+            }
+        ";
+        check_semicolons(source).unwrap();
 
         // TODO(albrow): Uncomment this test once we handle the edge case.
         // let source = r#"
