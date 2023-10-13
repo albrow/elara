@@ -9,16 +9,74 @@ use crate::{
     },
 };
 
-// TODO(albrow): Consider adding more messages.
-// We could put whatever easter eggs we want here.
 lazy_static! {
     static ref MESSAGES: Vec<&'static str> = vec![
-        "2047.09.29 Dan: How's it going with the automated cleaning routines? Anything I can help with?",
-        "2047.09.29 Linda: I'm having a hard time with the path-finding algorithm. I was thinking of simplifying it a bit.",
-        "2047.09.29 Dan: We're already behind schedule, so I'm open to it. What did you have in mind?",
-        "2047.09.29 Linda: Once the rover identifies some trash or debris, it could just move toward it in a straight line.",
-        "2047.09.29 Linda: We prioritize whichever axis is farthest away. So if the target is two spaces up and one space to the left, we go up first.",
-        "2047.09.29 Dan: Hmm.. the rovers might get stuck in corners and dead ends. But I guess we can always refactor it later. I say go for it!",
+        r#"{markdown}
+\== _Chat Logs 2063.09.29_ \==
+
+**Ada**: Hey I heard you've been working on the infinite loop detector?
+
+**Alan**: That's right! We can now detect an infinite loop and report it as an error before the code even runs. Should help prevent our engineer's computers from crashing. So far I've tested it with loops and while loops.
+
+**Ada**: Cool cool. Some engineers might also use recursion as a way to repeat their code. Did you test for that?
+
+**Alan**: Oh, I almost forgot. Let me search online to remind myself how recursion works...
+"#,
+        r#"{markdown}
+\== _Chat Logs 2063.10.01_ \==
+
+**George**: I was watching the rovers while they were in "automated cleaning mode" earlier and I noticed something. It seems like while in this mode they are not able to move backward. Is that intentional?
+
+**Mary**: Hang on...
+
+**Mary**: I just looked over the code and I think you're right. Instead of moving backward they just turn twice, which takes longer. I'll make a note of this, but I'm not sure if we'll have the time to fix it.
+
+**George**: Gotcha. As long as the rovers are able to do their job while cleaning, it's not the end of the world if they take a little longer to do it. I'm okay with de-prioritizing this for now.
+"#,
+        r#"{markdown}
+\== _Chat Logs 2063.10.02_ \==
+
+**Mary**: Any resident CSS experts available to help me with something? I'm just trying to have a tooltip that floats above a button, but I don't want it to hang off the edge of the screen. I want it to be repositioned so that it's always visible.
+
+**Alan**: I think @Ada has the most practice with the dark arts.
+
+**Ada**: Lol honestly I usually just keep trying things until it works. But happy to take a look and see if I can help!
+"#,
+        r#"{markdown}
+\== _Chat Logs 2063.10.05_ \==
+
+**Alan**: I heard someone mention the idea of a `wait` function which would just cause the rovers to wait and do nothing. What do you think?
+
+**Marie**: Hmm.. we should try to keep the number of built-in functions to a minimum. Couldn't you do basically the same thing with `say("waiting")`?
+
+**Alan**: Yeah, I guess you're right! I'll advise them to do that instead.
+"#,
+        r#"{markdown}
+
+\== _Chat Logs 2063.10.09_ \==
+
+**Marie**: There are two hard problems in computer science...
+
+**Marie**: ...cache invalidation, naming things, and off-by-one errors.
+
+**Alan**: Uh oh, here we go again. Can't we just make a separate channel for jokes?
+
+**Mary**: rofl.gif [image not found]
+
+**Alan**: I'm pretty sure there are more than two hard problems in computer science.
+"#,
+        r#"{markdown}
+
+\== _Chat Logs 2063.10.12_ \==
+
+**George**: Why do we even need an emergency shutdown button? The rovers aren't dangerous, are they? I mean aside from G.R.E.T.A. they're not even that big.
+
+**Mary**: It's just a precaution. We don't expect anything to go wrong, but it's better to be safe than sorry.
+
+**George**: I guess that makes sense. I'm just worried that someone might press it by accident. Can't we put it somewhere less conspicuous?
+
+**Ada**: That would defeat the purpose. It needs to be somewhere that's easy to find in an emergency.
+"#,
     ];
 }
 
@@ -146,7 +204,7 @@ impl Level for ServerRoom {
         }
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Read the messages on every data point using the say function.")
+        Some("Read the messages on every data point using the `say` function.")
     }
     fn check_challenge(
         &self,

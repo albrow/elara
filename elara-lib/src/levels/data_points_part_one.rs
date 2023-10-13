@@ -4,8 +4,16 @@ use crate::{
     simulation::{Actor, DataPoint, Obstacle, Orientation, Player, State},
 };
 
-const HUMMUS_RECIPE: &'static str =
-    "Ingredients: 120g dried chickpeas, 2g citric acid, 2g ground paprika...";
+const HUMMUS_RECIPE: &'static str = r"{markdown}
+**Ingredients**:
+- 120g dried chickpeas
+- 200 mL water
+- 10 mL lemon oil
+- 2g citric acid
+- 2g ground paprika
+- 1g ground black pepper
+
+...";
 
 #[derive(Copy, Clone)]
 pub struct DataPointsPartOne {}
