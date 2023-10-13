@@ -219,3 +219,15 @@
   font-size: 0.85rem;
   font-family: monospace;
 }
+
+.rover-message-md-content {
+  font-size: 0.75rem;
+}
+
+.rover-message-md-content code {
+  background: rgba(0, 0, 0, 0.15);
+  border: solid 1px rgba(0, 0, 0, 0.25);
+  padding: 0.1rem 0.3rem;
+  font-size: 0.65rem;
+  font-family: monospace;
+}

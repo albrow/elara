@@ -118,9 +118,6 @@ impl ScriptRunner {
         let engine = engine;
 
         // If the AST looks good, try running the script.
-        //
-        // TODO(albrow): Manually overwrite certain common error messages to make
-        // them more user-friendly.
         match engine.run_ast(&ast) {
             Err(err) => {
                 match *err {
@@ -771,7 +768,7 @@ fn set_engine_config(engine: &mut Engine) {
 
 fn set_engine_safeguards(engine: &mut Engine) {
     // See https://rhai.rs/book/safety/
-    engine.set_max_string_size(200);
+    engine.set_max_string_size(1_000);
     engine.set_max_array_size(100);
     engine.set_max_map_size(100);
     engine.set_max_operations(10_000);

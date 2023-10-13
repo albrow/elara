@@ -1,6 +1,7 @@
-import { Tooltip, PlacementWithLogical, Box } from "@chakra-ui/react";
-
+import { Tooltip, PlacementWithLogical, Box, Text } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo } from "react";
+import { compiler } from "markdown-to-jsx";
+
 import {
   PLAYER_Z_INDEX,
   SPRITE_DROP_SHADOW,
@@ -17,6 +18,11 @@ import SpriteLabel from "./sprite_label";
 import { getSpriteAnimations } from "./anim_utils";
 import BoardHoverInfo from "./board_hover_info";
 import GroverPage from "./hover_info_pages/grover.mdx";
+
+/** Player messages that begin with this
+ * special tag will be rendered as markdown.
+ */
+const SPECIAL_MARKDOWN_TAG = "{markdown}";
 
 interface PlayerProps {
   offset: Offset;
@@ -78,6 +84,13 @@ export default function Player(props: PlayerProps) {
     speakSound.stop();
   }, [moveSound, turnSound, bumpSound, teleportSound, speakSound]);
 
+  const formattedMessage = useMemo(() => {
+    if (props.message.startsWith(SPECIAL_MARKDOWN_TAG)) {
+      return compiler(props.message.replace(SPECIAL_MARKDOWN_TAG, ""));
+    }
+    return props.message;
+  }, [props.message]);
+
   useEffect(() => {
     if (!props.enableAnimations) {
       stopMySoundEffects();
@@ -120,8 +133,12 @@ export default function Player(props: PlayerProps) {
       >
         <Tooltip
           hasArrow
-          isOpen
-          label={props.message}
+          isOpen={props.message !== ""}
+          label={
+            <Text className="rover-message-md-content" as="div">
+              {formattedMessage}
+            </Text>
+          }
           bg="white"
           color="black"
           placement={roverMessagePlacement(props.offset.pos)}
