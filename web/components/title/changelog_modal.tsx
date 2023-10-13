@@ -25,8 +25,7 @@ export function ChangelogModal(props: ChangelogModalProps) {
       isOpen={props.visible}
       onClose={onClose}
       autoFocus={false}
-      closeOnEsc={false}
-      closeOnOverlayClick={false}
+      closeOnEsc
       scrollBehavior="inside"
     >
       <ModalOverlay />
@@ -51,7 +50,7 @@ export function ChangelogModal(props: ChangelogModalProps) {
         px="12px"
         position="fixed"
       >
-        <ModalCloseButton />
+        <ModalCloseButton mr="20px" mt="10px" />
         <ModalBody>
           <Box className="md-content">
             <Changelog />
