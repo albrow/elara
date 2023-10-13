@@ -231,3 +231,7 @@
   font-size: 0.65rem;
   font-family: monospace;
 }
+
+.rover-message-md-content ul {
+  margin-left: 1rem;
+}
