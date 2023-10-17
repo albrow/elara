@@ -1,5 +1,5 @@
 import { Box, Image } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouteNode } from "react-router5";
 import { BG_INDEX as BG_Z_INDEX } from "../lib/constants";
 
@@ -15,6 +15,8 @@ import {
 } from "../hooks/scenes_hooks";
 import BlinkingText from "../components/hub/blinking_text";
 import { useLevelSelectModal } from "../hooks/level_select_modal_hooks";
+import { useSaveData } from "../hooks/save_data_hooks";
+import { useDialogModal } from "../hooks/dialog_modal_hooks";
 
 export default function Hub() {
   const [hoveringOver, setHoveringOver] = useState<
@@ -26,6 +28,31 @@ export default function Hub() {
   const nextUnlockedScene = useNextUnlockedScene();
   const { route } = useRouteNode("");
   const [showLevelSelectModal] = useLevelSelectModal();
+  const [saveData, _] = useSaveData();
+  const [showDialogModal] = useDialogModal();
+
+  const getDialogTree = useCallback(() => {
+    if (
+      nextUnlockedScene.type === "journal" &&
+      saveData.seenJournalPages.length < 2 &&
+      !saveData.seenDialogTrees.includes("explain_journal")
+    ) {
+      // After the first level, the player needs to click on the journal in order to
+      // proceed. This dialog tree explains that.
+      return "explain_journal";
+    }
+    return null;
+  }, [
+    nextUnlockedScene.type,
+    saveData.seenDialogTrees,
+    saveData.seenJournalPages,
+  ]);
+
+  useEffect(() => {
+    if (getDialogTree() != null) {
+      showDialogModal(getDialogTree()!);
+    }
+  }, [getDialogTree, showDialogModal]);
 
   useEffect(() => {
     document.title = "Elara | Hub";

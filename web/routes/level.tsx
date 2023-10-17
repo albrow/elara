@@ -10,7 +10,6 @@ import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
 import ObjectiveText from "../components/level/objective_text";
 import { useSaveData } from "../hooks/save_data_hooks";
-import DialogModal from "../components/dialog/dialog_modal";
 import { TREES } from "../lib/dialog_trees";
 import { useShortsModal } from "../hooks/shorts_modal_hooks";
 import LevelSuccessModal from "../components/level/success_modal";
@@ -24,6 +23,7 @@ import { BG_INDEX, NAVBAR_HEIGHT } from "../lib/constants";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
 import { ErrorType } from "../contexts/error_modal";
 import LevelTitle from "../components/level/level_title";
+import { useDialogModal } from "../hooks/dialog_modal_hooks";
 
 const game = Game.new();
 
@@ -121,6 +121,8 @@ export default function Level() {
   const [modalVisible, setModalVisible] = useState(false);
   const [lastResult, setLastResult] = useState<RunResult | null>(null);
 
+  const [showDialogModal] = useDialogModal();
+
   const getDialogTree = useCallback(() => {
     const dialogTreeName = `level_${currLevel().short_name}`;
     if (!(dialogTreeName in TREES)) {
@@ -138,11 +140,13 @@ export default function Level() {
     );
   }, [currLevel, getDialogTree, saveData.seenDialogTrees]);
 
-  const [dialogVisible, setDialogVisible] = useState(shouldShowDialogTree());
   useEffect(() => {
     // Update the dialog state whenever the level changes.
-    setDialogVisible(shouldShowDialogTree());
-  }, [shouldShowDialogTree]);
+    if (shouldShowDialogTree() && getDialogTree() !== null) {
+      // Show the dialog modal.
+      showDialogModal(getDialogTree()!);
+    }
+  }, [getDialogTree, shouldShowDialogTree, showDialogModal]);
 
   // Track the challenge sound timeout and cancel it if this component unmounts or route
   // changes.
@@ -320,11 +324,6 @@ export default function Level() {
         setVisible={setModalVisible}
         onClose={resetLevelState}
       />
-      <DialogModal
-        visible={dialogVisible}
-        setVisible={setDialogVisible}
-        treeName={getDialogTree()}
-      />
       <Box
         position="fixed"
         w="100%"
@@ -350,7 +349,9 @@ export default function Level() {
             )}
             {getDialogTree() !== null && (
               <Box ml="12px" my="auto" mt="3px">
-                <ShowDialogButton onClick={() => setDialogVisible(true)} />
+                <ShowDialogButton
+                  onClick={() => showDialogModal(getDialogTree()!)}
+                />
               </Box>
             )}
           </Flex>

@@ -18,6 +18,7 @@ import { SaveDataProvider } from "./contexts/save_data";
 import { ShortsModalProvider } from "./contexts/shorts_modal";
 import { ErrorModalProvider } from "./contexts/error_modal";
 import { FunctionUnlockedModalProvider } from "./contexts/function_unlocked_modal";
+import { DialogModalProvider } from "./contexts/dialog_modal";
 import {
   CHAKRA_TOOL_TIP_Z_INDEX,
   ROVER_MESSAGE_Z_INDEX,
@@ -154,7 +155,9 @@ const elaraTheme = extendTheme({
                       <HintsModalProvider>
                         <FunctionUnlockedModalProvider>
                           <LevelSelectModalProvider>
-                            <Root />
+                            <DialogModalProvider>
+                              <Root />
+                            </DialogModalProvider>
                           </LevelSelectModalProvider>
                         </FunctionUnlockedModalProvider>
                       </HintsModalProvider>
