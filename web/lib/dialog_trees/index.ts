@@ -12,7 +12,6 @@ import * as GateAndDataPointPartThree from "./level_gate_and_data_point_part_thr
 import * as AsteroidStrike from "./level_asteroid_strike";
 import * as PartlyDisabledMovement from "./level_partly_disabled_movement";
 import * as ReImplementTurnRight from "./level_reimplement_turn_right";
-import * as JournalArrays from "./journal_arrays";
 import * as LevelTelepadPartOne from "./level_telepad_part_one";
 import * as LoopsPartTwo from "./level_loops_part_two";
 import * as GateAndDataPointPartTwo from "./level_gate_and_data_point_part_two";
@@ -34,7 +33,6 @@ type NodeIds =
   | AsteroidStrike.NodeIds
   | PartlyDisabledMovement.NodeIds
   | ReImplementTurnRight.NodeIds
-  | JournalArrays.NodeIds
   | LevelTelepadPartOne.NodeIds
   | LoopsPartTwo.NodeIds
   | GateAndDataPointPartTwo.NodeIds
@@ -53,7 +51,6 @@ type ChoiceIds =
   | AsteroidStrike.ChoiceIds
   | PartlyDisabledMovement.ChoiceIds
   | ReImplementTurnRight.ChoiceIds
-  | JournalArrays.ChoiceIds
   | LevelTelepadPartOne.ChoiceIds
   | LoopsPartTwo.ChoiceIds
   | GateAndDataPointPartTwo.ChoiceIds
@@ -100,7 +97,6 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   ...AsteroidStrike.NODES,
   ...PartlyDisabledMovement.NODES,
   ...ReImplementTurnRight.NODES,
-  ...JournalArrays.NODES,
   ...LevelTelepadPartOne.NODES,
   ...LoopsPartTwo.NODES,
   ...GateAndDataPointPartTwo.NODES,
@@ -121,7 +117,6 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...AsteroidStrike.CHOICES,
   ...PartlyDisabledMovement.CHOICES,
   ...ReImplementTurnRight.CHOICES,
-  ...JournalArrays.CHOICES,
   ...LevelTelepadPartOne.CHOICES,
   ...LoopsPartTwo.CHOICES,
   ...GateAndDataPointPartTwo.CHOICES,
@@ -142,7 +137,6 @@ export const TREES: DialogTrees = {
   ...AsteroidStrike.TREES,
   ...PartlyDisabledMovement.TREES,
   ...ReImplementTurnRight.TREES,
-  ...JournalArrays.TREES,
   ...LevelTelepadPartOne.TREES,
   ...LoopsPartTwo.TREES,
   ...GateAndDataPointPartTwo.TREES,
