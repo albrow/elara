@@ -34,7 +34,8 @@ function computeInBetween(
 function getSpriteAnimationDefinitions(
   animState: string,
   animData: TeleAnimData | BumpAnimData | undefined,
-  animId: string
+  animId: string,
+  spriteSize: number
 ) {
   if (animState === "teleporting") {
     const data = animData as TeleAnimData;
@@ -82,7 +83,10 @@ function getSpriteAnimationDefinitions(
     const data = animData as BumpAnimData;
     const startOffset = posToOffset(data!.pos);
     const obsOffset = posToOffset(data!.obstacle_pos);
-    const endOffset = computeInBetween(startOffset, obsOffset, 0.1);
+
+    // Use a bigger offset for bigger sprites.
+    const offsetAmount = spriteSize === 48 ? 0.1 : 0.2;
+    const endOffset = computeInBetween(startOffset, obsOffset, offsetAmount);
     return (
       <style>
         {`@keyframes ${animId} {
@@ -115,8 +119,11 @@ export function getSpriteAnimations(
   enableAnimations: boolean,
   animState: string,
   animData: TeleAnimData | BumpAnimData | undefined,
-  delaySeconds?: number
+  delaySeconds?: number,
+  spriteSize?: number
 ): CSSAnimation {
+  const spriteSizeVal = spriteSize || 48;
+  const delaySecondsVal = delaySeconds || 0;
   if (!enableAnimations || animState === "idle") {
     return { style: { transition: "none" } };
   }
@@ -125,7 +132,12 @@ export function getSpriteAnimations(
     const animId = `teleport-${uuidv4()}`;
     return {
       style: { animation: `${CSS_ANIM_DURATION}s ease-in-out ${animId}` },
-      definitions: getSpriteAnimationDefinitions(animState, animData, animId),
+      definitions: getSpriteAnimationDefinitions(
+        animState,
+        animData,
+        animId,
+        spriteSizeVal
+      ),
     };
   }
   if (animState === "bumping") {
@@ -135,7 +147,12 @@ export function getSpriteAnimations(
       style: {
         animation: `${CSS_ANIM_DURATION}s ease-in-out ${animId}`,
       },
-      definitions: getSpriteAnimationDefinitions(animState, animData, animId),
+      definitions: getSpriteAnimationDefinitions(
+        animState,
+        animData,
+        animId,
+        spriteSizeVal
+      ),
     };
   }
 
@@ -143,8 +160,8 @@ export function getSpriteAnimations(
     style: {
       animation: "none",
       transition:
-        `left ${CSS_ANIM_DURATION}s ${delaySeconds || 0}s, ` +
-        `top ${CSS_ANIM_DURATION}s ${delaySeconds || 0}s`,
+        `left ${CSS_ANIM_DURATION}s ${delaySecondsVal}s, ` +
+        `top ${CSS_ANIM_DURATION}s ${delaySecondsVal}s`,
     },
   };
 }

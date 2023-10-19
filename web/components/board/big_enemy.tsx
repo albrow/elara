@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Img } from "@chakra-ui/react";
-import { useImagePreloader } from "../../hooks/image_preloader";
 
 import {
   ENEMY_Z_INDEX,
@@ -13,7 +12,12 @@ import gretaUpUrl from "../../images/board/greta_up.png";
 import gretaDownUrl from "../../images/board/greta_down.png";
 import gretaLeftUrl from "../../images/board/greta_left.png";
 import gretaRightUrl from "../../images/board/greta_right.png";
+import gretaUpLeftUrl from "../../images/board/greta_up_left.png";
+import gretaUpRightUrl from "../../images/board/greta_up_right.png";
+import gretaDownLeftUrl from "../../images/board/greta_down_left.png";
+import gretaDownRightUrl from "../../images/board/greta_down_right.png";
 import lightningEffectUrl from "../../images/board/lightning.gif";
+import { useImagePreloader } from "../../hooks/image_preloader";
 import GretaHoverPage from "./hover_info_pages/greta_malfunctioning.mdx";
 import BoardHoverInfo from "./board_hover_info";
 import { getSpriteAnimations } from "./anim_utils";
@@ -30,7 +34,16 @@ interface BigEnemyProps {
 export default function BigEnemy(props: BigEnemyProps) {
   // Pre-load images to prevent flickering when rotating between
   // diagonal directions.
-  useImagePreloader([gretaUpUrl, gretaDownUrl, gretaLeftUrl, gretaRightUrl]);
+  useImagePreloader([
+    gretaUpUrl,
+    gretaDownUrl,
+    gretaLeftUrl,
+    gretaRightUrl,
+    gretaUpLeftUrl,
+    gretaUpRightUrl,
+    gretaDownLeftUrl,
+    gretaDownRightUrl,
+  ]);
 
   const animation = useMemo(
     () =>
@@ -38,7 +51,8 @@ export default function BigEnemy(props: BigEnemyProps) {
         props.enableAnimations,
         props.animState,
         props.animData,
-        0.2
+        0.2,
+        144
       ),
     [props.animData, props.animState, props.enableAnimations]
   );
@@ -46,38 +60,23 @@ export default function BigEnemy(props: BigEnemyProps) {
   const imgUrl = useMemo(() => {
     switch (props.facing) {
       case "up":
-      case "up_right":
-      case "up_left":
         return gretaUpUrl;
+      case "up_right":
+        return gretaUpRightUrl;
+      case "up_left":
+        return gretaUpLeftUrl;
       case "down":
-      case "down_right":
-      case "down_left":
         return gretaDownUrl;
+      case "down_right":
+        return gretaDownRightUrl;
+      case "down_left":
+        return gretaDownLeftUrl;
       case "left":
         return gretaLeftUrl;
       case "right":
         return gretaRightUrl;
       default:
         throw new Error(`Invalid facing: ${props.facing}`);
-    }
-  }, [props.facing]);
-
-  const imgTransform = useMemo(() => {
-    // For now, we rotate the up and down images when the rover is facing diagonally.
-    // This means the perspective is slightly off and the image is blurry, but it should
-    // be good enough for now.
-    // TODO(albrow): Replace with hand-drawn diagonal pixel art.
-    switch (props.facing) {
-      case "up_right":
-        return "rotateZ(45deg) scale(0.9)";
-      case "down_right":
-        return "rotateZ(-45deg) scale(0.9)";
-      case "down_left":
-        return "rotateZ(45deg) scale(0.9)";
-      case "up_left":
-        return "rotateZ(-45deg) scale(0.9)";
-      default:
-        return "none";
     }
   }, [props.facing]);
 
@@ -139,7 +138,6 @@ export default function BigEnemy(props: BigEnemyProps) {
           w="144px"
           h="144px"
           zIndex={ENEMY_Z_INDEX + 1}
-          transform={imgTransform}
           filter={SPRITE_DROP_SHADOW}
         />
         <Box
