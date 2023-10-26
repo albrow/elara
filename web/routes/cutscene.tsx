@@ -26,28 +26,26 @@ export default function Cutscene(props: CutsceneProps) {
   > = useMemo(
     () => ({
       intro: {
-        vimeoVideoId: 867291789,
-        youTubeVideoId: "xoE_SUpf2HM",
+        vimeoVideoId: 878140026,
+        youTubeVideoId: "y0uOxlbF6Tk",
         navigateOnEnd: () => {
           navigateToHub();
         },
       },
       midgame: {
-        vimeoVideoId: 862789284,
-        youTubeVideoId: "aloLB3FONN0",
+        vimeoVideoId: 878140313,
+        youTubeVideoId: "TUl2pIq0vjA",
         navigateOnEnd: () => {
           navigateToHub();
         },
-        isWIP: true,
       },
       end: {
-        vimeoVideoId: 862987802,
-        youTubeVideoId: "hatwp7_PFso",
+        vimeoVideoId: 878140421,
+        youTubeVideoId: "ELexFB0FQys",
         navigateOnEnd: () => {
           navigateToHub();
         },
-        checkpoints: [60, 94],
-        isWIP: true,
+        checkpoints: [72, 120],
       },
     }),
     [navigateToHub]
