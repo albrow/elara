@@ -68,6 +68,8 @@ const elaraTheme = extendTheme({
     modal: CHAKRA_MODAL_Z_INDEX,
     modalOverlay: CHAKRA_MODAL_Z_INDEX - 2,
   },
+  // Hard-code the color mode so that chakra doesn't try to set the cookie:
+  initialColorMode: "light",
 });
 
 // eslint-disable-next-line func-names
