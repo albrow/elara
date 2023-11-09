@@ -1,6 +1,6 @@
 import { useRouteNode, useRouter } from "react-router5";
 import { useCallback, useEffect, useMemo } from "react";
-import { Container, Flex, Box } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
 import { Unsubscribe } from "router5/dist/types/base";
 
 import { useSaveData } from "../hooks/save_data_hooks";
@@ -10,6 +10,8 @@ import { TREES } from "../lib/dialog_trees";
 import JournalSidebar from "../components/journal/journal_sidebar";
 import { NAVBAR_HEIGHT } from "../lib/constants";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";
+
+import journalBgImage from "../images/journal_bg_only.jpg";
 
 export default function Journal() {
   const { route } = useRouteNode("");
@@ -72,29 +74,79 @@ export default function Journal() {
     <Box
       mt={`${NAVBAR_HEIGHT}px`}
       id="dark-bg"
-      bg="black"
+      bgImg={journalBgImage}
+      bgRepeat="no-repeat"
+      bgSize="cover"
       w="100%"
-      minH={`calc(100vh - ${NAVBAR_HEIGHT}px)`}
-      py="20px"
+      h="100%"
+      position="fixed"
+      pt="16px"
+      pb="8px"
+      overflowX="scroll"
     >
-      <Container maxW="container.xl">
-        <Box bg="gray.300" p="10px" borderRadius="5px" pl="5px">
-          <Flex>
-            <Box h="100%" w="200px" mr="5px">
+      <Flex
+        mx="auto"
+        w="fit-content"
+        maxW="100%"
+        h="100%"
+        minH="500px"
+        minW="600px"
+      >
+        {/* Left handle */}
+        <Box
+          w="60px"
+          bg="#202E29"
+          h="30%"
+          maxH="300px"
+          minH="200px"
+          mt="30vh"
+          borderLeftRadius="20px"
+          border="1px solid black"
+          borderRight="none"
+          boxShadow="0 5px 12px 5px rgba(0, 0, 0, 0.5)"
+        />
+        {/* Main journal body */}
+        <Box
+          bg="gray.300"
+          border="16px solid #758DA1"
+          borderRadius="5px"
+          w="100%"
+          maxW="container.2xl"
+          h="calc(100% - 60px)"
+          boxShadow="0 5px 12px 5px rgba(0, 0, 0, 0.5)"
+        >
+          <Flex h="100%">
+            <Box h="100%" w="200px" mr="5px" p="5px">
               <JournalSidebar />
             </Box>
             <Box
               bg="white"
               p="20px"
-              borderRadius="5px"
               border="1px solid"
+              borderTop="none"
+              borderBottom="none"
               borderColor="gray.400"
+              h="100%"
+              overflowY="auto"
+              className="dark-scrollbar"
             >
               <JournalSection section={sectionName as SectionName} />
             </Box>
           </Flex>
         </Box>
-      </Container>
+        {/* Right handle */}
+        <Box
+          w="60px"
+          bg="#202E29"
+          h="30%"
+          maxH="300px"
+          mt="30vh"
+          borderRightRadius="20px"
+          border="1px solid black"
+          borderLeft="none"
+          boxShadow="0 5px 12px 5px rgba(0, 0, 0, 0.5)"
+        />
+      </Flex>
     </Box>
   );
 }

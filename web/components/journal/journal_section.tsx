@@ -1,4 +1,4 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Flex, Box } from "@chakra-ui/react";
 import { MdArrowForward, MdHome } from "react-icons/md";
 import { useMemo } from "react";
 
@@ -36,9 +36,9 @@ export default function JournalSection(props: JournalProps) {
 
   return (
     <>
-      <div className="md-content">
+      <Box className="md-content">
         <SectionComponent />
-      </div>
+      </Box>
       <Flex alignItems="right" justifyContent="right" width="100%">
         <Button colorScheme="teal" onClick={navigateToHub}>
           Back to Hub
