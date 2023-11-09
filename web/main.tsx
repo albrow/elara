@@ -140,6 +140,12 @@ const elaraTheme = extendTheme({
   // kicked back to the loading screen.
   if (import.meta.env.DEV) {
     router.usePlugin(browserPlugin());
+  } else if (window.location.pathname !== "/") {
+    // Otherwise, always kick the player back to the canonical URL.
+    // We don't want players to be able to cheat or break the game
+    // by manually changing the URL, so we effectively disable URL-based
+    // routing.
+    window.location.pathname = "/";
   }
 
   router.start();
