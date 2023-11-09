@@ -23,6 +23,12 @@ pub static ERR_SIMULATION_END: &str = "SIMULATION_END";
 pub static ERR_NO_DATA_POINT: &str = "read_data only works if you are next to a data point.";
 /// Returned from press_button if you call it when not adjacent to a button.
 pub static ERR_NO_BUTTON: &str = "press_button only works if you are next to a button.";
+/// Returned as the "input" to a BadInput error by our custom semicolon checker code
+/// if there is a line break in the middle of a function call.
+pub static BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL: &str = "line break in function call";
+/// Returned as the end-user error message if there is a line break in the middle of a function call.
+pub static ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL: &str =
+    "Error: Unexpected line break. (Hint: you may need to move the function arguments to the same line as the function call.)";
 
 pub struct BuiltinFunction {
     pub name: &'static str,

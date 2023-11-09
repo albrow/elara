@@ -11,7 +11,10 @@ use std::vec;
 
 use crate::actors::{Action, MoveDirection, TurnDirection};
 use crate::better_errors::{convert_err, BetterError};
-use crate::constants::{ERR_NO_BUTTON, ERR_NO_DATA_POINT, ERR_SIMULATION_END};
+use crate::constants::{
+    BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL, ERR_NO_BUTTON, ERR_NO_DATA_POINT,
+    ERR_SIMULATION_END,
+};
 use crate::levels::Outcome;
 use crate::simulation::{
     get_adjacent_button, get_adjacent_point, Orientation, Pos, Simulation, State,
@@ -710,6 +713,11 @@ fn compute_stats(engine: &Engine, script: &str, states: &Vec<State>) -> ScriptSt
     }
 }
 
+// Note(albrow): This code is pretty brittle. We want to simplify the learning process by making
+// semicolons required in places where Rhai considers them optional (e.g. like in the last statement
+// of a block). It's difficult to do this right without building a full-blown tokenizer/parser. For
+// now, we just aim to cover common cases. Unfortunately there are still some edge cases which result
+// in false positives or false negatives.
 fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {
     let mut in_block_comment = false;
     let lines: Vec<&str> = source.lines().collect();
@@ -737,6 +745,21 @@ fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {
                 in_block_comment = false;
             }
         }
+        // Check if this line ends in an opening paren. This could be splitting a function's arguments
+        // across multiple lines. Ideally, we would allow this, but we can't tell whether and where semicolons
+        // would be required. For now, return an error explaining that arguments need to be on the same line.
+        if trimmed.ends_with("(") {
+            return Err(Box::new(EvalAltResult::ErrorParsing(
+                rhai::ParseErrorType::BadInput(rhai::LexError::UnexpectedInput(String::from(
+                    BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL,
+                ))),
+                rhai::Position::new(
+                    (i + 1).try_into().unwrap(),
+                    (line.len() - 1).try_into().unwrap(),
+                ),
+            )));
+        }
+
         // Check if the next line is an opening bracket. This should be allowed.
         if let Some(next_line) = lines.get(i + 1) {
             let trimmed_next = next_line.trim();
@@ -983,6 +1006,23 @@ mod test {
         }
     "#;
         assert!(check_semicolons(source).is_err());
+    }
+
+    #[test]
+    fn test_unexpected_line_break_in_function_call() {
+        let script = r#"
+            fn foo() {
+                move_forward(
+                    1
+                );
+            }"#;
+        let result = check_semicolons(script);
+        assert!(result.is_err());
+        let err = result.unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "Syntax error: Unexpected 'line break in function call' (line 3, position 28)"
+        );
     }
 
     /// Asserts that result is not a failure and then checks the each

@@ -3,7 +3,10 @@ use std::collections::HashMap;
 use regex::Regex;
 use rhai::EvalAltResult;
 
-use crate::constants::BUILTIN_FUNCTIONS;
+use crate::constants::{
+    BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL, BUILTIN_FUNCTIONS,
+    ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL,
+};
 
 #[derive(Debug, PartialEq)]
 pub struct BetterError {
@@ -371,7 +374,7 @@ pub fn convert_err(
     script: String,
     err: Box<EvalAltResult>,
 ) -> BetterError {
-    // log!("{:?}", err);
+    log!("{:?}", err);
     match *err {
         EvalAltResult::ErrorTooManyOperations(ref pos) => {
             return BetterError {
@@ -413,6 +416,22 @@ pub fn convert_err(
                 col: pos.position(),
             };
         }
+        EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::BadInput(rhai::LexError::UnexpectedInput(ref input)),
+            ref pos,
+        ) => {
+            // This is a special case of 'unexpected input' that we added in script_runner.rs.
+            // What this really means is that the user tried breaking up function arguments across multiple
+            // lines. Normally this would be allowed, but it is not allowed in Elara because it makes the
+            // semicolon checker too complicated.
+            if input == BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL {
+                return BetterError {
+                    message: String::from(ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL),
+                    line: pos.line(),
+                    col: pos.position(),
+                };
+            }
+        }
         _ => {}
     }
 
@@ -425,6 +444,8 @@ pub fn convert_err(
 
 #[cfg(test)]
 mod tests {
+    use crate::constants::ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL;
+
     use super::*;
 
     lazy_static! {
@@ -731,6 +752,30 @@ mod tests {
                 ),
                 line: Some(1),
                 col: Some(1),
+            }
+        );
+    }
+
+    #[test]
+    fn test_convert_err_line_break_in_function_call() {
+        let script = String::from(
+            r"move_forward(
+                1
+            );",
+        );
+        let err = EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::BadInput(rhai::LexError::UnexpectedInput(
+                BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL.to_string(),
+            )),
+            rhai::Position::new(1, 13),
+        );
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL),
+                line: Some(1),
+                col: Some(13),
             }
         );
     }
