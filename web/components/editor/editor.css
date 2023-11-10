@@ -138,3 +138,18 @@ plugin for any functions which are currently disabled. */
 .cm-diagnostic.cm-diagnostic-error {
   max-width: 600px;
 }
+
+/* Slightly shrink font size for smaller screens. */
+@media (max-width: 1268px) {
+  .cm-editor .cm-content {
+    font-size: 0.9em;
+  }
+
+  .active-line-primary::after {
+    top: 0.9rem;
+  }
+
+  .active-line-secondary::after {
+    top: 0.9rem;
+  }
+}

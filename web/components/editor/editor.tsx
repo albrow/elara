@@ -30,7 +30,7 @@ import {
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
-import { CODE_LEN_EXPLANATION } from "../../lib/constants";
+import { BP_XL, CODE_LEN_EXPLANATION } from "../../lib/constants";
 import { textEffects } from "./text_effects";
 import ControlBar from "./control_bar";
 
@@ -225,8 +225,39 @@ export default function Editor(props: EditorProps) {
     [possiblyOutdatedCode]
   );
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    function reportWindowSize() {
+      setWindowWidth(window.innerWidth);
+    }
+    // Trigger this function on resize
+    window.addEventListener("resize", reportWindowSize);
+    //  Cleanup for componentWillUnmount
+    return () => window.removeEventListener("resize", reportWindowSize);
+  }, []);
+
+  const codeMirrorHeight = useMemo(() => {
+    if (props.type === "level") {
+      if (windowWidth < BP_XL) {
+        return "264px";
+      }
+      return "370px";
+    }
+    return "auto";
+  }, [props.type, windowWidth]);
+
+  const editorWrapperHeight = useMemo(() => {
+    if (props.type === "level") {
+      if (windowWidth < BP_XL) {
+        return "267px";
+      }
+      return "373px";
+    }
+    return undefined;
+  }, [props.type, windowWidth]);
+
   const { setContainer, view } = useCodeMirror({
-    height: props.type === "level" ? "370px" : "auto",
+    height: codeMirrorHeight,
     editable: state === "editing",
     readOnly: state !== "editing",
     indentWithTab: false,
@@ -545,7 +576,7 @@ export default function Editor(props: EditorProps) {
       />
       <Box
         id="editor-wrapper"
-        height={props.type === "level" ? "373px" : undefined}
+        height={editorWrapperHeight}
         borderWidth="2px"
         borderTop="0px"
         paddingBottom="2px"

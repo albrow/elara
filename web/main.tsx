@@ -23,6 +23,11 @@ import {
   CHAKRA_TOOL_TIP_Z_INDEX,
   ROVER_MESSAGE_Z_INDEX,
   CHAKRA_MODAL_Z_INDEX,
+  BP_SM,
+  BP_MD,
+  BP_LG,
+  BP_XL,
+  BP_2XL,
 } from "./lib/constants";
 
 // This file doesn't play nicely with HMR/Fast refresh, so we just reload the page
@@ -43,11 +48,11 @@ const elaraTheme = extendTheme({
     body: "Nunito, sans-serif",
   },
   breakpoints: {
-    sm: "30em", // 480px (default)
-    md: "48em", // 768px (default)
-    lg: "62em", // 992px (default)
-    xl: "1268px", // (customized)
-    "2xl": "1500px", // (customized)
+    sm: `${BP_SM}px`,
+    md: `${BP_MD}px`,
+    lg: `${BP_LG}px`,
+    xl: `${BP_XL}px`,
+    "2xl": `${BP_2XL}px`,
   },
   sizes: {
     "container.xl": "1268px",

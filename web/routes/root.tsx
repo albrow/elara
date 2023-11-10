@@ -2,6 +2,7 @@ import { useRouteNode } from "react-router5";
 import { useCallback, useMemo } from "react";
 
 import Navbar from "../components/settings/navbar/navbar";
+import SizingUtility from "../components/sizing_utility";
 import Cutscene from "./cutscene";
 import Title from "./title";
 import Loading from "./loading";
@@ -57,6 +58,8 @@ export default function Root() {
   return (
     <>
       {shouldShowNavbar && <Navbar />}
+      {/* Show sizing utility in dev mode only */}
+      {process.env.NODE_ENV === "development" && <SizingUtility />}
       {currPage()}
     </>
   );

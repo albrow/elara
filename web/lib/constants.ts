@@ -33,6 +33,14 @@ export const FUNCTION_LIST_WIDTH = 160;
 export const NAVBAR_HEIGHT = 56; // In pixels
 export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
 
+// Breakpoints for responsive design. In pixels.
+// WARNING: If you change this, you also need to update board.css and editor.css.
+export const BP_SM = 480;
+export const BP_MD = 768;
+export const BP_LG = 992;
+export const BP_XL = 1268;
+export const BP_2XL = 1500;
+
 // Z-indexes are all defined here so we can make sure
 // elements are in the correct order.
 //

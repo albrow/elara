@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Container, Flex, Text, Box, Stack } from "@chakra-ui/react";
+import { Flex, Text, Box, Stack } from "@chakra-ui/react";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 import { useRouter } from "react-router5";
@@ -24,6 +24,8 @@ import { useSoundManager } from "../hooks/sound_manager_hooks";
 import { ErrorType } from "../contexts/error_modal";
 import LevelTitle from "../components/level/level_title";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";
+
+import monitorBgImage from "../images/monitor_bg_only.jpg";
 
 const game = Game.new();
 
@@ -324,95 +326,132 @@ export default function Level() {
         setVisible={setModalVisible}
         onClose={resetLevelState}
       />
+
       <Box
         position="fixed"
         w="100%"
         h="100%"
         zIndex={BG_INDEX}
-        backgroundColor="white"
-      />
-      <Container
-        minW="container.xl"
-        maxW="container.xl"
-        mt={`${NAVBAR_HEIGHT}px`}
+        bgImage={monitorBgImage}
+        bgRepeat="no-repeat"
+        bgSize="cover"
+        bgPosition="bottom"
+        pt={`${NAVBAR_HEIGHT}px`}
+        overflowX="auto"
       >
-        <Box pt="12px">
-          <Flex>
-            <LevelTitle
-              title={currLevel().name}
-              levelIndex={currScene?.levelIndex || 0}
-            />
-            {currScene?.hints != null && currScene?.hints.length > 0 && (
-              <Box ml="8px" my="auto" mt="3px">
-                <ShowHintButton onClick={showHintsModal} />
-              </Box>
-            )}
-            {getDialogTree() !== null && (
-              <Box ml="12px" my="auto" mt="3px">
-                <ShowDialogButton
-                  onClick={() => showDialogModal(getDialogTree()!)}
-                />
-              </Box>
-            )}
-          </Flex>
-        </Box>
-        <Box>
-          <Text as="span" verticalAlign="middle">
-            {getObjectiveIcon()}
-            <Text as="span" verticalAlign="middle" fontWeight="bold">
-              Objective:
-            </Text>{" "}
-            <ObjectiveText text={currLevel().objective} />
-          </Text>
-          {currLevel().challenge !== "" && currScene?.completed && (
-            <Text as="span" ml="0.5em" verticalAlign="middle">
-              {getChallengeIcon()}
-              <Text as="span" verticalAlign="middle" fontWeight="bold">
-                Challenge:
-              </Text>{" "}
-              <ChallengeText text={currLevel().challenge} />
-            </Text>
-          )}
-        </Box>
-        <Stack direction="row" mt={4} overflow="auto">
-          <Box id="editor-section" mr={0} flexGrow={1}>
-            <Box w="608px">
-              <Editor
-                type="level"
-                requestedState={requestedEditorState}
-                code={initialCode()}
-                originalCode={currLevel().initial_code}
-                availableFunctions={availFuncs}
-                disabledFunctions={currLevel().disabled_funcs}
-                runScript={runScript}
-                onReplayDone={onReplayDone}
-                onScriptError={onScriptError}
-                onStep={onEditorStep}
-                onCancel={onScriptCancel}
-                persistCode={persistCode}
-                onStateChange={onEditorStateChange}
-              />
-            </Box>
-          </Box>
+        {/* TODO(albrow): Adjust min width */}
+        <Flex h="100%">
+          {/* Monitor Frame */}
           <Box
-            id="board-wrapper"
-            position="relative"
-            overflow="hidden"
-            h="420px"
+            h="fit-content"
+            bg="white"
+            mx="auto"
+            my="auto"
+            w={{ base: "1080px", xl: "fit-content" }}
+            px={{ base: "10px", "2xl": "24px" }}
+            pt={{ base: "18px", "2xl": "24px" }}
+            pb={{ lg: "0px", "2xl": "12px" }}
+            border="3px solid"
+            borderColor="gray.500"
+            boxShadow="0 0 20px 2px rgba(255, 255, 255, 0.5)"
           >
-            <Board
-              gameState={boardState}
-              // Note: We only want to enable animations if the editor is in the "running" state.
-              // If the editor is in the "paused" state, it's more clear to move the sprites in
-              // discrete steps.
-              enableAnimations={editorState === "running"}
-              enableHoverInfo={editorState !== "running"}
-              showInitialState={editorState === "editing"}
-              asteroidWarnings={currLevel().asteroid_warnings}
-            />
+            {/* Level name and upper UI elements */}
+            <Box>
+              <Flex>
+                <LevelTitle
+                  title={currLevel().name}
+                  levelIndex={currScene?.levelIndex || 0}
+                />
+                {currScene?.hints != null && currScene?.hints.length > 0 && (
+                  <Box ml="8px" my="auto" mt="3px">
+                    <ShowHintButton onClick={showHintsModal} />
+                  </Box>
+                )}
+                {getDialogTree() !== null && (
+                  <Box ml="12px" my="auto" mt="3px">
+                    <ShowDialogButton
+                      onClick={() => showDialogModal(getDialogTree()!)}
+                    />
+                  </Box>
+                )}
+              </Flex>
+            </Box>
+            {/* Objective/challenge text */}
+            <Box>
+              <Text as="span" verticalAlign="middle">
+                {getObjectiveIcon()}
+                <Text as="span" verticalAlign="middle" fontWeight="bold">
+                  Objective:
+                </Text>{" "}
+                <ObjectiveText text={currLevel().objective} />
+              </Text>
+              {currLevel().challenge !== "" && currScene?.completed && (
+                <Text as="span" ml="0.5em" verticalAlign="middle">
+                  {getChallengeIcon()}
+                  <Text as="span" verticalAlign="middle" fontWeight="bold">
+                    Challenge:
+                  </Text>{" "}
+                  <ChallengeText text={currLevel().challenge} />
+                </Text>
+              )}
+            </Box>
+            {/* Editor and board */}
+            <Stack
+              direction="row"
+              mt="16px"
+              h={{ base: "350px", xl: "fit-content" }}
+            >
+              <Box id="editor-section" mr={0}>
+                <Box w={{ base: "584px", xl: "608px" }}>
+                  <Editor
+                    type="level"
+                    requestedState={requestedEditorState}
+                    code={initialCode()}
+                    originalCode={currLevel().initial_code}
+                    availableFunctions={availFuncs}
+                    disabledFunctions={currLevel().disabled_funcs}
+                    runScript={runScript}
+                    onReplayDone={onReplayDone}
+                    onScriptError={onScriptError}
+                    onStep={onEditorStep}
+                    onCancel={onScriptCancel}
+                    persistCode={persistCode}
+                    onStateChange={onEditorStateChange}
+                  />
+                </Box>
+              </Box>
+              <Box
+                id="board-wrapper"
+                transformOrigin="top left"
+                height="fit-content"
+                transform={{
+                  base: "scale(0.75)",
+                  xl: "none",
+                }}
+              >
+                <Box
+                  position="relative"
+                  id="board-inner-wrapper"
+                  overflow="hidden"
+                  w="100%"
+                  h="100%"
+                >
+                  <Board
+                    gameState={boardState}
+                    // Note: We only want to enable animations if the editor is in the "running" state.
+                    // If the editor is in the "paused" state, it's more clear to move the sprites in
+                    // discrete steps.
+                    enableAnimations={editorState === "running"}
+                    enableHoverInfo={editorState !== "running"}
+                    showInitialState={editorState === "editing"}
+                    asteroidWarnings={currLevel().asteroid_warnings}
+                  />
+                </Box>
+              </Box>
+            </Stack>
           </Box>
-        </Stack>
-      </Container>
+        </Flex>
+      </Box>
     </>
   );
 }
