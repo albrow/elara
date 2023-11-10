@@ -80,8 +80,8 @@ export default function Journal() {
       w="100%"
       h="100%"
       position="fixed"
-      pt="16px"
-      pb="8px"
+      pt={{ base: "10px", xl: "16px", "2xl": "32px" }}
+      pb={{ base: "0px", xl: "8px", "2xl": "16px" }}
       overflowX="scroll"
     >
       <Flex
@@ -99,7 +99,7 @@ export default function Journal() {
           h="30%"
           maxH="300px"
           minH="200px"
-          mt="30vh"
+          mt="33vh"
           borderLeftRadius="20px"
           border="1px solid black"
           borderRight="none"
@@ -112,11 +112,11 @@ export default function Journal() {
           borderRadius="5px"
           w="100%"
           maxW="container.2xl"
-          h="calc(100% - 60px)"
+          h={`calc(100% - ${NAVBAR_HEIGHT}px)`}
           boxShadow="0 5px 12px 5px rgba(0, 0, 0, 0.5)"
         >
           <Flex h="100%">
-            <Box h="100%" w="200px" mr="5px" p="5px">
+            <Box h="100%" w="fit-content">
               <JournalSidebar />
             </Box>
             <Box
@@ -140,7 +140,7 @@ export default function Journal() {
           bg="#202E29"
           h="30%"
           maxH="300px"
-          mt="30vh"
+          mt="33vh"
           borderRightRadius="20px"
           border="1px solid black"
           borderLeft="none"
