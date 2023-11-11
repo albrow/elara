@@ -225,6 +225,8 @@ export default function Editor(props: EditorProps) {
     [possiblyOutdatedCode]
   );
 
+  // Note: We have to use JavaScript to control the size of the editor because
+  // CodeMirror requires you to pass in the height as a string.
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   useEffect(() => {
     function reportWindowSize() {
@@ -239,7 +241,7 @@ export default function Editor(props: EditorProps) {
   const codeMirrorHeight = useMemo(() => {
     if (props.type === "level") {
       if (windowWidth < BP_XL) {
-        return "264px";
+        return "273px";
       }
       return "370px";
     }
@@ -249,7 +251,7 @@ export default function Editor(props: EditorProps) {
   const editorWrapperHeight = useMemo(() => {
     if (props.type === "level") {
       if (windowWidth < BP_XL) {
-        return "267px";
+        return "276px";
       }
       return "373px";
     }
@@ -591,7 +593,7 @@ export default function Editor(props: EditorProps) {
         />
       </Box>
       {props.showCodeLenCounter && (
-        <Box position="relative" top="-42px">
+        <Box position="relative" top={{ base: "-30px", xl: "-42px" }}>
           <Box
             bg="gray.700"
             float="right"
@@ -605,7 +607,7 @@ export default function Editor(props: EditorProps) {
               <Text
                 verticalAlign="center"
                 as="div"
-                fontSize="0.8rem"
+                fontSize={{ base: "0.7rem", xl: "0.8rem" }}
                 color="white"
                 _hover={{ cursor: "help" }}
               >

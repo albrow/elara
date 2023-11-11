@@ -91,7 +91,7 @@ impl Level for ServerRoom {
         "server_room"
     }
     fn objective(&self) -> &'static str {
-        "Shut down the servers by pressing the button ({button})"
+        "Press the button ({button}) to shut down the servers."
     }
     fn initial_code(&self) -> &'static str {
         r#"// Only one thing left to do...
@@ -204,7 +204,7 @@ impl Level for ServerRoom {
         }
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Read the messages on every data point using the `say` function.")
+        Some("Use the `say` function to read the messages on every data point.")
     }
     fn check_challenge(
         &self,

@@ -19,7 +19,7 @@ impl Level for ReimplementTurnRight {
         "reimplement_turn_right"
     }
     fn objective(&self) -> &'static str {
-        "Finish the `three_lefts` function, then move the rover ({robot}) to the goal ({goal})."
+        "Use the `three_lefts` function to move the rover ({robot}) to the goal ({goal})."
     }
     fn disabled_functions(&self) -> &'static Vec<&'static str> {
         &DISABLED_FUNCS
@@ -82,7 +82,7 @@ move_backward(1);
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Code length must be 55 characters or less.")
+        Some("Code length must be 55 or less.")
     }
     fn check_challenge(&self, _states: &Vec<State>, _script: &str, stats: &ScriptStats) -> bool {
         stats.code_len <= 55

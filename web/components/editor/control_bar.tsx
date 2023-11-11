@@ -66,13 +66,23 @@ export default function ControlBar(props: ControlBarProps) {
   );
 
   return (
-    <Box bg="gray.800" p={2} roundedTop="md" className="control-bar">
+    <Box
+      bg="gray.800"
+      p={{ base: "6px", xl: "8px" }}
+      roundedTop="md"
+      className="control-bar"
+    >
       <Flex direction="row">
         <Box>
           {props.editorState === "editing" && (
             <>
               <Tooltip label="Deploy the code to the rover">
-                <Button size="sm" colorScheme="green" onClick={props.onDeploy}>
+                <Button
+                  size={{ base: "xs", xl: "sm" }}
+                  rounded={{ base: "3px", xl: "md" }}
+                  colorScheme="green"
+                  onClick={props.onDeploy}
+                >
                   <FaSatelliteDish
                     size="1.2em"
                     style={{ marginRight: "0.2rem" }}
@@ -82,7 +92,12 @@ export default function ControlBar(props: ControlBarProps) {
               </Tooltip>
               {props.onReset && (
                 <Tooltip label="Reset back to the original code">
-                  <Button ml={2} size="sm" onClick={props.onReset}>
+                  <Button
+                    ml={{ base: "6px", xl: "8px" }}
+                    size={{ base: "xs", xl: "sm" }}
+                    rounded={{ base: "3px", xl: "md" }}
+                    onClick={props.onReset}
+                  >
                     <MdReplay size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
                     Reset
                   </Button>
@@ -98,8 +113,9 @@ export default function ControlBar(props: ControlBarProps) {
               <Button
                 colorScheme="red"
                 color="black"
-                size="sm"
-                ml={1}
+                size={{ base: "xs", xl: "sm" }}
+                rounded={{ base: "3px", xl: "md" }}
+                ml="4px"
                 onClick={props.onCancel}
               >
                 <MdStop size="1.3em" />
@@ -109,7 +125,12 @@ export default function ControlBar(props: ControlBarProps) {
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
             <Tooltip label="Skip backward">
-              <Button size="sm" ml={1} onClick={props.onStepBack}>
+              <Button
+                size={{ base: "xs", xl: "sm" }}
+                rounded={{ base: "3px", xl: "md" }}
+                ml="4px"
+                onClick={props.onStepBack}
+              >
                 <MdSkipPrevious size="1.3em" />
               </Button>
             </Tooltip>
@@ -119,8 +140,9 @@ export default function ControlBar(props: ControlBarProps) {
               <Button
                 colorScheme="yellow"
                 color="black"
-                size="sm"
-                ml={1}
+                size={{ base: "xs", xl: "sm" }}
+                rounded={{ base: "3px", xl: "md" }}
+                ml="4px"
                 onClick={props.onPause}
               >
                 <MdPause size="1.3em" />
@@ -132,8 +154,9 @@ export default function ControlBar(props: ControlBarProps) {
               <Button
                 colorScheme="green"
                 color="black"
-                size="sm"
-                ml={1}
+                size={{ base: "xs", xl: "sm" }}
+                rounded={{ base: "3px", xl: "md" }}
+                ml="4px"
                 onClick={props.onPlay}
               >
                 <MdPlayArrow size="1.3em" />
@@ -143,7 +166,12 @@ export default function ControlBar(props: ControlBarProps) {
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
             <Tooltip label="Skip forward">
-              <Button size="sm" ml={1} onClick={props.onStepForward}>
+              <Button
+                size={{ base: "xs", xl: "sm" }}
+                rounded={{ base: "3px", xl: "md" }}
+                ml="4px"
+                onClick={props.onStepForward}
+              >
                 <MdSkipNext size="1.3em" />
               </Button>
             </Tooltip>
@@ -166,7 +194,7 @@ export default function ControlBar(props: ControlBarProps) {
                   <SliderMark
                     key={i}
                     color="white"
-                    fontSize="md"
+                    fontSize={{ base: "sm", xl: "md" }}
                     fontWeight="bold"
                     value={i}
                     ml="-2px"
