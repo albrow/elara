@@ -7,7 +7,7 @@ export interface ShowHintButtonProps {
 
 export default function ShowHintButton(props: ShowHintButtonProps) {
   return (
-    <Tooltip hasArrow label="Show hint(s)" placement="right">
+    <Tooltip label="Show hint(s)" placement="right">
       <Button
         bg="blue.500"
         _hover={{ bg: "blue.600" }}

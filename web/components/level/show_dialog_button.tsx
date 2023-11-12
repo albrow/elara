@@ -7,7 +7,7 @@ export interface ShowDialogButtonProps {
 
 export default function ShowDialogButton(props: ShowDialogButtonProps) {
   return (
-    <Tooltip hasArrow label="Show dialog" placement="right">
+    <Tooltip label="Show dialog" placement="right">
       <Button
         bg="blue.500"
         _hover={{ bg: "blue.600" }}

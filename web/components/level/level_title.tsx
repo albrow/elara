@@ -13,7 +13,7 @@ export default function LevelTitle(props: LevelTitleProps) {
   const [showLevelSelectModal] = useLevelSelectModal();
 
   return (
-    <Tooltip label="Select a different level" hasArrow placement="right">
+    <Tooltip label="Select a different level" placement="right">
       <Box
         _hover={{ cursor: "pointer" }}
         onMouseEnter={() => setHoveringOver(true)}
