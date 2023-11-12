@@ -229,13 +229,13 @@ export default function Editor(props: EditorProps) {
   // CodeMirror requires you to pass in the height as a string.
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   useEffect(() => {
-    function reportWindowSize() {
+    function onWindowResize() {
       setWindowWidth(window.innerWidth);
     }
     // Trigger this function on resize
-    window.addEventListener("resize", reportWindowSize);
+    window.addEventListener("resize", onWindowResize);
     //  Cleanup for componentWillUnmount
-    return () => window.removeEventListener("resize", reportWindowSize);
+    return () => window.removeEventListener("resize", onWindowResize);
   }, []);
 
   const codeMirrorHeight = useMemo(() => {

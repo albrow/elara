@@ -12,34 +12,23 @@ export default function FunctionList(props: FunctionListProps) {
   return (
     <Menu placement="bottom-end" closeOnSelect={false} closeOnBlur>
       {/* Larger button */}
-      <Box display={{ base: "none", xl: "block" }}>
-        <Tooltip label="Function list">
-          <MenuButton
-            rounded="md"
-            _hover={{ background: "gray.700" }}
-            color="white"
-            p="6px"
-            px="9px"
-          >
+
+      <Tooltip label="Function list">
+        <MenuButton
+          rounded={{ base: "3px", xl: "md" }}
+          _hover={{ background: "gray.700" }}
+          color="white"
+          p={{ base: "4px", xl: "6px" }}
+          px={{ base: "8px", xl: "9px" }}
+        >
+          <Box display={{ base: "none", xl: "inline" }}>
             <BsJournalCode size="1.2em" />
-          </MenuButton>
-        </Tooltip>
-      </Box>
-      {/* Smaller button */}
-      <Box display={{ base: "block", xl: "none" }}>
-        <Tooltip label="Function list">
-          <MenuButton
-            rounded="3px"
-            _hover={{ background: "gray.700" }}
-            color="white"
-            p="4px"
-            px="8px"
-            m="0"
-          >
+          </Box>
+          <Box display={{ base: "inline", xl: "none" }}>
             <BsJournalCode size="1.0em" />
-          </MenuButton>
-        </Tooltip>
-      </Box>
+          </Box>
+        </MenuButton>
+      </Tooltip>
 
       <MenuList
         background="gray.700"

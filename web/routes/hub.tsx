@@ -1,7 +1,7 @@
 import { Box, Image } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouteNode } from "react-router5";
-import { BG_INDEX as BG_Z_INDEX } from "../lib/constants";
+import { BOARD_BG_Z_INDEX as BG_Z_INDEX } from "../lib/constants";
 
 import hubBgImage from "../images/hub_bg_only.png";
 import monitorImage from "../images/hub_monitor.png";

@@ -47,9 +47,14 @@ export const BP_2XL = 1500;
 // **IMPORTANT**: If you change these, search for related CSS properties.
 // Some CSS properties need to be manually kept in sync with these values.
 // In such a case, there should be a comment above the CSS property explaining it.
-//
-// We start with the sprites, i.e. art that appears on the game board.
-export const BG_INDEX = -100;
+
+// Start with background images and frames.
+export const BG_Z_INDEX = -1000;
+export const MONITOR_STAND_Z_INDEX = -950;
+export const MONITOR_FRAME_Z_INDEX = -900;
+
+// Next section is for the board/map and the elements that appear on top of it.
+export const BOARD_BG_Z_INDEX = -100;
 export const BUTTON_WIRE_Z_INDEX = 10;
 export const ASTEROID_WARNING_Z_INDEX = 20;
 export const ROCK_Z_INDEX = 20;

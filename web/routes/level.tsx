@@ -19,11 +19,16 @@ import { useErrorModal } from "../hooks/error_modal_hooks";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import ShowHintButton from "../components/level/show_hint_button";
 import { useHintsModal } from "../hooks/hints_modal_hooks";
-import { BG_INDEX, NAVBAR_HEIGHT } from "../lib/constants";
+import {
+  BG_Z_INDEX,
+  MONITOR_FRAME_Z_INDEX,
+  NAVBAR_HEIGHT,
+} from "../lib/constants";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
 import { ErrorType } from "../contexts/error_modal";
 import LevelTitle from "../components/level/level_title";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";
+import MonitorStand from "../components/level/monitor_stand";
 
 import monitorBgImage from "../images/monitor_bg_only.jpg";
 
@@ -318,6 +323,8 @@ export default function Level() {
     );
   }, [currScene]);
 
+  const monitorFrame = useRef<HTMLDivElement>(null);
+
   return (
     <>
       <LevelSuccessModal
@@ -326,23 +333,32 @@ export default function Level() {
         setVisible={setModalVisible}
         onClose={resetLevelState}
       />
-
+      {/* Monitor background image */}
       <Box
         position="fixed"
         w="100%"
         h="100%"
-        zIndex={BG_INDEX}
+        zIndex={BG_Z_INDEX}
         bgImage={monitorBgImage}
         bgRepeat="no-repeat"
         bgSize="cover"
         bgPosition="bottom"
         pt={`${NAVBAR_HEIGHT}px`}
         overflowX="auto"
+      />
+      <MonitorStand monitorFrameRef={monitorFrame} />
+      <Box
+        position="fixed"
+        w="100%"
+        h="100%"
+        zIndex={MONITOR_FRAME_Z_INDEX}
+        pt={`${NAVBAR_HEIGHT}px`}
+        overflow="auto"
       >
-        {/* TODO(albrow): Adjust min width */}
         <Flex h="100%">
           {/* Monitor Frame */}
           <Box
+            ref={monitorFrame}
             h="fit-content"
             bg="white"
             mx="auto"

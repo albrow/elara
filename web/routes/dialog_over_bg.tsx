@@ -5,7 +5,7 @@ import { Box, Image } from "@chakra-ui/react";
 import { TREES } from "../lib/dialog_trees";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import { useSaveData } from "../hooks/save_data_hooks";
-import { BG_INDEX as BG_Z_INDEX } from "../lib/constants";
+import { BOARD_BG_Z_INDEX as BG_Z_INDEX } from "../lib/constants";
 
 import npcRightImage from "../images/npc_right.png";
 import videoTabletBgImage from "../images/video_tablet_bg.png";
