@@ -146,11 +146,19 @@ const elaraTheme = extendTheme({
   // kicked back to the loading screen.
   if (import.meta.env.DEV) {
     router.usePlugin(browserPlugin());
-  } else if (window.location.pathname !== "/") {
-    // Otherwise, always kick the player back to the canonical URL.
-    // We don't want players to be able to cheat or break the game
-    // by manually changing the URL, so we effectively disable URL-based
-    // routing.
+  } else if (
+    window.location.hostname === "play.elaragame.com" &&
+    window.location.pathname !== "/"
+  ) {
+    // If we are on play.elaragame.com and not in DEV mode, always kick the
+    // player back to the canonical URL. We don't want players to be able to
+    // cheat or break the game by manually changing the URL, so we effectively
+    // disable URL-based routing. That means the route doesn't actually do anything,
+    // so removing it from the URL can make things less confusing and help with SEO.
+    //
+    // Note however, that if the game is hosted on a different location (e.g. on Itch.io),
+    // we don't want to do this, since it will break the game. That's why we check
+    // window.location.hostname first.
     window.location.pathname = "/";
   }
 
