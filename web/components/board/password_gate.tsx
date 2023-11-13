@@ -168,7 +168,6 @@ export default function PasswordGate(props: PasswordGateProps) {
         <Tooltip
           label="Wrong password"
           bgColor="red.600"
-          hasArrow
           isOpen={
             // Show the wrong password indicator if the wrong password was said
             // if animations are enabled, showWrongPassword will control the visibility

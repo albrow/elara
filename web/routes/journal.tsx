@@ -1,5 +1,5 @@
 import { useRouteNode, useRouter } from "react-router5";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Flex, Box } from "@chakra-ui/react";
 import { Unsubscribe } from "router5/dist/types/base";
 
@@ -18,6 +18,7 @@ export default function Journal() {
   const router = useRouter();
   const [saveData, { markJournalPageSeen }] = useSaveData();
   const [showDialogModal] = useDialogModal();
+  const journalScrollbox = useRef<HTMLDivElement>(null);
 
   const sectionName = useMemo(() => {
     let name = route.params?.sectionName;
@@ -46,6 +47,11 @@ export default function Journal() {
     // Scroll to the top of the page when loading a new
     // journal section.
     window.scrollTo(0, 0);
+    if (journalScrollbox.current) {
+      journalScrollbox.current.scrollTo(0, 0);
+    } else {
+      console.warn("journalScrollbox.current is null");
+    }
   }, [sectionName]);
 
   const dialogTreeName = useMemo(() => {
@@ -73,7 +79,6 @@ export default function Journal() {
   return (
     <Box
       mt={`${NAVBAR_HEIGHT}px`}
-      id="dark-bg"
       bgImg={journalBgImage}
       bgRepeat="no-repeat"
       bgSize="cover"
@@ -120,6 +125,7 @@ export default function Journal() {
               <JournalSidebar />
             </Box>
             <Box
+              ref={journalScrollbox}
               bg="white"
               p="20px"
               border="1px solid"
