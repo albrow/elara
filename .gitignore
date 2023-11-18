@@ -4,3 +4,6 @@
 /wasm-pack.log
 /elara-lib/wasm-pack.log
 /web/dist
+/web/dist-*
+/electron/dist
+/electron/static

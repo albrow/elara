@@ -52,6 +52,18 @@ Builds the project and places it into the **/web/dist** folder.
 npm run build
 ```
 
+Builds the project for distribution on Itch.io:
+
+```sh
+npm run build:itchio
+```
+
+Builds and packages the project as a native application via Electron:
+
+```sh
+npm run build:electron
+```
+
 ### Run unit tests
 
 ```sh

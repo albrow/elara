@@ -1,4 +1,6 @@
-// This config file includes some customizations for hosting on itch.io.
+// This config file includes some customizations for Electron builds.
+// TODO(albrow): Include video files and other assets which might normally
+// be served online.
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import wasmPack from "vite-plugin-wasm-pack";
@@ -8,12 +10,13 @@ export default defineConfig(async () => {
   // @ts-ignore
   const remarkGfm = await import("remark-gfm");
   return {
-    // Set base="" for itch.io. This causes all assets to use relative paths,
-    // which is required. See https://itch.io/docs/creators/html5
+    // Set base="" for Electron. This causes all assets to use relative paths,
+    // which is required for the Electron build to work.
     base: "",
     root: "web",
     build: {
-      outDir: `dist-itchio-${process.env.npm_package_version}`,
+      emptyOutDir: true,
+      outDir: "../electron/static",
     },
     plugins: [
       wasmPack("./elara-lib"),

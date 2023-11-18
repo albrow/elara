@@ -1,0 +1,26 @@
+{
+  "name": "elara-electron",
+  "version": "0.2.1",
+  "description": "'Electron build for Elara: a free coding game'",
+  "main": "main.js",
+  "build": {
+    "appId": "com.elaragame.app",
+    "productName": "Elara",
+    "copyright": "Copyright (c) 2022-2023 Alex Browne",
+    "mac": {
+      "category": "public.app-category.games"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "start": "electron ."
+  },
+  "author": "Alex Browne <stephenalexbrowne@gmail.com>",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "devDependencies": {
+    "electron": "^27.1.0",
+    "electron-builder": "^24.6.4"
+  }
+}

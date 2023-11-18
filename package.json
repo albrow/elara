@@ -2,7 +2,7 @@
   "author": "Alex Browne <stephenalexbrowne@gmail.com>",
   "name": "elara",
   "version": "0.2.1",
-  "license": "MIT or Apache-2.0",
+  "license": "SEE LICENSE in LICENSE.txt",
   "home": "https://albrow.github.io/elara/",
   "scripts": {
     "build:wasm": "wasm-pack build ./elara-lib --target web --release -- --features=wasm",
@@ -14,6 +14,7 @@
     "dev:host": "vite --host",
     "build": "npm run build:wasm && tsc --noEmit && vite build",
     "build:itchio": "npm run build:wasm && tsc --noEmit && vite build --config vite.itchio.config.ts",
+    "build:electron": "npm run build:wasm && tsc --noEmit && vite build --config vite.electron.config.ts && cd ./electron && npm run dist",
     "test": "npm run test:rust && npm run test:rust-wasm && npm run test:js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
   },
