@@ -1,12 +1,12 @@
 import RunnableExample from "../runnable_example";
-import YoutubeVideo from "../youtube_video";
+import Video from "../video";
 import Card from "../card";
 
 import { SANDBOX_WITH_DATA_POINT_LEVEL } from "../../../contexts/scenes";
 
 ### Variables
 
-<YoutubeVideo embedId="BBerbG81LrI" />
+<Video youTubeId="BBerbG81LrI" localVideoUrl={ELARA_BUILD_TARGET === "electron" ? new URL("../../../videos/variables.mp4", import.meta.url) : null}/>
 
 You can think of variables as "containers" that you can put values into and then
 use later. Almost anything can be stored in a variable: numbers, strings,

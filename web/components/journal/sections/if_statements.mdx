@@ -1,10 +1,10 @@
 import RunnableExample from "../runnable_example";
-import YoutubeVideo from "../youtube_video";
+import Video from "../video";
 import Card from "../card";
 
 ### If Statements
 
-<YoutubeVideo embedId="hb0o3I5md7o" />
+<Video youTubeId="hb0o3I5md7o" localVideoUrl={ELARA_BUILD_TARGET === "electron" ? new URL("../../../videos/if_statements.mp4", import.meta.url) : null} />
 
 An "if statement" allows you to run certain code if something is true.
 You can use an if statement to perform different actions based on different

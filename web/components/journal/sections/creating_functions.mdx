@@ -1,10 +1,11 @@
-import YoutubeVideo from "../youtube_video";
+import Video from "../video";
 import RunnableExample from "../runnable_example";
 import Card from "../card";
 
+
 ### Creating Your Own Functions
 
-<YoutubeVideo embedId="KChh3VbnJFI" />
+<Video youTubeId="KChh3VbnJFI" localVideoUrl={ELARA_BUILD_TARGET === "electron" ? new URL("../../../videos/creating_functions.mp4", import.meta.url) : null} />
 
 At this point, you are probably pretty familiar with using functions, but you
 can also create your own! This is a powerful and important part of programming

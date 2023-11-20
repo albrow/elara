@@ -1,12 +1,12 @@
 import RunnableExample from "../runnable_example";
-import YoutubeVideo from "../youtube_video";
+import Video from "../video";
 import Card from "../card";
 
 import { SANDBOX_WITH_DATA_POINT_LEVEL } from "../../../contexts/scenes";
 
 ### Function Outputs
 
-<YoutubeVideo embedId="O1XoNe0MfVg" />
+<Video youTubeId="O1XoNe0MfVg" localVideoUrl={ELARA_BUILD_TARGET === "electron" ? new URL("../../../videos/function_outputs.mp4", import.meta.url) : null}/>
 
 Some functions may have an output, also called a "return value". If a
 function has an output, it just means that it spits out a result whenever

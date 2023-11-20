@@ -1,10 +1,10 @@
 import RunnableExample from "../runnable_example";
-import YoutubeVideo from "../youtube_video";
+import Video from "../video";
 import Card from "../card";
 
 ### Functions
 
-<YoutubeVideo embedId="T8U2L4YVvUQ" />
+<Video youTubeId="T8U2L4YVvUQ" localVideoUrl={ELARA_BUILD_TARGET === "electron" ? new URL("../../../videos/functions.mp4", import.meta.url) : null}/>
 
 Functions are a fundamental building block of programming. They
 let you organize code into smaller chunks that can be re-used
