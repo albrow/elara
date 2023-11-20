@@ -36,6 +36,7 @@ export default defineConfig(async () => {
     define: {
       "import.meta.vitest": "undefined",
       APP_VERSION: JSON.stringify(process.env.npm_package_version),
+      ELARA_BUILD_TARGET: JSON.stringify("web"),
     },
   };
 });

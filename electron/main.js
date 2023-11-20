@@ -10,12 +10,8 @@ const createWindow = () => {
   win.loadFile(path.join(__dirname, "static", "index.html"));
 };
 
-app.whenReady().then(() => {
-  createWindow();
-});
-
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+  app.quit();
 });
 
 app.whenReady().then(() => {

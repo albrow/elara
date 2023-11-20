@@ -6,6 +6,7 @@ import { Animate } from "react-simple-animate";
 import ReactPlayer from "react-player";
 import { YouTubePlayerProps } from "react-player/youtube";
 import { VimeoPlayerProps } from "react-player/vimeo";
+import { FilePlayerProps } from "react-player/file";
 import { useSaveData } from "../../hooks/save_data_hooks";
 import {
   getVimeoEmbedURLFromId,
@@ -15,6 +16,7 @@ import {
 export interface FullscreenYouTubeVideoProps {
   vimeoVideoId: number;
   youtubeVideoId: string;
+  localVideoUrl?: string;
   onEnd: () => void;
   // If provided, pressing the skip button will skip to the next checkpoint
   // (in seconds) instead of the end of the video.
@@ -31,15 +33,18 @@ export default function FullscreenYouTubeVideo(
     useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [saveData, _] = useSaveData();
-  const [currVideoUrl, setCurrVideoUrl] = useState<string>(
-    getVimeoEmbedURLFromId(props.vimeoVideoId)
-  );
+  const [currVideoUrl, setCurrVideoUrl] = useState<string>(() => {
+    if (ELARA_BUILD_TARGET === "electron" && props.localVideoUrl) {
+      return props.localVideoUrl;
+    }
+    return getVimeoEmbedURLFromId(props.vimeoVideoId);
+  });
 
   // Automatically adjust volume based on master volume setting.
   useEffect(() => {
     if (!playerRef.current) return;
     playerRef.current.setState(
-      (state: YouTubePlayerProps | VimeoPlayerProps) => ({
+      (state: YouTubePlayerProps | VimeoPlayerProps | FilePlayerProps) => ({
         ...state,
         volume: saveData.settings.masterVolume,
       })
@@ -89,6 +94,12 @@ export default function FullscreenYouTubeVideo(
     }
   }, [currVideoUrl, props.youtubeVideoId]);
 
+  const onError = useCallback(() => {
+    if (ELARA_BUILD_TARGET !== "electron") {
+      fallbackToYouTube();
+    }
+  }, [fallbackToYouTube]);
+
   return (
     <>
       <Box w="100%" h="100%" maxH="100vh" overflow="hidden">
@@ -107,7 +118,7 @@ export default function FullscreenYouTubeVideo(
             height="100%"
             playing={isPlaying}
             onEnded={onEnd}
-            onError={fallbackToYouTube}
+            onError={onError}
             volume={saveData.settings.masterVolume}
           />
         </AspectRatio>
