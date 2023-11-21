@@ -1,6 +1,6 @@
 import { Box, Button, Container, Flex, Img, Text } from "@chakra-ui/react";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   MdPlayCircle,
   MdSave,
@@ -20,6 +20,7 @@ import { useSceneNavigator } from "../hooks/scenes_hooks";
 import logoImg from "../images/logo.webp";
 import { NewGameModal } from "../components/title/new_game_modal";
 import { ChangelogModal } from "../components/title/changelog_modal";
+import { useJukebox } from "../hooks/jukebox_hooks";
 
 export default function Title() {
   const [saveData, { resetAllSaveData }] = useSaveData();
@@ -29,6 +30,15 @@ export default function Title() {
   const [newGameModalVisible, setNewGameModalVisible] = useState(false);
   const [changelogModalVisible, setChangelogModalVisisble] = useState(false);
   const { navigateToHub, navigateToCutscene } = useSceneNavigator();
+  const { requestSong } = useJukebox();
+
+  useEffect(() => {
+    if (ELARA_BUILD_TARGET === "electron") {
+      // Electron apps don't have a loading screen, so we need to manually
+      // load and play the title screen music for the first time.
+      requestSong("prelude");
+    }
+  }, [requestSong]);
 
   const hasExistingSave = useMemo(
     () =>

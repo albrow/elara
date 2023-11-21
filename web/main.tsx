@@ -78,6 +78,25 @@ const elaraTheme = extendTheme({
   initialColorMode: "light",
 });
 
+function getDefaultRouteOptions() {
+  if (ELARA_BUILD_TARGET === "electron") {
+    // Skip the loading screen for Electron apps and go straight to the
+    // title screen.
+    return {
+      defaultRoute: "title",
+    };
+  }
+  // Otherwise show the loading screen. We do this for two reasons actually:
+  //
+  //   1. It gives time for sounds and other resources to load.
+  //   2. It forces the player to click the screen which enables autoplay for sound and videos.
+  //
+  return {
+    defaultRoute: "loading",
+    defaultParams: { destination: "title" },
+  };
+}
+
 // eslint-disable-next-line func-names
 (async function () {
   await init();
@@ -136,10 +155,7 @@ const elaraTheme = extendTheme({
     },
   ];
 
-  const router = createRouter(routes, {
-    defaultRoute: "loading",
-    defaultParams: { destination: "title" },
-  });
+  const router = createRouter(routes, getDefaultRouteOptions());
 
   // For local development, enable browser plugin. This means if we
   // refresh the page, we'll stay on the same route instead of being
