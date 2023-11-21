@@ -125,3 +125,16 @@ export function getYouTubeEmbedURLFromId(id: string): string {
 export function getVimeoEmbedURLFromId(id: number): string {
   return `https://player.vimeo.com/video/${id}`;
 }
+
+/**
+ * Returns a URL to a local video file, or null if the build target does not support local video URLs.
+ *
+ * @param name The name of the video file, without the extension.
+ * @returns A URL to the video file, or null if the build target does not support local video URLs.
+ */
+export function getLocalVideoUrl(name: string): string | null {
+  if (ELARA_BUILD_TARGET === "electron") {
+    return new URL(`../videos/${name}.mp4`, import.meta.url).href;
+  }
+  return null;
+}

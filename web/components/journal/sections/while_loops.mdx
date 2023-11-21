@@ -1,9 +1,10 @@
 import RunnableExample from "../runnable_example";
 import Video from "../video";
+import { getLocalVideoUrl } from "../../../lib/utils";
 
 ### While Loops
 
-<Video youTubeId="mCEAe5JF-vc" localVideoUrl={ELARA_BUILD_TARGET === "electron" ? new URL("../../../videos/while_loops.mp4", import.meta.url) : null}/>
+<Video youTubeId="mCEAe5JF-vc" localVideoUrl={getLocalVideoUrl("while_loops")}/>
 
 A "while loop" is sort of like a combination between an if statement and a loop.
 

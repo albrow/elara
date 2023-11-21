@@ -16,7 +16,7 @@ import {
 export interface FullscreenYouTubeVideoProps {
   vimeoVideoId: number;
   youtubeVideoId: string;
-  localVideoUrl?: string;
+  localVideoUrl: string | null;
   onEnd: () => void;
   // If provided, pressing the skip button will skip to the next checkpoint
   // (in seconds) instead of the end of the video.

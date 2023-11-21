@@ -1,10 +1,11 @@
 import RunnableExample from "../runnable_example";
 import Video from "../video";
 import Card from "../card";
+import { getLocalVideoUrl } from "../../../lib/utils";
 
 ### Loops
 
-<Video youTubeId="vmNkQwT1tBg" localVideoUrl={ELARA_BUILD_TARGET === "electron" ? new URL("../../../videos/loops.mp4", import.meta.url) : null} />
+<Video youTubeId="vmNkQwT1tBg" localVideoUrl={getLocalVideoUrl("loops")} />
 
 Loops are a way to repeat code over and over again. In a loop,
 the code inside the curly brackets will be repeated until either:

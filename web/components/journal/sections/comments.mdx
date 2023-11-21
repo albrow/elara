@@ -1,9 +1,10 @@
 import RunnableExample from "../runnable_example";
 import Video from "../video";
+import { getLocalVideoUrl } from "../../../lib/utils";
 
 ### Comments
 
-<Video youTubeId="flGWBj1hDps" localVideoUrl={ELARA_BUILD_TARGET === "electron" ? new URL("../../../videos/comments.mp4", import.meta.url) : null}/>
+<Video youTubeId="flGWBj1hDps" localVideoUrl={getLocalVideoUrl("comments")}/>
 
 Every line that starts with two slashes `//` is called a
 "comment". Comments don't affect the rover at all; they are
