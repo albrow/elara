@@ -9,6 +9,10 @@ const createWindow = () => {
     backgroundColor: "#12091B",
     webPreferences: {
       autoplayPolicy: "no-user-gesture-required",
+      // These two options are needed for Steamworks to behave
+      // See: https://liana.one/integrate-electron-steam-api-steamworks
+      nodeIntegration: true,
+      contextIsolation: false,
     },
     show: false, // will be shown when ready
   });
