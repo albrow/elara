@@ -1,7 +1,7 @@
 {
   "author": "Alex Browne <stephenalexbrowne@gmail.com>",
   "name": "elara",
-  "version": "0.2.1",
+  "version": "0.3.0-pre-release",
   "license": "SEE LICENSE in LICENSE.txt",
   "home": "https://albrow.github.io/elara/",
   "scripts": {
