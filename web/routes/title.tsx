@@ -7,6 +7,7 @@ import {
   MdSettings,
   MdOutlineHelp,
   MdNewspaper,
+  MdExitToApp,
 } from "react-icons/md";
 
 import { Animate } from "react-simple-animate";
@@ -179,6 +180,29 @@ export default function Title() {
       >
         public beta version {APP_VERSION}
       </Text>
+      {ELARA_BUILD_TARGET === "electron" && (
+        // Show a quit button in the bottom left corner if we're running in Electron
+        <Box position="fixed" bottom="10px" left="10px">
+          <Button
+            variant="ghost"
+            colorScheme="whiteAlpha"
+            onClick={() => window.close()}
+          >
+            {/* Horizontally flip the icon so it points in the right direction */}
+            <MdExitToApp
+              color="white"
+              size="1.3em"
+              style={{
+                marginRight: "0.3em",
+                transform: "scaleX(-1)",
+              }}
+            />
+            <Text fontSize="1.2em" color="white" fontWeight={700}>
+              Quit
+            </Text>
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }
