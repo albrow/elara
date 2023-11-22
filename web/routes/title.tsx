@@ -88,9 +88,9 @@ export default function Title() {
       w="100%"
       h="100%"
       bg="black"
-      bgImage={staryBgImg}
       bgSize="cover"
       position="fixed"
+      bgImage={`url(${encodeURI(staryBgImg)})`}
     >
       <SettingsModal
         visible={settingsVisible}
