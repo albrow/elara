@@ -127,7 +127,8 @@ export default function Hub() {
     <Box w="100%" h="100%" position="fixed" bg="black">
       <Box
         bgColor="black"
-        bgImage={hubBgImage}
+        // bgImage={hubBgImage}
+        bgImage={`url("${hubBgImage}")`}
         bgSize="cover"
         width="100vw"
         height="56.25vw"

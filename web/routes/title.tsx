@@ -15,7 +15,6 @@ import { useSaveData } from "../hooks/save_data_hooks";
 import SettingsModal from "../components/settings/navbar/settings_modal";
 import ConfirmDeleteDataModal from "../components/title/confirm_delete_data_modal";
 import { humanFriendlyTimestamp } from "../lib/utils";
-import staryBgImg from "../images/starry_bg.webp";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 import logoImg from "../images/logo.webp";
 import { NewGameModal } from "../components/title/new_game_modal";
@@ -90,7 +89,7 @@ export default function Title() {
       bg="black"
       bgSize="cover"
       position="fixed"
-      bgImage={`url(${encodeURI(staryBgImg)})`}
+      bgImage="url(/starry_bg.webp)"
     >
       <SettingsModal
         visible={settingsVisible}
