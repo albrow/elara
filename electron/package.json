@@ -1,6 +1,6 @@
 {
   "name": "elara-electron",
-  "version": "0.2.1",
+  "version": "0.3.0-pre-release",
   "description": "Electron build for Elara: a free coding game",
   "main": "main.js",
   "build": {
@@ -15,7 +15,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder -mlw",
+    "dist": "electron-builder -mw",
     "start": "electron ."
   },
   "author": "Alex Browne <stephenalexbrowne@gmail.com>",
