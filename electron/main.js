@@ -23,18 +23,18 @@ const createWindow = () => {
   win.setMenuBarVisibility(false);
   win.setFullScreen(true);
 
-  // Set zoom level based on screen width.
-  // TODO(albrow): Remove this if we improve responsiveness on larger screens.
-  // See: https://github.com/albrow/elara/issues/75
-  const { width } = win.getBounds();
-  if (width >= 1976) {
-    win.webContents.setZoomFactor(1.5);
-  } else if (width >= 1551) {
-    win.webContents.setZoomFactor(1.2);
-  }
-
   // Show window when ready.
   win.once("ready-to-show", () => {
+    // Set zoom level based on screen width.
+    // TODO(albrow): Remove this if we improve responsiveness on larger screens.
+    // See: https://github.com/albrow/elara/issues/75
+    const { width } = win.getBounds();
+    if (width >= 1976) {
+      win.webContents.setZoomFactor(1.5);
+    } else if (width >= 1551) {
+      win.webContents.setZoomFactor(1.2);
+    }
+
     win.show();
   });
 };
