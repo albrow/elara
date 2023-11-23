@@ -79,7 +79,7 @@ export default function Journal() {
   return (
     <Box
       mt={`${NAVBAR_HEIGHT}px`}
-      bgImg={journalBgImage}
+      bgImage={`url("${journalBgImage}")`}
       bgRepeat="no-repeat"
       bgSize="cover"
       w="100%"

@@ -339,7 +339,7 @@ export default function Level() {
         w="100%"
         h="100%"
         zIndex={BG_Z_INDEX}
-        bgImage={monitorBgImage}
+        bgImage={`url("${monitorBgImage}")`}
         bgRepeat="no-repeat"
         bgSize="cover"
         bgPosition="bottom"

@@ -44,7 +44,7 @@ export default function DialogOverBg() {
     <Box w="100%" h="100%" position="fixed" bg="black">
       <Box
         bgColor="black"
-        bgImage={videoTabletBgImage}
+        bgImage={`url("${videoTabletBgImage}")`}
         bgSize="cover"
         width="100vw"
         height="56.25vw"

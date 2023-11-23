@@ -21,6 +21,8 @@ import { NewGameModal } from "../components/title/new_game_modal";
 import { ChangelogModal } from "../components/title/changelog_modal";
 import { useJukebox } from "../hooks/jukebox_hooks";
 
+import starryBgImage from "../images/starry_bg.webp";
+
 export default function Title() {
   const [saveData, { resetAllSaveData }] = useSaveData();
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -89,7 +91,7 @@ export default function Title() {
       bg="black"
       bgSize="cover"
       position="fixed"
-      bgImage="url(/starry_bg.webp)"
+      bgImage={`url("${starryBgImage}")`}
     >
       <SettingsModal
         visible={settingsVisible}
