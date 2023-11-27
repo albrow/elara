@@ -9,8 +9,7 @@
     "copyright": "Copyright (c) 2022-2023 Alex Browne",
     "mac": {
       "category": "public.app-category.games"
-    },
-    "asar": false
+    }
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -23,5 +22,9 @@
   "devDependencies": {
     "electron": "^27.1.0",
     "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "electron-log": "^5.0.1",
+    "steamworks.js": "^0.3.1"
   }
 }

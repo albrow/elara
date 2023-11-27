@@ -1,5 +1,26 @@
 const path = require("node:path");
+const log = require("electron-log/main");
 const { app, BrowserWindow } = require("electron");
+const steamworks = require("steamworks.js");
+
+// Initialize logger
+log.initialize({ preload: true });
+
+/**
+ * Automatically sets browser zoom level based on the width of the window.
+ *
+ * @param {BrowserWindow} win
+ */
+function applyAutoZoom(win) {
+  // TODO(albrow): Remove this if we improve responsiveness on larger screens.
+  // See: https://github.com/albrow/elara/issues/75
+  const { width } = win.getBounds();
+  if (width >= 1976) {
+    win.webContents.setZoomFactor(1.5);
+  } else if (width >= 1551) {
+    win.webContents.setZoomFactor(1.2);
+  }
+}
 
 const createWindow = () => {
   // Create a new window and load the html file right away.
@@ -25,17 +46,21 @@ const createWindow = () => {
 
   // Show window when ready.
   win.once("ready-to-show", () => {
-    // Set zoom level based on screen width.
-    // TODO(albrow): Remove this if we improve responsiveness on larger screens.
-    // See: https://github.com/albrow/elara/issues/75
-    const { width } = win.getBounds();
-    if (width >= 1976) {
-      win.webContents.setZoomFactor(1.5);
-    } else if (width >= 1551) {
-      win.webContents.setZoomFactor(1.2);
-    }
-
+    // Apply auto zoom and show the window.
+    applyAutoZoom(win);
     win.show();
+
+    // Initialize logger
+    log.initialize({ preload: true });
+
+    // Steamworks Debugging
+    const client = steamworks.init();
+    log.info(`player name: ${client.localplayer.getName()}`);
+  });
+
+  // On re-size, re-apply auto zoom.
+  win.on("resize", () => {
+    applyAutoZoom(win);
   });
 };
 
@@ -50,3 +75,6 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
+
+// Required to get Steamworks to work with Electron.
+steamworks.electronEnableSteamOverlay();
