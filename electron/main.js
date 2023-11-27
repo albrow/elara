@@ -54,6 +54,14 @@ const createWindow = () => {
     return { action: "deny" };
   });
 
+  // Override Shift+Tab to allow opening the Steam overlay.
+  win.webContents.on("before-input-event", (event, input) => {
+    if (input.shift && input.key === "Tab") {
+      console.log("Pressed Shift+Tab");
+      event.preventDefault();
+    }
+  });
+
   // Show window when ready.
   win.once("ready-to-show", () => {
     // Apply auto zoom and show the window.
