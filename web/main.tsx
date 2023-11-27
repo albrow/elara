@@ -122,10 +122,6 @@ function getDefaultRouteOptions() {
       path: "/loading/*destination",
     },
     {
-      name: "about",
-      path: "/about",
-    },
-    {
       name: "hub",
       path: "/hub",
     },

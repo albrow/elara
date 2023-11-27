@@ -1,7 +1,9 @@
 const path = require("node:path");
 const log = require("electron-log/main");
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, shell } = require("electron");
 const steamworks = require("steamworks.js");
+
+const STEAM_APP_ID = 2657610;
 
 // Initialize logger
 log.initialize({ preload: true });
@@ -44,6 +46,14 @@ const createWindow = () => {
   win.setMenuBarVisibility(false);
   win.setFullScreen(true);
 
+  // Open links with the default OS browser instead of inside Electron.
+  // See: https://stackoverflow.com/questions/32402327/how-can-i-force-external-links-from-browser-window-to-open-in-a-default-browser
+  // and https://www.electronjs.org/docs/latest/api/web-contents#contentssetwindowopenhandlerhandler
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: "deny" };
+  });
+
   // Show window when ready.
   win.once("ready-to-show", () => {
     // Apply auto zoom and show the window.
@@ -54,7 +64,7 @@ const createWindow = () => {
     log.initialize({ preload: true });
 
     // Steamworks Debugging
-    const client = steamworks.init();
+    const client = steamworks.init(STEAM_APP_ID);
     log.info(`player name: ${client.localplayer.getName()}`);
   });
 
