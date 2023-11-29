@@ -1,12 +1,27 @@
 const path = require("node:path");
 const log = require("electron-log/main");
 const { app, BrowserWindow, shell } = require("electron");
-const steamworks = require("steamworks.js");
 
 const STEAM_APP_ID = 2657610;
 
 // Initialize logger
 log.initialize({ preload: true });
+
+// Conditionally include and initialize Steamworks.
+// We check if it works up front, that way we don't have to surround every call
+// to Steamworks with a try/catch block. Instead, if we want to use Steamworks
+// later on, we can just check if it is defined.
+let steamworks;
+try {
+  // eslint-disable-next-line global-require
+  steamworks = require("steamworks.js");
+  steamworks.init(STEAM_APP_ID);
+} catch (e) {
+  steamworks = undefined;
+  log.warn(
+    "Steamworks failed to load (this might just mean you're not running through Steam)"
+  );
+}
 
 /**
  * Automatically sets browser zoom level based on the width of the window.
@@ -57,7 +72,6 @@ const createWindow = () => {
   // Override Shift+Tab to allow opening the Steam overlay.
   win.webContents.on("before-input-event", (event, input) => {
     if (input.shift && input.key === "Tab") {
-      console.log("Pressed Shift+Tab");
       event.preventDefault();
     }
   });
@@ -72,8 +86,11 @@ const createWindow = () => {
     log.initialize({ preload: true });
 
     // Steamworks Debugging
-    const client = steamworks.init(STEAM_APP_ID);
-    log.info(`player name: ${client.localplayer.getName()}`);
+    if (steamworks) {
+      const client = steamworks.init(STEAM_APP_ID);
+      log.info(`Steamworks initialized: ${client}`);
+      log.info(`Player username: ${client.localplayer.getName()}`);
+    }
   });
 
   // On re-size, re-apply auto zoom.
@@ -95,4 +112,6 @@ app.whenReady().then(() => {
 });
 
 // Required to get Steamworks to work with Electron.
-steamworks.electronEnableSteamOverlay();
+if (steamworks) {
+  steamworks.electronEnableSteamOverlay();
+}
