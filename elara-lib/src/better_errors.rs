@@ -5,7 +5,8 @@ use rhai::EvalAltResult;
 
 use crate::constants::{
     BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL, BUILTIN_FUNCTIONS,
-    ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL,
+    ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL, ERR_UNEXPECTED_SPACE_IN_FUNC_NAME,
+    ERR_UNEXPECTED_SPACE_IN_VAR_NAME,
 };
 
 #[derive(Debug, PartialEq)]
@@ -191,7 +192,40 @@ fn is_extra_closing_parentheses(script: &str, err_pos: &rhai::Position) -> bool 
     false
 }
 
+fn is_space_in_variable_name(script: &str, err_pos: &rhai::Position) -> bool {
+    if let Some(line_number) = err_pos.line() {
+        let line = script.lines().nth(line_number - 1).unwrap();
+        let re = Regex::new(r"let\s\w+\s\w+[^=]").unwrap();
+        if re.is_match(line) {
+            return true;
+        }
+    }
+    false
+}
+
+fn is_space_in_func_name(script: &str, err_pos: &rhai::Position) -> bool {
+    if let Some(line_number) = err_pos.line() {
+        let line = script.lines().nth(line_number - 1).unwrap();
+        let re = Regex::new(r"fn\s\w+\s\w+\(").unwrap();
+        if re.is_match(line) {
+            return true;
+        }
+    }
+    false
+}
+
 fn convert_missing_semicolon_error(script: &str, desc: &str, pos: &rhai::Position) -> BetterError {
+    // Check if there was a space in a variable name. The Rhai parser doesn't differentiate
+    // this kind of error because technically you can write `let foo;` and it will be valid code.
+    // However, we can do better here by giving a more helpful error message.
+    if is_space_in_variable_name(script, pos) {
+        return BetterError {
+            message: String::from(ERR_UNEXPECTED_SPACE_IN_VAR_NAME),
+            line: pos.line(),
+            col: pos.position(),
+        };
+    }
+
     if desc == "at end of line" {
         return BetterError {
             message: String::from("Syntax Error: Missing semicolon ';' at end of line."),
@@ -368,6 +402,33 @@ fn convert_missing_comma_separate_args_error(
     };
 }
 
+fn convert_missing_fn_params_error(
+    script: String,
+    fn_name: &str,
+    err_pos: &rhai::Position,
+) -> BetterError {
+    // Check if this is actually due to a space in the function name. The Rhai parser
+    // doesn't differentiate this kind of error and just expects parentheses instead of
+    // a space. We can do better here by giving a more helpful error message.
+    if is_space_in_func_name(&script, err_pos) {
+        return BetterError {
+            message: String::from(ERR_UNEXPECTED_SPACE_IN_FUNC_NAME),
+            line: err_pos.line(),
+            col: err_pos.position(),
+        };
+    }
+
+    // Otherwise, just wrap the original error.
+    return BetterError {
+        message: format!(
+            "Syntax Error: Missing parentheses '()' after function name '{}'.",
+            fn_name
+        ),
+        line: err_pos.line(),
+        col: err_pos.position(),
+    };
+}
+
 pub fn convert_err(
     avail_funcs: &Vec<String>,
     disabled_funcs: &'static Vec<&'static str>,
@@ -393,6 +454,12 @@ pub fn convert_err(
             if token == "," && desc.as_str().contains("to separate the arguments") {
                 return convert_missing_comma_separate_args_error(script, desc, pos);
             }
+        }
+        EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::FnMissingParams(ref fn_name),
+            ref pos,
+        ) => {
+            return convert_missing_fn_params_error(script, fn_name, pos);
         }
         EvalAltResult::ErrorFunctionNotFound(ref fn_sig, ref pos) => {
             return convert_func_not_found_err(avail_funcs, disabled_funcs, fn_sig, pos);
@@ -444,7 +511,9 @@ pub fn convert_err(
 
 #[cfg(test)]
 mod tests {
-    use crate::constants::ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL;
+    use crate::constants::{
+        ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL, ERR_UNEXPECTED_SPACE_IN_FUNC_NAME,
+    };
 
     use super::*;
 
@@ -776,6 +845,45 @@ mod tests {
                 message: String::from(ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL),
                 line: Some(1),
                 col: Some(13),
+            }
+        );
+    }
+
+    #[test]
+    fn test_convert_err_space_in_var_name() {
+        let script = String::from(r"let my var = 42;");
+        let err = EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::MissingToken(
+                String::from(";"),
+                String::from("to terminate this statement"),
+            ),
+            rhai::Position::new(1, 6),
+        );
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(ERR_UNEXPECTED_SPACE_IN_VAR_NAME),
+                line: Some(1),
+                col: Some(6),
+            }
+        );
+    }
+
+    #[test]
+    fn test_convert_err_space_in_func_name() {
+        let script = String::from(r"fn my func() {}");
+        let err = EvalAltResult::ErrorParsing(
+            rhai::ParseErrorType::FnMissingParams(String::from("my")),
+            rhai::Position::new(1, 7),
+        );
+        let err = convert_err(&AVAIL_FUNCS, &NO_DISABLED_FUNCS, script, Box::new(err));
+        assert_eq!(
+            err,
+            BetterError {
+                message: String::from(ERR_UNEXPECTED_SPACE_IN_FUNC_NAME),
+                line: Some(1),
+                col: Some(7),
             }
         );
     }

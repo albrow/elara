@@ -29,7 +29,8 @@ pub static BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL: &str = "line break 
 /// Returned as the end-user error message if there is a line break in the middle of a function call.
 pub static ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL: &str =
     "Error: Unexpected line break. (Hint: you may need to move the function arguments to the same line as the function call.)";
-
+pub static ERR_UNEXPECTED_SPACE_IN_VAR_NAME: &str = "Syntax Error: Variable names cannot contain spaces. (Hint: try using an underscore instead of a space.)";
+pub static ERR_UNEXPECTED_SPACE_IN_FUNC_NAME: &str = "Syntax Error: Function names cannot contain spaces. (Hint: try using an underscore instead of a space.)";
 pub struct BuiltinFunction {
     pub name: &'static str,
     pub arg_types: &'static [&'static str],
