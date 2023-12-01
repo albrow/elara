@@ -57,6 +57,14 @@ export class RoundRobinSoundGroup implements Playable {
     this._sounds.forEach((sound) => sound.stop(fadeOut));
   }
 
+  mute(): void {
+    this._sounds.forEach((sound) => sound.mute());
+  }
+
+  unmute(): void {
+    this._sounds.forEach((sound) => sound.unmute());
+  }
+
   isPlaying(): boolean {
     return this._sounds[this._currentSoundIndex].isPlaying();
   }

@@ -94,6 +94,8 @@ import moonbaseDamageDetails from "../audio/dialog/moonbase_damage_details.ogg";
 import moonbaseDamageDetailsFallback from "../audio/dialog/moonbase_damage_details.mp3";
 import kalinaInTrouble from "../audio/dialog/kalina_in_trouble.ogg";
 import kalinaInTroubleFallback from "../audio/dialog/kalina_in_trouble.mp3";
+import ringtone from "../audio/sfx/ringtone.ogg";
+import ringtoneFallback from "../audio/sfx/ringtone.mp3";
 
 import { useSaveData } from "../hooks/save_data_hooks";
 import { volumeToGain } from "../lib/utils";
@@ -259,6 +261,10 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         [asteroidImpact, asteroidImpactFallback],
         { baseGain: 0.25 }
       ),
+      ringtone: new Sound("ringtone", "sfx", [ringtone, ringtoneFallback], {
+        baseGain: 0.8,
+        loop: true,
+      }),
       dialog_intro: new Sound(
         "dialog_intro",
         "dialog",
