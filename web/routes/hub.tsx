@@ -1,12 +1,15 @@
 import { Box, Image } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouteNode } from "react-router5";
+import { AnimateKeyframes } from "react-simple-animate";
 import { BOARD_BG_Z_INDEX as BG_Z_INDEX } from "../lib/constants";
 
 import hubBgImage from "../images/hub_bg_only.png";
 import monitorImage from "../images/hub_monitor.png";
 import journalImage from "../images/hub_journal.png";
 import videoTabletImage from "../images/hub_video_tablet.png";
+import incomingCallIcon from "../images/hub_video_tablet_call_icon.png";
+
 import {
   useJournalPages,
   useLevels,
@@ -267,6 +270,59 @@ export default function Hub() {
             filter: videoTabletImageFilter,
           }}
         />
+        {/* Use this box to align the transform-origin for the
+        incoming call icon. To do this, you need to make sure your screen size
+        is equal to the size of the background (e.g. make it exactly 16x9 aspect
+        ratio) */}
+        {/* <Box
+          position="fixed"
+          w="2px"
+          h="2px"
+          bgColor="red"
+          zIndex={BG_Z_INDEX + 5}
+          left="31.2%"
+          top="73.8%"
+        /> */}
+        {nextUnlockedScene.type === "dialog" && (
+          <AnimateKeyframes
+            play
+            duration={1}
+            iterationCount="infinite"
+            keyframes={[
+              // A simple phone ringing animation.
+              { 0: "transform: rotate(0deg)" },
+              { 10: "transform: rotate(-5deg)" },
+              { 20: "transform: rotate(0deg)" },
+              { 30: "transform: rotate(5deg)" },
+              { 40: "transform: rotate(0deg)" },
+              { 47: "transform: rotate(-2deg)" },
+              { 54: "transform: rotate(0deg)" },
+              { 61: "transform: rotate(2deg)" },
+              { 68: "transform: rotate(0deg)" },
+            ]}
+            render={({ style }) => (
+              <Image
+                src={incomingCallIcon}
+                zIndex={BG_Z_INDEX + 1}
+                position="absolute"
+                objectFit="cover"
+                width="100vw"
+                height="56.25vw"
+                maxHeight="100vh"
+                maxWidth="177.78vh"
+                mx="auto"
+                my="0"
+                top="0"
+                left="0"
+                right="0"
+                bottom="0"
+                opacity="0.6"
+                transformOrigin="31.2% 73.8%"
+                style={style}
+              />
+            )}
+          />
+        )}
         <Image
           src={monitorImage}
           zIndex={BG_Z_INDEX + 1}
