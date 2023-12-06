@@ -23,7 +23,7 @@ import {
 } from "../../lib/constants";
 import { Offset, posToOffset, range } from "../../lib/utils";
 import "./board.css";
-import lunarSurfaceBgUrl from "../../images/board/lunar_surface_bg.png";
+import lunarSurfaceBgUrl from "../../images/board/lunar_surface_bg.jpg";
 import DataPoint from "./data_point";
 import Enemy from "./enemy";
 import EnergyCell from "./energy_cell";
