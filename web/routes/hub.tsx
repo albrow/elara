@@ -4,7 +4,7 @@ import { useRouteNode } from "react-router5";
 import { AnimateKeyframes } from "react-simple-animate";
 import { BOARD_BG_Z_INDEX as BG_Z_INDEX } from "../lib/constants";
 
-import hubBgImage from "../images/hub_bg_only.png";
+import hubBgImage from "../images/hub_bg_only.jpg";
 import monitorImage from "../images/hub_monitor.png";
 import journalImage from "../images/hub_journal.png";
 import videoTabletImage from "../images/hub_video_tablet.png";
