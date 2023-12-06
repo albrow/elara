@@ -16,7 +16,7 @@ import {
   useNextUnlockedScene,
   useSceneNavigator,
 } from "../hooks/scenes_hooks";
-import BlinkingText from "../components/hub/blinking_text";
+import BlinkingText from "../components/blinking_text";
 import { useLevelSelectModal } from "../hooks/level_select_modal_hooks";
 import { useSaveData } from "../hooks/save_data_hooks";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";

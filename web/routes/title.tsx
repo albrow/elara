@@ -1,4 +1,5 @@
 import { Box, Button, Container, Flex, Img, Text } from "@chakra-ui/react";
+import semver from "semver";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -22,9 +23,10 @@ import { ChangelogModal } from "../components/title/changelog_modal";
 import { useJukebox } from "../hooks/jukebox_hooks";
 
 import starryBgImage from "../images/starry_bg.webp";
+import BlinkingText from "../components/blinking_text";
 
 export default function Title() {
-  const [saveData, { resetAllSaveData }] = useSaveData();
+  const [saveData, { resetAllSaveData, markChangelogSeen }] = useSaveData();
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [confirmDeleteDataModalVisble, setConfirmDeleteDataModalVisible] =
     useState(false);
@@ -81,8 +83,29 @@ export default function Title() {
   }, []);
 
   const onChangelog = useCallback(() => {
+    markChangelogSeen();
     setChangelogModalVisisble(true);
-  }, []);
+  }, [markChangelogSeen]);
+
+  /**
+   * Whether or not the changelog should be considered "new" for the user and highlighted as such.
+   */
+  const shouldHighlightChangelog = useMemo(() => {
+    if (
+      saveData.lastSeenChangelogVersion &&
+      semver.lt(saveData.lastSeenChangelogVersion, APP_VERSION)
+    ) {
+      // User has not seen the changelog for this version yet. We should
+      // highlight the changelog button.
+      return true;
+    }
+    if (semver.lt(APP_VERSION, "0.3.0")) {
+      // Versions before 0.3.0 didn't track the last seen changelog version,
+      // so if the user has played the game at all, assume the changelog is new for those users.
+      return saveData.seenDialogTrees.length > 0;
+    }
+    return false;
+  }, [saveData]);
 
   return (
     <Box
@@ -176,10 +199,16 @@ export default function Title() {
               About
             </Button>
           </a>
-          <Button size="lg" onClick={onChangelog}>
+          <Button
+            size="lg"
+            onClick={onChangelog}
+            borderWidth={shouldHighlightChangelog ? "3px" : "0"}
+            borderColor="yellow.500"
+          >
             <MdNewspaper style={{ marginRight: "0.2em" }} />
             What&apos;s New
           </Button>
+          {shouldHighlightChangelog && <BlinkingText text="New Updates!" />}
         </Flex>
       </Container>
       <Text

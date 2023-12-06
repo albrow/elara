@@ -63,6 +63,10 @@ export interface SaveData {
   lastUpdated?: number;
   // Which cutscenes have already been seen.
   seenCutscenes: string[];
+  // The latest version of the changelog that the user has seen.
+  // Undefined if the user has not seen the changelog or if they saw it
+  // before we started tracking this.
+  lastSeenChangelogVersion?: string;
 }
 
 const DEFUALT_SETTINGS: Settings = {
@@ -109,6 +113,7 @@ export interface SaveDataManager {
   resetAllSaveData: () => void;
   unlockFunctions: (newFunctions: string[]) => void;
   markCutsceneSeen: (cutsceneId: string) => void;
+  markChangelogSeen: () => void;
 }
 
 // Actually saves the data to local storage.
@@ -384,6 +389,9 @@ export const SaveDataContext = createContext<
     markCutsceneSeen: () => {
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
+    markChangelogSeen: () => {
+      throw new Error("useSaveData must be used within a SaveDataContext");
+    },
   },
 ] as const);
 
@@ -534,9 +542,13 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
     [setSaveData]
   );
 
-  // TODO(albrow): Consider making settings carry over even if you start a new game?
   const resetAllSaveData = useCallback(() => {
-    setSaveData(DEFAULT_SAVE_DATA);
+    const oldSaveData = clone(saveDataRef.current);
+    const newSaveData = DEFAULT_SAVE_DATA;
+    // Preserve settings and lastSeenChangelogVersion.
+    newSaveData.settings = oldSaveData.settings;
+    newSaveData.lastSeenChangelogVersion = oldSaveData.lastSeenChangelogVersion;
+    setSaveData(newSaveData);
   }, [setSaveData]);
 
   // TODO(albrow): Use a set everywhere else to prevent duplicates being
@@ -563,6 +575,13 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
     [setSaveData]
   );
 
+  const markChangelogSeen = useCallback(() => {
+    const newSaveData = clone(saveDataRef.current);
+    newSaveData.lastSeenChangelogVersion = APP_VERSION;
+    console.log(`Saving changelog version ${APP_VERSION} to save data.`);
+    setSaveData(newSaveData);
+  }, [setSaveData]);
+
   const providerValue = useMemo(
     () =>
       [
@@ -581,6 +600,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
           resetAllSaveData,
           unlockFunctions,
           markCutsceneSeen,
+          markChangelogSeen,
         },
       ] as const,
     [
@@ -598,6 +618,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       resetAllSaveData,
       unlockFunctions,
       markCutsceneSeen,
+      markChangelogSeen,
     ]
   );
 
