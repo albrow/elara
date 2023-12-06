@@ -1,5 +1,24 @@
 <a href="https://github.com/albrow/elara/commits/main" target="_blank">More info on GitHub</a>
 
+##### December 5, 2023 (version 0.3.0)
+
+Most of the changes in the version are prep work for the upcoming Steam release! A lot
+of work went into making the game playable on Steam, but most of those changes will be
+invisible if you are playing on the web.
+
+You can <a href="https://store.steampowered.com/app/2657610/Elara_A_Coding_Adventure_in_Space/" target="_blank">wishlist the game on Steam now</a>!
+
+- Improved error message when you have a space in a variable or function name (<a href="https://github.com/albrow/elara/issues/76" target="_blank">issue #76</a>).
+- Added new ringtone sound effect and animation when you have an incoming call from Kalina (<a href="https://github.com/albrow/elara/issues/32" target="_blank">issue #32</a>).
+- The "What's New" button is now highlighted on the title screen whenever there are new updates that you haven't seen yet.
+- Preparation for Steam release:
+    - Added Electron.js integration, configuration, and build commands in the `/electron` directory.
+    - Change both journal and cutscene players to use local video files for the Electron build. (So that the game can be played offline).
+    - Changed all links to open in new windows.
+    - Added support for different zoom levels for Electron builds. (A workaround until <a href="https://github.com/albrow/elara/issues/75" target="blank">issue #75</a> is fixed).
+    - Added basic support for Steamworks API for Electron builds.
+    - Many other minor changes not included here.
+
 ##### November 13, 2023 (version 0.2.1)
 
 - Hotfix for Itch.io build.
