@@ -2,6 +2,16 @@
   outline: none !important;
 }
 
+.cm-editor {
+  border-bottom-right-radius: 4px;
+}
+
+.cm-editor,
+.cm-gutter,
+.cm-gutters {
+  border-bottom-left-radius: 4px;
+}
+
 .cm-tooltip-hover,
 .cm-tooltip,
 .ͼ1 .cm-tooltip {

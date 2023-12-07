@@ -241,37 +241,25 @@ export default function Editor(props: EditorProps) {
   const codeMirrorHeight = useMemo(() => {
     if (props.type === "level") {
       if (windowWidth >= BP_3XL) {
-        return "579px";
+        return 580;
       }
       if (windowWidth >= BP_2XL) {
-        return "454px";
+        return 454;
       }
       if (windowWidth >= BP_XL) {
-        return "370px";
+        return 370;
       }
-      return "273px";
-    }
-    return "auto";
-  }, [props.type, windowWidth]);
-
-  const editorWrapperHeight = useMemo(() => {
-    if (props.type === "level") {
-      if (windowWidth >= BP_3XL) {
-        return "582px";
-      }
-      if (windowWidth >= BP_2XL) {
-        return "457px";
-      }
-      if (windowWidth >= BP_XL) {
-        return "373px";
-      }
-      return "276px";
+      return 276;
     }
     return undefined;
   }, [props.type, windowWidth]);
 
+  const editorBorderWidth = 2;
+
+  const editorWrapperHeight = codeMirrorHeight ? `${codeMirrorHeight + editorBorderWidth}px` : undefined;
+
   const { setContainer, view } = useCodeMirror({
-    height: codeMirrorHeight,
+    height: codeMirrorHeight ? `${codeMirrorHeight}px` : "auto",
     editable: state === "editing",
     readOnly: state !== "editing",
     indentWithTab: false,
