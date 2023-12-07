@@ -28,6 +28,7 @@ import {
   BP_LG,
   BP_XL,
   BP_2XL,
+  BP_3XL,
 } from "./lib/constants";
 
 // This file doesn't play nicely with HMR/Fast refresh, so we just reload the page
@@ -53,6 +54,7 @@ const elaraTheme = extendTheme({
     lg: `${BP_LG}px`,
     xl: `${BP_XL}px`,
     "2xl": `${BP_2XL}px`,
+    "3xl": `${BP_3XL}px`,
   },
   sizes: {
     "container.xl": "1268px",

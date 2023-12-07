@@ -416,6 +416,7 @@ export default function Level() {
               direction="row"
               mt="16px"
               h={{ base: "350px", xl: "fit-content" }}
+              w={{ "2xl": "1360px", "3xl": "1544px" }}
             >
               <Box id="editor-section" mr={0}>
                 <Box w={{ base: "584px", xl: "608px" }}>
@@ -443,6 +444,8 @@ export default function Level() {
                 transform={{
                   base: "scale(0.75)",
                   xl: "none",
+                  "2xl": "scale(1.2)",
+                  "3xl": "scale(1.5)",
                 }}
               >
                 <Box
