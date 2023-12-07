@@ -40,6 +40,7 @@ export const BP_MD = 768;
 export const BP_LG = 992;
 export const BP_XL = 1268;
 export const BP_2XL = 1500;
+export const BP_3XL = 2000;
 
 // Z-indexes are all defined here so we can make sure
 // elements are in the correct order.

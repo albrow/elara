@@ -30,7 +30,7 @@ import {
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
-import { BP_XL, CODE_LEN_EXPLANATION } from "../../lib/constants";
+import { BP_XL, BP_2XL, CODE_LEN_EXPLANATION, BP_3XL } from "../../lib/constants";
 import { textEffects } from "./text_effects";
 import ControlBar from "./control_bar";
 
@@ -240,20 +240,32 @@ export default function Editor(props: EditorProps) {
 
   const codeMirrorHeight = useMemo(() => {
     if (props.type === "level") {
-      if (windowWidth < BP_XL) {
-        return "273px";
+      if (windowWidth >= BP_3XL) {
+        return "579px";
       }
-      return "370px";
+      if (windowWidth >= BP_2XL) {
+        return "454px";
+      }
+      if (windowWidth >= BP_XL) {
+        return "370px";
+      }
+      return "273px";
     }
     return "auto";
   }, [props.type, windowWidth]);
 
   const editorWrapperHeight = useMemo(() => {
     if (props.type === "level") {
-      if (windowWidth < BP_XL) {
-        return "276px";
+      if (windowWidth >= BP_3XL) {
+        return "582px";
       }
-      return "373px";
+      if (windowWidth >= BP_2XL) {
+        return "457px";
+      }
+      if (windowWidth >= BP_XL) {
+        return "373px";
+      }
+      return "276px";
     }
     return undefined;
   }, [props.type, windowWidth]);
