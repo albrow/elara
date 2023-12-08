@@ -8,7 +8,7 @@ import { useSaveData } from "../hooks/save_data_hooks";
 import { BOARD_BG_Z_INDEX as BG_Z_INDEX } from "../lib/constants";
 
 import npcRightImage from "../images/npc_right.png";
-import videoTabletBgImage from "../images/video_tablet_bg.png";
+import videoTabletBgImage from "../images/video_tablet_bg.jpg";
 import DialogTree from "../components/dialog/dialog_tree";
 
 export default function DialogOverBg() {
