@@ -20,6 +20,30 @@ export const BOARD_INNER_WIDTH = TILE_SIZE * WIDTH;
 export const BOARD_INNER_HEIGHT = TILE_SIZE * HEIGHT;
 export const BOARD_TOTAL_WIDTH = BOARD_INNER_WIDTH + AXIS_WIDTH + 2;
 export const BOARD_TOTAL_HEIGHT = BOARD_INNER_HEIGHT + AXIS_HEIGHT + 2;
+export const BOARD_RESPONSIVE_BASE = 0.77;
+export const BOARD_RESPONSIVE_2XL = 1.2;
+export const BOARD_RESPONSIVE_3XL = 1.5;
+export const BOARD_WRAPPER_RESPONSIVE_TRANSFORM = {
+  base: `scale(${BOARD_RESPONSIVE_BASE})`, // 477.4px
+  xl: "none", // 620px
+  "2xl": `scale(${BOARD_RESPONSIVE_2XL})`, // 744px
+  "3xl": `scale(${BOARD_RESPONSIVE_3XL})`, // 930px
+};
+export const EDITOR_SECTION_RESPONSIVE_WIDTH = {
+  base: `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE}px`,
+  xl: `${BOARD_TOTAL_WIDTH}px`,
+  "2xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL}px`,
+  "3xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL}px`
+};
+export const MONTIOR_PADDING_BASE = 10;
+export const MONITOR_PADDING_2XL = 24;
+export const MONITOR_BORDER_WIDTH = 3;
+export const MONITOR_FRAME_RESPONSIVE_WIDTH = {
+  base: `calc(${(BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE * 2) + (MONTIOR_PADDING_BASE * 2) + (MONITOR_BORDER_WIDTH * 2)}px + 0.5rem)`,
+  xl: "fit-content",
+  "2xl": `calc(${(BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL * 2) + (MONITOR_PADDING_2XL * 2) + (MONITOR_BORDER_WIDTH * 2)}px + 0.5rem)`,
+  "3xl": `calc(${(BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL * 2) + (MONITOR_PADDING_2XL * 2) + (MONITOR_BORDER_WIDTH * 2)}px + 0.5rem)`,
+};
 export const DEFAULT_ENERGY_CELL_GAIN = 10;
 export const SPRITE_DROP_SHADOW = "drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.3))";
 export const WIRE_DROP_SHADOW = "drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3))";

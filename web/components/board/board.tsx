@@ -18,8 +18,9 @@ import {
 import {
   AXIS_HEIGHT,
   AXIS_WIDTH,
+  BOARD_TOTAL_WIDTH,
+  BOARD_TOTAL_HEIGHT,
   HEIGHT,
-  TILE_SIZE,
   WIDTH,
 } from "../../lib/constants";
 import { Offset, posToOffset, range } from "../../lib/utils";
@@ -88,8 +89,8 @@ export default function Board(props: BoardProps) {
       >
         <table
           style={{
-            width: `${AXIS_WIDTH + TILE_SIZE * WIDTH + 1}px`,
-            height: `${AXIS_HEIGHT + TILE_SIZE * HEIGHT + 2}px`,
+            width: `${BOARD_TOTAL_WIDTH}px`,
+            height: `${BOARD_TOTAL_HEIGHT}px`,
           }}
         >
           <tbody>
