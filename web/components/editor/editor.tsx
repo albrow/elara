@@ -30,7 +30,8 @@ import {
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
-import { BP_XL, BP_2XL, BP_3XL, CODE_LEN_EXPLANATION, EDITOR_BORDER_WIDTH } from "../../lib/constants";
+import { BP_XL, BP_2XL, BP_3XL, CODE_LEN_EXPLANATION, EDITOR_BORDER_WIDTH, DEFAULT_RESPONSIVE_FONT_SCALE } from "../../lib/constants";
+import { useWindowWidth } from "../../hooks/responsive_hooks";
 import { textEffects } from "./text_effects";
 import ControlBar from "./control_bar";
 
@@ -227,24 +228,15 @@ export default function Editor(props: EditorProps) {
 
   // Note: We have to use JavaScript to control the size of the editor because
   // CodeMirror requires you to pass in the height as a string.
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    function onWindowResize() {
-      setWindowWidth(window.innerWidth);
-    }
-    // Trigger this function on resize
-    window.addEventListener("resize", onWindowResize);
-    //  Cleanup for componentWillUnmount
-    return () => window.removeEventListener("resize", onWindowResize);
-  }, []);
+  const windowWidth = useWindowWidth();
 
   const codeMirrorHeight = useMemo(() => {
     if (props.type === "level") {
       if (windowWidth >= BP_3XL) {
-        return 580;
+        return 572;
       }
       if (windowWidth >= BP_2XL) {
-        return 454;
+        return 446;
       }
       if (windowWidth >= BP_XL) {
         return 370;
@@ -584,6 +576,7 @@ export default function Editor(props: EditorProps) {
         borderColor="gray.700"
         borderBottomRightRadius="0.375rem"
         borderBottomLeftRadius="0.375rem"
+        fontSize={DEFAULT_RESPONSIVE_FONT_SCALE}
       >
         <div
           ref={editor}
@@ -591,7 +584,7 @@ export default function Editor(props: EditorProps) {
         />
       </Box>
       {props.showCodeLenCounter && (
-        <Box position="relative" top={{ base: "-30px", xl: "-42px" }}>
+        <Box position="relative" top={{ base: "-36px", xl: "-42px", "2xl": "-44px", "3xl": "-50px" }}>
           <Box
             bg="gray.700"
             float="right"
@@ -601,11 +594,16 @@ export default function Editor(props: EditorProps) {
             borderRadius="0.375rem"
             opacity="50%"
           >
-            <Tooltip label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
+            <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
               <Text
                 verticalAlign="center"
                 as="div"
-                fontSize={{ base: "0.7rem", xl: "0.8rem" }}
+                fontSize={{
+                  base: "0.7rem",
+                  xl: "0.8rem",
+                  "2xl": "0.9rem",
+                  "3xl": "1.1rem"
+                }}
                 color="white"
                 _hover={{ cursor: "help" }}
               >

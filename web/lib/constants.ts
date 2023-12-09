@@ -20,30 +20,7 @@ export const BOARD_INNER_WIDTH = TILE_SIZE * WIDTH;
 export const BOARD_INNER_HEIGHT = TILE_SIZE * HEIGHT;
 export const BOARD_TOTAL_WIDTH = BOARD_INNER_WIDTH + AXIS_WIDTH + 2;
 export const BOARD_TOTAL_HEIGHT = BOARD_INNER_HEIGHT + AXIS_HEIGHT + 2;
-export const BOARD_RESPONSIVE_BASE = 0.77;
-export const BOARD_RESPONSIVE_2XL = 1.2;
-export const BOARD_RESPONSIVE_3XL = 1.5;
-export const BOARD_WRAPPER_RESPONSIVE_TRANSFORM = {
-  base: `scale(${BOARD_RESPONSIVE_BASE})`, // 477.4px
-  xl: "none", // 620px
-  "2xl": `scale(${BOARD_RESPONSIVE_2XL})`, // 744px
-  "3xl": `scale(${BOARD_RESPONSIVE_3XL})`, // 930px
-};
-export const EDITOR_SECTION_RESPONSIVE_WIDTH = {
-  base: `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE}px`,
-  xl: `${BOARD_TOTAL_WIDTH}px`,
-  "2xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL}px`,
-  "3xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL}px`
-};
-export const MONTIOR_PADDING_BASE = 10;
-export const MONITOR_PADDING_2XL = 24;
-export const MONITOR_BORDER_WIDTH = 3;
-export const MONITOR_FRAME_RESPONSIVE_WIDTH = {
-  base: `calc(${(BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE * 2) + (MONTIOR_PADDING_BASE * 2) + (MONITOR_BORDER_WIDTH * 2)}px + 0.5rem)`,
-  xl: "fit-content",
-  "2xl": `calc(${(BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL * 2) + (MONITOR_PADDING_2XL * 2) + (MONITOR_BORDER_WIDTH * 2)}px + 0.5rem)`,
-  "3xl": `calc(${(BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL * 2) + (MONITOR_PADDING_2XL * 2) + (MONITOR_BORDER_WIDTH * 2)}px + 0.5rem)`,
-};
+
 export const DEFAULT_ENERGY_CELL_GAIN = 10;
 export const SPRITE_DROP_SHADOW = "drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.3))";
 export const WIRE_DROP_SHADOW = "drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3))";
@@ -55,13 +32,99 @@ export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
 export const PLAYER_DEFAULT_CSS_ANIM_DELAY = 0.1; // seconds
 
 // Constants related to the game's UI.
-export const FUNCTION_LIST_WIDTH = 160;
 export const NAVBAR_HEIGHT = 56; // In pixels
 export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
+export const HOVER_DOC_BOX_SHADOW = "2px 2px 10px";
+
+// The following constants are used to scale the board for responsive design.
+// WARNING: If you change these, remember to also update md_content.css.
+const BOARD_RESPONSIVE_BASE = 0.77;
+const BOARD_RESPONSIVE_2XL = 1.2;
+const BOARD_RESPONSIVE_3XL = 1.5;
+export const BOARD_WRAPPER_RESPONSIVE_TRANSFORM = {
+  base: `scale(${BOARD_RESPONSIVE_BASE})`, // 477.4px
+  xl: "none", // 620px
+  "2xl": `scale(${BOARD_RESPONSIVE_2XL})`, // 744px
+  "3xl": `scale(${BOARD_RESPONSIVE_3XL})`, // 930px
+};
+
+// Function list responsive definitions.
+const FUNCTION_LIST_WIDTH_BASE = 160;
+const FUNCTION_LIST_WIDTH_XL = 200;
+const FUNCTION_LIST_WIDTH_2XL = 240;
+const FUNCTION_LIST_WIDTH_3XL = 280;
+export const FUNCTION_LIST_RESPONSIVE_WIDTH = {
+  base: `${FUNCTION_LIST_WIDTH_BASE}px`,
+  xl: `${FUNCTION_LIST_WIDTH_XL}px`,
+  "2xl": `${FUNCTION_LIST_WIDTH_2XL}px`,
+  "3xl": `${FUNCTION_LIST_WIDTH_3XL}px`,
+};
+
+// Function list item hover responsive definitions.
+const FUNCTION_LIST_HOVER_RIGHT_OFFSET = 14;
+export const FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_RIGHT = {
+  base: `${FUNCTION_LIST_WIDTH_BASE - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
+  xl: `${FUNCTION_LIST_WIDTH_XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
+  "2xl": `${FUNCTION_LIST_WIDTH_2XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
+  "3xl": `${FUNCTION_LIST_WIDTH_3XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
+};
+export const FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_TRANSFORM = {
+  "2xl": `scale(${BOARD_RESPONSIVE_2XL})`,
+  "3xl": `scale(${BOARD_RESPONSIVE_3XL})`,
+};
+
+// Editor responsive definitions.
 export const EDITOR_BORDER_WIDTH = 2;
+export const EDITOR_SECTION_RESPONSIVE_WIDTH = {
+  base: `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE}px`,
+  xl: `${BOARD_TOTAL_WIDTH}px`,
+  "2xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL}px`,
+  "3xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL}px`,
+};
+
+// Monitor responsive definitions.
+export const MONTIOR_PADDING_BASE = 10;
+export const MONITOR_PADDING_2XL = 24;
+export const MONITOR_BORDER_WIDTH = 3;
+export const MONITOR_FRAME_RESPONSIVE_WIDTH = {
+  base: `calc(${
+    BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE * 2 +
+    MONTIOR_PADDING_BASE * 2 +
+    MONITOR_BORDER_WIDTH * 2
+  }px + 0.5rem)`,
+  xl: "fit-content",
+  "2xl": `calc(${
+    BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL * 2 +
+    MONITOR_PADDING_2XL * 2 +
+    MONITOR_BORDER_WIDTH * 2
+  }px + 0.5rem)`,
+  "3xl": `calc(${
+    BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL * 2 +
+    MONITOR_PADDING_2XL * 2 +
+    MONITOR_BORDER_WIDTH * 2
+  }px + 0.5rem)`,
+};
+
+// Level title responsive definitions.
+export const LEVEL_TITLE_FONT_SIZE_BASE = "1.4em";
+export const LEVEL_TITLE_FONT_SIZE_XL = "1.8em";
+export const LEVEL_TITLE_FONT_SIZE_2XL = "2.2em";
+export const LEVEL_TITLE_FONT_SIZE_3XL = "2.6em";
+export const LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_BASE = 16;
+export const LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_XL = 18;
+export const LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_2XL = 20;
+export const LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_3XL = 22;
+const DEFAULT_FONT_SCALE_XL = "1em";
+const DEFAULT_FONT_SCALE_2XL = "1.2em";
+const DEFAULT_FONT_SCALE_3XL = "1.6em";
+export const DEFAULT_RESPONSIVE_FONT_SCALE = {
+  xl: DEFAULT_FONT_SCALE_XL,
+  "2xl": DEFAULT_FONT_SCALE_2XL,
+  "3xl": DEFAULT_FONT_SCALE_3XL,
+};
 
 // Breakpoints for responsive design. In pixels.
-// WARNING: If you change this, you also need to update board.css and editor.css.
+// WARNING: If you change this, you also need to update board.css, editor.css and md_content.css.
 export const BP_SM = 480;
 export const BP_MD = 768;
 export const BP_LG = 992;
