@@ -39,9 +39,16 @@ export default function SizingUtility() {
         <Text
           size="2em"
           color="yellow"
-          display={{ base: "none", "2xl": "block" }}
+          display={{ base: "none", "2xl": "block", "3xl": "none" }}
         >
           2xl
+        </Text>
+        <Text
+          size="2em"
+          color="yellow"
+          display={{ base: "none", "3xl": "block" }}
+        >
+          3xl
         </Text>
       </Box>
     </>
