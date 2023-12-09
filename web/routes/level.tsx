@@ -21,7 +21,13 @@ import ShowHintButton from "../components/level/show_hint_button";
 import { useHintsModal } from "../hooks/hints_modal_hooks";
 import {
   BG_Z_INDEX,
+  BOARD_WRAPPER_RESPONSIVE_TRANSFORM,
+  EDITOR_SECTION_RESPONSIVE_WIDTH,
+  MONITOR_BORDER_WIDTH,
+  MONITOR_FRAME_RESPONSIVE_WIDTH,
   MONITOR_FRAME_Z_INDEX,
+  MONITOR_PADDING_2XL,
+  MONTIOR_PADDING_BASE,
   NAVBAR_HEIGHT,
 } from "../lib/constants";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
@@ -363,11 +369,11 @@ export default function Level() {
             bg="white"
             mx="auto"
             my="auto"
-            w={{ base: "994px", xl: "fit-content", "2xl": "1550px", "3xl": "1800px" }}
-            px={{ base: "10px", "2xl": "24px" }}
+            w={MONITOR_FRAME_RESPONSIVE_WIDTH}
+            px={{ base: `${MONTIOR_PADDING_BASE}px`, "2xl": `${MONITOR_PADDING_2XL}px` }}
             pt={{ base: "18px", "2xl": "24px" }}
             pb={{ lg: "0px", "2xl": "12px" }}
-            border="3px solid"
+            border={`${MONITOR_BORDER_WIDTH}px solid`}
             borderColor="gray.500"
             boxShadow="0 0 20px 2px rgba(255, 255, 255, 0.5)"
           >
@@ -377,7 +383,7 @@ export default function Level() {
                 <LevelTitle
                   title={currLevel().name}
                   levelIndex={currScene?.levelIndex || 0}
-                />
+                />              
                 {currScene?.hints != null && currScene?.hints.length > 0 && (
                   <Box ml="8px" my="auto" mt="3px">
                     <ShowHintButton onClick={showHintsModal} />
@@ -415,10 +421,12 @@ export default function Level() {
             <Stack
               direction="row"
               mt="16px"
-              h={{ base: "325px", xl: "fit-content" }}
+              h={{ base: "332px", xl: "fit-content" }}
             >
               <Box id="editor-section" mr={0}>
-                <Box w={{ base: "495.2px", xl: "619px", "2xl": "742.8px", "3xl": "866.4px" }}>
+                <Box
+                  w={EDITOR_SECTION_RESPONSIVE_WIDTH}
+                >
                   <Editor
                     type="level"
                     requestedState={requestedEditorState}
@@ -440,12 +448,7 @@ export default function Level() {
                 id="board-wrapper"
                 transformOrigin="top left"
                 height="fit-content"
-                transform={{
-                  base: "scale(0.75)", // 495.2px
-                  xl: "none", // 619px
-                  "2xl": "scale(1.2)", // 742.8px
-                  "3xl": "scale(1.4)", // 866.4px
-                }}
+                transform={BOARD_WRAPPER_RESPONSIVE_TRANSFORM}
               >
                 <Box
                   position="relative"
