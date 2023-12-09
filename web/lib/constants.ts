@@ -33,6 +33,7 @@ export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
 export const FUNCTION_LIST_WIDTH = 160;
 export const NAVBAR_HEIGHT = 56; // In pixels
 export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
+export const EDITOR_BORDER_WIDTH = 2;
 
 // Breakpoints for responsive design. In pixels.
 // WARNING: If you change this, you also need to update board.css and editor.css.
