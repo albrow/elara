@@ -22,6 +22,7 @@ import { useHintsModal } from "../hooks/hints_modal_hooks";
 import {
   BG_Z_INDEX,
   BOARD_WRAPPER_RESPONSIVE_TRANSFORM,
+  DEFAULT_RESPONSIVE_FONT_SCALE,
   EDITOR_SECTION_RESPONSIVE_WIDTH,
   MONITOR_BORDER_WIDTH,
   MONITOR_FRAME_RESPONSIVE_WIDTH,
@@ -95,9 +96,8 @@ export default function Level() {
     if (!currScene) {
       return;
     }
-    document.title = `Elara | Level ${currScene.levelIndex}: ${
-      currLevel().name
-    }`;
+    document.title = `Elara | Level ${currScene.levelIndex}: ${currLevel().name
+      }`;
   }, [currLevel, currScene]);
 
   const initialCode = useCallback(
@@ -383,9 +383,9 @@ export default function Level() {
                 <LevelTitle
                   title={currLevel().name}
                   levelIndex={currScene?.levelIndex || 0}
-                />              
+                />
                 {currScene?.hints != null && currScene?.hints.length > 0 && (
-                  <Box ml="8px" my="auto" mt="3px">
+                  <Box ml="8px" my="auto" mt="auto">
                     <ShowHintButton onClick={showHintsModal} />
                   </Box>
                 )}
@@ -399,7 +399,7 @@ export default function Level() {
               </Flex>
             </Box>
             {/* Objective/challenge text */}
-            <Box>
+            <Box fontSize={DEFAULT_RESPONSIVE_FONT_SCALE}>
               <Text as="span" verticalAlign="middle">
                 {getObjectiveIcon()}
                 <Text as="span" verticalAlign="middle" fontWeight="bold">

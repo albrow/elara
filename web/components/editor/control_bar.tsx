@@ -26,6 +26,8 @@ import { range } from "../../lib/utils";
 import type { EditorState } from "./editor";
 import FunctionList from "./text_effects/function_list";
 
+const buttonSize = { base: "xs", xl: "sm", "2xl": "md" };
+
 export interface ControlBarProps {
   editorState: EditorState;
   availableFunctions: string[];
@@ -78,7 +80,7 @@ export default function ControlBar(props: ControlBarProps) {
             <>
               <Tooltip label="Deploy the code to the rover">
                 <Button
-                  size={{ base: "xs", xl: "sm" }}
+                  size={buttonSize}
                   rounded={{ base: "3px", xl: "md" }}
                   colorScheme="green"
                   onClick={props.onDeploy}
@@ -94,7 +96,7 @@ export default function ControlBar(props: ControlBarProps) {
                 <Tooltip label="Reset back to the original code">
                   <Button
                     ml={{ base: "6px", xl: "8px" }}
-                    size={{ base: "xs", xl: "sm" }}
+                    size={buttonSize}
                     rounded={{ base: "3px", xl: "md" }}
                     onClick={props.onReset}
                   >
@@ -109,38 +111,38 @@ export default function ControlBar(props: ControlBarProps) {
         <Box>
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-            <Tooltip label="Stop">
-              <Button
-                colorScheme="red"
-                color="black"
-                size={{ base: "xs", xl: "sm" }}
-                rounded={{ base: "3px", xl: "md" }}
-                ml="4px"
-                onClick={props.onCancel}
-              >
-                <MdStop size="1.3em" />
-              </Button>
-            </Tooltip>
-          )}
+              <Tooltip label="Stop">
+                <Button
+                  colorScheme="red"
+                  color="black"
+                  size={buttonSize}
+                  rounded={{ base: "3px", xl: "md" }}
+                  ml="4px"
+                  onClick={props.onCancel}
+                >
+                  <MdStop size="1.3em" />
+                </Button>
+              </Tooltip>
+            )}
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-            <Tooltip label="Skip backward">
-              <Button
-                size={{ base: "xs", xl: "sm" }}
-                rounded={{ base: "3px", xl: "md" }}
-                ml="4px"
-                onClick={props.onStepBack}
-              >
-                <MdSkipPrevious size="1.3em" />
-              </Button>
-            </Tooltip>
-          )}
+              <Tooltip label="Skip backward">
+                <Button
+                  size={buttonSize}
+                  rounded={{ base: "3px", xl: "md" }}
+                  ml="4px"
+                  onClick={props.onStepBack}
+                >
+                  <MdSkipPrevious size="1.3em" />
+                </Button>
+              </Tooltip>
+            )}
           {props.editorState === "running" && (
             <Tooltip label="Pause">
               <Button
                 colorScheme="yellow"
                 color="black"
-                size={{ base: "xs", xl: "sm" }}
+                size={buttonSize}
                 rounded={{ base: "3px", xl: "md" }}
                 ml="4px"
                 onClick={props.onPause}
@@ -154,7 +156,7 @@ export default function ControlBar(props: ControlBarProps) {
               <Button
                 colorScheme="green"
                 color="black"
-                size={{ base: "xs", xl: "sm" }}
+                size={buttonSize}
                 rounded={{ base: "3px", xl: "md" }}
                 ml="4px"
                 onClick={props.onPlay}
@@ -165,17 +167,17 @@ export default function ControlBar(props: ControlBarProps) {
           )}
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-            <Tooltip label="Skip forward">
-              <Button
-                size={{ base: "xs", xl: "sm" }}
-                rounded={{ base: "3px", xl: "md" }}
-                ml="4px"
-                onClick={props.onStepForward}
-              >
-                <MdSkipNext size="1.3em" />
-              </Button>
-            </Tooltip>
-          )}
+              <Tooltip label="Skip forward">
+                <Button
+                  size={buttonSize}
+                  rounded={{ base: "3px", xl: "md" }}
+                  ml="4px"
+                  onClick={props.onStepForward}
+                >
+                  <MdSkipNext size="1.3em" />
+                </Button>
+              </Tooltip>
+            )}
         </Box>
         {props.numSteps && props.stepIndex !== undefined && (
           <>
@@ -194,7 +196,7 @@ export default function ControlBar(props: ControlBarProps) {
                   <SliderMark
                     key={i}
                     color="white"
-                    fontSize={{ base: "sm", xl: "md" }}
+                    fontSize={{ base: "sm", xl: "md", "2xl": "lg" }}
                     fontWeight="bold"
                     value={i}
                     ml="-2px"
@@ -214,7 +216,7 @@ export default function ControlBar(props: ControlBarProps) {
               </Slider>
             </Box>
             <Box my="auto" ml="12px">
-              <Text as="span" fontSize="sm" color="white" verticalAlign="top">
+              <Text as="span" fontSize={{ base: "sm", xl: "md", "2xl": "lg" }} color="white" verticalAlign="top">
                 Step: {props.stepIndex + 1}/{props.numSteps}
               </Text>
             </Box>
