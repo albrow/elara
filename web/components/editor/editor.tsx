@@ -30,7 +30,7 @@ import {
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
-import { BP_XL, BP_2XL, CODE_LEN_EXPLANATION, BP_3XL } from "../../lib/constants";
+import { BP_XL, BP_2XL, CODE_LEN_EXPLANATION, BP_3XL, EDITOR_BORDER_WIDTH } from "../../lib/constants";
 import { textEffects } from "./text_effects";
 import ControlBar from "./control_bar";
 
@@ -254,9 +254,7 @@ export default function Editor(props: EditorProps) {
     return undefined;
   }, [props.type, windowWidth]);
 
-  const editorBorderWidth = 2;
-
-  const editorWrapperHeight = codeMirrorHeight ? `${codeMirrorHeight + editorBorderWidth}px` : undefined;
+  const editorWrapperHeight = codeMirrorHeight ? `${codeMirrorHeight + EDITOR_BORDER_WIDTH}px` : undefined;
 
   const { setContainer, view } = useCodeMirror({
     height: codeMirrorHeight ? `${codeMirrorHeight}px` : "auto",
@@ -579,7 +577,7 @@ export default function Editor(props: EditorProps) {
       <Box
         id="editor-wrapper"
         height={editorWrapperHeight}
-        borderWidth="2px"
+        borderWidth={`${EDITOR_BORDER_WIDTH}px`}
         borderTop="0px"
         paddingBottom="2px"
         background="gray.100"
