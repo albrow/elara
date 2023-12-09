@@ -363,7 +363,7 @@ export default function Level() {
             bg="white"
             mx="auto"
             my="auto"
-            w={{ base: "1080px", xl: "fit-content" }}
+            w={{ base: "994px", xl: "fit-content", "2xl": "1550px", "3xl": "1800px" }}
             px={{ base: "10px", "2xl": "24px" }}
             pt={{ base: "18px", "2xl": "24px" }}
             pb={{ lg: "0px", "2xl": "12px" }}
@@ -415,11 +415,10 @@ export default function Level() {
             <Stack
               direction="row"
               mt="16px"
-              h={{ base: "350px", xl: "fit-content" }}
-              w={{ "2xl": "1360px", "3xl": "1544px" }}
+              h={{ base: "325px", xl: "fit-content" }}
             >
               <Box id="editor-section" mr={0}>
-                <Box w={{ base: "584px", xl: "608px" }}>
+                <Box w={{ base: "495.2px", xl: "619px", "2xl": "742.8px", "3xl": "866.4px" }}>
                   <Editor
                     type="level"
                     requestedState={requestedEditorState}
@@ -442,10 +441,10 @@ export default function Level() {
                 transformOrigin="top left"
                 height="fit-content"
                 transform={{
-                  base: "scale(0.75)",
-                  xl: "none",
-                  "2xl": "scale(1.2)",
-                  "3xl": "scale(1.5)",
+                  base: "scale(0.75)", // 495.2px
+                  xl: "none", // 619px
+                  "2xl": "scale(1.2)", // 742.8px
+                  "3xl": "scale(1.4)", // 866.4px
                 }}
               >
                 <Box
