@@ -2,7 +2,7 @@ import { Button, Tooltip } from "@chakra-ui/react";
 import { FaLightbulb } from "react-icons/fa";
 import { useMemo } from "react";
 import { useWindowWidth } from "../../hooks/responsive_hooks";
-import { BP_2XL, BP_3XL, BP_XL, LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_2XL, LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_3XL, LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_BASE, LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_XL } from "../../lib/constants";
+import { BP_2XL, BP_3XL, BP_XL, DEFAULT_RESPONSIVE_FONT_SCALE, LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_2XL, LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_3XL, LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_BASE, LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_XL } from "../../lib/constants";
 
 const buttonSize = {
   base: `${LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_BASE * 2}px`,
@@ -32,7 +32,7 @@ export default function ShowHintButton(props: ShowHintButtonProps) {
   }, [windowWidth]);
 
   return (
-    <Tooltip label="Show hint(s)" placement="right">
+    <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Show hint(s)" placement="right">
       <Button
         bg="blue.500"
         _hover={{ bg: "blue.600" }}

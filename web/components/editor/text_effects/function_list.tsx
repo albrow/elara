@@ -1,7 +1,7 @@
 import { Menu, MenuButton, MenuList, Tooltip } from "@chakra-ui/react";
 import { BsJournalCode } from "react-icons/bs";
 import { useMemo } from "react";
-import { BP_2XL, BP_3XL, BP_XL, FUNCTION_LIST_RESPONSIVE_WIDTH } from "../../../lib/constants";
+import { BP_2XL, BP_3XL, BP_XL, DEFAULT_RESPONSIVE_FONT_SCALE, FUNCTION_LIST_RESPONSIVE_WIDTH } from "../../../lib/constants";
 import { useWindowWidth } from "../../../hooks/responsive_hooks";
 import FunctionListItem from "./function_list_item";
 
@@ -29,7 +29,7 @@ export default function FunctionList(props: FunctionListProps) {
     <Menu placement="bottom-end" closeOnSelect={false} closeOnBlur>
       {/* Larger button */}
 
-      <Tooltip label="Function list">
+      <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Function list">
         <MenuButton
           rounded={{ base: "3px", xl: "md" }}
           _hover={{ background: "gray.700" }}
