@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { RxDropdownMenu } from "react-icons/rx";
 import { useLevelSelectModal } from "../../hooks/level_select_modal_hooks";
 import { useWindowWidth } from "../../hooks/responsive_hooks";
-import { BP_2XL, BP_3XL, BP_XL, LEVEL_TITLE_FONT_SIZE_2XL, LEVEL_TITLE_FONT_SIZE_3XL, LEVEL_TITLE_FONT_SIZE_BASE, LEVEL_TITLE_FONT_SIZE_XL } from "../../lib/constants";
+import { BP_2XL, BP_3XL, BP_XL, DEFAULT_RESPONSIVE_FONT_SCALE, LEVEL_TITLE_FONT_SIZE_2XL, LEVEL_TITLE_FONT_SIZE_3XL, LEVEL_TITLE_FONT_SIZE_BASE, LEVEL_TITLE_FONT_SIZE_XL } from "../../lib/constants";
 
 export interface LevelTitleProps {
   title: string;
@@ -31,7 +31,7 @@ export default function LevelTitle(props: LevelTitleProps) {
   }, [windowWidth]);
 
   return (
-    <Tooltip label="Select a different level" placement="right">
+    <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Select a different level" placement="right">
       <Box
         _hover={{ cursor: "pointer" }}
         onMouseEnter={() => setHoveringOver(true)}
