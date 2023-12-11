@@ -71,7 +71,7 @@
   background: var(--chakra-colors-gray-200);
   border: solid 1px var(--chakra-colors-gray-300);
   padding: 0.1rem 0.4rem;
-  font-size: 0.8rem;
+  font-size: 0.8em;
   font-family: monospace;
 }
 
