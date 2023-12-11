@@ -124,19 +124,17 @@ export const TITLE_RESPONSIVE_FONT_SCALE = {
   "3xl": TITLE_FONT_SIZE_3XL,
 };
 
-// Body (includes code mirror and tooltips) font responsive definitions.
-const DEFAULT_FONT_SIZE_XL = "1em";
-const DEFAULT_FONT_SIZE_2XL = "1.2em";
-const DEFAULT_FONT_SIZE_3XL = "1.6em";
+// Body (e.g. text in code mirror and tooltips) font responsive definitions.
 /**
  * @example fontSize={BODY_RESPONSIVE_FONT_SCALE}
  */
 export const BODY_RESPONSIVE_FONT_SCALE = {
-  xl: DEFAULT_FONT_SIZE_XL,
-  "2xl": DEFAULT_FONT_SIZE_2XL,
-  "3xl": DEFAULT_FONT_SIZE_3XL,
+  xl: "1em",
+  "2xl": "1.2em",
+  "3xl": "1.6em",
 };
 
+// CTA button (e.g. buttons in the editor control bar and modals) responsive definitions.
 /**
  * @example size={BUTTON_RESPONSIVE_SCALE}
  */
@@ -151,6 +149,24 @@ export const BUTTON_RESPONSIVE_SCALE = {
  */
 export const BUTTON_RESPONSIVE_FONT_SCALE = {
   "3xl": "20px",
+};
+
+// Modal close button responsive definitions.
+/**
+ * @example size={MODAL_CLOSE_BUTTON_RESPONSIVE_SCALE}
+ */
+export const MODAL_CLOSE_BUTTON_RESPONSIVE_SCALE = {
+  base: "sm",
+  "2xl": "md",
+  "3xl": "lg"
+};
+
+/**
+ * @example fontSize={MODAL_CLOSE_BUTTON_RESPONSIVE_FONT_SCALE}
+ */
+export const TOOLTIP_RESPONSIVE_MAX_WIDTH = {
+  base: "300px",
+  "3xl": "400px",
 };
 
 // Breakpoints for responsive design. In pixels.
