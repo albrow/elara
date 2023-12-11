@@ -6,7 +6,6 @@ import {
   ModalOverlay,
   Text,
   Box,
-  ModalCloseButton,
   Flex,
 } from "@chakra-ui/react";
 import {
@@ -19,7 +18,8 @@ import {
 import { FaThumbsUp } from "react-icons/fa";
 
 import { useCurrScene } from "../hooks/scenes_hooks";
-import { BODY_RESPONSIVE_FONT_SCALE, BUTTON_RESPONSIVE_FONT_SCALE, BUTTON_RESPONSIVE_SCALE, MODAL_CLOSE_BUTTON_RESPONSIVE_SCALE, TITLE_RESPONSIVE_FONT_SCALE } from "../lib/constants";
+import { BODY_RESPONSIVE_FONT_SCALE, BUTTON_RESPONSIVE_FONT_SCALE, BUTTON_RESPONSIVE_SCALE, TITLE_RESPONSIVE_FONT_SCALE } from "../lib/constants";
+import { ResponsiveModalCloseButton } from "../components/modal/responsive_modal_close_button";
 
 export const HintsModalContext = createContext<
   readonly [() => void, (onClose: () => void) => void]
@@ -97,7 +97,7 @@ export function HintsModalProvider(props: PropsWithChildren<{}>) {
           >
             <ModalOverlay />
             <ModalContent minW={{ base: "container.md", "3xl": "container.lg" }}>
-              <ModalCloseButton size={MODAL_CLOSE_BUTTON_RESPONSIVE_SCALE} />
+              <ResponsiveModalCloseButton />
               <ModalBody>
                 <Text
                   fontSize={TITLE_RESPONSIVE_FONT_SCALE}

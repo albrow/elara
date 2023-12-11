@@ -4,7 +4,6 @@ import {
   ModalContent,
   ModalBody,
   Box,
-  ModalCloseButton,
   ModalHeader,
   Text,
 } from "@chakra-ui/react";
@@ -20,6 +19,7 @@ import { useRouter } from "react-router5";
 import { useLevels } from "../hooks/scenes_hooks";
 import LevelLink from "../components/level_link";
 import { TITLE_RESPONSIVE_FONT_SCALE } from "../lib/constants";
+import { ResponsiveModalCloseButton } from "../components/modal/responsive_modal_close_button";
 
 /**
  * Provider for a modal that displays a list of levels that the user can choose
@@ -95,7 +95,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                   Choose Level
                 </Text>
               </ModalHeader>
-              <ModalCloseButton />
+              <ResponsiveModalCloseButton />
               <ModalBody
                 id="level-select-modal-body"
                 className="dark-scrollbar"
