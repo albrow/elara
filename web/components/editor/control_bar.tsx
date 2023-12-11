@@ -23,11 +23,9 @@ import {
 import { FaSatelliteDish } from "react-icons/fa";
 
 import { range } from "../../lib/utils";
-import { DEFAULT_RESPONSIVE_FONT_SCALE } from "../../lib/constants";
+import { BODY_RESPONSIVE_FONT_SCALE, BUTTON_RESPONSIVE_FONT_SCALE, BUTTON_RESPONSIVE_SCALE } from "../../lib/constants";
 import type { EditorState } from "./editor";
 import FunctionList from "./text_effects/function_list";
-
-const buttonSize = { base: "xs", xl: "sm", "2xl": "md" };
 
 export interface ControlBarProps {
   editorState: EditorState;
@@ -79,9 +77,10 @@ export default function ControlBar(props: ControlBarProps) {
         <Box>
           {props.editorState === "editing" && (
             <>
-              <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Deploy the code to the rover">
+              <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Deploy the code to the rover">
                 <Button
-                  size={buttonSize}
+                  size={BUTTON_RESPONSIVE_SCALE}
+                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
                   rounded={{ base: "3px", xl: "md" }}
                   colorScheme="green"
                   onClick={props.onDeploy}
@@ -94,10 +93,11 @@ export default function ControlBar(props: ControlBarProps) {
                 </Button>
               </Tooltip>
               {props.onReset && (
-                <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Reset back to the original code">
+                <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Reset back to the original code">
                   <Button
                     ml={{ base: "6px", xl: "8px" }}
-                    size={buttonSize}
+                    size={BUTTON_RESPONSIVE_SCALE}
+                    fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
                     rounded={{ base: "3px", xl: "md" }}
                     onClick={props.onReset}
                   >
@@ -112,11 +112,12 @@ export default function ControlBar(props: ControlBarProps) {
         <Box>
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-              <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Stop">
+              <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Stop">
                 <Button
                   colorScheme="red"
                   color="black"
-                  size={buttonSize}
+                  size={BUTTON_RESPONSIVE_SCALE}
+                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
                   rounded={{ base: "3px", xl: "md" }}
                   ml="4px"
                   onClick={props.onCancel}
@@ -127,9 +128,10 @@ export default function ControlBar(props: ControlBarProps) {
             )}
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-              <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Skip backward">
+              <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Skip backward">
                 <Button
-                  size={buttonSize}
+                  size={BUTTON_RESPONSIVE_SCALE}
+                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
                   rounded={{ base: "3px", xl: "md" }}
                   ml="4px"
                   onClick={props.onStepBack}
@@ -139,11 +141,12 @@ export default function ControlBar(props: ControlBarProps) {
               </Tooltip>
             )}
           {props.editorState === "running" && (
-            <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Pause">
+            <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Pause">
               <Button
                 colorScheme="yellow"
                 color="black"
-                size={buttonSize}
+                size={BUTTON_RESPONSIVE_SCALE}
+                fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
                 rounded={{ base: "3px", xl: "md" }}
                 ml="4px"
                 onClick={props.onPause}
@@ -153,11 +156,12 @@ export default function ControlBar(props: ControlBarProps) {
             </Tooltip>
           )}
           {props.editorState === "paused" && (
-            <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Play">
+            <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Play">
               <Button
                 colorScheme="green"
                 color="black"
-                size={buttonSize}
+                size={BUTTON_RESPONSIVE_SCALE}
+                fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
                 rounded={{ base: "3px", xl: "md" }}
                 ml="4px"
                 onClick={props.onPlay}
@@ -168,9 +172,10 @@ export default function ControlBar(props: ControlBarProps) {
           )}
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-              <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Skip forward">
+              <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Skip forward">
                 <Button
-                  size={buttonSize}
+                  size={BUTTON_RESPONSIVE_SCALE}
+                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
                   rounded={{ base: "3px", xl: "md" }}
                   ml="4px"
                   onClick={props.onStepForward}
@@ -208,7 +213,7 @@ export default function ControlBar(props: ControlBarProps) {
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
-                <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE}
+                <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE}
                   label="Click and drag to move through the code"
                   hidden={!showSliderTip}
                 >

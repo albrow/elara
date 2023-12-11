@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { RxDropdownMenu } from "react-icons/rx";
 import { useLevelSelectModal } from "../../hooks/level_select_modal_hooks";
 import { useWindowWidth } from "../../hooks/responsive_hooks";
-import { BP_2XL, BP_3XL, BP_XL, DEFAULT_RESPONSIVE_FONT_SCALE, LEVEL_TITLE_FONT_SIZE_2XL, LEVEL_TITLE_FONT_SIZE_3XL, LEVEL_TITLE_FONT_SIZE_BASE, LEVEL_TITLE_FONT_SIZE_XL } from "../../lib/constants";
+import { BP_2XL, BP_3XL, BP_XL, BODY_RESPONSIVE_FONT_SCALE, TITLE_FONT_SIZE_2XL, TITLE_FONT_SIZE_3XL, TITLE_FONT_SIZE_BASE, TITLE_FONT_SIZE_XL, TITLE_RESPONSIVE_FONT_SCALE } from "../../lib/constants";
 
 export interface LevelTitleProps {
   title: string;
@@ -19,19 +19,19 @@ export default function LevelTitle(props: LevelTitleProps) {
 
   const dropdownMenuSize = useMemo(() => {
     if (windowWidth >= BP_3XL) {
-      return LEVEL_TITLE_FONT_SIZE_3XL;
+      return TITLE_FONT_SIZE_3XL;
     }
     if (windowWidth >= BP_2XL) {
-      return LEVEL_TITLE_FONT_SIZE_2XL;
+      return TITLE_FONT_SIZE_2XL;
     }
     if (windowWidth >= BP_XL) {
-      return LEVEL_TITLE_FONT_SIZE_XL;
+      return TITLE_FONT_SIZE_XL;
     }
-    return LEVEL_TITLE_FONT_SIZE_BASE;
+    return TITLE_FONT_SIZE_BASE;
   }, [windowWidth]);
 
   return (
-    <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label="Select a different level" placement="right">
+    <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Select a different level" placement="right">
       <Box
         _hover={{ cursor: "pointer" }}
         onMouseEnter={() => setHoveringOver(true)}
@@ -53,12 +53,7 @@ export default function LevelTitle(props: LevelTitleProps) {
           }}
         />
         <Text
-          fontSize={{
-            base: LEVEL_TITLE_FONT_SIZE_BASE,
-            xl: LEVEL_TITLE_FONT_SIZE_XL,
-            "2xl": LEVEL_TITLE_FONT_SIZE_2XL,
-            "3xl": LEVEL_TITLE_FONT_SIZE_3XL,
-          }}
+          fontSize={TITLE_RESPONSIVE_FONT_SCALE}
           fontWeight="bold"
           as="span"
           verticalAlign="middle"

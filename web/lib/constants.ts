@@ -105,22 +105,52 @@ export const MONITOR_FRAME_RESPONSIVE_WIDTH = {
   }px + 0.5rem)`,
 };
 
-// Level title responsive definitions.
-export const LEVEL_TITLE_FONT_SIZE_BASE = "1.4em";
-export const LEVEL_TITLE_FONT_SIZE_XL = "1.8em";
-export const LEVEL_TITLE_FONT_SIZE_2XL = "2.2em";
-export const LEVEL_TITLE_FONT_SIZE_3XL = "2.6em";
+// Title font responsive definitions.
 export const LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_BASE = 16;
 export const LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_XL = 18;
 export const LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_2XL = 20;
 export const LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_3XL = 22;
-const DEFAULT_FONT_SCALE_XL = "1em";
-const DEFAULT_FONT_SCALE_2XL = "1.2em";
-const DEFAULT_FONT_SCALE_3XL = "1.6em";
-export const DEFAULT_RESPONSIVE_FONT_SCALE = {
-  xl: DEFAULT_FONT_SCALE_XL,
-  "2xl": DEFAULT_FONT_SCALE_2XL,
-  "3xl": DEFAULT_FONT_SCALE_3XL,
+export const TITLE_FONT_SIZE_BASE = "1.4em";
+export const TITLE_FONT_SIZE_XL = "1.8em";
+export const TITLE_FONT_SIZE_2XL = "2.2em";
+export const TITLE_FONT_SIZE_3XL = "2.6em";
+/**
+ * @example fontSize={TITLE_RESPONSIVE_FONT_SCALE}
+ */
+export const TITLE_RESPONSIVE_FONT_SCALE = {
+  base: TITLE_FONT_SIZE_BASE,
+  xl: TITLE_FONT_SIZE_XL,
+  "2xl": TITLE_FONT_SIZE_2XL,
+  "3xl": TITLE_FONT_SIZE_3XL,
+};
+
+// Body (includes code mirror and tooltips) font responsive definitions.
+const DEFAULT_FONT_SIZE_XL = "1em";
+const DEFAULT_FONT_SIZE_2XL = "1.2em";
+const DEFAULT_FONT_SIZE_3XL = "1.6em";
+/**
+ * @example fontSize={BODY_RESPONSIVE_FONT_SCALE}
+ */
+export const BODY_RESPONSIVE_FONT_SCALE = {
+  xl: DEFAULT_FONT_SIZE_XL,
+  "2xl": DEFAULT_FONT_SIZE_2XL,
+  "3xl": DEFAULT_FONT_SIZE_3XL,
+};
+
+/**
+ * @example size={BUTTON_RESPONSIVE_SCALE}
+ */
+export const BUTTON_RESPONSIVE_SCALE = {
+  base: "xs",
+  xl: "sm",
+  "2xl": "md",
+  "3xl": "lg"
+};
+/**
+ * @example fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+ */
+export const BUTTON_RESPONSIVE_FONT_SCALE = {
+  "3xl": "20px",
 };
 
 // Breakpoints for responsive design. In pixels.

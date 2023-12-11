@@ -22,7 +22,7 @@ import { useHintsModal } from "../hooks/hints_modal_hooks";
 import {
   BG_Z_INDEX,
   BOARD_WRAPPER_RESPONSIVE_TRANSFORM,
-  DEFAULT_RESPONSIVE_FONT_SCALE,
+  BODY_RESPONSIVE_FONT_SCALE,
   EDITOR_SECTION_RESPONSIVE_WIDTH,
   MONITOR_BORDER_WIDTH,
   MONITOR_FRAME_RESPONSIVE_WIDTH,
@@ -399,7 +399,7 @@ export default function Level() {
               </Flex>
             </Box>
             {/* Objective/challenge text */}
-            <Box fontSize={DEFAULT_RESPONSIVE_FONT_SCALE}>
+            <Box fontSize={BODY_RESPONSIVE_FONT_SCALE}>
               <Text as="span" verticalAlign="middle">
                 {getObjectiveIcon()}
                 <Text as="span" verticalAlign="middle" fontWeight="bold">

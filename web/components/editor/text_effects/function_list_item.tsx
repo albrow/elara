@@ -1,7 +1,7 @@
 import { Box, MenuItem, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { DEFAULT_RESPONSIVE_FONT_SCALE, FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_RIGHT, FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_TRANSFORM, HOVER_DOC_BOX_SHADOW } from "../../../lib/constants";
+import { BODY_RESPONSIVE_FONT_SCALE, FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_RIGHT, FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_TRANSFORM, HOVER_DOC_BOX_SHADOW } from "../../../lib/constants";
 import { docPages, HoverWord } from ".";
 
 export interface FunctionListItemProps {
@@ -28,7 +28,7 @@ export default function FunctionListItem(props: FunctionListItemProps) {
         setIsActive(false);
       }}
     >
-      <Text fontFamily="monospace" fontSize={DEFAULT_RESPONSIVE_FONT_SCALE}>
+      <Text fontFamily="monospace" fontSize={BODY_RESPONSIVE_FONT_SCALE}>
         {props.funcName}
       </Text>
       {isActive && (

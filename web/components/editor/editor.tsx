@@ -30,7 +30,7 @@ import {
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
-import { BP_XL, BP_2XL, BP_3XL, CODE_LEN_EXPLANATION, EDITOR_BORDER_WIDTH, DEFAULT_RESPONSIVE_FONT_SCALE } from "../../lib/constants";
+import { BP_XL, BP_2XL, BP_3XL, CODE_LEN_EXPLANATION, EDITOR_BORDER_WIDTH, BODY_RESPONSIVE_FONT_SCALE } from "../../lib/constants";
 import { useWindowWidth } from "../../hooks/responsive_hooks";
 import { textEffects } from "./text_effects";
 import ControlBar from "./control_bar";
@@ -576,7 +576,7 @@ export default function Editor(props: EditorProps) {
         borderColor="gray.700"
         borderBottomRightRadius="0.375rem"
         borderBottomLeftRadius="0.375rem"
-        fontSize={DEFAULT_RESPONSIVE_FONT_SCALE}
+        fontSize={BODY_RESPONSIVE_FONT_SCALE}
       >
         <div
           ref={editor}
@@ -594,7 +594,7 @@ export default function Editor(props: EditorProps) {
             borderRadius="0.375rem"
             opacity="50%"
           >
-            <Tooltip fontSize={DEFAULT_RESPONSIVE_FONT_SCALE} label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
+            <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
               <Text
                 verticalAlign="center"
                 as="div"
