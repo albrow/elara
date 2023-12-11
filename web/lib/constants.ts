@@ -151,16 +151,6 @@ export const BUTTON_RESPONSIVE_FONT_SCALE = {
   "3xl": "20px",
 };
 
-// Modal close button responsive definitions.
-/**
- * @example size={MODAL_CLOSE_BUTTON_RESPONSIVE_SCALE}
- */
-export const MODAL_CLOSE_BUTTON_RESPONSIVE_SCALE = {
-  base: "sm",
-  "2xl": "md",
-  "3xl": "lg"
-};
-
 /**
  * @example fontSize={MODAL_CLOSE_BUTTON_RESPONSIVE_FONT_SCALE}
  */
