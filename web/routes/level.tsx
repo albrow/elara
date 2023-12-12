@@ -29,7 +29,7 @@ import {
   MONITOR_FRAME_Z_INDEX,
   MONITOR_PADDING_2XL,
   MONTIOR_PADDING_BASE,
-  NAVBAR_HEIGHT,
+  NAVBAR_RESPONSIVE_HEIGHT,
 } from "../lib/constants";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
 import { ErrorType } from "../contexts/error_modal";
@@ -349,7 +349,7 @@ export default function Level() {
         bgRepeat="no-repeat"
         bgSize="cover"
         bgPosition="bottom"
-        pt={`${NAVBAR_HEIGHT}px`}
+        pt={NAVBAR_RESPONSIVE_HEIGHT}
         overflowX="auto"
       />
       <MonitorStand monitorFrameRef={monitorFrame} />
@@ -358,7 +358,7 @@ export default function Level() {
         w="100%"
         h="100%"
         zIndex={MONITOR_FRAME_Z_INDEX}
-        pt={`${NAVBAR_HEIGHT}px`}
+        pt={NAVBAR_RESPONSIVE_HEIGHT}
         overflow="auto"
       >
         <Flex h="100%">

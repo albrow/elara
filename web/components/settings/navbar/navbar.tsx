@@ -3,7 +3,7 @@ import { MdHome, MdSettings } from "react-icons/md";
 import { FaBullhorn } from "react-icons/fa";
 import { useState } from "react";
 
-import { NAVBAR_HEIGHT, NAVBAR_Z_INDEX } from "../../../lib/constants";
+import { NAVBAR_RESPONSIVE_HEIGHT, NAVBAR_Z_INDEX } from "../../../lib/constants";
 import { useSceneNavigator } from "../../../hooks/scenes_hooks";
 import SettingsModal from "./settings_modal";
 import NavbarButton from "./navbar_button";
@@ -20,13 +20,13 @@ export default function Navbar() {
       />
       <Box
         w="100%"
-        height={`${NAVBAR_HEIGHT}px`}
+        height={NAVBAR_RESPONSIVE_HEIGHT}
         bg="gray.800"
         textColor="white"
         position="fixed"
         zIndex={NAVBAR_Z_INDEX}
         top="0"
-        p={2}
+        p={{ base: 2, "2xl": 3, "3xl": 4 }}
       >
         <NavbarButton
           onClick={() => {
