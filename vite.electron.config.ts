@@ -1,6 +1,4 @@
 // This config file includes some customizations for Electron builds.
-// TODO(albrow): Include video files and other assets which might normally
-// be served online.
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import wasmPack from "vite-plugin-wasm-pack";
