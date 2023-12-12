@@ -421,7 +421,6 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
   const saveDataRef = useRef<SaveData>(load());
   const [saveData, __internalSetSaveData] = useState(saveDataRef.current);
 
-  // TODO(albrow): Update this comment.
   // Updates both the ref and state. This should be called whenever we want to update
   // save data. DO NOT set the ref directly or call __internalSetSaveData directly.
   const setSaveData = useCallback(

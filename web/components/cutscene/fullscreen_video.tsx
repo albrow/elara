@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Box, Button, Text, AspectRatio } from "@chakra-ui/react";
-import { MdSkipNext } from "react-icons/md";
+import { Box, Button, Text, AspectRatio, Flex } from "@chakra-ui/react";
+import { MdForward, MdReplay, MdSkipNext } from "react-icons/md";
 import { Animate } from "react-simple-animate";
 
 import ReactPlayer from "react-player";
@@ -12,6 +12,10 @@ import {
   getVimeoEmbedURLFromId,
   getYouTubeEmbedURLFromId,
 } from "../../lib/utils";
+import {
+  FULLSCREEN_VIDEO_Z_INDEX,
+  VIDEO_END_SCREEN_Z_INDEX,
+} from "../../lib/constants";
 
 export interface FullscreenYouTubeVideoProps {
   vimeoVideoId: number;
@@ -39,6 +43,7 @@ export default function FullscreenYouTubeVideo(
     }
     return getVimeoEmbedURLFromId(props.vimeoVideoId);
   });
+  const [showEndScreen, setShowEndScreen] = useState<boolean>(false);
 
   // Automatically adjust volume based on master volume setting.
   useEffect(() => {
@@ -51,9 +56,16 @@ export default function FullscreenYouTubeVideo(
     );
   }, [saveData.settings.masterVolume]);
 
-  const onEnd = useCallback(() => {
-    props.onEnd();
-  }, [props]);
+  const onVideoReachesEnd = useCallback(() => {
+    // Seek to the beginning of the video so that it can be replayed.
+    // This also prevents showing related videos or other info that we
+    // don't want to show here.
+    playerRef.current?.seekTo(0);
+
+    // If the video ends naturally, we want to show the option to replay it or exit it
+    // and go back to the hub.
+    setShowEndScreen(true);
+  }, []);
 
   const onSkipConfirm = useCallback(async () => {
     if (props.checkpoints && props.checkpoints.length > 0) {
@@ -74,8 +86,8 @@ export default function FullscreenYouTubeVideo(
     }
 
     // No checkpoints remaining, so skip to the end.
-    onEnd();
-  }, [onEnd, props.checkpoints, playerRef]);
+    props.onEnd();
+  }, [props, playerRef]);
 
   const waitForSkipConfirm = useCallback(() => {
     setIsWaitingForSkipConfirm(true);
@@ -102,7 +114,13 @@ export default function FullscreenYouTubeVideo(
 
   return (
     <>
-      <Box w="100%" h="100%" maxH="100vh" overflow="hidden">
+      <Box
+        w="100%"
+        h="100%"
+        maxH="100vh"
+        overflow="hidden"
+        zIndex={FULLSCREEN_VIDEO_Z_INDEX}
+      >
         <AspectRatio ratio={16 / 9} maxH="100vh">
           <ReactPlayer
             ref={playerRef}
@@ -117,7 +135,7 @@ export default function FullscreenYouTubeVideo(
             width="100%"
             height="100%"
             playing={isPlaying}
-            onEnded={onEnd}
+            onEnded={onVideoReachesEnd}
             onError={onError}
             volume={saveData.settings.masterVolume}
           />
@@ -240,6 +258,87 @@ export default function FullscreenYouTubeVideo(
           )}
         </Box>
       </Animate>
+      {showEndScreen && (
+        <Animate
+          play
+          start={{
+            opacity: 0,
+          }}
+          end={{
+            opacity: 1,
+          }}
+          duration={1.0}
+        >
+          <Box
+            zIndex={VIDEO_END_SCREEN_Z_INDEX}
+            bg="black"
+            position="fixed"
+            bottom="0px"
+            left="0px"
+            w="100%"
+            h="100%"
+            maxH="100vh"
+            overflow="hidden"
+          >
+            <Flex
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              my="30svh"
+            >
+              <Button
+                // TODO(albrow): Make these buttons a re-usable component, or add it to the custom Chakra theme.
+                variant="outline"
+                color="white"
+                bgColor="blackAlpha.600"
+                _hover={{
+                  color: "black",
+                  bgColor: "white",
+                  shadow: "0px 0px 6px black",
+                }}
+                _active={{
+                  color: "black",
+                  bgColor: "white",
+                  shadow: "0px 0px 6px black",
+                }}
+                onClick={() => {
+                  props.onEnd();
+                }}
+              >
+                <MdForward size="1.3em" style={{ marginRight: "0.3em" }} />
+                <Text fontSize="1.2em">Continue</Text>
+              </Button>
+              <Button
+                mt="16px"
+                variant="outline"
+                color="white"
+                bgColor="blackAlpha.600"
+                _hover={{
+                  color: "black",
+                  bgColor: "white",
+                  shadow: "0px 0px 6px black",
+                }}
+                _active={{
+                  color: "black",
+                  bgColor: "white",
+                  shadow: "0px 0px 6px black",
+                }}
+                onClick={() => {
+                  playerRef.current?.seekTo(0);
+                  setIsPlaying(false);
+                  setTimeout(() => {
+                    setIsPlaying(true);
+                  }, 0);
+                  setShowEndScreen(false);
+                }}
+              >
+                <MdReplay size="1.3em" style={{ marginRight: "0.3em" }} />
+                <Text fontSize="1.2em">Replay</Text>
+              </Button>
+            </Flex>
+          </Box>
+        </Animate>
+      )}
     </>
   );
 }

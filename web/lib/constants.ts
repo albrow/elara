@@ -76,6 +76,8 @@ export const AXIS_LABEL_Z_INDEX = 1030;
 export const CM_TOOL_TIP_Z_INDEX = 1040; // Used for Codemirror tooltips (e.g. hover docs).
 export const CHAKRA_MODAL_Z_INDEX = 1050; // Used for Chakra modals.
 export const CHAKRA_TOOL_TIP_Z_INDEX = 1060; // Used for Chakra tooltips (not including rover messages).
+export const FULLSCREEN_VIDEO_Z_INDEX = 1065; // Used for cutscenes.
+export const VIDEO_END_SCREEN_Z_INDEX = FULLSCREEN_VIDEO_Z_INDEX + 1; // Shown when fullscreen videos end. Should cover the video.
 export const NAVBAR_Z_INDEX = 2000;
 
 // Various messages that are displayed to the user.

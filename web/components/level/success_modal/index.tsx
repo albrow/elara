@@ -16,7 +16,7 @@ import { Animate, AnimateGroup } from "react-simple-animate";
 import type { RunResult } from "../../../../elara-lib/pkg/elara_lib";
 import { useCurrScene, useSceneNavigator } from "../../../hooks/scenes_hooks";
 import { getNextLevel } from "../../../lib/utils";
-import { Scene } from "../../../contexts/scenes";
+import { Scene } from "../../../lib/scenes";
 import { useSaveData } from "../../../hooks/save_data_hooks";
 import ModalStats from "./modal_stats";
 import ModalObjective from "./modal_objective";
