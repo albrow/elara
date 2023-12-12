@@ -17,8 +17,11 @@ import JournalSection from "../components/journal/journal_section";
 import { TREES } from "../lib/dialog_trees";
 import JournalSidebar from "../components/journal/journal_sidebar";
 import {
+  NAVBAR_HEIGHT_2XL,
+  NAVBAR_HEIGHT_3XL,
+  NAVBAR_HEIGHT_BASE,
+  NAVBAR_RESPONSIVE_HEIGHT,
   JOURNAL_HANDLES_Z_INDEX,
-  NAVBAR_HEIGHT,
   SCROLL_INDICATOR_Z_INDEX,
 } from "../lib/constants";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";
@@ -142,7 +145,7 @@ export default function Journal() {
 
   return (
     <Box
-      mt={`${NAVBAR_HEIGHT}px`}
+      mt={NAVBAR_RESPONSIVE_HEIGHT}
       bgImage={`url("${journalBgImage}")`}
       bgRepeat="no-repeat"
       bgSize="cover"
@@ -182,7 +185,11 @@ export default function Journal() {
           borderRadius="5px"
           w="100%"
           maxW="container.2xl"
-          h={`calc(100% - ${NAVBAR_HEIGHT}px)`}
+          h={{
+            base: `calc(100% - ${NAVBAR_HEIGHT_BASE}px)`,
+            "2xl": `calc(100% - ${NAVBAR_HEIGHT_2XL}px)`,
+            "3xl": `calc(100% - ${NAVBAR_HEIGHT_3XL}px)`,
+          }}
           boxShadow="0 5px 12px 5px rgba(0, 0, 0, 0.5)"
         >
           <Flex h="100%">

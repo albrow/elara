@@ -32,7 +32,14 @@ export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
 export const PLAYER_DEFAULT_CSS_ANIM_DELAY = 0.1; // seconds
 
 // Constants related to the game's UI.
-export const NAVBAR_HEIGHT = 56; // In pixels
+export const NAVBAR_HEIGHT_BASE = 56; // In pixels
+export const NAVBAR_HEIGHT_2XL = 72;
+export const NAVBAR_HEIGHT_3XL = 88;
+export const NAVBAR_RESPONSIVE_HEIGHT = {
+  base: `${NAVBAR_HEIGHT_BASE}px`,
+  "2xl": `${NAVBAR_HEIGHT_2XL}px`,
+  "3xl": `${NAVBAR_HEIGHT_3XL}px`,
+};
 export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
 export const HOVER_DOC_BOX_SHADOW = "2px 2px 10px";
 
@@ -205,12 +212,12 @@ export const BOARD_HOVER_INFO_Z_INDEX = 1020;
 export const AXIS_LABEL_Z_INDEX = 1030;
 export const SCROLL_INDICATOR_Z_INDEX = 1035; // Used for the "scroll for more" indicator.
 export const CM_TOOL_TIP_Z_INDEX = 1040; // Used for Codemirror tooltips (e.g. hover docs).
-export const CHAKRA_MODAL_Z_INDEX = 1050; // Used for Chakra modals.
 export const CHAKRA_TOOL_TIP_Z_INDEX = 1060; // Used for Chakra tooltips (not including rover messages).
 export const FULLSCREEN_VIDEO_Z_INDEX = 1065; // Used for cutscenes.
 export const VIDEO_SKIP_BUTTON_Z_INDEX = FULLSCREEN_VIDEO_Z_INDEX + 1;
 export const VIDEO_END_SCREEN_Z_INDEX = VIDEO_SKIP_BUTTON_Z_INDEX + 1; // Shown when fullscreen videos end. Should cover the video.
 export const NAVBAR_Z_INDEX = 2000;
+export const CHAKRA_MODAL_Z_INDEX = 2050; // Used for Chakra modals.
 
 // Various messages that are displayed to the user.
 export const CODE_LEN_EXPLANATION =
