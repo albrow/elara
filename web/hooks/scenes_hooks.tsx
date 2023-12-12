@@ -2,12 +2,13 @@ import { useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useRouteNode, useRouter } from "react-router5";
 import type { State } from "router5";
 
-import type { Scene } from "../contexts/scenes";
+import { Scene, getProcessedScenes } from "../lib/scenes";
 import { ScenesContext } from "../contexts/scenes";
 import { MUSIC_FADE_OUT_TIME_MS, SOUND_DELAY_TIME_MS } from "../lib/constants";
 import { useSoundManager } from "./sound_manager_hooks";
 import { useJukebox } from "./jukebox_hooks";
 import { useFunctionUnlockedModal } from "./function_unlocked_modal_hooks";
+import { useSaveData } from "./save_data_hooks";
 
 function getSceneIndexFromRoute(
   scenes: Scene[],
@@ -54,16 +55,20 @@ export function useCurrScene() {
   return currScene;
 }
 
-// Returns the next/latest unlocked scene. This tells us what scene the
-// player should go to next.
-export function useNextUnlockedScene() {
-  const scenes = useScenes();
+function getNextUnlockedScene(scenes: Scene[]) {
   for (let i = scenes.length - 1; i >= 0; i -= 1) {
     if (scenes[i].unlocked) {
       return scenes[i];
     }
   }
   return scenes[0];
+}
+
+// Returns the next/latest unlocked scene. This tells us what scene the
+// player should go to next.
+export function useNextUnlockedScene() {
+  const scenes = useScenes();
+  return getNextUnlockedScene(scenes);
 }
 
 // Returns the next level which will be unlocked. I.e. the furst
@@ -83,10 +88,11 @@ export function useSceneNavigator() {
   const currScene = useCurrScene();
   const router = useRouter();
   const JOURNAL_PAGES = useJournalPages();
-  const { getSoundOrNull } = useSoundManager();
+  const { getSoundOrNull, getSound } = useSoundManager();
   const soundTimeout = useRef<NodeJS.Timeout | null>(null);
   const { requestSong, stopAllMusic } = useJukebox();
   const [showFunctionUnlockedModal] = useFunctionUnlockedModal();
+  const [_saveData, _saveDataManager, saveDataRef] = useSaveData();
 
   const navigateToScene = useCallback(
     (scene: Scene) => {
@@ -138,11 +144,48 @@ export function useSceneNavigator() {
     navigateToScene(nextScene);
   }, [currScene, navigateToScene]);
 
+  const playRingtoneIfNeeded = useCallback(() => {
+    const ringtoneSound = getSound("ringtone");
+    ringtoneSound.stop();
+
+    if (!saveDataRef) {
+      return;
+    }
+
+    // NOTE(albrow): Here we need to use the bleeding edge latest version of saveData
+    // becuase we might be in the middle of navigating from one scene to the next.
+    // Without this, the scene we're navigating to might not be considered unlocked yet.
+    // That's because useScenes is based on *state* which doesn't get updated mid-render.
+    const scenes = getProcessedScenes(
+      saveDataRef.current.levelStates,
+      saveDataRef.current.seenJournalPages,
+      saveDataRef.current.seenDialogTrees,
+      saveDataRef.current.seenCutscenes
+    );
+
+    // If the next unlocked scene is a dialog, play the ringtone sound.
+    if (getNextUnlockedScene(scenes).type === "dialog") {
+      ringtoneSound.play();
+    }
+  }, [getSound, saveDataRef]);
+
   const navigateToHub = useCallback(() => {
     // TODO(albrow): Play ambient hub music.
     stopAllMusic(MUSIC_FADE_OUT_TIME_MS);
     router.navigate("hub");
-  }, [router, stopAllMusic]);
+
+    // Play the ringtone sound (if needed) after a short delay.
+    let timeout: NodeJS.Timeout | null = null;
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(playRingtoneIfNeeded, SOUND_DELAY_TIME_MS);
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [stopAllMusic, router, playRingtoneIfNeeded]);
 
   const navigateToTitle = useCallback(() => {
     router.navigate("title");

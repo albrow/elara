@@ -1,7 +1,7 @@
 import { Box, Stack } from "@chakra-ui/react";
 import { useCallback, useMemo, useState } from "react";
 
-import { SANDBOX_LEVEL } from "../../contexts/scenes";
+import { SANDBOX_LEVEL } from "../../lib/scenes";
 import Editor, { EditorState } from "../editor/editor";
 import {
   Game,

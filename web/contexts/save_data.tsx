@@ -4,12 +4,12 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
-  useState,
+  MutableRefObject,
 } from "react";
 import clone from "clone";
-
+import useStateRef from "react-usestateref";
 import debounce from "lodash.debounce";
+
 import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
 import { SectionName } from "../components/journal/sections";
@@ -344,11 +344,19 @@ function load(): SaveData {
   }
   return DEFAULT_SAVE_DATA;
 }
-
+/**
+ * Returns [saveData, saveDataManager, saveDataRef].
+ *
+ * - `saveData` should be used for components that need to re-render whenever state changes.
+ * - `saveDataManager` has a number of utility functions used for updating save data.
+ * - `saveDataRef` should be used with great care and contains the latest value of saveData.
+ *   It *won't* trigger a re-render when it changes. Typically this should be used in hooks.
+ *
+ */
 export const SaveDataContext = createContext<
-  readonly [SaveData, SaveDataManager]
+  readonly [SaveData, SaveDataManager, MutableRefObject<SaveData> | null]
 >([
-  load(),
+  DEFAULT_SAVE_DATA,
   {
     markLevelCompleted: () => {
       throw new Error("useSaveData must be used within a SaveDataContext");
@@ -393,6 +401,7 @@ export const SaveDataContext = createContext<
       throw new Error("useSaveData must be used within a SaveDataContext");
     },
   },
+  null,
 ] as const);
 
 export function SaveDataProvider(props: PropsWithChildren<{}>) {
@@ -400,27 +409,28 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
   // This is admittedly a bit of a hack. 🐉
   //
   // The ref is used internally in SaveDataProvider to ensure that multiple updates
-  // to the save data to not cause race conditions. This is necessary because refs
+  // to the save data do not cause race conditions. This is necessary because refs
   // update immediately in React, but state does not.
   //
   // The state is used externally by components which need to read save data. It will
   // trigger a re-render of those components whenever the save data changes. The state is
   // also used internally by SaveDataProvider to trigger actually saving data to local
   // storage.
-  const saveDataRef = useRef<SaveData>(load());
-  const [saveData, __internalSetSaveData] = useState(saveDataRef.current);
+  const [saveData, __internalSetSaveData, saveDataRef] = useStateRef<SaveData>(
+    load()
+  );
 
+  // TODO(albrow): Update this comment.
   // Updates both the ref and state. This should be called whenever we want to update
   // save data. DO NOT set the ref directly or call __internalSetSaveData directly.
   const setSaveData = useCallback(
     (newSaveData: SaveData) => {
-      saveDataRef.current = {
+      __internalSetSaveData({
         ...newSaveData,
         lastUpdated: Date.now(),
-      };
-      __internalSetSaveData(newSaveData);
+      });
     },
-    [__internalSetSaveData, saveDataRef]
+    [__internalSetSaveData]
   );
 
   // Automatically save the save data to local storage whenever it changes.
@@ -434,7 +444,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
 
   const markLevelCompleted = useCallback(
     (levelName: string) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       newSaveData.levelStates[levelName] = {
         completed: true,
         challengeCompleted:
@@ -443,12 +453,12 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       };
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const markLevelChallengeCompleted = useCallback(
     (levelName: string) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       newSaveData.levelStates[levelName] = {
         completed: newSaveData.levelStates[levelName]?.completed || false,
         challengeCompleted: true,
@@ -456,12 +466,12 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       };
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const updateLevelCode = useCallback(
     (levelName: string, code: string) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       newSaveData.levelStates[levelName] = {
         completed: newSaveData.levelStates[levelName]?.completed || false,
         challengeCompleted:
@@ -470,117 +480,117 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       };
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const markDialogSeen = useCallback(
     (treeName: string) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       if (!newSaveData.seenDialogTrees.includes(treeName)) {
         newSaveData.seenDialogTrees.push(treeName);
       }
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const markTutorialShortSeen = useCallback(
     (shortId: ShortId) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       if (!newSaveData.seenTutorialShorts.includes(shortId)) {
         newSaveData.seenTutorialShorts.push(shortId);
       }
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const saveMasterVolume = useCallback(
     (volume: number) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       newSaveData.settings.masterVolume = volume;
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const saveSoundEffectsVolume = useCallback(
     (volume: number) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       newSaveData.settings.soundEffectsVolume = volume;
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const saveDialogVolume = useCallback(
     (volume: number) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       newSaveData.settings.dialogVolume = volume;
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const saveMusicVolume = useCallback(
     (volume: number) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       newSaveData.settings.musicVolume = volume;
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const markJournalPageSeen = useCallback(
     (sectionName: SectionName) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       if (!newSaveData.seenJournalPages.includes(sectionName)) {
         newSaveData.seenJournalPages.push(sectionName);
       }
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const resetAllSaveData = useCallback(() => {
-    const oldSaveData = clone(saveDataRef.current);
+    const oldSaveData = clone(saveData);
     const newSaveData = DEFAULT_SAVE_DATA;
     // Preserve settings and lastSeenChangelogVersion.
     newSaveData.settings = oldSaveData.settings;
     newSaveData.lastSeenChangelogVersion = oldSaveData.lastSeenChangelogVersion;
     setSaveData(newSaveData);
-  }, [setSaveData]);
+  }, [saveData, setSaveData]);
 
   // TODO(albrow): Use a set everywhere else to prevent duplicates being
   // added in save data arrays.
   const unlockFunctions = useCallback(
     (newFunctions: string[]) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       const unlockedFunctions = new Set(newSaveData.unlockedFunctions);
       newFunctions.forEach((f) => unlockedFunctions.add(f));
       newSaveData.unlockedFunctions = [...unlockedFunctions];
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const markCutsceneSeen = useCallback(
     (cutsceneId: string) => {
-      const newSaveData = clone(saveDataRef.current);
+      const newSaveData = clone(saveData);
       const seenCutscenes = new Set(newSaveData.seenCutscenes);
       seenCutscenes.add(cutsceneId);
       newSaveData.seenCutscenes = [...seenCutscenes];
       setSaveData(newSaveData);
     },
-    [setSaveData]
+    [saveData, setSaveData]
   );
 
   const markChangelogSeen = useCallback(() => {
-    const newSaveData = clone(saveDataRef.current);
+    const newSaveData = clone(saveData);
     newSaveData.lastSeenChangelogVersion = APP_VERSION;
     console.log(`Saving changelog version ${APP_VERSION} to save data.`);
     setSaveData(newSaveData);
-  }, [setSaveData]);
+  }, [saveData, setSaveData]);
 
   const providerValue = useMemo(
     () =>
@@ -602,6 +612,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
           markCutsceneSeen,
           markChangelogSeen,
         },
+        saveDataRef,
       ] as const,
     [
       saveData,
@@ -619,6 +630,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       unlockFunctions,
       markCutsceneSeen,
       markChangelogSeen,
+      saveDataRef,
     ]
   );
 

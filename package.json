@@ -77,6 +77,7 @@
     "react-player": "^2.13.0",
     "react-router5": "^8.0.1",
     "react-simple-animate": "^3.5.2",
+    "react-usestateref": "^1.0.8",
     "remark-gfm": "^3.0.1",
     "router5-plugin-browser": "^8.0.1",
     "router5-plugin-logger": "^8.0.1",

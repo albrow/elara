@@ -20,7 +20,6 @@ import BlinkingText from "../components/blinking_text";
 import { useLevelSelectModal } from "../hooks/level_select_modal_hooks";
 import { useSaveData } from "../hooks/save_data_hooks";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";
-import { useSoundManager } from "../hooks/sound_manager_hooks";
 
 export default function Hub() {
   const [hoveringOver, setHoveringOver] = useState<
@@ -34,22 +33,6 @@ export default function Hub() {
   const [showLevelSelectModal] = useLevelSelectModal();
   const [saveData, _] = useSaveData();
   const [showDialogModal] = useDialogModal();
-  const { getSound } = useSoundManager();
-
-  useEffect(() => {
-    // Note(albrow): This is a workaround for a bug where the ringtone sound was either
-    // not playing when it should or playing when it shouldn't be. Ideally we would be
-    // able to do this in the navigateToHub function in scenes_hooks.tsx, but that
-    // seems to cause issues. Doing it here mostly works, but as a side-effect the
-    // sound effect will not play on some mobile devices/tablets due to autoplay
-    // restrictions.
-    const ringtoneSound = getSound("ringtone");
-    if (nextUnlockedScene.type === "dialog") {
-      ringtoneSound.play();
-    } else {
-      ringtoneSound.stop();
-    }
-  }, [getSound, nextUnlockedScene.type]);
 
   const getDialogTree = useCallback(() => {
     if (
