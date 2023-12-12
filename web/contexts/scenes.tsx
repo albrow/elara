@@ -1,5 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
-// @refresh reset
 import { PropsWithChildren, createContext, useMemo } from "react";
 
 import { useSaveData } from "../hooks/save_data_hooks";

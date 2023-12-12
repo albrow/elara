@@ -5,9 +5,10 @@ import {
   useEffect,
   useMemo,
   MutableRefObject,
+  useState,
+  useRef,
 } from "react";
 import clone from "clone";
-import useStateRef from "react-usestateref";
 import debounce from "lodash.debounce";
 
 import { ShortId } from "../lib/tutorial_shorts";
@@ -356,7 +357,7 @@ function load(): SaveData {
 export const SaveDataContext = createContext<
   readonly [SaveData, SaveDataManager, MutableRefObject<SaveData> | null]
 >([
-  DEFAULT_SAVE_DATA,
+  load(),
   {
     markLevelCompleted: () => {
       throw new Error("useSaveData must be used within a SaveDataContext");
@@ -408,27 +409,28 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
   // Note(albrow): We use a combination of ref and state for represnting the save data.
   // This is admittedly a bit of a hack. 🐉
   //
-  // The ref is used internally in SaveDataProvider to ensure that multiple updates
-  // to the save data do not cause race conditions. This is necessary because refs
-  // update immediately in React, but state does not.
+  // The ref is used internally in SaveDataProvider to ensure that multiple
+  // updates to the save data to not cause race conditions. It may also be used
+  // in certain hooks, but should be used this way with caution! This is
+  // necessary because refs update immediately in React, but state does not.
   //
   // The state is used externally by components which need to read save data. It will
   // trigger a re-render of those components whenever the save data changes. The state is
   // also used internally by SaveDataProvider to trigger actually saving data to local
   // storage.
-  const [saveData, __internalSetSaveData, saveDataRef] = useStateRef<SaveData>(
-    load()
-  );
+  const saveDataRef = useRef<SaveData>(load());
+  const [saveData, __internalSetSaveData] = useState(saveDataRef.current);
 
   // TODO(albrow): Update this comment.
   // Updates both the ref and state. This should be called whenever we want to update
   // save data. DO NOT set the ref directly or call __internalSetSaveData directly.
   const setSaveData = useCallback(
     (newSaveData: SaveData) => {
-      __internalSetSaveData({
+      saveDataRef.current = {
         ...newSaveData,
         lastUpdated: Date.now(),
-      });
+      };
+      __internalSetSaveData(newSaveData);
     },
     [__internalSetSaveData]
   );
