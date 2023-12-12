@@ -15,6 +15,7 @@ import {
 import {
   FULLSCREEN_VIDEO_Z_INDEX,
   VIDEO_END_SCREEN_Z_INDEX,
+  VIDEO_SKIP_BUTTON_Z_INDEX,
 } from "../../lib/constants";
 
 export interface FullscreenYouTubeVideoProps {
@@ -182,7 +183,7 @@ export default function FullscreenYouTubeVideo(
         duration={1.0}
       >
         <Box
-          zIndex={100}
+          zIndex={VIDEO_SKIP_BUTTON_Z_INDEX}
           position="fixed"
           right="32px"
           top="16px"
