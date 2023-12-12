@@ -432,7 +432,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       };
       __internalSetSaveData(newSaveData);
     },
-    [__internalSetSaveData]
+    [__internalSetSaveData, saveDataRef]
   );
 
   // Automatically save the save data to local storage whenever it changes.
@@ -446,7 +446,7 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
 
   const markLevelCompleted = useCallback(
     (levelName: string) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       newSaveData.levelStates[levelName] = {
         completed: true,
         challengeCompleted:
@@ -455,12 +455,12 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       };
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const markLevelChallengeCompleted = useCallback(
     (levelName: string) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       newSaveData.levelStates[levelName] = {
         completed: newSaveData.levelStates[levelName]?.completed || false,
         challengeCompleted: true,
@@ -468,12 +468,12 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       };
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const updateLevelCode = useCallback(
     (levelName: string, code: string) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       newSaveData.levelStates[levelName] = {
         completed: newSaveData.levelStates[levelName]?.completed || false,
         challengeCompleted:
@@ -482,117 +482,117 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
       };
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const markDialogSeen = useCallback(
     (treeName: string) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       if (!newSaveData.seenDialogTrees.includes(treeName)) {
         newSaveData.seenDialogTrees.push(treeName);
       }
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const markTutorialShortSeen = useCallback(
     (shortId: ShortId) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       if (!newSaveData.seenTutorialShorts.includes(shortId)) {
         newSaveData.seenTutorialShorts.push(shortId);
       }
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const saveMasterVolume = useCallback(
     (volume: number) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       newSaveData.settings.masterVolume = volume;
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const saveSoundEffectsVolume = useCallback(
     (volume: number) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       newSaveData.settings.soundEffectsVolume = volume;
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const saveDialogVolume = useCallback(
     (volume: number) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       newSaveData.settings.dialogVolume = volume;
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const saveMusicVolume = useCallback(
     (volume: number) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       newSaveData.settings.musicVolume = volume;
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const markJournalPageSeen = useCallback(
     (sectionName: SectionName) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       if (!newSaveData.seenJournalPages.includes(sectionName)) {
         newSaveData.seenJournalPages.push(sectionName);
       }
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const resetAllSaveData = useCallback(() => {
-    const oldSaveData = clone(saveData);
+    const oldSaveData = clone(saveDataRef.current);
     const newSaveData = DEFAULT_SAVE_DATA;
     // Preserve settings and lastSeenChangelogVersion.
     newSaveData.settings = oldSaveData.settings;
     newSaveData.lastSeenChangelogVersion = oldSaveData.lastSeenChangelogVersion;
     setSaveData(newSaveData);
-  }, [saveData, setSaveData]);
+  }, [setSaveData]);
 
   // TODO(albrow): Use a set everywhere else to prevent duplicates being
   // added in save data arrays.
   const unlockFunctions = useCallback(
     (newFunctions: string[]) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       const unlockedFunctions = new Set(newSaveData.unlockedFunctions);
       newFunctions.forEach((f) => unlockedFunctions.add(f));
       newSaveData.unlockedFunctions = [...unlockedFunctions];
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const markCutsceneSeen = useCallback(
     (cutsceneId: string) => {
-      const newSaveData = clone(saveData);
+      const newSaveData = clone(saveDataRef.current);
       const seenCutscenes = new Set(newSaveData.seenCutscenes);
       seenCutscenes.add(cutsceneId);
       newSaveData.seenCutscenes = [...seenCutscenes];
       setSaveData(newSaveData);
     },
-    [saveData, setSaveData]
+    [setSaveData]
   );
 
   const markChangelogSeen = useCallback(() => {
-    const newSaveData = clone(saveData);
+    const newSaveData = clone(saveDataRef.current);
     newSaveData.lastSeenChangelogVersion = APP_VERSION;
     console.log(`Saving changelog version ${APP_VERSION} to save data.`);
     setSaveData(newSaveData);
-  }, [saveData, setSaveData]);
+  }, [setSaveData]);
 
   const providerValue = useMemo(
     () =>
