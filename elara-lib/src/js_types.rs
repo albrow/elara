@@ -140,8 +140,8 @@ impl LevelData {
         for warning in level.asteroid_warnings() {
             asteroid_warnings.push(&JsValue::from(AsteroidWarning {
                 pos: Pos {
-                    x: warning.pos.x as i32,
-                    y: warning.pos.y as i32,
+                    x: warning.pos.x,
+                    y: warning.pos.y,
                 },
             }));
         }
@@ -197,16 +197,16 @@ impl TeleAnimData {
     pub fn from(data: &simulation::TeleAnimData) -> Self {
         Self {
             start_pos: Pos {
-                x: data.start_pos.x as i32,
-                y: data.start_pos.y as i32,
+                x: data.start_pos.x,
+                y: data.start_pos.y,
             },
             enter_pos: Pos {
-                x: data.enter_pos.x as i32,
-                y: data.enter_pos.y as i32,
+                x: data.enter_pos.x,
+                y: data.enter_pos.y,
             },
             exit_pos: Pos {
-                x: data.exit_pos.x as i32,
-                y: data.exit_pos.y as i32,
+                x: data.exit_pos.x,
+                y: data.exit_pos.y,
             },
         }
     }
@@ -227,12 +227,12 @@ impl BumpAnimData {
     pub fn from(data: &simulation::BumpAnimData) -> Self {
         Self {
             pos: Pos {
-                x: data.pos.x as i32,
-                y: data.pos.y as i32,
+                x: data.pos.x,
+                y: data.pos.y,
             },
             obstacle_pos: Pos {
-                x: data.obstacle_pos.x as i32,
-                y: data.obstacle_pos.y as i32,
+                x: data.obstacle_pos.x,
+                y: data.obstacle_pos.y,
             },
         }
     }
@@ -308,8 +308,8 @@ impl State {
                 i as u32,
                 JsValue::from(EnergyCell {
                     pos: Pos {
-                        x: energy_cell.pos.x as i32,
-                        y: energy_cell.pos.y as i32,
+                        x: energy_cell.pos.x,
+                        y: energy_cell.pos.y,
                     },
                     collected: energy_cell.collected,
                 }),
@@ -322,8 +322,8 @@ impl State {
                 i as u32,
                 JsValue::from(Goal {
                     pos: Pos {
-                        x: goal.pos.x as i32,
-                        y: goal.pos.y as i32,
+                        x: goal.pos.x,
+                        y: goal.pos.y,
                     },
                 }),
             );
@@ -349,8 +349,8 @@ impl State {
                 i as u32,
                 JsValue::from(Enemy {
                     pos: Pos {
-                        x: enemy.pos.x as i32,
-                        y: enemy.pos.y as i32,
+                        x: enemy.pos.x,
+                        y: enemy.pos.y,
                     },
                     anim_state: anim_state.to_string(),
                     anim_data,
@@ -365,8 +365,8 @@ impl State {
                 i as u32,
                 JsValue::from(Obstacle {
                     pos: Pos {
-                        x: obstacle.pos.x as i32,
-                        y: obstacle.pos.y as i32,
+                        x: obstacle.pos.x,
+                        y: obstacle.pos.y,
                     },
                     kind: match obstacle.kind {
                         ObstacleKind::Rock => "rock".to_string(),
@@ -387,8 +387,8 @@ impl State {
                 i as u32,
                 JsValue::from(PasswordGate {
                     pos: Pos {
-                        x: pw_gate.pos.x as i32,
-                        y: pw_gate.pos.y as i32,
+                        x: pw_gate.pos.x,
+                        y: pw_gate.pos.y,
                     },
                     password: pw_gate.password.clone(),
                     open: pw_gate.open,
@@ -405,8 +405,8 @@ impl State {
                 i as u32,
                 JsValue::from(DataPoint {
                     pos: Pos {
-                        x: data_point.pos.x as i32,
-                        y: data_point.pos.y as i32,
+                        x: data_point.pos.x,
+                        y: data_point.pos.y,
                     },
                     data: term_data_to_js(&data_point.data),
                     reading: data_point.reading,
@@ -421,12 +421,12 @@ impl State {
                 i as u32,
                 JsValue::from(Telepad {
                     start_pos: Pos {
-                        x: telepad.start_pos.x as i32,
-                        y: telepad.start_pos.y as i32,
+                        x: telepad.start_pos.x,
+                        y: telepad.start_pos.y,
                     },
                     end_pos: Pos {
-                        x: telepad.end_pos.x as i32,
-                        y: telepad.end_pos.y as i32,
+                        x: telepad.end_pos.x,
+                        y: telepad.end_pos.y,
                     },
                     end_facing: match telepad.end_facing {
                         Orientation::Up => "up".to_string(),
@@ -444,8 +444,8 @@ impl State {
                 i as u32,
                 JsValue::from(Button {
                     pos: Pos {
-                        x: button.pos.x as i32,
-                        y: button.pos.y as i32,
+                        x: button.pos.x,
+                        y: button.pos.y,
                     },
                     connection_type: match button.connection {
                         simulation::ButtonConnection::None => "none".to_string(),
@@ -471,8 +471,8 @@ impl State {
                 i as u32,
                 JsValue::from(Gate {
                     pos: Pos {
-                        x: gate.pos.x as i32,
-                        y: gate.pos.y as i32,
+                        x: gate.pos.x,
+                        y: gate.pos.y,
                     },
                     open: gate.open,
                     variant,
@@ -495,8 +495,8 @@ impl State {
                 i as u32,
                 JsValue::from(BigEnemy {
                     pos: Pos {
-                        x: big_enemy.pos.x as i32,
-                        y: big_enemy.pos.y as i32,
+                        x: big_enemy.pos.x,
+                        y: big_enemy.pos.y,
                     },
                     facing: match big_enemy.facing {
                         OrientationWithDiagonals::Up => "up".to_string(),
@@ -572,8 +572,8 @@ impl Player {
         let anim_data = get_js_player_anim_data(&player.anim_state).unwrap_or(JsValue::UNDEFINED);
         Self {
             pos: Pos {
-                x: player.pos.x as i32,
-                y: player.pos.y as i32,
+                x: player.pos.x,
+                y: player.pos.y,
             },
             energy: player.energy as i32,
             message: player.message.clone(),
