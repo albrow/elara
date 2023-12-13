@@ -50,12 +50,9 @@ export default function JournalSidebar() {
           >
             <Box>
               {JOURNAL_PAGES.map((scene) => (
-                <MenuItem bg="gray.200" p="0">
-                  <Box key={scene.name} mb="4px">
-                    <SectionLink
-                      scene={scene}
-                      key={router.buildPath(scene.routeName, scene.routeParams)}
-                    />
+                <MenuItem bg="gray.200" p="0" key={scene.name} as="div">
+                  <Box mb="4px">
+                    <SectionLink scene={scene} />
                   </Box>
                 </MenuItem>
               ))}
