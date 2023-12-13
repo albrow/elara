@@ -270,7 +270,7 @@ const RAW_SCENES: RawScene[] = [
     [],
     [
       "The starting code already contains almost everything you need.",
-      "You just need to finish the body of the `new_turn_right` function. Then the rest of the code should work.",
+      "You just need to finish the body of the `three_lefts` function. Then the rest of the code should work.",
     ]
   ),
   // Temporarily disable arrays because the concept is not super fleshed out yet.
