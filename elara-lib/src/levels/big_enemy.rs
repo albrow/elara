@@ -131,7 +131,7 @@ fn face_direction(direction) {
                 return false;
             }
         }
-        return true;
+        true
     }
 }
 

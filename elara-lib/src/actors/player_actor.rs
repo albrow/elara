@@ -157,7 +157,7 @@ impl PlayerChannelActor {
         if let Some(telepad) = get_telepad_at(state, &desired_pos) {
             return (
                 telepad.end_pos.clone(),
-                telepad.end_facing.clone(),
+                telepad.end_facing,
                 PlayerAnimState::Teleporting(TeleAnimData {
                     start_pos: state.player.pos.clone(),
                     enter_pos: desired_pos,
@@ -166,15 +166,11 @@ impl PlayerChannelActor {
             );
         }
         if can_move_to(state, &self.bounds, &desired_pos) {
-            (
-                desired_pos,
-                state.player.facing.clone(),
-                PlayerAnimState::Moving,
-            )
+            (desired_pos, state.player.facing, PlayerAnimState::Moving)
         } else {
             (
                 state.player.pos.clone(),
-                state.player.facing.clone(),
+                state.player.facing,
                 PlayerAnimState::Bumping(BumpAnimData {
                     pos: state.player.pos.clone(),
                     obstacle_pos: desired_pos,

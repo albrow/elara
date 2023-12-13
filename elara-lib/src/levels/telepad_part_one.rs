@@ -11,7 +11,7 @@ impl TelepadPartOne {
     // Note: We make obstacles a method so we can re-use the same set of
     // obstacles for each possible state.
     fn obstacles(&self) -> Vec<Obstacle> {
-        return vec![
+        vec![
             Obstacle::new(0, 3),
             Obstacle::new(0, 5),
             Obstacle::new(1, 3),
@@ -23,7 +23,7 @@ impl TelepadPartOne {
             Obstacle::new(4, 3),
             Obstacle::new(4, 4),
             Obstacle::new(4, 5),
-        ];
+        ]
     }
 }
 

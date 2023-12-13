@@ -6,7 +6,7 @@ use crate::simulation::{Actor, DataPoint, ObstacleKind, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
-const DATA_POINT_INFO: &'static str = r#"This data point will output either `"left"` or `"right"` depending on which way is safe to go."#;
+const DATA_POINT_INFO: &str = r#"This data point will output either `"left"` or `"right"` depending on which way is safe to go."#;
 
 #[derive(Copy, Clone)]
 pub struct AsteroidStrike {}
@@ -15,7 +15,7 @@ impl AsteroidStrike {
     // Note: We make obstacles a method so we can re-use the same set of
     // obstacles for each possible state.
     fn obstacles(&self) -> Vec<Obstacle> {
-        return vec![
+        vec![
             Obstacle::new(1, 4),
             Obstacle::new(1, 5),
             Obstacle::new(1, 6),
@@ -36,7 +36,7 @@ impl AsteroidStrike {
             Obstacle::new(9, 4),
             Obstacle::new(9, 5),
             Obstacle::new(9, 6),
-        ];
+        ]
     }
 }
 

@@ -6,8 +6,8 @@ use crate::simulation::{
 #[derive(Copy, Clone)]
 pub struct VariablesIntro {}
 
-const PASSWORD: &'static str = "supercalifragilisticexpialidocious";
-const GATE_INFO: &'static str =
+const PASSWORD: &str = "supercalifragilisticexpialidocious";
+const GATE_INFO: &str =
     r#"The starting code includes the password for this gate as a variable named `password`."#;
 
 impl Level for VariablesIntro {
