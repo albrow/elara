@@ -135,7 +135,7 @@ impl Level for EnemiesAndAsteroids {
     fn challenge(&self) -> Option<&'static str> {
         Some("Complete the objective in 22 or fewer steps.")
     }
-    fn check_challenge(&self, _states: &Vec<State>, _script: &str, stats: &ScriptStats) -> bool {
+    fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
         stats.time_taken <= 22
     }
 }
@@ -280,7 +280,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
 
         // Here is the "clever way" which involves using the say function to
         // wait for one or two steps then moving in the "unsafe" direction with
@@ -316,7 +316,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
 
         // The challenge should not be considered passed if any possible initial state
         // results in taking too many steps. In other words we need to find a clever
@@ -352,7 +352,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
 
         let script = r#"
             let safe_direction = read_data();
@@ -385,6 +385,6 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
     }
 }

@@ -117,7 +117,7 @@ if safe_direction == "right" {
     fn challenge(&self) -> Option<&'static str> {
         Some("Reach the goal without using the `read_data` function.")
     }
-    fn check_challenge(&self, _states: &Vec<State>, script: &str, _stats: &ScriptStats) -> bool {
+    fn check_challenge(&self, _states: &[State], script: &str, _stats: &ScriptStats) -> bool {
         // Strip the comments first, then check if the script contains "read_data".
         if let Ok(script) = Engine::new().compact_script(script) {
             return !script.contains("read_data");
@@ -235,7 +235,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
 
         // This code satisfies the challenge conditions.
         let script = r"
@@ -249,7 +249,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
 
         // Having read_data in the comments should be okay.
         let script = r"
@@ -265,6 +265,6 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
     }
 }

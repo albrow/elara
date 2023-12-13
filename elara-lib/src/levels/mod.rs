@@ -74,7 +74,7 @@ pub trait Level {
     fn challenge(&self) -> Option<&'static str> {
         None
     }
-    fn check_challenge(&self, _states: &Vec<State>, _script: &str, _stats: &ScriptStats) -> bool {
+    fn check_challenge(&self, _states: &[State], _script: &str, _stats: &ScriptStats) -> bool {
         false
     }
 

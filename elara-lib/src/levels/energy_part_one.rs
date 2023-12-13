@@ -70,7 +70,7 @@ move_forward(4);
     fn challenge(&self) -> Option<&'static str> {
         Some("Complete the objective in 12 or fewer steps.")
     }
-    fn check_challenge(&self, _states: &Vec<State>, _script: &str, stats: &ScriptStats) -> bool {
+    fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
         stats.time_taken <= 12
     }
 }
@@ -139,7 +139,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
 
         // This code satisfies the challenge conditions.
         let script = r"
@@ -151,6 +151,6 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
     }
 }

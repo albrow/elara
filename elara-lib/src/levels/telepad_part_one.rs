@@ -94,7 +94,7 @@ if get_orientation() == "up" {
     }
     fn check_challenge(
         &self,
-        _states: &Vec<State>,
+        _states: &[State],
         script: &str,
         stats: &crate::script_runner::ScriptStats,
     ) -> bool {
@@ -200,7 +200,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
 
         // This code meets the code length requirement but should not pass
         // the challenge because it defines a new function.
@@ -234,7 +234,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
 
         // This code should pass the challenge.
         let script = r#"
@@ -256,6 +256,6 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
     }
 }

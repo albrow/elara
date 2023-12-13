@@ -88,7 +88,7 @@ impl Level for LoopsPartTwo {
     fn challenge(&self) -> Option<&'static str> {
         Some("Reach the goal without using a loop and with 84 characters or less.")
     }
-    fn check_challenge(&self, _states: &Vec<State>, script: &str, stats: &ScriptStats) -> bool {
+    fn check_challenge(&self, _states: &[State], script: &str, stats: &ScriptStats) -> bool {
         if stats.code_len > 84 {
             return false;
         }
@@ -152,7 +152,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
 
         // This code satisfies the challenge conditions.
         let script = r#"
@@ -169,7 +169,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
 
         // This code also satisfies the challenge conditions. It's fine if
         // comments contain the "loop", "for", "while", or "do" keywords.
@@ -191,7 +191,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
 
         // Here is an alternative solution that passes the challenge.
         let script = r#"
@@ -205,6 +205,6 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
     }
 }

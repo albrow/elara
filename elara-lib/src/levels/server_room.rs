@@ -11,7 +11,7 @@ use crate::{
 
 lazy_static! {
     static ref MESSAGES: Vec<&'static str> = vec![
-        r#"{markdown}
+        r"{markdown}
 \== _Chat Logs 2063.09.29_ \==
 
 **Ada**: Hey I heard you've been working on the infinite loop detector?
@@ -21,7 +21,7 @@ lazy_static! {
 **Ada**: Cool cool. Some engineers might also use recursion as a way to repeat their code. Did you test for that?
 
 **Alan**: Oh, I almost forgot. Let me search online to remind myself how recursion works...
-"#,
+",
         r#"{markdown}
 \== _Chat Logs 2063.10.01_ \==
 
@@ -33,7 +33,7 @@ lazy_static! {
 
 **George**: Gotcha. As long as the rovers are able to do their job while cleaning, it's not the end of the world if they take a little longer to do it. I'm okay with de-prioritizing this for now.
 "#,
-        r#"{markdown}
+        r"{markdown}
 \== _Chat Logs 2063.10.02_ \==
 
 **Mary**: Any resident CSS experts available to help me with something? I'm just trying to have a tooltip that floats above a button, but I don't want it to hang off the edge of the screen. I want it to be repositioned so that it's always visible.
@@ -41,7 +41,7 @@ lazy_static! {
 **Alan**: I think @Ada has the most practice with the dark arts.
 
 **Ada**: Lol honestly I usually just keep trying things until it works. But happy to take a look and see if I can help!
-"#,
+",
         r#"{markdown}
 \== _Chat Logs 2063.10.05_ \==
 
@@ -51,7 +51,7 @@ lazy_static! {
 
 **Alan**: Yeah, I guess you're right! I'll advise them to do that instead.
 "#,
-        r#"{markdown}
+        r"{markdown}
 
 \== _Chat Logs 2063.10.09_ \==
 
@@ -64,8 +64,8 @@ lazy_static! {
 **Mary**: rofl.gif [image not found]
 
 **Alan**: I'm pretty sure there are more than two hard problems in computer science.
-"#,
-        r#"{markdown}
+",
+        r"{markdown}
 
 \== _Chat Logs 2063.10.12_ \==
 
@@ -76,7 +76,7 @@ lazy_static! {
 **George**: I guess that makes sense. I'm just worried that someone might press it by accident. Can't we put it somewhere less conspicuous?
 
 **Ada**: That would defeat the purpose. It needs to be somewhere that's easy to find in an emergency.
-"#,
+",
     ];
 }
 
@@ -208,7 +208,7 @@ impl Level for ServerRoom {
     }
     fn check_challenge(
         &self,
-        states: &Vec<State>,
+        states: &[State],
         _script: &str,
         _stats: &crate::script_runner::ScriptStats,
     ) -> bool {
@@ -265,7 +265,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
 
         // Running this code should pass the challenge.
         let script = r#"
@@ -301,7 +301,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
 
         // This code should not pass the challenge because it skips the
         // last data point.
@@ -338,6 +338,6 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
     }
 }

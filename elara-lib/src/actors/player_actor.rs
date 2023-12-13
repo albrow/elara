@@ -438,38 +438,38 @@ mod test {
     fn assert_player_can_move_in_any_direction(state: &mut State, actor: &PlayerChannelActor) {
         state.player.facing = Orientation::Up;
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
+            actor.try_to_move(state, MoveDirection::Forward).0,
             Pos::new(1, 0)
         );
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
+            actor.try_to_move(state, MoveDirection::Backward).0,
             Pos::new(1, 2)
         );
         state.player.facing = Orientation::Down;
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
+            actor.try_to_move(state, MoveDirection::Forward).0,
             Pos::new(1, 2)
         );
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
+            actor.try_to_move(state, MoveDirection::Backward).0,
             Pos::new(1, 0)
         );
         state.player.facing = Orientation::Left;
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
+            actor.try_to_move(state, MoveDirection::Forward).0,
             Pos::new(0, 1)
         );
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
+            actor.try_to_move(state, MoveDirection::Backward).0,
             Pos::new(2, 1)
         );
         state.player.facing = Orientation::Right;
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
+            actor.try_to_move(state, MoveDirection::Forward).0,
             Pos::new(2, 1)
         );
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
+            actor.try_to_move(state, MoveDirection::Backward).0,
             Pos::new(0, 1)
         );
     }
@@ -478,38 +478,38 @@ mod test {
     fn assert_player_cannot_move_in_any_direction(state: &mut State, actor: &PlayerChannelActor) {
         state.player.facing = Orientation::Up;
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
+            actor.try_to_move(state, MoveDirection::Forward).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
+            actor.try_to_move(state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
         state.player.facing = Orientation::Down;
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
+            actor.try_to_move(state, MoveDirection::Forward).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
+            actor.try_to_move(state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
         state.player.facing = Orientation::Left;
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
+            actor.try_to_move(state, MoveDirection::Forward).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
+            actor.try_to_move(state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
         state.player.facing = Orientation::Right;
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Forward).0,
+            actor.try_to_move(state, MoveDirection::Forward).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.try_to_move(&state, MoveDirection::Backward).0,
+            actor.try_to_move(state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
     }

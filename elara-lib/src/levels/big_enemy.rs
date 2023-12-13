@@ -125,7 +125,7 @@ fn face_direction(direction) {
     fn challenge(&self) -> Option<&'static str> {
         Some("Reach the goal without using any telepads.")
     }
-    fn check_challenge(&self, states: &Vec<State>, _script: &str, _stats: &ScriptStats) -> bool {
+    fn check_challenge(&self, states: &[State], _script: &str, _stats: &ScriptStats) -> bool {
         for state in states {
             if let PlayerAnimState::Teleporting(_) = state.player.anim_state {
                 return false;
@@ -220,7 +220,7 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, false);
+        assert!(!result.passes_challenge);
 
         // This code satisfies the challenge conditions.
         let script = r"
@@ -251,6 +251,6 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
-        assert_eq!(result.passes_challenge, true);
+        assert!(result.passes_challenge);
     }
 }
