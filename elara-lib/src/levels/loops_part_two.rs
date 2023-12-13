@@ -86,7 +86,7 @@ impl Level for LoopsPartTwo {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal without using a loop and with 84 characters or less.")
+        Some("Have a code length of 84 characters or less and don't use a loop.")
     }
     fn check_challenge(&self, _states: &[State], script: &str, stats: &ScriptStats) -> bool {
         if stats.code_len > 84 {
