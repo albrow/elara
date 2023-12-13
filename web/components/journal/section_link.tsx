@@ -3,7 +3,7 @@ import { Badge, Box, Button, Text } from "@chakra-ui/react";
 import { Fragment, useCallback } from "react";
 
 import { MdLock } from "react-icons/md";
-import { Scene } from "../../contexts/scenes";
+import type { Scene } from "../../lib/scenes";
 import DisablableLink from "../scene_link";
 
 interface SceneLinkProps {

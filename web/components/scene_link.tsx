@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
-import { Scene } from "../contexts/scenes";
+import type { Scene } from "../lib/scenes";
 import { useSceneNavigator } from "../hooks/scenes_hooks";
 
 export interface DisablableLinkProps {

@@ -3,7 +3,7 @@ import { Fragment, useCallback, useMemo } from "react";
 
 import { MdLock, MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 import { BsStar, BsStarFill } from "react-icons/bs";
-import { Scene } from "../contexts/scenes";
+import type { Scene } from "../lib/scenes";
 import {
   useNextLevelToBeUnlocked,
   useNextUnlockedScene,
