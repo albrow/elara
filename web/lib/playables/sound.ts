@@ -19,6 +19,11 @@ export interface SoundOptions {
    * the sound will be loaded when play() is called.
    */
   preload?: boolean;
+  /** Whether or not the sound should be streamed (default false).
+   * Streamed sounds will start playing before the entire song has loaded,
+   * but will not loop seamlessly.
+   */
+  stream?: boolean;
 }
 
 export class Sound implements Playable {
@@ -39,6 +44,8 @@ export class Sound implements Playable {
   private _fadeIn: number;
 
   private _preload: boolean;
+
+  private _stream: boolean;
 
   /**
    * This is the most basic implementation of Playable.
@@ -64,16 +71,13 @@ export class Sound implements Playable {
     this._loop = opts.loop || false;
     this._fadeIn = opts.fadeIn || 0;
     this._preload = opts.preload === undefined ? true : opts.preload;
+    this._stream = opts.stream === undefined ? false : opts.stream;
     this._howl = new Howl({
       src: this._sources,
       volume: this._baseGain,
       loop: this._loop,
-      // Note(albrow): Ideally we would set "html5" to true when preload is false, but
-      // there is a bug where sounds do not loop seamlessly when using the HTML5 audio API.
-      // That means we *must* wait until the sound is fully loaded before playing it, which
-      // is not
-      // ideal.
-      // html5: !this._preload,
+      // Note: This is effectively the option in Howler.js that enables streaming.
+      html5: this._stream,
       preload: this._preload,
     });
   }

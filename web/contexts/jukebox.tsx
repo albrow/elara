@@ -112,6 +112,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
           loop: true,
           fadeIn: 10,
           preload: false,
+          stream: true,
         }
       ),
       driftingIntoSpace: new Sound(
@@ -122,6 +123,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
           loop: true,
           fadeIn: 10,
           preload: false,
+          // Note: this somg seamlessly loops, so we can't stream it.
         }
       ),
       lookingAhead: new Sound(
@@ -132,6 +134,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
           loop: true,
           fadeIn: 10,
           preload: false,
+          stream: true,
         }
       ),
       measuringTheChallenge: new Sound(
@@ -142,6 +145,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
           loop: true,
           fadeIn: 10,
           preload: false,
+          stream: true,
         }
       ),
       puttingItAllTogether: new Sound(
@@ -152,6 +156,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
           loop: true,
           fadeIn: 10,
           preload: false,
+          stream: true,
         }
       ),
       notTheEnd: new Sound(
@@ -162,6 +167,7 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
           loop: true,
           fadeIn: 10,
           preload: false,
+          stream: true,
         }
       ),
     }),
