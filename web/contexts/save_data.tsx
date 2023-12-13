@@ -589,7 +589,6 @@ export function SaveDataProvider(props: PropsWithChildren<{}>) {
   const markChangelogSeen = useCallback(() => {
     const newSaveData = clone(saveDataRef.current);
     newSaveData.lastSeenChangelogVersion = APP_VERSION;
-    console.log(`Saving changelog version ${APP_VERSION} to save data.`);
     setSaveData(newSaveData);
   }, [setSaveData]);
 

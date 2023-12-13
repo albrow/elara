@@ -44,7 +44,6 @@ export default function MonitorStand(props: MonitorStandProps) {
     }
 
     function onWindowResizeOrScroll() {
-      console.log("onWindowResizeOrScroll");
       if (props.monitorFrameRef.current) {
         const monitorFrameRect =
           props.monitorFrameRef.current.getBoundingClientRect();
