@@ -24,7 +24,7 @@ impl Simulation {
         let sim = Simulation {
             state_idx: 0,
             states: vec![],
-            player_actor: player_actor,
+            player_actor,
             // Start with the first level by default. Will be overwritten by
             // load_level.
             level: LEVELS.values().next().unwrap().as_ref(),
@@ -165,6 +165,12 @@ impl State {
     }
 }
 
+impl Default for State {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl fmt::Debug for State {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("State")
@@ -261,7 +267,7 @@ impl OrientationWithDiagonals {
     }
 
     pub fn clockwise_distance(&self, other: &Self) -> usize {
-        let mut curr = self.clone();
+        let mut curr = *self;
         let mut dist = 0;
         while curr != *other {
             curr = curr.rotate_clockwise();
@@ -271,7 +277,7 @@ impl OrientationWithDiagonals {
     }
 
     pub fn counter_clockwise_distance(&self, other: &Self) -> usize {
-        let mut curr = self.clone();
+        let mut curr = *self;
         let mut dist = 0;
         while curr != *other {
             curr = curr.rotate_counter_clockwise();
@@ -281,13 +287,13 @@ impl OrientationWithDiagonals {
     }
 
     pub fn is_diagonal(&self) -> bool {
-        match self {
+        matches!(
+            self,
             OrientationWithDiagonals::UpLeft
-            | OrientationWithDiagonals::UpRight
-            | OrientationWithDiagonals::DownLeft
-            | OrientationWithDiagonals::DownRight => true,
-            _ => false,
-        }
+                | OrientationWithDiagonals::UpRight
+                | OrientationWithDiagonals::DownLeft
+                | OrientationWithDiagonals::DownRight
+        )
     }
 }
 
@@ -330,10 +336,10 @@ impl Player {
     pub fn new(x: u32, y: u32, energy: u32, facing: Orientation) -> Player {
         Player {
             pos: Pos::new(x as i32, y as i32),
-            energy: energy,
+            energy,
             message: String::new(),
             anim_state: PlayerAnimState::Idle,
-            facing: facing,
+            facing,
             total_energy_used: 0,
         }
     }
@@ -399,7 +405,7 @@ impl Button {
                 x: x as i32,
                 y: y as i32,
             },
-            connection: connection,
+            connection,
             currently_pressed: false,
             additional_info,
         }
@@ -526,6 +532,7 @@ pub struct AsteroidWarning {
     pub pos: Pos,
 }
 
+#[allow(clippy::upper_case_acronyms)]
 #[derive(Clone, PartialEq, Debug)]
 pub enum GateVariant {
     NWSE,

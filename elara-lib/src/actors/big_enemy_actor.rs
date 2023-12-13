@@ -34,7 +34,7 @@ fn can_move_entire_body(state: &State, bounds: &Bounds, desired_pos: &Pos) -> bo
             }
         }
     }
-    return true;
+    true
 }
 
 impl BigEnemyActor {
@@ -112,9 +112,9 @@ impl BigEnemyActor {
             clockwise_dist, counter_clockwise_dist
         );
         if clockwise_dist < counter_clockwise_dist {
-            return BigEvilRoverAction::Turn(TurnDirection::Right);
+            BigEvilRoverAction::Turn(TurnDirection::Right)
         } else {
-            return BigEvilRoverAction::Turn(TurnDirection::Left);
+            BigEvilRoverAction::Turn(TurnDirection::Left)
         }
     }
 
@@ -126,9 +126,10 @@ impl BigEnemyActor {
         curr_orientation: OrientationWithDiagonals,
         desired_direction: OrientationWithDiagonals,
     ) -> BigEvilRoverAction {
-        if desired_direction.is_diagonal() {
-            panic!("desired_direction cannot be diagonal");
-        }
+        assert!(
+            !desired_direction.is_diagonal(),
+            "desired_direction cannot be diagonal"
+        );
         if curr_orientation == desired_direction {
             // Should be safe to unwrap at this point since we know desired_direction
             // is not diagonal.
@@ -138,9 +139,9 @@ impl BigEnemyActor {
         let counter_clockwise_dist =
             curr_orientation.counter_clockwise_distance(&desired_direction);
         if clockwise_dist < counter_clockwise_dist {
-            return BigEvilRoverAction::Turn(TurnDirection::Right);
+            BigEvilRoverAction::Turn(TurnDirection::Right)
         } else {
-            return BigEvilRoverAction::Turn(TurnDirection::Left);
+            BigEvilRoverAction::Turn(TurnDirection::Left)
         }
     }
 
@@ -159,92 +160,96 @@ impl BigEnemyActor {
         let x_dist = player_pos.x.abs_diff(center_pos.x);
         let y_dist = player_pos.y.abs_diff(center_pos.y);
         if y_dist >= x_dist {
-            if player_pos.y < center_pos.y {
-                if can_move_entire_body(
+            if player_pos.y < center_pos.y
+                && can_move_entire_body(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x, enemy.pos.y - 1),
-                ) {
-                    return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Up);
-                }
-            } else if player_pos.y > center_pos.y {
-                if can_move_entire_body(
+                )
+            {
+                return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Up);
+            } else if player_pos.y > center_pos.y
+                && can_move_entire_body(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x, enemy.pos.y + 1),
-                ) {
-                    return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Down);
-                }
+                )
+            {
+                return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Down);
             }
-            if player_pos.x < center_pos.x {
-                if can_move_entire_body(
+
+            if player_pos.x < center_pos.x
+                && can_move_entire_body(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x - 1, enemy.pos.y),
-                ) {
-                    return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Left);
-                }
-            } else if player_pos.x > center_pos.x {
-                if can_move_entire_body(
+                )
+            {
+                return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Left);
+            } else if player_pos.x > center_pos.x
+                && can_move_entire_body(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x + 1, enemy.pos.y),
-                ) {
-                    return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Right);
-                }
+                )
+            {
+                return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Right);
             }
+
             // If we get here, we can't move toward the player. This means we should at least
             // turn toward the player (if we are not already facing them). If we are facing them,
             // we should do a bump animation. Note that we only need to check the y-axis here
             // since we know that is the axis in which the player is furthest away.
             if player_pos.y < center_pos.y {
-                return self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Up);
+                self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Up)
             } else {
-                return self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Down);
+                self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Down)
             }
         } else {
             // The player is further away in the x-axis, so we prioritize that while checking
             // movement options.
-            if player_pos.x < center_pos.x {
-                if can_move_entire_body(
+            if player_pos.x < center_pos.x
+                && can_move_entire_body(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x - 1, enemy.pos.y),
-                ) {
-                    return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Left);
-                }
-            } else if player_pos.x > center_pos.x {
-                if can_move_entire_body(
+                )
+            {
+                return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Left);
+            } else if player_pos.x > center_pos.x
+                && can_move_entire_body(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x + 1, enemy.pos.y),
-                ) {
-                    return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Right);
-                }
+                )
+            {
+                return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Right);
             }
-            if player_pos.y < center_pos.y {
-                if can_move_entire_body(
+
+            if player_pos.y < center_pos.y
+                && can_move_entire_body(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x, enemy.pos.y - 1),
-                ) {
-                    return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Up);
-                }
-            } else if player_pos.y > center_pos.y {
-                if can_move_entire_body(
+                )
+            {
+                return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Up);
+            } else if player_pos.y > center_pos.y
+                && can_move_entire_body(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x, enemy.pos.y + 1),
-                ) {
-                    return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Down);
-                }
+                )
+            {
+                return self.move_or_turn(enemy.facing, OrientationWithDiagonals::Down);
             }
+
             // If we get here, we can't move toward the player. Bump or turn while prioritizing
             // the x-axis.
             if player_pos.x < center_pos.x {
-                return self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Left);
+                self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Left)
             } else {
-                return self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Right);
+                self.bump_or_turn(state, enemy.facing, OrientationWithDiagonals::Right)
             }
         }
     }

@@ -69,8 +69,8 @@ impl ScriptRunner {
     /// Some levels have restrictions on which functions are available.
     pub fn run(
         &mut self,
-        avail_funcs: &Vec<String>,
-        disabled_funcs: &'static Vec<&'static str>,
+        avail_funcs: &[String],
+        disabled_funcs: &'static [&'static str],
         script: &str,
     ) -> Result<ScriptResult, BetterError> {
         // Create and configure the Rhai engine.
@@ -121,62 +121,53 @@ impl ScriptRunner {
         let engine = engine;
 
         // If the AST looks good, try running the script.
-        match engine.run_ast(&ast) {
-            Err(err) => {
-                match *err {
-                    EvalAltResult::ErrorRuntime(_, _) => {
-                        if err.to_string().contains(ERR_SIMULATION_END) {
-                            // Special case for when the simulation ends before the script
-                            // finishes running. This is not actually an error, so we continue.
-                        } else {
-                            // Other runtime errors should be considered a failure.
-                            // In this case we still return all the states and trace.
-                            let outcome = Outcome::Failure(err.to_string());
-                            let states = self.simulation.borrow().get_history();
-                            let trace = self.pending_trace.borrow().to_vec();
-                            let stats = compute_stats(&engine, &script, &states);
-                            return Ok(ScriptResult {
-                                states,
-                                trace: trace,
-                                outcome,
-                                stats,
-                                passes_challenge: false,
-                            });
-                        }
-                    }
-                    _ => {
-                        // For all other kinds of errors, we return the error.
-                        return Err(convert_err(
-                            avail_funcs,
-                            disabled_funcs,
-                            script.to_string(),
-                            err,
-                        ));
+        if let Err(err) = engine.run_ast(&ast) {
+            match *err {
+                EvalAltResult::ErrorRuntime(_, _) => {
+                    if err.to_string().contains(ERR_SIMULATION_END) {
+                        // Special case for when the simulation ends before the script
+                        // finishes running. This is not actually an error, so we continue.
+                    } else {
+                        // Other runtime errors should be considered a failure.
+                        // In this case we still return all the states and trace.
+                        let outcome = Outcome::Failure(err.to_string());
+                        let states = self.simulation.borrow().get_history();
+                        let trace = self.pending_trace.borrow().to_vec();
+                        let stats = compute_stats(&engine, script, &states);
+                        return Ok(ScriptResult {
+                            states,
+                            trace,
+                            outcome,
+                            stats,
+                            passes_challenge: false,
+                        });
                     }
                 }
+                _ => {
+                    // For all other kinds of errors, we return the error.
+                    return Err(convert_err(
+                        avail_funcs,
+                        disabled_funcs,
+                        script.to_string(),
+                        err,
+                    ));
+                }
             }
-            _ => (),
-        };
+        }
 
         let states = self.simulation.borrow().get_history();
         let positions = self.pending_trace.borrow().to_vec();
         let outcome = self.simulation.borrow().last_outcome();
-        let stats = compute_stats(&engine, &script, &states);
+        let stats = compute_stats(&engine, script, &states);
 
         // If the outcome is success, and the level has a challenge,
         // check if it was passed.
         let mut passes_challenge = false;
-        match outcome {
-            Outcome::Success => {
-                let curr_level = self.simulation.borrow().curr_level();
-                match curr_level.challenge() {
-                    Some(_) => {
-                        passes_challenge = curr_level.check_challenge(&states, script, &stats)
-                    }
-                    _ => {}
-                };
+        if let Outcome::Success = outcome {
+            let curr_level = self.simulation.borrow().curr_level();
+            if curr_level.challenge().is_some() {
+                passes_challenge = curr_level.check_challenge(&states, script, &stats);
             }
-            _ => (),
         }
 
         Ok(ScriptResult {
@@ -188,10 +179,10 @@ impl ScriptRunner {
         })
     }
 
-    fn register_debugger(&self, engine: &mut Engine, avail_funcs: &Vec<String>) {
+    fn register_debugger(&self, engine: &mut Engine, avail_funcs: &[String]) {
         let pending_trace = self.pending_trace.clone();
         let simulation = self.simulation.clone();
-        let avail_funcs = avail_funcs.clone();
+        let avail_funcs = avail_funcs.to_owned();
         // Note(albrow): register_debugger is not actually deprecated. The Rhai maintainers
         // have decided to use the "deprecated" attribute to indicate that the API is not
         // stable.
@@ -250,11 +241,11 @@ impl ScriptRunner {
     // hooking into the current EvalContext and evaluating some custom code/custom
     // AST at runtime.
     fn handle_debugger_function_call(
-        avail_funcs: &Vec<String>,
+        avail_funcs: &[String],
         pending_trace: Rc<RefCell<Vec<Vec<usize>>>>,
         context: EvalContext,
         pos: Position,
-        fn_call_expr: &Box<FnCallExpr>,
+        fn_call_expr: &FnCallExpr,
     ) -> Result<DebuggerCommand, Box<EvalAltResult>> {
         if !(avail_funcs.contains(&fn_call_expr.name.as_str().to_string())) {
             // If the function is not in the list of available functions, we
@@ -386,7 +377,7 @@ impl ScriptRunner {
     ///
     /// avail_funcs is the list of functions that are available to the user.
     /// Some levels have restrictions on which functions are available.
-    fn register_player_funcs(&self, engine: &mut Engine, avail_funcs: &Vec<String>) {
+    fn register_player_funcs(&self, engine: &mut Engine, avail_funcs: &[String]) {
         // For each function, we clone and borrow some pointers (e.g. simulation and
         // player_action_tx). This is a workaround due to the fact that the Rhai engine
         // does not allow for mutable non-static references in handlers. See
@@ -663,7 +654,7 @@ impl ScriptRunner {
             engine.register_fn("press_button", move || -> Result<(), Box<EvalAltResult>> {
                 let state = simulation.borrow().curr_state();
                 let pos = &state.player.pos;
-                if let Some(_) = get_adjacent_button(&state, pos) {
+                if get_adjacent_button(&state, pos).is_some() {
                     tx.borrow().send(Action::PressButton).unwrap();
                     simulation.borrow_mut().step_forward();
                     Ok(())
@@ -723,13 +714,12 @@ fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {
     let lines: Vec<&str> = source.lines().collect();
     'lines: for (i, line) in lines.iter().enumerate() {
         let trimmed = line.trim();
-        if trimmed == "" {
-            continue;
-        } else if trimmed.starts_with("//") {
-            continue;
-        } else if trimmed.ends_with("{") || trimmed.ends_with("}") {
-            continue;
-        } else if trimmed.ends_with("*/") {
+        if trimmed.is_empty()
+            || trimmed.starts_with("//")
+            || trimmed.ends_with('{')
+            || trimmed.ends_with('}')
+            || trimmed.ends_with("*/")
+        {
             continue;
         }
         for (j, c) in trimmed.chars().enumerate() {
@@ -748,7 +738,7 @@ fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {
         // Check if this line ends in an opening paren. This could be splitting a function's arguments
         // across multiple lines. Ideally, we would allow this, but we can't tell whether and where semicolons
         // would be required. For now, return an error explaining that arguments need to be on the same line.
-        if trimmed.ends_with("(") {
+        if trimmed.ends_with('(') {
             return Err(Box::new(EvalAltResult::ErrorParsing(
                 rhai::ParseErrorType::BadInput(rhai::LexError::UnexpectedInput(String::from(
                     BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL,
@@ -763,7 +753,7 @@ fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {
         // Check if the next line is an opening bracket. This should be allowed.
         if let Some(next_line) = lines.get(i + 1) {
             let trimmed_next = next_line.trim();
-            if trimmed_next.starts_with("{") {
+            if trimmed_next.starts_with('{') {
                 continue;
             }
         }
@@ -772,7 +762,7 @@ fn check_semicolons(source: &str) -> Result<(), Box<EvalAltResult>> {
             let col: u16 = (line.len() - 1).try_into().unwrap();
             return Err(Box::new(EvalAltResult::ErrorParsing(
                 rhai::ParseErrorType::MissingToken(
-                    String::from(";"),
+                    String::from(';'),
                     String::from("at end of line"),
                 ),
                 rhai::Position::new(line_num, col),
@@ -812,10 +802,7 @@ fn register_custom_types(engine: &mut Engine) {
         .register_get("y", Pos::get_y);
 }
 
-fn eval_call_args_as_int(
-    context: &EvalContext,
-    fn_call_expr: &Box<FnCallExpr>,
-) -> Result<i64, Error> {
+fn eval_call_args_as_int(context: &EvalContext, fn_call_expr: &FnCallExpr) -> Result<i64, Error> {
     if fn_call_expr.args.len() != 1 {
         return Err(Error::new(
             ErrorKind::Other,

@@ -4,7 +4,7 @@ use crate::{
     simulation::{Actor, DataPoint, Obstacle, Orientation, Player, State},
 };
 
-const HUMMUS_RECIPE: &'static str = r"{markdown}
+const HUMMUS_RECIPE: &str = r"{markdown}
 **Ingredients**:
 - 120g dried chickpeas
 - 200 mL water

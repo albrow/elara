@@ -90,10 +90,7 @@ impl Level for EnemiesWithTelepad {
         _script: &str,
         _stats: &crate::script_runner::ScriptStats,
     ) -> bool {
-        if states.len() == 0 {
-            return false;
-        }
-        states.last().unwrap().energy_cells[0].collected == false
+        !states.is_empty() && !states.last().unwrap().energy_cells[0].collected
     }
 }
 

@@ -113,7 +113,7 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
         },
         stats: ScriptStats::from(&result.stats),
         passes_challenge: result.passes_challenge,
-        err_type: err_type,
+        err_type,
     }
 }
 
@@ -353,7 +353,7 @@ impl State {
                         y: enemy.pos.y as i32,
                     },
                     anim_state: anim_state.to_string(),
-                    anim_data: anim_data,
+                    anim_data,
                     facing: facing.to_string(),
                 }),
             );
@@ -392,7 +392,7 @@ impl State {
                     },
                     password: pw_gate.password.clone(),
                     open: pw_gate.open,
-                    variant: variant,
+                    variant,
                     additional_info: pw_gate.additional_info.clone(),
                     wrong_password: pw_gate.wrong_password,
                 }),
@@ -475,7 +475,7 @@ impl State {
                         y: gate.pos.y as i32,
                     },
                     open: gate.open,
-                    variant: variant,
+                    variant,
                     additional_info: gate.additional_info.clone(),
                 }),
             );
@@ -509,7 +509,7 @@ impl State {
                         OrientationWithDiagonals::DownRight => "down_right".to_string(),
                     },
                     anim_state: anim_state.to_string(),
-                    anim_data: anim_data,
+                    anim_data,
                 }),
             );
         }
@@ -521,7 +521,7 @@ impl State {
             enemies,
             obstacles,
             password_gates,
-            data_points: data_points,
+            data_points,
             telepads,
             buttons,
             gates,
@@ -578,7 +578,7 @@ impl Player {
             energy: player.energy as i32,
             message: player.message.clone(),
             anim_state: anim_state.to_string(),
-            anim_data: anim_data,
+            anim_data,
             facing: facing.to_string(),
         }
     }

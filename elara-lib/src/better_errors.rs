@@ -56,12 +56,12 @@ pub fn search_prev_lines(script: &str, start_line: usize) -> usize {
         let prev_line = script.lines().nth(line - 2).unwrap();
         if prev_line.trim().is_empty()
             || prev_line.contains("//")
-            || prev_line.trim().ends_with("}")
-            || prev_line.trim().ends_with("{")
+            || prev_line.trim().ends_with('}')
+            || prev_line.trim().ends_with('{')
         {
             // If the previous line is empty, is a comment, or is the start/end
             // of a block, keep searching backwards.
-            line = line - 1;
+            line -= 1;
             continue;
         }
         if !prev_line.ends_with(';') {
@@ -74,12 +74,12 @@ pub fn search_prev_lines(script: &str, start_line: usize) -> usize {
     }
 
     // Otherwise, just use the original line.
-    return start_line;
+    start_line
 }
 
 fn convert_func_not_found_err(
-    avail_funcs: &Vec<String>,
-    disabled_funcs: &'static Vec<&'static str>,
+    avail_funcs: &[String],
+    disabled_funcs: &'static [&'static str],
     fn_sig: &str,
     pos: &rhai::Position,
 ) -> BetterError {
@@ -150,11 +150,11 @@ fn convert_func_not_found_err(
     }
 
     // If we reached here this is not a built-in function, just return a generic error.
-    return BetterError {
+    BetterError {
         message: format!("Error: There is no function named {fn_name} (maybe you made a typo?)"),
         line: pos.line(),
         col: pos.position(),
-    };
+    }
 }
 
 /// Returns true if the script contains an extra set of parentheses on the line
@@ -266,7 +266,7 @@ fn convert_missing_semicolon_error(script: &str, desc: &str, pos: &rhai::Positio
         }
 
         return BetterError {
-            message: message,
+            message,
             line: Some(line),
             col: pos.position(),
         };
@@ -299,29 +299,29 @@ lazy_static! {
 
 fn convert_var_not_found_error(var_name: &str, pos: &rhai::Position) -> BetterError {
     if UNDEF_VARIABLE_HINTS.contains_key(var_name) {
-        return BetterError {
+        BetterError {
             message: format!(
                 r#"Error: Variable not found: {}. (Hint: {})"#,
                 var_name, UNDEF_VARIABLE_HINTS[var_name]
             ),
             line: pos.line(),
             col: pos.position(),
-        };
+        }
     } else if BUILTIN_FUNCTIONS.contains_key(var_name) {
-        return BetterError {
+        BetterError {
             message: format!(
                 r#"Error: Variable not found: {}. (Hint: If you meant to call a function, make sure you include parentheses after the function name.)"#,
                 var_name,
             ),
             line: pos.line(),
             col: pos.position(),
-        };
-    }
-
-    BetterError {
-        message: format!("Error: Variable not found: {}", var_name),
-        line: pos.line(),
-        col: pos.position(),
+        }
+    } else {
+        BetterError {
+            message: format!("Error: Variable not found: {}", var_name),
+            line: pos.line(),
+            col: pos.position(),
+        }
     }
 }
 
@@ -352,7 +352,7 @@ fn convert_missing_comma_separate_args_error(
         if prev_line.contains(fn_name) {
             break;
         }
-        line = line - 1;
+        line -= 1;
     }
 
     // Find the position of the function call on the line.
@@ -368,7 +368,7 @@ fn convert_missing_comma_separate_args_error(
             if c == ')' {
                 break;
             }
-            col = col + 1;
+            col += 1;
         }
     }
 
@@ -390,7 +390,7 @@ fn convert_missing_comma_separate_args_error(
     // Otherwise, if the function is not a built-in function, or if it has more than
     // one argument, we can't narrow down the error message. The error message should
     // mention both possibilities.
-    return BetterError {
+    BetterError {
         message: format!(
             "Syntax Error: Might be a missing closing parenthesis ')' for the \
             {} function. Or if the function expects more than one input, you might \
@@ -399,7 +399,7 @@ fn convert_missing_comma_separate_args_error(
         ),
         line: Some(line),
         col: Some(col),
-    };
+    }
 }
 
 fn convert_missing_fn_params_error(
@@ -411,27 +411,27 @@ fn convert_missing_fn_params_error(
     // doesn't differentiate this kind of error and just expects parentheses instead of
     // a space. We can do better here by giving a more helpful error message.
     if is_space_in_func_name(&script, err_pos) {
-        return BetterError {
+        BetterError {
             message: String::from(ERR_UNEXPECTED_SPACE_IN_FUNC_NAME),
             line: err_pos.line(),
             col: err_pos.position(),
-        };
+        }
+    } else {
+        // Otherwise, just wrap the original error.
+        BetterError {
+            message: format!(
+                "Syntax Error: Missing parentheses '()' after function name '{}'.",
+                fn_name
+            ),
+            line: err_pos.line(),
+            col: err_pos.position(),
+        }
     }
-
-    // Otherwise, just wrap the original error.
-    return BetterError {
-        message: format!(
-            "Syntax Error: Missing parentheses '()' after function name '{}'.",
-            fn_name
-        ),
-        line: err_pos.line(),
-        col: err_pos.position(),
-    };
 }
 
 pub fn convert_err(
-    avail_funcs: &Vec<String>,
-    disabled_funcs: &'static Vec<&'static str>,
+    avail_funcs: &[String],
+    disabled_funcs: &'static [&'static str],
     script: String,
     err: Box<EvalAltResult>,
 ) -> BetterError {

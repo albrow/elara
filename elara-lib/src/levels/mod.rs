@@ -95,15 +95,11 @@ pub trait Level {
 
         // Then remove any asteroids with a position equal to a warning's position.
         let mut filtered_state = self.initial_states()[0].clone();
-        filtered_state.obstacles = filtered_state
-            .obstacles
-            .into_iter()
-            .filter(|x| {
-                !warnings
-                    .iter()
-                    .any(|warning| warning.pos == x.pos && x.kind == ObstacleKind::Asteroid)
-            })
-            .collect();
+        filtered_state.obstacles.retain(|x| {
+            !warnings
+                .iter()
+                .any(|warning| warning.pos == x.pos && x.kind == ObstacleKind::Asteroid)
+        });
         filtered_state
     }
 }
@@ -182,8 +178,7 @@ fn is_destroyed_by_enemy(state: &State) -> bool {
             }
         }
     }
-
-    return false;
+    false
 }
 
 fn did_reach_goal(state: &State) -> bool {
@@ -199,7 +194,7 @@ fn did_reach_goal(state: &State) -> bool {
 /// An AsteroidWarning is generated any time that an asteroid may exist in
 /// one state but not another.
 pub fn generate_asteroid_warnings(initial_states: Vec<State>) -> Vec<AsteroidWarning> {
-    if initial_states.len() == 0 {
+    if initial_states.is_empty() {
         panic!("Error computing fuzzy state: states cannot be empty");
     }
 
@@ -274,12 +269,12 @@ pub fn no_objective_check_win(state: &State) -> Outcome {
 pub fn make_all_initial_states_for_telepads(states: Vec<State>) -> Vec<State> {
     let mut new_states = vec![];
     for state in states.iter() {
-        if state.telepads.len() == 0 {
+        if state.telepads.is_empty() {
             new_states.push(state.clone());
             continue;
         } else if state.telepads.len() > 3 {
         }
-        for orientation in vec![
+        for orientation in [
             Orientation::Up,
             Orientation::Down,
             Orientation::Left,
@@ -294,7 +289,7 @@ pub fn make_all_initial_states_for_telepads(states: Vec<State>) -> Vec<State> {
             } else if state.telepads.len() == 2 {
                 // If there are two telepads, we need to create a new state for each
                 // *combination* of orientations for the two telepads (i.e. 16 total).
-                for orientation in vec![
+                for orientation in [
                     Orientation::Up,
                     Orientation::Down,
                     Orientation::Left,
@@ -307,7 +302,7 @@ pub fn make_all_initial_states_for_telepads(states: Vec<State>) -> Vec<State> {
             } else if state.telepads.len() == 3 {
                 // For the first two telepads, we need to create a new state for each
                 // *combination* of orientations for the two telepads (i.e. 16 total).
-                for orientation in vec![
+                for orientation in [
                     Orientation::Up,
                     Orientation::Down,
                     Orientation::Left,

@@ -104,17 +104,16 @@ impl EvilRoverActor {
         curr_orientation: Orientation,
         desired_direction: Orientation,
     ) -> EvilRoverAction {
-        if curr_orientation == desired_direction {
-            return EvilRoverAction::Move(MoveDirection::Forward);
+        if desired_direction == curr_orientation {
+            EvilRoverAction::Move(MoveDirection::Forward)
+        } else if desired_direction == self.left_direction(curr_orientation) {
+            EvilRoverAction::Turn(TurnDirection::Left)
+        } else if desired_direction == self.right_direction(curr_orientation) {
+            EvilRoverAction::Turn(TurnDirection::Right)
+        } else {
+            // If we get here, we're facing the opposite direction.
+            EvilRoverAction::Turn(TurnDirection::Left)
         }
-        if desired_direction == self.left_direction(curr_orientation) {
-            return EvilRoverAction::Turn(TurnDirection::Left);
-        }
-        if desired_direction == self.right_direction(curr_orientation) {
-            return EvilRoverAction::Turn(TurnDirection::Right);
-        }
-        // If we get here, we're facing the opposite direction.
-        return EvilRoverAction::Turn(TurnDirection::Left);
     }
 
     /// Returns an action to turn to face the desired direction, or
@@ -125,17 +124,16 @@ impl EvilRoverActor {
         curr_orientation: Orientation,
         desired_direction: Orientation,
     ) -> EvilRoverAction {
-        if curr_orientation == desired_direction {
-            return EvilRoverAction::Bump(self.forward_pos(state));
+        if desired_direction == curr_orientation {
+            EvilRoverAction::Bump(self.forward_pos(state))
+        } else if desired_direction == self.left_direction(curr_orientation) {
+            EvilRoverAction::Turn(TurnDirection::Left)
+        } else if desired_direction == self.right_direction(curr_orientation) {
+            EvilRoverAction::Turn(TurnDirection::Right)
+        } else {
+            // If we get here, we're facing the opposite direction.
+            EvilRoverAction::Turn(TurnDirection::Left)
         }
-        if desired_direction == self.left_direction(curr_orientation) {
-            return EvilRoverAction::Turn(TurnDirection::Left);
-        }
-        if desired_direction == self.right_direction(curr_orientation) {
-            return EvilRoverAction::Turn(TurnDirection::Right);
-        }
-        // If we get here, we're facing the opposite direction.
-        return EvilRoverAction::Turn(TurnDirection::Left);
     }
 
     fn get_next_action(&self, state: &State) -> EvilRoverAction {
@@ -146,92 +144,96 @@ impl EvilRoverActor {
         let x_dist = player_pos.x.abs_diff(enemy.pos.x);
         let y_dist = player_pos.y.abs_diff(enemy.pos.y);
         if y_dist >= x_dist {
-            if player_pos.y < enemy.pos.y {
-                if can_move_and_is_empty(
+            if player_pos.y < enemy.pos.y
+                && can_move_and_is_empty(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x, enemy.pos.y - 1),
-                ) {
-                    return self.move_or_turn(enemy.facing, Orientation::Up);
-                }
-            } else if player_pos.y > enemy.pos.y {
-                if can_move_and_is_empty(
+                )
+            {
+                return self.move_or_turn(enemy.facing, Orientation::Up);
+            } else if player_pos.y > enemy.pos.y
+                && can_move_and_is_empty(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x, enemy.pos.y + 1),
-                ) {
-                    return self.move_or_turn(enemy.facing, Orientation::Down);
-                }
+                )
+            {
+                return self.move_or_turn(enemy.facing, Orientation::Down);
             }
-            if player_pos.x < enemy.pos.x {
-                if can_move_and_is_empty(
+
+            if player_pos.x < enemy.pos.x
+                && can_move_and_is_empty(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x - 1, enemy.pos.y),
-                ) {
-                    return self.move_or_turn(enemy.facing, Orientation::Left);
-                }
-            } else if player_pos.x > enemy.pos.x {
-                if can_move_and_is_empty(
+                )
+            {
+                return self.move_or_turn(enemy.facing, Orientation::Left);
+            } else if player_pos.x > enemy.pos.x
+                && can_move_and_is_empty(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x + 1, enemy.pos.y),
-                ) {
-                    return self.move_or_turn(enemy.facing, Orientation::Right);
-                }
+                )
+            {
+                return self.move_or_turn(enemy.facing, Orientation::Right);
             }
+
             // If we get here, we can't move toward the player. This means we should at least
             // turn toward the player (if we are not already facing them). If we are facing them,
             // we should do a bump animation. Note that we only need to check the y-axis here
             // since we know that is the axis in which the player is furthest away.
             if player_pos.y < enemy.pos.y {
-                return self.bump_or_turn(state, enemy.facing, Orientation::Up);
+                self.bump_or_turn(state, enemy.facing, Orientation::Up)
             } else {
-                return self.bump_or_turn(state, enemy.facing, Orientation::Down);
+                self.bump_or_turn(state, enemy.facing, Orientation::Down)
             }
         } else {
             // The player is further away in the x-axis, so we prioritize that while checking
             // movement options.
-            if player_pos.x < enemy.pos.x {
-                if can_move_and_is_empty(
+            if player_pos.x < enemy.pos.x
+                && can_move_and_is_empty(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x - 1, enemy.pos.y),
-                ) {
-                    return self.move_or_turn(enemy.facing, Orientation::Left);
-                }
-            } else if player_pos.x > enemy.pos.x {
-                if can_move_and_is_empty(
+                )
+            {
+                return self.move_or_turn(enemy.facing, Orientation::Left);
+            } else if player_pos.x > enemy.pos.x
+                && can_move_and_is_empty(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x + 1, enemy.pos.y),
-                ) {
-                    return self.move_or_turn(enemy.facing, Orientation::Right);
-                }
+                )
+            {
+                return self.move_or_turn(enemy.facing, Orientation::Right);
             }
-            if player_pos.y < enemy.pos.y {
-                if can_move_and_is_empty(
+
+            if player_pos.y < enemy.pos.y
+                && can_move_and_is_empty(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x, enemy.pos.y - 1),
-                ) {
-                    return self.move_or_turn(enemy.facing, Orientation::Up);
-                }
-            } else if player_pos.y > enemy.pos.y {
-                if can_move_and_is_empty(
+                )
+            {
+                return self.move_or_turn(enemy.facing, Orientation::Up);
+            } else if player_pos.y > enemy.pos.y
+                && can_move_and_is_empty(
                     state,
                     &self.bounds,
                     &Pos::new(enemy.pos.x, enemy.pos.y + 1),
-                ) {
-                    return self.move_or_turn(enemy.facing, Orientation::Down);
-                }
+                )
+            {
+                return self.move_or_turn(enemy.facing, Orientation::Down);
             }
+
             // If we get here, we can't move toward the player. Bump or turn while prioritizing
             // the x-axis.
             if player_pos.x < enemy.pos.x {
-                return self.bump_or_turn(state, enemy.facing, Orientation::Left);
+                self.bump_or_turn(state, enemy.facing, Orientation::Left)
             } else {
-                return self.bump_or_turn(state, enemy.facing, Orientation::Right);
+                self.bump_or_turn(state, enemy.facing, Orientation::Right)
             }
         }
     }
