@@ -52,6 +52,7 @@ export const BP_2XL = 1500;
 export const BG_Z_INDEX = -1000;
 export const MONITOR_STAND_Z_INDEX = -950;
 export const MONITOR_FRAME_Z_INDEX = -900;
+export const JOURNAL_HANDLES_Z_INDEX = -800;
 
 // Next section is for the board/map and the elements that appear on top of it.
 export const BOARD_BG_Z_INDEX = -100;
@@ -73,6 +74,7 @@ export const ASTEROID_Z_INDEX = 150;
 export const ROVER_MESSAGE_Z_INDEX = 1010; // Special tooltip variant used only for rover messages.
 export const BOARD_HOVER_INFO_Z_INDEX = 1020;
 export const AXIS_LABEL_Z_INDEX = 1030;
+export const SCROLL_INDICATOR_Z_INDEX = 1035; // Used for the "scroll for more" indicator.
 export const CM_TOOL_TIP_Z_INDEX = 1040; // Used for Codemirror tooltips (e.g. hover docs).
 export const CHAKRA_MODAL_Z_INDEX = 1050; // Used for Chakra modals.
 export const CHAKRA_TOOL_TIP_Z_INDEX = 1060; // Used for Chakra tooltips (not including rover messages).

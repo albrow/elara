@@ -9,7 +9,11 @@ import { JOURNAL_SECTIONS, SectionName } from "../components/journal/sections";
 import JournalSection from "../components/journal/journal_section";
 import { TREES } from "../lib/dialog_trees";
 import JournalSidebar from "../components/journal/journal_sidebar";
-import { NAVBAR_HEIGHT } from "../lib/constants";
+import {
+  JOURNAL_HANDLES_Z_INDEX,
+  NAVBAR_HEIGHT,
+  SCROLL_INDICATOR_Z_INDEX,
+} from "../lib/constants";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";
 
 import journalBgImage from "../images/journal_bg_only.jpg";
@@ -150,6 +154,7 @@ export default function Journal() {
           border="1px solid black"
           borderRight="none"
           boxShadow="0 5px 12px 5px rgba(0, 0, 0, 0.5)"
+          zIndex={JOURNAL_HANDLES_Z_INDEX}
         />
         {/* Main journal body */}
         <Box
@@ -188,6 +193,7 @@ export default function Journal() {
                   ml="-20px"
                   opacity={showScrollIndicator ? 1 : 0}
                   transition="opacity 0.5s ease-in-out"
+                  zIndex={SCROLL_INDICATOR_Z_INDEX}
                 >
                   <Text
                     textAlign="center"
@@ -230,6 +236,7 @@ export default function Journal() {
           border="1px solid black"
           borderLeft="none"
           boxShadow="0 5px 12px 5px rgba(0, 0, 0, 0.5)"
+          zIndex={JOURNAL_HANDLES_Z_INDEX}
         />
       </Flex>
     </Box>
