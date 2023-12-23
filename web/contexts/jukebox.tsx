@@ -28,6 +28,8 @@ import puttingItAllTogether from "../audio/music/putting_it_all_together.ogg";
 import puttingItAllTogetherFallback from "../audio/music/putting_it_all_together.mp3";
 import notTheEnd from "../audio/music/not_the_end.ogg";
 import notTheEndFallback from "../audio/music/not_the_end.mp3";
+import hubAmbience from "../audio/music/hub_ambience.ogg";
+import hubAmbienceFallback from "../audio/music/hub_ambience.mp3";
 
 /** How much to lower the music volume temporarily when ducking is enabled. */
 const DUCK_LEVEL = 0.5;
@@ -168,6 +170,18 @@ export function JukeboxProvider(props: PropsWithChildren<{}>) {
           fadeIn: 10,
           preload: false,
           stream: true,
+        }
+      ),
+      hubAmbience: new Sound(
+        "hubAmbience",
+        "music",
+        [hubAmbience, hubAmbienceFallback],
+        {
+          baseGain: 3.0,
+          loop: true,
+          fadeIn: 1000,
+          preload: false,
+          stream: false,
         }
       ),
     }),

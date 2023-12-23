@@ -170,8 +170,7 @@ export function useSceneNavigator() {
   }, [getSound, saveDataRef]);
 
   const navigateToHub = useCallback(() => {
-    // TODO(albrow): Play ambient hub music.
-    stopAllMusic(MUSIC_FADE_OUT_TIME_MS);
+    requestSong("hubAmbience");
     router.navigate("hub");
 
     // Play the ringtone sound (if needed) after a short delay.
@@ -185,7 +184,7 @@ export function useSceneNavigator() {
         clearTimeout(timeout);
       }
     };
-  }, [stopAllMusic, router, playRingtoneIfNeeded]);
+  }, [requestSong, router, playRingtoneIfNeeded]);
 
   const navigateToTitle = useCallback(() => {
     router.navigate("title");
