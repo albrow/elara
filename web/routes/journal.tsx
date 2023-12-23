@@ -1,5 +1,12 @@
 import { useRouteNode, useRouter } from "react-router5";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Flex, Box, Text } from "@chakra-ui/react";
 import { Unsubscribe } from "router5/dist/types/base";
 
@@ -56,7 +63,7 @@ export default function Journal() {
     []
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (sectionName) {
       document.title = `Elara | Journal: ${sectionName}`;
     } else {
@@ -91,6 +98,8 @@ export default function Journal() {
           scrollbox.removeEventListener("scroll", hideIndicator);
         };
       }
+      setMightHaveScrollIndicator(false);
+      setShowScrollIndicator(false);
     } else {
       setMightHaveScrollIndicator(false);
       setShowScrollIndicator(false);
