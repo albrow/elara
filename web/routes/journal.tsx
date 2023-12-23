@@ -1,8 +1,9 @@
 import { useRouteNode, useRouter } from "react-router5";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { Flex, Box } from "@chakra-ui/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import { Unsubscribe } from "router5/dist/types/base";
 
+import { MdArrowDownward } from "react-icons/md";
 import { useSaveData } from "../hooks/save_data_hooks";
 import { JOURNAL_SECTIONS, SectionName } from "../components/journal/sections";
 import JournalSection from "../components/journal/journal_section";
@@ -19,6 +20,14 @@ export default function Journal() {
   const [saveData, { markJournalPageSeen }] = useSaveData();
   const [showDialogModal] = useDialogModal();
   const journalScrollbox = useRef<HTMLDivElement>(null);
+
+  // Whether or not it is *possible* for the journal page to have a scrollbar.
+  // This is purely based on the height of the screen and the content of the
+  // journal page.
+  const [mightHaveScrollIndicator, setMightHaveScrollIndicator] =
+    useState(false);
+  // Whether or not the "scroll for more" indicator should currently be shown.
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
 
   const sectionName = useMemo(() => {
     let name = route.params?.sectionName;
@@ -38,6 +47,11 @@ export default function Journal() {
     return unsubscribe;
   }, [markJournalPageSeen, router, sectionName]);
 
+  const isScrollable = useCallback(
+    (el: HTMLElement) => el.scrollHeight > el.clientHeight,
+    []
+  );
+
   useEffect(() => {
     if (sectionName) {
       document.title = `Elara | Journal: ${sectionName}`;
@@ -46,13 +60,40 @@ export default function Journal() {
     }
     // Scroll to the top of the page when loading a new
     // journal section.
-    window.scrollTo(0, 0);
+    window.scrollTo({ behavior: "instant", top: 0, left: 0 });
+
+    // If there is more content below the scrollbar, show an indicator.
+    // Then automatically hide it after the user scrolls.
     if (journalScrollbox.current) {
-      journalScrollbox.current.scrollTo(0, 0);
+      const scrollbox = journalScrollbox.current;
+
+      // Scroll to the top of the scrollbox so the top of the journal
+      // page is visible to start.
+      scrollbox.scrollTo({ behavior: "instant", top: 0, left: 0 });
+
+      // If the scrollbox is scrollable, show the indicator.
+      if (isScrollable(scrollbox)) {
+        setMightHaveScrollIndicator(true);
+        setShowScrollIndicator(true);
+        const hideIndicator = () => {
+          if (scrollbox.scrollTop !== 0) {
+            setShowScrollIndicator(false);
+            scrollbox.removeEventListener("scroll", hideIndicator);
+          }
+        };
+        scrollbox.addEventListener("scroll", hideIndicator);
+        return () => {
+          // Clean up event listener.
+          scrollbox.removeEventListener("scroll", hideIndicator);
+        };
+      }
     } else {
-      console.warn("journalScrollbox.current is null");
+      setMightHaveScrollIndicator(false);
+      setShowScrollIndicator(false);
     }
-  }, [sectionName]);
+
+    return () => {};
+  }, [isScrollable, sectionName]);
 
   const dialogTreeName = useMemo(() => {
     const name = `journal_${sectionName}`;
@@ -137,9 +178,47 @@ export default function Journal() {
               className="dark-scrollbar"
             >
               <JournalSection section={sectionName as SectionName} />
+              {mightHaveScrollIndicator && (
+                <Box
+                  bgImage="linear-gradient(rgba(0, 0, 0, 0), var(--chakra-colors-gray-800) 80%)"
+                  height="fit-content"
+                  position="sticky"
+                  bottom="-20px"
+                  width="calc(100% + 40px)"
+                  ml="-20px"
+                  opacity={showScrollIndicator ? 1 : 0}
+                  transition="opacity 0.5s ease-in-out"
+                >
+                  <Text
+                    textAlign="center"
+                    lineHeight="36px"
+                    pt="16px"
+                    color="white"
+                  >
+                    <MdArrowDownward
+                      style={{
+                        display: "inline-block",
+                        verticalAlign: "middle",
+                        marginRight: "4px",
+                        marginBottom: "2px",
+                      }}
+                    />
+                    Scroll for more
+                    <MdArrowDownward
+                      style={{
+                        display: "inline-block",
+                        verticalAlign: "middle",
+                        marginLeft: "4px",
+                        marginBottom: "2px",
+                      }}
+                    />
+                  </Text>
+                </Box>
+              )}
             </Box>
           </Flex>
         </Box>
+
         {/* Right handle */}
         <Box
           w="60px"
