@@ -67,6 +67,7 @@ const musicMap: Record<string, string> = {
   telepad_part_one: "lookingAhead",
   telepad_part_two: "lookingAhead",
   telepads_and_while_loop: "lookingAhead",
+  telepad_and_button_gate: "lookingAhead",
   enemies_part_one: "measuringTheChallenge",
   enemies_part_two: "measuringTheChallenge",
   enemies_with_telepad: "measuringTheChallenge",
@@ -312,6 +313,14 @@ const RAW_SCENES: RawScene[] = [
       "You only need to add a few more lines of code at the end.",
       "You don't need to write any if statements. You can just use the `face_up` function instead.",
       'If you\'re feeling lost, go back and look at the "While Loops" and "Creating Functions" journal pages.',
+    ]
+  ),
+  levelScene(
+    "telepad_and_button_gate",
+    [],
+    [
+      "You need to press the button to unlock the gate, but how do you reach the button?",
+      "Just like in the previous level, you can use a while loop together wth the `get_orientation` function to make the telepads easier to deal with.",
     ]
   ),
   levelScene(
