@@ -25,6 +25,8 @@ import { useDialogModal } from "../hooks/dialog_modal_hooks";
 
 import journalBgImage from "../images/journal_bg_only.jpg";
 
+const JOURNAL_CONTENT_PADDING = 20;
+
 export default function Journal() {
   const { route } = useRouteNode("");
   const router = useRouter();
@@ -182,14 +184,13 @@ export default function Journal() {
             <Box
               ref={journalScrollbox}
               bg="white"
-              p="20px"
+              p={`${JOURNAL_CONTENT_PADDING}px`}
               border="1px solid"
               borderTop="none"
               borderBottom="none"
               borderColor="gray.400"
               h="100%"
               overflowY="auto"
-              className="dark-scrollbar"
             >
               <JournalSection section={sectionName as SectionName} />
               {mightHaveScrollIndicator && (
@@ -197,9 +198,9 @@ export default function Journal() {
                   bgImage="linear-gradient(rgba(0, 0, 0, 0), var(--chakra-colors-gray-800) 80%)"
                   height="fit-content"
                   position="sticky"
-                  bottom="-20px"
-                  width="calc(100% + 40px)"
-                  ml="-20px"
+                  bottom={`-${JOURNAL_CONTENT_PADDING}px`}
+                  mr={`-${JOURNAL_CONTENT_PADDING}px`}
+                  ml={`-${JOURNAL_CONTENT_PADDING}px`}
                   opacity={showScrollIndicator ? 1 : 0}
                   transition="opacity 0.5s ease-in-out"
                   zIndex={SCROLL_INDICATOR_Z_INDEX}
