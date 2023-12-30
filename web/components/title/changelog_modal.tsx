@@ -30,6 +30,7 @@ export function ChangelogModal(props: ChangelogModalProps) {
     >
       <ModalOverlay />
       <ModalContent
+        className="dark-scrollbar"
         w="container.md"
         maxW="100%"
         maxH="100%"
