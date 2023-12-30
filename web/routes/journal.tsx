@@ -73,7 +73,11 @@ export default function Journal() {
     }
     // Scroll to the top of the page when loading a new
     // journal section.
-    window.scrollTo({ behavior: "instant", top: 0, left: 0 });
+    window.scrollTo({
+      behavior: "instant" as ScrollBehavior,
+      top: 0,
+      left: 0,
+    });
 
     // If there is more content below the scrollbar, show an indicator.
     // Then automatically hide it after the user scrolls.
@@ -82,7 +86,11 @@ export default function Journal() {
 
       // Scroll to the top of the scrollbox so the top of the journal
       // page is visible to start.
-      scrollbox.scrollTo({ behavior: "instant", top: 0, left: 0 });
+      scrollbox.scrollTo({
+        behavior: "instant" as ScrollBehavior,
+        top: 0,
+        left: 0,
+      });
 
       // If the scrollbox is scrollable, show the indicator.
       if (isScrollable(scrollbox)) {
