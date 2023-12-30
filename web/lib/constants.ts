@@ -22,6 +22,7 @@ export const BOARD_TOTAL_WIDTH = BOARD_INNER_WIDTH + AXIS_WIDTH + 2;
 export const BOARD_TOTAL_HEIGHT = BOARD_INNER_HEIGHT + AXIS_HEIGHT + 2;
 export const DEFAULT_ENERGY_CELL_GAIN = 10;
 export const SPRITE_DROP_SHADOW = "drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.3))";
+export const WIRE_DROP_SHADOW = "drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3))";
 
 // Game speed and animations.
 export const DEFAULT_GAME_SPEED = 1; // steps per second

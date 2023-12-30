@@ -2,6 +2,7 @@ mod asteroid_strike;
 mod asteroid_strike_part_two;
 mod big_enemy;
 mod button_and_gate;
+mod button_and_gate_part_two;
 mod buttons_part_one;
 mod data_point_demo;
 mod data_points_part_one;
@@ -155,6 +156,7 @@ lazy_static! {
         m.insert(big_enemy::BigEnemyLevel{}.short_name(), Box::new(big_enemy::BigEnemyLevel{}));
         m.insert(server_room::ServerRoom{}.short_name(), Box::new(server_room::ServerRoom{}));
         m.insert(telepad_and_button_gate::TelepadAndButtonGate{}.short_name(), Box::new(telepad_and_button_gate::TelepadAndButtonGate{}));
+        m.insert(button_and_gate_part_two::ButtonAndGatePartTwo{}.short_name(), Box::new(button_and_gate_part_two::ButtonAndGatePartTwo{}));
 
         m
     };

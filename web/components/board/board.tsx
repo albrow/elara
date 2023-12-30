@@ -39,6 +39,10 @@ import Gate from "./gate";
 import BigEnemy from "./big_enemy";
 import AsteroidWarning from "./asteroid_warning";
 
+// The order of colors to use for wires (i.e. connections between buttons
+// and other objects).
+const WIRE_COLORS = ["blue", "green"] as const;
+
 interface BoardProps {
   gameState: RState;
   asteroidWarnings: RAsteroidWarning[];
@@ -65,7 +69,7 @@ function getConnectionOffset(
           `Gate index ${button.connection_index} is out of range.`
         );
       }
-      return posToOffset(state.gates[button.connection_index].pos);
+      return posToOffset((state.gates[button.connection_index] as RGate).pos);
     default:
       return null;
   }
@@ -223,6 +227,7 @@ export default function Board(props: BoardProps) {
           additionalInfo={button.additional_info}
           enableAnimations={props.enableAnimations}
           enableHoverInfo={props.enableHoverInfo}
+          wireColor={WIRE_COLORS[i % WIRE_COLORS.length]}
         />
       ))}
       {(props.gameState.gates as RGate[]).map((gate, i) => (

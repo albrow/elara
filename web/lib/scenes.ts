@@ -55,7 +55,8 @@ const musicMap: Record<string, string> = {
   loops_part_two: "gettingOffTheGround",
   buttons_part_one: "gettingOffTheGround",
   button_and_gate: "gettingOffTheGround",
-  data_points_part_one: "driftingIntoSpace",
+  button_and_gate_part_two: "gettingOffTheGround",
+  data_points_part_one: "gettingOffTheGround",
   gates: "driftingIntoSpace",
   variables_intro: "driftingIntoSpace",
   gate_and_data_point: "driftingIntoSpace",
@@ -193,6 +194,15 @@ const RAW_SCENES: RawScene[] = [
     ["hover_over_text", "hover_over_board"],
     [
       "Remember, the `press_button` function only works if G.R.O.V.E.R. is next to the button (he doesn't need to be facing it).",
+    ]
+  ),
+  levelScene(
+    "button_and_gate_part_two",
+    [],
+    [
+      "Remember, the `press_button` function only works if G.R.O.V.E.R. is next to the button (he doesn't need to be facing it).",
+      "You'll need to unlock one gate first, then the other.",
+      "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
   journalScene("function_outputs", ["get_orientation", "read_data"]),

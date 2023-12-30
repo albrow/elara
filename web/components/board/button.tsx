@@ -9,6 +9,7 @@ import {
   BUTTON_Z_INDEX,
   SPRITE_DROP_SHADOW,
   TILE_SIZE,
+  WIRE_DROP_SHADOW,
 } from "../../lib/constants";
 import buttonImgUrl from "../../images/board/button.png";
 import buttonPressedImgUrl from "../../images/board/button_pressed.png";
@@ -23,6 +24,7 @@ interface ButtonProps {
   connectionOffset: Offset | null;
   enableAnimations: boolean;
   enableHoverInfo: boolean;
+  wireColor: "blue" | "green";
 }
 
 export default function Button(props: ButtonProps) {
@@ -54,12 +56,35 @@ export default function Button(props: ButtonProps) {
     if (!props.connectionOffset) {
       return "";
     }
+    if (props.connectionOffset.leftNum <= props.offset.leftNum) {
+      // Gate is to the left of the button. Draw a line to the top right corner.
+      return `${props.offset.leftNum + TILE_SIZE / 2},${
+        props.offset.topNum + TILE_SIZE * 0.75
+      } ${props.connectionOffset.leftNum + TILE_SIZE * 0.92},${
+        props.connectionOffset.topNum + TILE_SIZE * 0.4
+      }`;
+    }
+    // Gate is to the right of the button. Draw a line to the bottom left corner.
     return `${props.offset.leftNum + TILE_SIZE / 2},${
       props.offset.topNum + TILE_SIZE * 0.75
-    } ${props.connectionOffset.leftNum + TILE_SIZE * 0.92},${
-      props.connectionOffset.topNum + TILE_SIZE * 0.4
+    } ${props.connectionOffset.leftNum + TILE_SIZE * 0.08},${
+      props.connectionOffset.topNum + TILE_SIZE * 0.9
     }`;
   }, [props.connectionOffset, props.offset.leftNum, props.offset.topNum]);
+
+  const wireStrokeColor = useMemo(() => {
+    if (props.wireColor === "blue") {
+      return "var(--chakra-colors-blue-700)";
+    }
+    return "var(--chakra-colors-teal-700)";
+  }, [props.wireColor]);
+
+  const wireAnimStrokeColor = useMemo(() => {
+    if (props.wireColor === "blue") {
+      return "var(--chakra-colors-blue-400)";
+    }
+    return "var(--chakra-colors-teal-400)";
+  }, [props.wireColor]);
 
   useEffect(() => {
     if (!props.enableAnimations) {
@@ -68,10 +93,7 @@ export default function Button(props: ButtonProps) {
     if (props.currentlyPressed) {
       // If the button is pressed, we always want to update the wire and image
       // to reflect this. We do this regardless of whether animations are enabled.
-      animatedWireRef.current?.setAttribute(
-        "stroke",
-        "var(--chakra-colors-blue-400)"
-      );
+      animatedWireRef.current?.setAttribute("stroke", wireAnimStrokeColor);
       imgRef.current?.setAttribute("src", buttonPressedImgUrl);
       if (props.enableAnimations) {
         // If the button is pressed *and* animations are enabled, we play a "press on"
@@ -95,7 +117,13 @@ export default function Button(props: ButtonProps) {
         clearTimeout(animationTimerRef.current);
       }
     };
-  }, [props, stopMySoundEffects, buttonPressOnSound, buttonPressOffSound]);
+  }, [
+    props,
+    stopMySoundEffects,
+    buttonPressOnSound,
+    buttonPressOffSound,
+    wireAnimStrokeColor,
+  ]);
 
   return (
     <>
@@ -113,10 +141,16 @@ export default function Button(props: ButtonProps) {
           overflow="visible"
           zIndex={BUTTON_WIRE_Z_INDEX}
         >
-          <svg width="100%" height="100%">
+          <svg
+            width="100%"
+            height="100%"
+            style={{
+              filter: WIRE_DROP_SHADOW,
+            }}
+          >
             <polyline
-              stroke="var(--chakra-colors-gray-700)"
-              strokeWidth="2px"
+              stroke={wireStrokeColor}
+              strokeWidth="3px"
               fill="none"
               points={wirePoints}
               overflow="visible"
@@ -124,9 +158,9 @@ export default function Button(props: ButtonProps) {
             {props.currentlyPressed && (
               <polyline
                 ref={animatedWireRef}
-                stroke="var(--chakra-colors-blue-400)"
+                stroke={wireAnimStrokeColor}
                 strokeDasharray="5 5"
-                strokeWidth="2px"
+                strokeWidth="3px"
                 fill="none"
                 points={wirePoints}
                 overflow="visible"
