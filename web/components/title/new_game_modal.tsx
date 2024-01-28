@@ -23,7 +23,7 @@ interface NewGameTip {
   icon: IconType;
 }
 
-const TIPS: NewGameTip[] = [
+const WEB_TIPS: NewGameTip[] = [
   {
     title: "Work in Progress",
     text: 'Elara is still under development. If you have any feedback, we\'d love to hear it! Just press the "Feedback" button near the top of the screen.',
@@ -40,6 +40,25 @@ const TIPS: NewGameTip[] = [
     icon: FaComputer,
   },
 ];
+
+const DESKTOP_TIPS: NewGameTip[] = [
+  {
+    title: "Work in Progress",
+    text: 'Elara is still under development. If you have any feedback, we\'d love to hear it! Just press the "Feedback" button near the top of the screen.',
+    icon: MdConstruction,
+  },
+  {
+    title: "Autosave",
+    text: "Your progress will be automatically saved.",
+    icon: MdSave,
+  },
+];
+
+// Show a different set of tips depending on whether we are running in
+// the browser or in Electron. For example, in the browser, we want to mention
+// that the game runs best on desktops. But in Electron, we don't need to mention
+// that, since we know the player is on a desktop.
+const TIPS = ELARA_BUILD_TARGET === "electron" ? DESKTOP_TIPS : WEB_TIPS;
 
 export interface NewGameModalProps {
   visible: boolean;
