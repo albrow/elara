@@ -65,8 +65,13 @@ export default function FullscreenYouTubeVideo(
 
     // If the video ends naturally, we want to show the option to replay it or exit it
     // and go back to the hub.
-    setShowEndScreen(true);
-  }, []);
+    // For Electron builds, just skip this part.
+    if (ELARA_BUILD_TARGET === "electron") {
+      props.onEnd();
+    } else {
+      setShowEndScreen(true);
+    }
+  }, [props]);
 
   const onSkipConfirm = useCallback(async () => {
     if (props.checkpoints && props.checkpoints.length > 0) {
@@ -139,6 +144,7 @@ export default function FullscreenYouTubeVideo(
             onEnded={onVideoReachesEnd}
             onError={onError}
             volume={saveData.settings.masterVolume}
+            loop={false}
           />
         </AspectRatio>
       </Box>
