@@ -210,8 +210,9 @@ export default function Journal() {
                   mr={`-${JOURNAL_CONTENT_PADDING}px`}
                   ml={`-${JOURNAL_CONTENT_PADDING}px`}
                   opacity={showScrollIndicator ? 1 : 0}
-                  transition="opacity 0.5s ease-in-out"
+                  transition="opacity 0.5s ease-in-out, visibility 0.5s ease-in-out"
                   zIndex={SCROLL_INDICATOR_Z_INDEX}
+                  visibility={showScrollIndicator ? "visible" : "hidden"}
                 >
                   <Text
                     textAlign="center"
