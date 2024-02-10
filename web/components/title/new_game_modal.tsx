@@ -49,7 +49,7 @@ const DESKTOP_TIPS: NewGameTip[] = [
   },
   {
     title: "Autosave",
-    text: "Your progress will be automatically saved.",
+    text: "Your progress will be automatically saved. This includes any code you write.",
     icon: MdSave,
   },
 ];
