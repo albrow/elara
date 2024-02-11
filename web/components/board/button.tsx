@@ -86,11 +86,20 @@ export default function Button(props: ButtonProps) {
     return "var(--chakra-colors-teal-400)";
   }, [props.wireColor]);
 
+  // Track the previous state. Helps us determine whether we need
+  // to play a sound effect.
+  const prevState = useRef(props);
+
   useEffect(() => {
     if (!props.enableAnimations) {
       stopMySoundEffects();
     }
     if (props.currentlyPressed) {
+      if (prevState.current?.currentlyPressed === props.currentlyPressed) {
+        // No need to play a sound effect if the button state has not changed.
+        return () => {};
+      }
+
       // If the button is pressed, we always want to update the wire and image
       // to reflect this. We do this regardless of whether animations are enabled.
       animatedWireRef.current?.setAttribute("stroke", wireAnimStrokeColor);
@@ -111,6 +120,8 @@ export default function Button(props: ButtonProps) {
         }, BUTTON_PRESS_OFF_DELAY_MS);
       }
     }
+
+    prevState.current = props;
 
     return () => {
       if (animationTimerRef.current) {

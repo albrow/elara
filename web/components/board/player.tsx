@@ -1,5 +1,5 @@
 import { Tooltip, PlacementWithLogical, Box, Text } from "@chakra-ui/react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { compiler } from "markdown-to-jsx";
 
 import {
@@ -91,10 +91,21 @@ export default function Player(props: PlayerProps) {
     return props.message;
   }, [props.message]);
 
+  // Track the previous state. Helps us determine whether we need
+  // to play a sound effect.
+  const prevState = useRef(props);
+
   useEffect(() => {
     if (!props.enableAnimations) {
       stopMySoundEffects();
     } else if (props.animState === "moving") {
+      if (
+        prevState.current.offset.leftNum === props.offset.leftNum &&
+        prevState.current.offset.topNum === props.offset.topNum
+      ) {
+        // No need to play a sound effect if the rover position has not changed.
+        return;
+      }
       moveSound.play();
     } else if (props.animState === "turning") {
       turnSound.play();
@@ -106,6 +117,8 @@ export default function Player(props: PlayerProps) {
     } else if (props.message !== "") {
       speakSound.play();
     }
+
+    prevState.current = props;
   }, [
     props,
     stopMySoundEffects,
