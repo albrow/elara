@@ -157,6 +157,7 @@ export default function Board(props: BoardProps) {
         facing={props.gameState.player.facing}
         enableAnimations={props.enableAnimations}
         enableHoverInfo={props.enableHoverInfo}
+        truePos={props.gameState.player.pos}
       />
       {(props.gameState.goals as RGoal[]).map((goal, i) => (
         <Goal

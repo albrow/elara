@@ -33,6 +33,10 @@ interface PlayerProps {
   enableAnimations: boolean;
   enableHoverInfo: boolean;
   facing: string;
+  // Usually truePos == offset.pos, but for the sandbox, truePos is the actual
+  // position of the player in the simulation, and pos is the position of the
+  // player on the board (the latter is fixed to [0, 0]).
+  truePos?: Pos;
 }
 
 function roverMessagePlacement(pos: Pos | undefined): PlacementWithLogical {
@@ -100,8 +104,8 @@ export default function Player(props: PlayerProps) {
       stopMySoundEffects();
     } else if (props.animState === "moving") {
       if (
-        prevState.current.offset.leftNum === props.offset.leftNum &&
-        prevState.current.offset.topNum === props.offset.topNum
+        prevState.current.truePos?.x === props.truePos?.x &&
+        prevState.current.truePos?.y === props.truePos?.y
       ) {
         // No need to play a sound effect if the rover position has not changed.
         return;

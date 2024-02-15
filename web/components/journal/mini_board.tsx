@@ -101,6 +101,7 @@ export default function MiniBoard(props: MiniBoardProps) {
           enableAnimations={props.enableAnimations}
           facing={props.state.player.facing}
           enableHoverInfo={false}
+          truePos={props.state.player.pos}
         />
       </Box>
     </Box>
