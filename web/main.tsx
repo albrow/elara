@@ -57,8 +57,9 @@ const elaraTheme = extendTheme({
     "3xl": `${BP_3XL}px`,
   },
   sizes: {
-    "container.xl": "1268px",
-    "container.2xl": "1500px",
+    "container.xl": `${BP_XL}px`,
+    "container.2xl": `${BP_2XL}px`,
+    "container.3xl": `${BP_3XL}px`,
   },
   components: {
     Tooltip: {
