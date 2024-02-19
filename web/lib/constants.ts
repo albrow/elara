@@ -149,8 +149,9 @@ export const BUTTON_RESPONSIVE_SCALE = {
   base: "xs",
   xl: "sm",
   "2xl": "md",
-  "3xl": "lg"
+  "3xl": "lg",
 };
+
 /**
  * @example fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
  */
