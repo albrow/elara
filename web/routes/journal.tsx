@@ -23,6 +23,7 @@ import {
   NAVBAR_RESPONSIVE_HEIGHT,
   JOURNAL_HANDLES_Z_INDEX,
   SCROLL_INDICATOR_Z_INDEX,
+  BODY_RESPONSIVE_FONT_SCALE,
 } from "../lib/constants";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";
 
@@ -227,9 +228,18 @@ export default function Journal() {
                 >
                   <Text
                     textAlign="center"
-                    lineHeight="36px"
-                    pt="16px"
+                    lineHeight={{
+                      base: "32px",
+                      "2xl": "40px",
+                      "3xl": "52px",
+                    }}
+                    pt={{
+                      base: "16px",
+                      "2xl": "20px",
+                      "3xl": "26px",
+                    }}
                     color="white"
+                    fontSize={BODY_RESPONSIVE_FONT_SCALE}
                   >
                     <MdArrowDownward
                       style={{
