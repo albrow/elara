@@ -83,7 +83,7 @@ export const EDITOR_SECTION_RESPONSIVE_WIDTH = {
   base: `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE}px`,
   xl: `${BOARD_TOTAL_WIDTH}px`,
   "2xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL}px`,
-  "3xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL}px`
+  "3xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL}px`,
 };
 
 // Monitor responsive definitions.
@@ -91,10 +91,22 @@ export const MONTIOR_PADDING_BASE = 10;
 export const MONITOR_PADDING_2XL = 24;
 export const MONITOR_BORDER_WIDTH = 3;
 export const MONITOR_FRAME_RESPONSIVE_WIDTH = {
-  base: `calc(${(BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE * 2) + (MONTIOR_PADDING_BASE * 2) + (MONITOR_BORDER_WIDTH * 2)}px + 0.5rem)`,
+  base: `calc(${
+    BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE * 2 +
+    MONTIOR_PADDING_BASE * 2 +
+    MONITOR_BORDER_WIDTH * 2
+  }px + 0.5rem)`,
   xl: "fit-content",
-  "2xl": `calc(${(BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL * 2) + (MONITOR_PADDING_2XL * 2) + (MONITOR_BORDER_WIDTH * 2)}px + 0.5rem)`,
-  "3xl": `calc(${(BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL * 2) + (MONITOR_PADDING_2XL * 2) + (MONITOR_BORDER_WIDTH * 2)}px + 0.5rem)`,
+  "2xl": `calc(${
+    BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL * 2 +
+    MONITOR_PADDING_2XL * 2 +
+    MONITOR_BORDER_WIDTH * 2
+  }px + 0.5rem)`,
+  "3xl": `calc(${
+    BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL * 2 +
+    MONITOR_PADDING_2XL * 2 +
+    MONITOR_BORDER_WIDTH * 2
+  }px + 0.5rem)`,
 };
 
 // Title font responsive definitions.
@@ -134,8 +146,9 @@ export const BUTTON_RESPONSIVE_SCALE = {
   base: "xs",
   xl: "sm",
   "2xl": "md",
-  "3xl": "lg"
+  "3xl": "lg",
 };
+
 /**
  * @example fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
  */
