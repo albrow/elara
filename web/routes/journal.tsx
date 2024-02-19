@@ -184,7 +184,11 @@ export default function Journal() {
           border="16px solid #758DA1"
           borderRadius="5px"
           w="100%"
-          maxW="container.2xl"
+          maxW={{
+            xl: "container.xl",
+            "2xl": "container.2xl",
+            "3xl": "container.3xl",
+          }}
           h={{
             base: `calc(100% - ${NAVBAR_HEIGHT_BASE}px)`,
             "2xl": `calc(100% - ${NAVBAR_HEIGHT_2XL}px)`,
