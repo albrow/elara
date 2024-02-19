@@ -98,7 +98,9 @@ export default function RunnableExample(props: RunnableExampleProps) {
       mx="auto"
       width="fit-content"
     >
-      <Box width={{ base: "500px", xl: "550px" }}>
+      <Box
+        width={{ base: "500px", xl: "550px", "2xl": "600px", "3xl": "750px" }}
+      >
         <Editor
           type="example"
           code={initialCode}
