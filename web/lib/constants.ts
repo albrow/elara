@@ -156,7 +156,7 @@ export const BUTTON_RESPONSIVE_SCALE = {
  * @example fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
  */
 export const BUTTON_RESPONSIVE_FONT_SCALE = {
-  "3xl": "20px",
+  "3xl": "1.25rem",
 };
 
 /**

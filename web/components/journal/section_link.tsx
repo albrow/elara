@@ -50,7 +50,14 @@ export default function SceneLink(props: SceneLinkProps) {
     const icons = [];
     if (props.scene.unlocked && !props.scene.completed) {
       icons.push(
-        <Badge colorScheme="green" mr="0.3rem">
+        <Badge
+          colorScheme="green"
+          mr="0.3rem"
+          fontSize={{
+            base: "12px",
+            "3xl": "16px",
+          }}
+        >
           New
         </Badge>
       );
@@ -81,7 +88,18 @@ export default function SceneLink(props: SceneLinkProps) {
         isDisabled={!props.scene.unlocked}
         h="max-content"
         px="14px"
-        py="6px"
+        py={{
+          base: "6px",
+          xl: "8px",
+          "2xl": "10px",
+          "3xl": "12px",
+        }}
+        fontSize={{
+          base: "md",
+          xl: "lg",
+          "2xl": "xl",
+          "3xl": "3xl",
+        }}
       >
         <Box>
           <Text
