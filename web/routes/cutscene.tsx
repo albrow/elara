@@ -35,6 +35,22 @@ export default function Cutscene(props: CutsceneProps) {
           navigateToHub();
         },
       },
+      grover_damaged: {
+        vimeoVideoId: 914609393,
+        youTubeVideoId: "ZUESwBuuePY",
+        localVideoUrl: getLocalVideoUrl("grover_damaged"),
+        navigateOnEnd: () => {
+          navigateToHub();
+        },
+      },
+      grover_repaired: {
+        vimeoVideoId: 914609399,
+        youTubeVideoId: "bwjOIaBQhEw",
+        localVideoUrl: getLocalVideoUrl("grover_repaired"),
+        navigateOnEnd: () => {
+          navigateToHub();
+        },
+      },
       midgame: {
         vimeoVideoId: 878140313,
         youTubeVideoId: "TUl2pIq0vjA",

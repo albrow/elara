@@ -16,7 +16,7 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   grover_is_damaged: {
-    text: "Oh no! It looks like G.R.O.V.E.R has sustained some damage from the last encounter.",
+    text: "Oh no! It looks like G.R.O.V.E.R has sustained some damage from an undetected asteroid!",
     choiceIds: ["ask_if_grover_okay", "ask_grover_damage_details"],
   },
   reassure_grover_is_okay: {

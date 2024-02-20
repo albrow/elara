@@ -274,6 +274,7 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
+  cutsceneScene("grover_damaged"),
   levelScene("partly_disabled_movement"),
   journalScene("creating_functions"),
   levelScene(
@@ -284,6 +285,7 @@ const RAW_SCENES: RawScene[] = [
       "You just need to finish the body of the `three_lefts` function. Then the rest of the code should work.",
     ]
   ),
+  cutsceneScene("grover_repaired"),
   // Temporarily disable arrays because the concept is not super fleshed out yet.
   // May decide to re-enable later.
   //
