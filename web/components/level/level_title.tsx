@@ -1,7 +1,9 @@
 import { Text, Tooltip, Box } from "@chakra-ui/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RxDropdownMenu } from "react-icons/rx";
 import { useLevelSelectModal } from "../../hooks/level_select_modal_hooks";
+import { useWindowWidth } from "../../hooks/responsive_hooks";
+import { BP_2XL, BP_3XL, BP_XL, BODY_RESPONSIVE_FONT_SCALE, TITLE_FONT_SIZE_2XL, TITLE_FONT_SIZE_3XL, TITLE_FONT_SIZE_BASE, TITLE_FONT_SIZE_XL, TITLE_RESPONSIVE_FONT_SCALE } from "../../lib/constants";
 
 export interface LevelTitleProps {
   title: string;
@@ -11,9 +13,25 @@ export interface LevelTitleProps {
 export default function LevelTitle(props: LevelTitleProps) {
   const [hoveringOver, setHoveringOver] = useState<boolean>(false);
   const [showLevelSelectModal] = useLevelSelectModal();
+  // Note: We have to use JavaScript to control the size of the dropdown menu icon because
+  // React Icons requires you to pass in the size as a string.
+  const windowWidth = useWindowWidth();
+
+  const dropdownMenuSize = useMemo(() => {
+    if (windowWidth >= BP_3XL) {
+      return TITLE_FONT_SIZE_3XL;
+    }
+    if (windowWidth >= BP_2XL) {
+      return TITLE_FONT_SIZE_2XL;
+    }
+    if (windowWidth >= BP_XL) {
+      return TITLE_FONT_SIZE_XL;
+    }
+    return TITLE_FONT_SIZE_BASE;
+  }, [windowWidth]);
 
   return (
-    <Tooltip label="Select a different level" placement="right">
+    <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Select a different level" placement="right">
       <Box
         _hover={{ cursor: "pointer" }}
         onMouseEnter={() => setHoveringOver(true)}
@@ -27,7 +45,7 @@ export default function LevelTitle(props: LevelTitleProps) {
         onClick={() => showLevelSelectModal()}
       >
         <RxDropdownMenu
-          size="1.4em"
+          size={dropdownMenuSize}
           style={{
             display: "inline-block",
             verticalAlign: "middle",
@@ -35,7 +53,7 @@ export default function LevelTitle(props: LevelTitleProps) {
           }}
         />
         <Text
-          fontSize="1.4em"
+          fontSize={TITLE_RESPONSIVE_FONT_SCALE}
           fontWeight="bold"
           as="span"
           verticalAlign="middle"

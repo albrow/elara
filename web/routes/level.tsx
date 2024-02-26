@@ -21,8 +21,15 @@ import ShowHintButton from "../components/level/show_hint_button";
 import { useHintsModal } from "../hooks/hints_modal_hooks";
 import {
   BG_Z_INDEX,
+  BOARD_WRAPPER_RESPONSIVE_TRANSFORM,
+  BODY_RESPONSIVE_FONT_SCALE,
+  EDITOR_SECTION_RESPONSIVE_WIDTH,
+  MONITOR_BORDER_WIDTH,
+  MONITOR_FRAME_RESPONSIVE_WIDTH,
   MONITOR_FRAME_Z_INDEX,
-  NAVBAR_HEIGHT,
+  MONITOR_PADDING_2XL,
+  MONTIOR_PADDING_BASE,
+  NAVBAR_RESPONSIVE_HEIGHT,
 } from "../lib/constants";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
 import { ErrorType } from "../contexts/error_modal";
@@ -89,9 +96,8 @@ export default function Level() {
     if (!currScene) {
       return;
     }
-    document.title = `Elara | Level ${currScene.levelIndex}: ${
-      currLevel().name
-    }`;
+    document.title = `Elara | Level ${currScene.levelIndex}: ${currLevel().name
+      }`;
   }, [currLevel, currScene]);
 
   const initialCode = useCallback(
@@ -343,7 +349,7 @@ export default function Level() {
         bgRepeat="no-repeat"
         bgSize="cover"
         bgPosition="bottom"
-        pt={`${NAVBAR_HEIGHT}px`}
+        pt={NAVBAR_RESPONSIVE_HEIGHT}
         overflowX="auto"
       />
       <MonitorStand monitorFrameRef={monitorFrame} />
@@ -352,7 +358,7 @@ export default function Level() {
         w="100%"
         h="100%"
         zIndex={MONITOR_FRAME_Z_INDEX}
-        pt={`${NAVBAR_HEIGHT}px`}
+        pt={NAVBAR_RESPONSIVE_HEIGHT}
         overflow="auto"
       >
         <Flex h="100%">
@@ -363,11 +369,11 @@ export default function Level() {
             bg="white"
             mx="auto"
             my="auto"
-            w={{ base: "1080px", xl: "fit-content" }}
-            px={{ base: "10px", "2xl": "24px" }}
+            w={MONITOR_FRAME_RESPONSIVE_WIDTH}
+            px={{ base: `${MONTIOR_PADDING_BASE}px`, "2xl": `${MONITOR_PADDING_2XL}px` }}
             pt={{ base: "18px", "2xl": "24px" }}
             pb={{ lg: "0px", "2xl": "12px" }}
-            border="3px solid"
+            border={`${MONITOR_BORDER_WIDTH}px solid`}
             borderColor="gray.500"
             boxShadow="0 0 20px 2px rgba(255, 255, 255, 0.5)"
           >
@@ -379,7 +385,7 @@ export default function Level() {
                   levelIndex={currScene?.levelIndex || 0}
                 />
                 {currScene?.hints != null && currScene?.hints.length > 0 && (
-                  <Box ml="8px" my="auto" mt="3px">
+                  <Box ml="8px" my="auto" mt="auto">
                     <ShowHintButton onClick={showHintsModal} />
                   </Box>
                 )}
@@ -393,7 +399,7 @@ export default function Level() {
               </Flex>
             </Box>
             {/* Objective/challenge text */}
-            <Box>
+            <Box fontSize={BODY_RESPONSIVE_FONT_SCALE}>
               <Text as="span" verticalAlign="middle">
                 {getObjectiveIcon()}
                 <Text as="span" verticalAlign="middle" fontWeight="bold">
@@ -415,10 +421,12 @@ export default function Level() {
             <Stack
               direction="row"
               mt="16px"
-              h={{ base: "350px", xl: "fit-content" }}
+              h={{ base: "332px", xl: "fit-content" }}
             >
               <Box id="editor-section" mr={0}>
-                <Box w={{ base: "584px", xl: "608px" }}>
+                <Box
+                  w={EDITOR_SECTION_RESPONSIVE_WIDTH}
+                >
                   <Editor
                     type="level"
                     requestedState={requestedEditorState}
@@ -440,10 +448,7 @@ export default function Level() {
                 id="board-wrapper"
                 transformOrigin="top left"
                 height="fit-content"
-                transform={{
-                  base: "scale(0.75)",
-                  xl: "none",
-                }}
+                transform={BOARD_WRAPPER_RESPONSIVE_TRANSFORM}
               >
                 <Box
                   position="relative"

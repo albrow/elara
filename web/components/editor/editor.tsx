@@ -30,7 +30,8 @@ import {
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
-import { BP_XL, CODE_LEN_EXPLANATION } from "../../lib/constants";
+import { BP_XL, BP_2XL, BP_3XL, CODE_LEN_EXPLANATION, EDITOR_BORDER_WIDTH, BODY_RESPONSIVE_FONT_SCALE } from "../../lib/constants";
+import { useWindowWidth } from "../../hooks/responsive_hooks";
 import { textEffects } from "./text_effects";
 import ControlBar from "./control_bar";
 
@@ -227,39 +228,28 @@ export default function Editor(props: EditorProps) {
 
   // Note: We have to use JavaScript to control the size of the editor because
   // CodeMirror requires you to pass in the height as a string.
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    function onWindowResize() {
-      setWindowWidth(window.innerWidth);
-    }
-    // Trigger this function on resize
-    window.addEventListener("resize", onWindowResize);
-    //  Cleanup for componentWillUnmount
-    return () => window.removeEventListener("resize", onWindowResize);
-  }, []);
+  const windowWidth = useWindowWidth();
 
   const codeMirrorHeight = useMemo(() => {
     if (props.type === "level") {
-      if (windowWidth < BP_XL) {
-        return "273px";
+      if (windowWidth >= BP_3XL) {
+        return 572;
       }
-      return "370px";
-    }
-    return "auto";
-  }, [props.type, windowWidth]);
-
-  const editorWrapperHeight = useMemo(() => {
-    if (props.type === "level") {
-      if (windowWidth < BP_XL) {
-        return "276px";
+      if (windowWidth >= BP_2XL) {
+        return 446;
       }
-      return "373px";
+      if (windowWidth >= BP_XL) {
+        return 370;
+      }
+      return 284;
     }
     return undefined;
   }, [props.type, windowWidth]);
 
+  const editorWrapperHeight = codeMirrorHeight ? `${codeMirrorHeight + EDITOR_BORDER_WIDTH}px` : undefined;
+
   const { setContainer, view } = useCodeMirror({
-    height: codeMirrorHeight,
+    height: codeMirrorHeight ? `${codeMirrorHeight}px` : "auto",
     editable: state === "editing",
     readOnly: state !== "editing",
     indentWithTab: false,
@@ -579,13 +569,14 @@ export default function Editor(props: EditorProps) {
       <Box
         id="editor-wrapper"
         height={editorWrapperHeight}
-        borderWidth="2px"
+        borderWidth={`${EDITOR_BORDER_WIDTH}px`}
         borderTop="0px"
         paddingBottom="2px"
         background="gray.100"
         borderColor="gray.700"
         borderBottomRightRadius="0.375rem"
         borderBottomLeftRadius="0.375rem"
+        fontSize={BODY_RESPONSIVE_FONT_SCALE}
       >
         <div
           ref={editor}
@@ -593,7 +584,7 @@ export default function Editor(props: EditorProps) {
         />
       </Box>
       {props.showCodeLenCounter && (
-        <Box position="relative" top={{ base: "-30px", xl: "-42px" }}>
+        <Box position="relative" top={{ base: "-36px", xl: "-42px", "2xl": "-44px", "3xl": "-50px" }}>
           <Box
             bg="gray.700"
             float="right"
@@ -603,11 +594,16 @@ export default function Editor(props: EditorProps) {
             borderRadius="0.375rem"
             opacity="50%"
           >
-            <Tooltip label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
+            <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
               <Text
                 verticalAlign="center"
                 as="div"
-                fontSize={{ base: "0.7rem", xl: "0.8rem" }}
+                fontSize={{
+                  base: "0.7rem",
+                  xl: "0.8rem",
+                  "2xl": "0.9rem",
+                  "3xl": "1.1rem"
+                }}
                 color="white"
                 _hover={{ cursor: "help" }}
               >
