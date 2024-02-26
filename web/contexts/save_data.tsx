@@ -15,7 +15,7 @@ import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
 import { SectionName } from "../components/journal/sections";
 
-export const SAVE_DATA_VERSION = 16;
+export const SAVE_DATA_VERSION = 17;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 // Amount of time (in milliseconds) to wait for further updates before
@@ -329,6 +329,18 @@ function migrateSaveData(saveData: SaveData): SaveData {
     // Since some prior save data exists, we can safely assume that the
     // intro cutscene has already been seen.
     newData.seenCutscenes = ["intro"];
+  }
+
+  // Version 17 added two new cutscenes. They should be marked as seen if
+  // the user has already the levels that come immediately afterwards.
+  if (newData.version === 16) {
+    newData.version = 17;
+    if (newData.levelStates.partly_disabled_movement?.completed) {
+      newData.seenCutscenes.push("grover_damaged");
+    }
+    if (newData.levelStates.telepad_part_one?.completed) {
+      newData.seenCutscenes.push("grover_repaired");
+    }
   }
 
   return newData;
