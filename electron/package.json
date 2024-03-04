@@ -1,6 +1,6 @@
 {
   "name": "elara-electron",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Electron build for Elara: a free coding game",
   "main": "main.js",
   "build": {
