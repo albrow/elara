@@ -79,27 +79,21 @@ fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
             return true;
         }
     }
-    // Unheld crates are obstacles.
-    for crt in &state.crates {
-        if crt.pos == *pos && !crt.held {
-            return true;
-        }
-    }
-    false
-}
-
-fn is_closed_gate_at(state: &State, pos: &Pos) -> bool {
+    // Gates and password gates are treated as obstacles only
+    // if they are closed.
     for gate in &state.gates {
         if gate.pos == *pos && !gate.open {
             return true;
         }
     }
-    false
-}
-
-fn is_closed_password_gate_at(state: &State, pos: &Pos) -> bool {
     for gate in &state.password_gates {
         if gate.pos == *pos && !gate.open {
+            return true;
+        }
+    }
+    // Unheld crates are treated as obstacles.
+    for crt in &state.crates {
+        if crt.pos == *pos && !crt.held {
             return true;
         }
     }
@@ -123,10 +117,7 @@ fn is_outside_bounds(bounds: &Bounds, pos: &Pos) -> bool {
 /// This applies to player and enemy actors, basically anything that moves around
 /// the board.
 fn can_move_to(state: &State, bounds: &Bounds, desired_pos: &Pos) -> bool {
-    !is_obstacle_at(state, desired_pos)
-        && !is_outside_bounds(bounds, desired_pos)
-        && !is_closed_gate_at(state, desired_pos)
-        && !is_closed_password_gate_at(state, desired_pos)
+    !is_obstacle_at(state, desired_pos) && !is_outside_bounds(bounds, desired_pos)
 }
 
 /// Returns the index of any password gates adjacent to the given position.
