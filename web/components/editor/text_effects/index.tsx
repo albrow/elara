@@ -29,6 +29,8 @@ import GetOrientation from "./pages/get_orientation.mdx";
 import GetPosition from "./pages/get_position.mdx";
 import Push from "./pages/push.mdx";
 import PressButton from "./pages/press_button.mdx";
+import PickUp from "./pages/pick_up.mdx";
+import Drop from "./pages/drop.mdx";
 
 const hoverWords = [
   "turn_right",
@@ -46,6 +48,8 @@ const hoverWords = [
   "get_position",
   "push",
   "press_button",
+  "pick_up",
+  "drop",
 ] as const;
 
 export type HoverWord = typeof hoverWords[number];
@@ -68,6 +72,8 @@ export const docPages: {
   get_position: GetPosition,
   push: Push,
   press_button: PressButton,
+  pick_up: PickUp,
+  drop: Drop,
 };
 
 // A plugin that shows a tooltip with documentation for built-in functions.

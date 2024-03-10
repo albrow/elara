@@ -583,6 +583,8 @@ impl Player {
             PlayerAnimState::Turning => "turning",
             PlayerAnimState::Teleporting(_) => "teleporting",
             PlayerAnimState::Bumping(_) => "bumping",
+            PlayerAnimState::PickingUp => "picking_up",
+            PlayerAnimState::Dropping => "dropping",
         };
         let facing = match player.facing {
             Orientation::Up => "up",

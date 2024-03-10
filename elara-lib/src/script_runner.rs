@@ -12,12 +12,13 @@ use std::vec;
 use crate::actors::{Action, MoveDirection, TurnDirection};
 use crate::better_errors::{convert_err, BetterError};
 use crate::constants::{
-    BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL, ERR_NO_BUTTON, ERR_NO_DATA_POINT,
-    ERR_SIMULATION_END,
+    BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL, ERR_ALREADY_HOLDING, ERR_NOTHING_TO_DROP,
+    ERR_NOTHING_TO_PICK_UP, ERR_NO_BUTTON, ERR_NO_DATA_POINT, ERR_SIMULATION_END,
 };
 use crate::levels::Outcome;
 use crate::simulation::{
-    get_adjacent_button, get_adjacent_point, Orientation, Pos, Simulation, State,
+    get_adjacent_button, get_adjacent_point, get_crate_in_front, Orientation, Pos, Simulation,
+    State,
 };
 
 /// Responsible for running user scripts and coordinating communication
@@ -367,6 +368,16 @@ impl ScriptRunner {
                 pending_trace.borrow_mut().push(trace_lines.clone());
                 Ok(DebuggerCommand::StepInto)
             }
+            "pick_up" => {
+                // The pick_up function always has a duration of one step.
+                pending_trace.borrow_mut().push(trace_lines.clone());
+                Ok(DebuggerCommand::StepInto)
+            }
+            "drop" => {
+                // The drop function always has a duration of one step.
+                pending_trace.borrow_mut().push(trace_lines.clone());
+                Ok(DebuggerCommand::StepInto)
+            }
             _ => Ok(DebuggerCommand::StepInto),
         }
     }
@@ -662,6 +673,38 @@ impl ScriptRunner {
                     // TODO(albrow): Can we determine the line number for the error message?
                     Err(ERR_NO_BUTTON.into())
                 }
+            });
+        }
+        if avail_funcs.contains(&"pick_up".to_string()) {
+            let tx = self.player_action_tx.clone();
+            let simulation = self.simulation.clone();
+            engine.register_fn("pick_up", move || -> Result<(), Box<EvalAltResult>> {
+                let state = simulation.borrow().curr_state();
+                // If the player is already holding a crate, it's an error.
+                if state.crates.iter().any(|c| c.held) {
+                    return Err(ERR_ALREADY_HOLDING.into());
+                }
+                if get_crate_in_front(&state).is_some() {
+                    tx.borrow().send(Action::PickUp).unwrap();
+                    simulation.borrow_mut().step_forward();
+                    Ok(())
+                } else {
+                    Err(ERR_NOTHING_TO_PICK_UP.into())
+                }
+            });
+        }
+        if avail_funcs.contains(&"drop".to_string()) {
+            let tx = self.player_action_tx.clone();
+            let simulation = self.simulation.clone();
+            engine.register_fn("drop", move || -> Result<(), Box<EvalAltResult>> {
+                let state = simulation.borrow().curr_state();
+                // If the player is not holding a crate, it's an error.
+                if !state.crates.iter().any(|c| c.held) {
+                    return Err(ERR_NOTHING_TO_DROP.into());
+                }
+                tx.borrow().send(Action::Drop).unwrap();
+                simulation.borrow_mut().step_forward();
+                Ok(())
             });
         }
         // Our debugger hook *always* needs a way to get the current orientation, so

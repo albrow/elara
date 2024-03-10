@@ -208,6 +208,8 @@ impl Game {
                 "press_button".to_string(),
                 "get_orientation".to_string(),
                 "read_data".to_string(),
+                "pick_up".to_string(),
+                "drop".to_string(),
             ],
         );
         self.run_player_script_internal(level, &avail_funcs, script)

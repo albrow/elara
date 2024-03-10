@@ -4,8 +4,8 @@ use std::sync::mpsc;
 
 use crate::constants::ENERGY_CELL_AMOUNT;
 use crate::simulation::{
-    get_adjacent_button, get_adjacent_point, Actor, BumpAnimData, ButtonConnection, Orientation,
-    PlayerAnimState, Pos, State, TeleAnimData,
+    get_adjacent_button, get_adjacent_point, get_crate_in_front, Actor, BumpAnimData,
+    ButtonConnection, Orientation, PlayerAnimState, Pos, State, TeleAnimData,
 };
 
 use super::{
@@ -69,6 +69,11 @@ impl Actor for PlayerChannelActor {
                 state.player.pos = new_pos;
                 state.player.facing = new_facing;
                 state.player.anim_state = new_anim_state;
+
+                // If the player is holding a crate, move the crate too.
+                if let Some(crate_index) = state.player.held_crate_index {
+                    state.crates[crate_index].pos = state.player.pos.clone();
+                }
             }
             Ok(Action::Turn(direction)) => {
                 state.player.anim_state = PlayerAnimState::Turning;
@@ -118,6 +123,41 @@ impl Actor for PlayerChannelActor {
                     self.handle_button_press(&mut state, button_index);
                 }
                 state.player.anim_state = PlayerAnimState::Idle;
+            }
+            Ok(Action::PickUp) => {
+                // If the player is already holding a crate, don't do anything.
+                if state
+                    .crates
+                    .iter()
+                    .any(|c| c.pos == state.player.pos && c.held)
+                {
+                    return state;
+                }
+
+                // If there is a crate in front of the player, pick it up.
+                if let Some(crate_index) = get_crate_in_front(&state) {
+                    state.player.anim_state = PlayerAnimState::PickingUp;
+                    state.crates[crate_index].held = true;
+                    state.crates[crate_index].pos = state.player.pos.clone();
+                    state.player.held_crate_index = Some(crate_index);
+                }
+            }
+            Ok(Action::Drop) => {
+                // If the player is holding a crate, drop it and set its position
+                // to directly in front of the player.
+                for crt in state.crates.iter_mut() {
+                    if crt.pos == state.player.pos && crt.held {
+                        state.player.anim_state = PlayerAnimState::Dropping;
+                        crt.held = false;
+                        match state.player.facing {
+                            Orientation::Up => crt.pos.y -= 1,
+                            Orientation::Down => crt.pos.y += 1,
+                            Orientation::Left => crt.pos.x -= 1,
+                            Orientation::Right => crt.pos.x += 1,
+                        }
+                        state.player.held_crate_index = None;
+                    }
+                }
             }
             Err(_) => {}
         }
@@ -201,8 +241,8 @@ mod test {
     use crate::{
         constants::MAX_ENERGY,
         simulation::{
-            Button, DataPoint, Gate, GateVariant, Obstacle, PasswordGate, Player, PlayerAnimState,
-            Pos, State, Telepad,
+            Button, Crate, CrateColor, DataPoint, Gate, GateVariant, Obstacle, PasswordGate,
+            Player, PlayerAnimState, Pos, State, Telepad,
         },
     };
 
@@ -230,6 +270,7 @@ mod test {
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Right,
                 total_energy_used: 1,
+                held_crate_index: None,
             }
         );
         state = new_state;
@@ -245,6 +286,7 @@ mod test {
                 anim_state: PlayerAnimState::Turning,
                 facing: Orientation::Down,
                 total_energy_used: 1,
+                held_crate_index: None,
             }
         );
         state = new_state;
@@ -260,6 +302,7 @@ mod test {
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Down,
                 total_energy_used: 2,
+                held_crate_index: None,
             }
         );
     }
@@ -317,7 +360,7 @@ mod test {
     }
 
     #[test]
-    fn try_to_move_with_bounds() {
+    fn try_to_move_through_bounds() {
         let bounds = Bounds {
             min_x: 0,
             max_x: 2,
@@ -374,7 +417,7 @@ mod test {
     }
 
     #[test]
-    fn try_to_move_with_obstacles() {
+    fn try_to_move_through_obstacles() {
         let bounds = Bounds {
             min_x: 0,
             max_x: 10,
@@ -515,7 +558,7 @@ mod test {
     }
 
     #[test]
-    fn try_to_move_with_closed_gates() {
+    fn try_to_move_through_closed_gates() {
         let bounds = Bounds {
             min_x: 0,
             max_x: 10,
@@ -541,7 +584,7 @@ mod test {
     }
 
     #[test]
-    fn try_to_move_with_open_gates() {
+    fn try_to_move_through_open_gates() {
         let bounds = Bounds {
             min_x: 0,
             max_x: 10,
@@ -567,7 +610,7 @@ mod test {
     }
 
     #[test]
-    fn try_to_move_with_closed_password_gates() {
+    fn try_to_move_through_closed_password_gates() {
         let bounds = Bounds {
             min_x: 0,
             max_x: 10,
@@ -593,7 +636,7 @@ mod test {
     }
 
     #[test]
-    fn try_to_move_with_open_password_gates() {
+    fn try_to_move_through_open_password_gates() {
         let bounds = Bounds {
             min_x: 0,
             max_x: 10,
@@ -619,7 +662,7 @@ mod test {
     }
 
     #[test]
-    fn try_to_move_with_buttons() {
+    fn try_to_move_through_buttons() {
         let bounds = Bounds {
             min_x: 0,
             max_x: 10,
@@ -643,7 +686,7 @@ mod test {
     }
 
     #[test]
-    fn try_to_move_with_data_points() {
+    fn try_to_move_through_data_points() {
         let bounds = Bounds {
             min_x: 0,
             max_x: 10,
@@ -667,7 +710,31 @@ mod test {
     }
 
     #[test]
-    fn try_to_move_with_telepad() {
+    fn try_to_move_through_crates() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.crates = vec![
+            Crate::new(0, 0, CrateColor::Red),
+            Crate::new(1, 0, CrateColor::Red),
+            Crate::new(2, 0, CrateColor::Red),
+            Crate::new(2, 1, CrateColor::Red),
+            Crate::new(2, 2, CrateColor::Red),
+            Crate::new(1, 2, CrateColor::Red),
+            Crate::new(0, 2, CrateColor::Red),
+            Crate::new(0, 1, CrateColor::Red),
+        ];
+        assert_player_cannot_move_in_any_direction(&mut state, &actor)
+    }
+
+    #[test]
+    fn try_to_move_through_telepad() {
         let bounds = Bounds {
             min_x: 0,
             max_x: 10,
@@ -763,6 +830,215 @@ mod test {
                 variant: GateVariant::NESW,
                 additional_info: String::new(),
                 wrong_password: false,
+            }
+        );
+    }
+
+    #[test]
+    fn pick_up_crate() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let (tx, rx) = mpsc::channel();
+        let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.crates = vec![Crate::new(2, 1, CrateColor::Red)];
+
+        // Pick up the crate.
+        tx.send(Action::PickUp).unwrap();
+        let new_state = actor.apply(state.clone());
+
+        // The player should now be holding the crate and the crate's position
+        // should be the same as the player's.
+        assert_eq!(
+            new_state.crates[0],
+            Crate {
+                pos: Pos::new(1, 1),
+                held: true,
+                color: CrateColor::Red,
+            }
+        );
+        assert_eq!(new_state.player.held_crate_index, Some(0));
+        assert_eq!(new_state.player.anim_state, PlayerAnimState::PickingUp);
+    }
+
+    #[test]
+    fn move_with_crate() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let (tx, rx) = mpsc::channel();
+        let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.crates = vec![Crate::new(2, 1, CrateColor::Red)];
+
+        // Pick up the crate.
+        tx.send(Action::PickUp).unwrap();
+        let new_state = actor.apply(state.clone());
+
+        // Moving the player in any direction should also move the crate.
+        // First move forward.
+        tx.send(Action::Move(MoveDirection::Forward)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        // The player and crate should have moved.
+        assert_eq!(
+            new_state.player,
+            Player {
+                pos: Pos::new(2, 1),
+                energy: MAX_ENERGY - 1,
+                message: String::from(""),
+                anim_state: PlayerAnimState::Moving,
+                facing: Orientation::Right,
+                total_energy_used: 1,
+                held_crate_index: Some(0),
+            }
+        );
+        assert_eq!(
+            new_state.crates[0],
+            Crate {
+                pos: Pos::new(2, 1),
+                held: true,
+                color: CrateColor::Red,
+            }
+        );
+
+        // Then move backward and check again.
+        tx.send(Action::Move(MoveDirection::Backward)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        assert_eq!(
+            new_state.player,
+            Player {
+                pos: Pos::new(1, 1),
+                energy: MAX_ENERGY - 2,
+                message: String::from(""),
+                anim_state: PlayerAnimState::Moving,
+                facing: Orientation::Right,
+                total_energy_used: 2,
+                held_crate_index: Some(0),
+            }
+        );
+        assert_eq!(
+            new_state.crates[0],
+            Crate {
+                pos: Pos::new(1, 1),
+                held: true,
+                color: CrateColor::Red,
+            }
+        );
+
+        // Turn right and repeat the process.
+        tx.send(Action::Turn(TurnDirection::Right)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        // First forward.
+        tx.send(Action::Move(MoveDirection::Forward)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        assert_eq!(
+            new_state.player,
+            Player {
+                pos: Pos::new(1, 2),
+                energy: MAX_ENERGY - 3,
+                message: String::from(""),
+                anim_state: PlayerAnimState::Moving,
+                facing: Orientation::Down,
+                total_energy_used: 3,
+                held_crate_index: Some(0),
+            }
+        );
+        assert_eq!(
+            new_state.crates[0],
+            Crate {
+                pos: Pos::new(1, 2),
+                held: true,
+                color: CrateColor::Red,
+            }
+        );
+
+        // Then move backward.
+        tx.send(Action::Move(MoveDirection::Backward)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        assert_eq!(
+            new_state.player,
+            Player {
+                pos: Pos::new(1, 1),
+                energy: MAX_ENERGY - 4,
+                message: String::from(""),
+                anim_state: PlayerAnimState::Moving,
+                facing: Orientation::Down,
+                total_energy_used: 4,
+                held_crate_index: Some(0),
+            }
+        );
+        assert_eq!(
+            new_state.crates[0],
+            Crate {
+                pos: Pos::new(1, 1),
+                held: true,
+                color: CrateColor::Red,
+            }
+        );
+    }
+
+    #[test]
+    fn drop_crate() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let (tx, rx) = mpsc::channel();
+        let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.crates = vec![Crate::new(2, 1, CrateColor::Red)];
+
+        // Pick up the crate.
+        tx.send(Action::PickUp).unwrap();
+        let new_state = actor.apply(state.clone());
+
+        // Move forward and drop the crate.
+        tx.send(Action::Move(MoveDirection::Forward)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::Drop).unwrap();
+        let new_state = actor.apply(new_state.clone());
+
+        // The player should no longer be holding the crate and the crate's
+        // position should be directly in front of the player.
+        assert_eq!(new_state.player.held_crate_index, None);
+        assert_eq!(new_state.player.anim_state, PlayerAnimState::Dropping);
+        assert_eq!(
+            new_state.crates[0],
+            Crate {
+                pos: Pos::new(3, 1),
+                held: false,
+                color: CrateColor::Red,
+            }
+        );
+
+        // Pick up the crate again, turn right, then drop it.
+        tx.send(Action::PickUp).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::Turn(TurnDirection::Right)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::Drop).unwrap();
+        let new_state = actor.apply(new_state.clone());
+
+        // The crate should now be below the player.
+        assert_eq!(new_state.player.held_crate_index, None);
+        assert_eq!(
+            new_state.crates[0],
+            Crate {
+                pos: Pos::new(2, 2),
+                held: false,
+                color: CrateColor::Red,
             }
         );
     }

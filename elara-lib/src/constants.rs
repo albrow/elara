@@ -23,6 +23,12 @@ pub static ERR_SIMULATION_END: &str = "SIMULATION_END";
 pub static ERR_NO_DATA_POINT: &str = "read_data only works if you are next to a data point.";
 /// Returned from press_button if you call it when not adjacent to a button.
 pub static ERR_NO_BUTTON: &str = "press_button only works if you are next to a button.";
+/// Returned from pick_up when there is nothing in front of the player to pick up.
+pub static ERR_NOTHING_TO_PICK_UP: &str = "There is nothing in front of G.R.O.V.E.R. to pick up.";
+/// Returned from pick_up when the player is already holding something.
+pub static ERR_ALREADY_HOLDING: &str = "G.R.O.V.E.R. is already holding something.";
+/// Returned from drop when the player is not holding anything.
+pub static ERR_NOTHING_TO_DROP: &str = "G.R.O.V.E.R. has nothing to drop.";
 /// Returned as the "input" to a BadInput error by our custom semicolon checker code
 /// if there is a line break in the middle of a function call.
 pub static BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL: &str = "line break in function call";
@@ -149,6 +155,20 @@ lazy_static! {
             "press_button",
             BuiltinFunction {
                 name: "press_button",
+                arg_types: &[],
+            },
+        );
+        m.insert(
+            "pick_up",
+            BuiltinFunction {
+                name: "pick_up",
+                arg_types: &[],
+            },
+        );
+        m.insert(
+            "drop",
+            BuiltinFunction {
+                name: "drop",
                 arg_types: &[],
             },
         );

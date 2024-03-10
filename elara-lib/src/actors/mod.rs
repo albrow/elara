@@ -31,6 +31,8 @@ pub enum Action {
     Say(String),
     ReadData,
     PressButton,
+    PickUp,
+    Drop,
 }
 
 pub struct Bounds {

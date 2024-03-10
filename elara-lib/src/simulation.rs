@@ -307,6 +307,8 @@ pub enum PlayerAnimState {
     Turning,
     Teleporting(TeleAnimData),
     Bumping(BumpAnimData),
+    PickingUp,
+    Dropping,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -330,6 +332,8 @@ pub struct Player {
     pub anim_state: PlayerAnimState,
     pub facing: Orientation,
     pub total_energy_used: u32,
+    /// The index of the crate being held by the player, if any.
+    pub held_crate_index: Option<usize>,
 }
 
 impl Player {
@@ -341,6 +345,7 @@ impl Player {
             anim_state: PlayerAnimState::Idle,
             facing,
             total_energy_used: 0,
+            held_crate_index: None,
         }
     }
 }
@@ -758,6 +763,25 @@ pub fn get_adjacent_button(state: &State, pos: &Pos) -> Option<usize> {
             return Some(i);
         }
         if pos.x != 0 && button.pos.x == pos.x - 1 && button.pos.y == pos.y {
+            return Some(i);
+        }
+    }
+    None
+}
+
+/// Returns the index of the crate directly in front of the player,
+/// or None if there is no crate in front of the player.
+pub fn get_crate_in_front(state: &State) -> Option<usize> {
+    let player = &state.player;
+    let mut pos = player.pos.clone();
+    match player.facing {
+        Orientation::Up => pos.y -= 1,
+        Orientation::Down => pos.y += 1,
+        Orientation::Left => pos.x -= 1,
+        Orientation::Right => pos.x += 1,
+    }
+    for (i, crt) in state.crates.iter().enumerate() {
+        if crt.pos == pos {
             return Some(i);
         }
     }
