@@ -1,6 +1,6 @@
 use crate::simulation::{
-    BigEnemy, Button, DataPoint, Enemy, EnergyCell, Gate, Goal, Obstacle, PasswordGate, Player,
-    State, Telepad,
+    BigEnemy, Button, Crate, DataPoint, Enemy, EnergyCell, Gate, Goal, Obstacle, PasswordGate,
+    Player, State, Telepad,
 };
 
 /// A convenience struct for building a State via chainable
@@ -74,6 +74,12 @@ impl StateMaker {
 
     pub fn with_telepads(&mut self, telepads: Vec<Telepad>) -> &mut Self {
         self.state.telepads = telepads;
+        self
+    }
+
+    #[allow(dead_code)]
+    pub fn with_crates(&mut self, crates: Vec<Crate>) -> &mut Self {
+        self.state.crates = crates;
         self
     }
 }

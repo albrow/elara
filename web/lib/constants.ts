@@ -60,6 +60,7 @@ export const BOARD_BG_Z_INDEX = -100;
 export const BUTTON_WIRE_Z_INDEX = 10;
 export const ASTEROID_WARNING_Z_INDEX = 20;
 export const ROCK_Z_INDEX = 20;
+
 export const DATA_POINT_Z_INDEX = 30;
 export const UNLOCKED_GATE_Z_INDEX = 40;
 export const BUTTON_Z_INDEX = 50;
@@ -71,6 +72,7 @@ export const ENEMY_Z_INDEX = 120;
 export const LOCKED_GATE_Z_INDEX = 130;
 export const SERVER_Z_INDEX = 140;
 export const ASTEROID_Z_INDEX = 150;
+export const CRATE_Z_INDEX = 160;
 
 export const ROVER_MESSAGE_Z_INDEX = 1010; // Special tooltip variant used only for rover messages.
 export const BOARD_HOVER_INFO_Z_INDEX = 1020;

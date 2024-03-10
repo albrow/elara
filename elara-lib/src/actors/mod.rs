@@ -79,6 +79,12 @@ fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
             return true;
         }
     }
+    // Unheld crates are obstacles.
+    for crt in &state.crates {
+        if crt.pos == *pos && !crt.held {
+            return true;
+        }
+    }
     false
 }
 

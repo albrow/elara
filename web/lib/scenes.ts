@@ -205,6 +205,7 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
+  levelScene("crates_part_one"),
   journalScene("function_outputs", ["get_orientation", "read_data"]),
   levelScene(
     "data_points_part_one",

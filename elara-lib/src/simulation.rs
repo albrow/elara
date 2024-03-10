@@ -36,9 +36,6 @@ impl Simulation {
     /// Loads the given level and creates the initial state using the given
     /// seed. If the level has multiple possible initial states, "seed"
     /// determines which initial state to use.
-    ///
-    /// Note(albrow): "seed" may also be used as a random number generator
-    /// seed to control random behavior in the future.
     pub fn load_level(&mut self, level: &'static dyn Level, seed: usize) {
         self.level = level;
         self.state_idx = 0;
@@ -145,6 +142,7 @@ pub struct State {
     pub telepads: Vec<Telepad>,
     pub enemies: Vec<Enemy>,
     pub big_enemies: Vec<BigEnemy>,
+    pub crates: Vec<Crate>,
 }
 
 impl State {
@@ -161,6 +159,7 @@ impl State {
             telepads: vec![],
             enemies: vec![],
             big_enemies: vec![],
+            crates: vec![],
         }
     }
 }
@@ -186,6 +185,7 @@ impl fmt::Debug for State {
             .field("password_gates", &self.password_gates)
             .field("telepads", &self.telepads)
             .field("enemies", &self.enemies)
+            .field("crates", &self.crates)
             .finish()
     }
 }
@@ -781,6 +781,33 @@ impl Telepad {
             start_pos: Pos::new(start.0 as i32, start.1 as i32),
             end_pos: Pos::new(end.0 as i32, end.1 as i32),
             end_facing,
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub enum CrateColor {
+    Red,
+    Blue,
+    Green,
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct Crate {
+    pub pos: Pos,
+    pub held: bool,
+    pub color: CrateColor,
+}
+
+impl Crate {
+    pub fn new(x: u32, y: u32, color: CrateColor) -> Crate {
+        Crate {
+            pos: Pos {
+                x: x as i32,
+                y: y as i32,
+            },
+            held: false,
+            color,
         }
     }
 }

@@ -170,13 +170,6 @@ impl Game {
                     return Err(err);
                 }
             }
-            // match result.outcome {
-            //     Outcome::Success => {
-            //         successes.push(result);
-            //     }
-            //     // Return the first failure.
-            //     _ => return Ok(result),
-            // }
         }
 
         // If we've reached here, it means the main objective for the level was met.

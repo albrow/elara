@@ -13,6 +13,7 @@ import {
   Gate as RGate,
   BigEnemy as RBigEnemy,
   AsteroidWarning as RAsteroidWarning,
+  Crate as RCrate,
 } from "../../../elara-lib/pkg";
 import {
   AXIS_HEIGHT,
@@ -38,6 +39,7 @@ import Button from "./button";
 import Gate from "./gate";
 import BigEnemy from "./big_enemy";
 import AsteroidWarning from "./asteroid_warning";
+import Crate from "./crate";
 
 // The order of colors to use for wires (i.e. connections between buttons
 // and other objects).
@@ -298,6 +300,15 @@ export default function Board(props: BoardProps) {
           animState={enemy.anim_state}
           animData={enemy.anim_data}
           enableHoverInfo={props.enableHoverInfo}
+        />
+      ))}
+      {(props.gameState.crates as RCrate[]).map((crate, i) => (
+        <Crate
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          offset={posToOffset(crate.pos)}
+          color={crate.color as "red" | "blue" | "green"}
+          held={crate.held}
         />
       ))}
     </>

@@ -275,6 +275,7 @@ pub struct State {
     pub buttons: Array,        // Array<Button>
     pub gates: Array,          // Array<Gate>
     pub big_enemies: Array,    // Array<BigEnemy>
+    pub crates: Array,         // Array<Crate>
 }
 
 impl State {
@@ -514,6 +515,25 @@ impl State {
             );
         }
 
+        let crates = Array::new_with_length(state.crates.len() as u32);
+        for (i, crt) in state.crates.iter().enumerate() {
+            crates.set(
+                i as u32,
+                JsValue::from(Crate {
+                    pos: Pos {
+                        x: crt.pos.x,
+                        y: crt.pos.y,
+                    },
+                    held: crt.held,
+                    color: match crt.color {
+                        simulation::CrateColor::Red => "red".to_string(),
+                        simulation::CrateColor::Green => "green".to_string(),
+                        simulation::CrateColor::Blue => "blue".to_string(),
+                    },
+                }),
+            );
+        }
+
         State {
             player: Player::from(state.player),
             energy_cells,
@@ -526,6 +546,7 @@ impl State {
             buttons,
             gates,
             big_enemies,
+            crates,
         }
     }
 }
@@ -667,4 +688,12 @@ pub struct Gate {
     pub open: bool,
     pub variant: String, // GateVariant
     pub additional_info: String,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct Crate {
+    pub pos: Pos,
+    pub held: bool,
+    pub color: String, // CrateColor
 }
