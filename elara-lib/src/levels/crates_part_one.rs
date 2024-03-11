@@ -1,7 +1,8 @@
 use super::{std_check_win, Level, Outcome};
 use crate::{
+    actors::{Bounds, EvilRoverActor},
     script_runner::ScriptStats,
-    simulation::{Actor, Crate, CrateColor, Goal, Orientation, Player, State},
+    simulation::{Actor, Crate, CrateColor, Enemy, Goal, Obstacle, Orientation, Player, State},
 };
 
 #[derive(Copy, Clone)]
@@ -25,11 +26,13 @@ impl Level for CratesPartOne {
         let mut state = State::new();
         state.player = Player::new(0, 3, 10, Orientation::Right);
         state.goals = vec![Goal::new(7, 3)];
-        state.obstacles = vec![];
+        state.obstacles = vec![Obstacle::new(3, 3)];
         state.crates = vec![Crate::new(2, 3, CrateColor::Blue)];
+        // state.enemies = vec![Enemy::new(3, 3, Orientation::Left)];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
+        // vec![Box::new(EvilRoverActor::new(0, Bounds::default()))]
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {

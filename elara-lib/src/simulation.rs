@@ -309,6 +309,7 @@ pub enum PlayerAnimState {
     Bumping(BumpAnimData),
     PickingUp,
     Dropping,
+    DropBumping(BumpAnimData),
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -320,8 +321,8 @@ pub struct TeleAnimData {
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct BumpAnimData {
-    pub pos: Pos,          // The position of the rover.
-    pub obstacle_pos: Pos, // The position of the obstacle the rover is bumping into.
+    pub pos: Pos,          // The position of the rover/crate.
+    pub obstacle_pos: Pos, // The position of the obstacle the rover/crate is bumping into.
 }
 
 #[derive(Clone, PartialEq, Debug)]

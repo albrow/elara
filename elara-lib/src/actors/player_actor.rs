@@ -9,8 +9,8 @@ use crate::simulation::{
 };
 
 use super::{
-    can_move_to, get_adjacent_password_gates, get_telepad_at, Action, Bounds, MoveDirection,
-    TurnDirection,
+    can_move_to, get_adjacent_password_gates, get_telepad_at, is_obstacle_at, is_outside_bounds,
+    Action, Bounds, MoveDirection, TurnDirection,
 };
 
 pub struct PlayerChannelActor {
@@ -143,18 +143,28 @@ impl Actor for PlayerChannelActor {
                 }
             }
             Ok(Action::Drop) => {
-                // If the player is holding a crate, drop it and set its position
-                // to directly in front of the player.
-                for crt in state.crates.iter_mut() {
-                    if crt.pos == state.player.pos && crt.held {
+                // If the player is holding a crate, try to drop it directly in front of
+                // the player if possible.
+                if let Some(held_crate_index) = state.player.held_crate_index {
+                    let new_crate_pos = match state.player.facing {
+                        Orientation::Up => Pos::new(state.player.pos.x, state.player.pos.y - 1),
+                        Orientation::Down => Pos::new(state.player.pos.x, state.player.pos.y + 1),
+                        Orientation::Left => Pos::new(state.player.pos.x - 1, state.player.pos.y),
+                        Orientation::Right => Pos::new(state.player.pos.x + 1, state.player.pos.y),
+                    };
+                    if is_obstacle_at(&state, &new_crate_pos)
+                        || is_outside_bounds(&self.bounds, &new_crate_pos)
+                    {
+                        // If there is an obstacle in the way of where we want to drop the crate,
+                        // don't drop it. We also apply a special "drop bump" animation state.
+                        state.player.anim_state = PlayerAnimState::DropBumping(BumpAnimData {
+                            pos: state.player.pos.clone(),
+                            obstacle_pos: new_crate_pos,
+                        });
+                    } else {
+                        // If we've reached here we can drop the crate.
                         state.player.anim_state = PlayerAnimState::Dropping;
-                        crt.held = false;
-                        match state.player.facing {
-                            Orientation::Up => crt.pos.y -= 1,
-                            Orientation::Down => crt.pos.y += 1,
-                            Orientation::Left => crt.pos.x -= 1,
-                            Orientation::Right => crt.pos.x += 1,
-                        }
+                        state.crates[held_crate_index].held = false;
                         state.player.held_crate_index = None;
                     }
                 }

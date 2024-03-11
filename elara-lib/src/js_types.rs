@@ -585,6 +585,7 @@ impl Player {
             PlayerAnimState::Bumping(_) => "bumping",
             PlayerAnimState::PickingUp => "picking_up",
             PlayerAnimState::Dropping => "dropping",
+            PlayerAnimState::DropBumping(_) => "drop_bumping",
         };
         let facing = match player.facing {
             Orientation::Up => "up",
