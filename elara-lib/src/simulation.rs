@@ -330,6 +330,9 @@ pub struct Player {
     pub pos: Pos,
     pub energy: u32,
     pub message: String,
+    /// Used to convey certain runtime errors to the player (e.g. trying to pick
+    /// something up when already holding something)
+    pub err_message: String,
     pub anim_state: PlayerAnimState,
     pub facing: Orientation,
     pub total_energy_used: u32,
@@ -343,6 +346,7 @@ impl Player {
             pos: Pos::new(x as i32, y as i32),
             energy,
             message: String::new(),
+            err_message: String::new(),
             anim_state: PlayerAnimState::Idle,
             facing,
             total_energy_used: 0,

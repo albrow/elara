@@ -2,7 +2,10 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
 
-use crate::constants::ENERGY_CELL_AMOUNT;
+use crate::constants::{
+    ENERGY_CELL_AMOUNT, PLAYER_ERR_ALREADY_HOLDING, PLAYER_ERR_NOTHING_TO_DROP,
+    PLAYER_ERR_NOTHING_TO_PICK_UP, PLAYER_ERR_NO_SPACE_TO_DROP,
+};
 use crate::simulation::{
     get_adjacent_button, get_adjacent_point, get_crate_in_front, Actor, BumpAnimData,
     ButtonConnection, Orientation, PlayerAnimState, Pos, State, TeleAnimData,
@@ -125,27 +128,31 @@ impl Actor for PlayerChannelActor {
                 state.player.anim_state = PlayerAnimState::Idle;
             }
             Ok(Action::PickUp) => {
-                // If the player is already holding a crate, don't do anything.
+                // If the player is already holding a crate, show an error message.
                 if state
                     .crates
                     .iter()
                     .any(|c| c.pos == state.player.pos && c.held)
                 {
-                    return state;
-                }
-
-                // If there is a crate in front of the player, pick it up.
-                if let Some(crate_index) = get_crate_in_front(&state) {
+                    state.player.err_message = PLAYER_ERR_ALREADY_HOLDING.to_string();
+                } else if let Some(crate_index) = get_crate_in_front(&state) {
+                    // If there is a crate in front of the player, pick it up.
                     state.player.anim_state = PlayerAnimState::PickingUp;
                     state.crates[crate_index].held = true;
                     state.crates[crate_index].pos = state.player.pos.clone();
                     state.player.held_crate_index = Some(crate_index);
+                } else {
+                    // If there is no crate in front of the player, show an error message.
+                    state.player.err_message = PLAYER_ERR_NOTHING_TO_PICK_UP.to_string();
                 }
             }
             Ok(Action::Drop) => {
-                // If the player is holding a crate, try to drop it directly in front of
-                // the player if possible.
-                if let Some(held_crate_index) = state.player.held_crate_index {
+                if state.player.held_crate_index.is_none() {
+                    // If the player is not holding a crate, show an error message.
+                    state.player.err_message = PLAYER_ERR_NOTHING_TO_DROP.to_string();
+                } else if let Some(held_crate_index) = state.player.held_crate_index {
+                    // If the player is holding a crate, try to drop it directly in front of
+                    // the player if possible.
                     let new_crate_pos = match state.player.facing {
                         Orientation::Up => Pos::new(state.player.pos.x, state.player.pos.y - 1),
                         Orientation::Down => Pos::new(state.player.pos.x, state.player.pos.y + 1),
@@ -156,7 +163,9 @@ impl Actor for PlayerChannelActor {
                         || is_outside_bounds(&self.bounds, &new_crate_pos)
                     {
                         // If there is an obstacle in the way of where we want to drop the crate,
-                        // don't drop it. We also apply a special "drop bump" animation state.
+                        // don't drop it and show an error message instead. We also apply a special
+                        // "drop bump" animation state.
+                        state.player.err_message = PLAYER_ERR_NO_SPACE_TO_DROP.to_string();
                         state.player.anim_state = PlayerAnimState::DropBumping(BumpAnimData {
                             pos: state.player.pos.clone(),
                             obstacle_pos: new_crate_pos,
@@ -165,6 +174,7 @@ impl Actor for PlayerChannelActor {
                         // If we've reached here we can drop the crate.
                         state.player.anim_state = PlayerAnimState::Dropping;
                         state.crates[held_crate_index].held = false;
+                        state.crates[held_crate_index].pos = new_crate_pos;
                         state.player.held_crate_index = None;
                     }
                 }
@@ -277,6 +287,7 @@ mod test {
                 pos: Pos::new(2, 1),
                 energy: state.player.energy - 1,
                 message: String::from(""),
+                err_message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Right,
                 total_energy_used: 1,
@@ -293,6 +304,7 @@ mod test {
                 pos: Pos::new(2, 1),
                 energy: state.player.energy,
                 message: String::from(""),
+                err_message: String::from(""),
                 anim_state: PlayerAnimState::Turning,
                 facing: Orientation::Down,
                 total_energy_used: 1,
@@ -309,6 +321,7 @@ mod test {
                 pos: Pos::new(2, 2),
                 energy: state.player.energy - 1,
                 message: String::from(""),
+                err_message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Down,
                 total_energy_used: 2,
@@ -877,6 +890,66 @@ mod test {
     }
 
     #[test]
+    fn nothing_to_pick_up() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let (tx, rx) = mpsc::channel();
+        let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+
+        // Attempt to pick up the crate. This should result in an error message.
+        tx.send(Action::PickUp).unwrap();
+        let new_state = actor.apply(state.clone());
+
+        // The player should now be holding the crate and the crate's position
+        // should be the same as the player's.
+        assert_eq!(
+            new_state.player.err_message,
+            PLAYER_ERR_NOTHING_TO_PICK_UP.to_string()
+        );
+        assert_eq!(new_state.player.held_crate_index, None);
+        assert_eq!(new_state.player.anim_state, PlayerAnimState::Idle);
+    }
+
+    #[test]
+    fn already_holding_something() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let (tx, rx) = mpsc::channel();
+        let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.crates = vec![
+            Crate::new(1, 1, CrateColor::Blue),
+            Crate::new(2, 1, CrateColor::Red),
+        ];
+        state.crates[0].held = true;
+        state.player.held_crate_index = Some(0);
+
+        // Attempt to pick up the crate. This should result in an error message.
+        tx.send(Action::PickUp).unwrap();
+        let new_state = actor.apply(state.clone());
+
+        // The player should still be holding the first crate and showing an error message.
+        assert_eq!(
+            new_state.player.err_message,
+            PLAYER_ERR_ALREADY_HOLDING.to_string()
+        );
+        assert_eq!(new_state.player.held_crate_index, Some(0));
+        assert_eq!(new_state.player.anim_state, PlayerAnimState::Idle);
+        assert!(new_state.crates[0].held);
+    }
+
+    #[test]
     fn move_with_crate() {
         let bounds = Bounds {
             min_x: 0,
@@ -905,6 +978,7 @@ mod test {
                 pos: Pos::new(2, 1),
                 energy: MAX_ENERGY - 1,
                 message: String::from(""),
+                err_message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Right,
                 total_energy_used: 1,
@@ -929,6 +1003,7 @@ mod test {
                 pos: Pos::new(1, 1),
                 energy: MAX_ENERGY - 2,
                 message: String::from(""),
+                err_message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Right,
                 total_energy_used: 2,
@@ -956,6 +1031,7 @@ mod test {
                 pos: Pos::new(1, 2),
                 energy: MAX_ENERGY - 3,
                 message: String::from(""),
+                err_message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Down,
                 total_energy_used: 3,
@@ -980,6 +1056,7 @@ mod test {
                 pos: Pos::new(1, 1),
                 energy: MAX_ENERGY - 4,
                 message: String::from(""),
+                err_message: String::from(""),
                 anim_state: PlayerAnimState::Moving,
                 facing: Orientation::Down,
                 total_energy_used: 4,
@@ -1024,6 +1101,7 @@ mod test {
         // position should be directly in front of the player.
         assert_eq!(new_state.player.held_crate_index, None);
         assert_eq!(new_state.player.anim_state, PlayerAnimState::Dropping);
+        assert_eq!(new_state.player.err_message, String::from(""));
         assert_eq!(
             new_state.crates[0],
             Crate {
@@ -1050,6 +1128,145 @@ mod test {
                 held: false,
                 color: CrateColor::Red,
             }
+        );
+    }
+
+    #[test]
+    fn drop_crate_not_holding() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let (tx, rx) = mpsc::channel();
+        let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.crates = vec![Crate::new(2, 1, CrateColor::Red)];
+
+        // Trying to drop a crate when not holding one should cause the player
+        // to show an error message.
+        tx.send(Action::Drop).unwrap();
+        let new_state = actor.apply(state.clone());
+
+        assert_eq!(
+            new_state.player.err_message,
+            PLAYER_ERR_NOTHING_TO_DROP.to_string()
+        );
+    }
+
+    #[test]
+    fn drop_crate_no_room() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let (tx, rx) = mpsc::channel();
+        let mut actor = PlayerChannelActor::new(Rc::new(RefCell::new(rx)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.crates = vec![
+            Crate::new(1, 1, CrateColor::Red),
+            // Crate to the right of the player.
+            Crate::new(2, 1, CrateColor::Red),
+        ];
+        // Obstacle above the player.
+        state.obstacles = vec![Obstacle::new(1, 0)];
+        // Closed gate below the player.
+        state.gates = vec![Gate::new(1, 2, false, GateVariant::NESW)];
+        // Player is already holding a crate.
+        state.crates[0].held = true;
+        state.player.held_crate_index = Some(0);
+
+        // Should not be able to drop crate if there is another crate in front.
+        tx.send(Action::Drop).unwrap();
+        let new_state = actor.apply(state.clone());
+
+        // Should still be holding the crate and showing an error message.
+        assert_eq!(
+            new_state.player.err_message,
+            PLAYER_ERR_NO_SPACE_TO_DROP.to_string()
+        );
+        assert_eq!(new_state.player.held_crate_index, Some(0));
+        assert!(new_state.crates[0].held);
+        assert_eq!(
+            new_state.player.anim_state,
+            PlayerAnimState::DropBumping(BumpAnimData {
+                pos: Pos::new(1, 1),
+                obstacle_pos: Pos::new(2, 1),
+            })
+        );
+
+        // Should not be able to drop crate if there is an obstacle in front.
+        // Turn to the left so we are facing the obstacle.
+        tx.send(Action::Turn(TurnDirection::Left)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::Drop).unwrap();
+        let new_state = actor.apply(new_state.clone());
+
+        // Should still be holding the crate and showing an error message.
+        assert_eq!(
+            new_state.player.err_message,
+            PLAYER_ERR_NO_SPACE_TO_DROP.to_string()
+        );
+        assert_eq!(new_state.player.held_crate_index, Some(0));
+        assert!(new_state.crates[0].held);
+        assert_eq!(
+            new_state.player.anim_state,
+            PlayerAnimState::DropBumping(BumpAnimData {
+                pos: Pos::new(1, 1),
+                obstacle_pos: Pos::new(1, 0),
+            })
+        );
+
+        // Turn twice so we are facing down (i.e. facing the closed gate).
+        tx.send(Action::Turn(TurnDirection::Right)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::Turn(TurnDirection::Right)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::Drop).unwrap();
+        let new_state = actor.apply(new_state.clone());
+
+        // Should still be holding the crate and showing an error message.
+        assert_eq!(
+            new_state.player.err_message,
+            PLAYER_ERR_NO_SPACE_TO_DROP.to_string()
+        );
+        assert_eq!(new_state.player.held_crate_index, Some(0));
+        assert!(new_state.crates[0].held);
+        assert_eq!(
+            new_state.player.anim_state,
+            PlayerAnimState::DropBumping(BumpAnimData {
+                pos: Pos::new(1, 1),
+                obstacle_pos: Pos::new(1, 2),
+            })
+        );
+
+        // Turn so we are facing the left now. Move forward so the player
+        // is facing the bounds of the map.
+        tx.send(Action::Turn(TurnDirection::Right)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::Move(MoveDirection::Forward)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::Drop).unwrap();
+        let new_state = actor.apply(new_state.clone());
+
+        // Should still be holding the crate and showing an error message.
+        assert_eq!(
+            new_state.player.err_message,
+            PLAYER_ERR_NO_SPACE_TO_DROP.to_string()
+        );
+        assert_eq!(new_state.player.held_crate_index, Some(0));
+        assert!(new_state.crates[0].held);
+        assert_eq!(
+            new_state.player.anim_state,
+            PlayerAnimState::DropBumping(BumpAnimData {
+                pos: Pos::new(0, 1),
+                obstacle_pos: Pos::new(-1, 1),
+            })
         );
     }
 }
