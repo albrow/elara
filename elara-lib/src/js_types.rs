@@ -570,6 +570,7 @@ pub struct Player {
     pub pos: Pos,
     pub energy: i32,
     pub message: String,
+    pub err_message: String,
     pub anim_state: String, // PlayerAnimState
     pub anim_data: JsValue, // TeleAnimData | BumpAnimData |(other animation data types) | undefined
     pub facing: String,     // Orientation
@@ -601,6 +602,7 @@ impl Player {
             },
             energy: player.energy as i32,
             message: player.message.clone(),
+            err_message: player.err_message.clone(),
             anim_state: anim_state.to_string(),
             anim_data,
             facing: facing.to_string(),

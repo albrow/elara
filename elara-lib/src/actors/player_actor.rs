@@ -35,9 +35,10 @@ impl Actor for PlayerChannelActor {
     fn apply(&mut self, state: State) -> State {
         let mut state = state.clone();
 
-        // Reset the player message every time an action is taken.
-        // We only want messages to persist for one step.
+        // Reset the player message and error message every time an
+        // action is taken. We only want messages to persist for one step.
         state.player.message = String::new();
+        state.player.err_message = String::new();
 
         // Reset the reading state of all data points.
         for d_point in state.data_points.iter_mut() {
@@ -947,6 +948,36 @@ mod test {
         assert_eq!(new_state.player.held_crate_index, Some(0));
         assert_eq!(new_state.player.anim_state, PlayerAnimState::Idle);
         assert!(new_state.crates[0].held);
+
+        // Dropping the first crate should allow the player to pick up the other crate.
+        // Need to turn left first so there's room to drop.
+        tx.send(Action::Turn(TurnDirection::Left)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+
+        // The err_message should be gone at this point.
+        assert_eq!(new_state.player.err_message, String::from(""));
+
+        // Now drop the crate turn back to the right, and pick up the other one.
+        tx.send(Action::Drop).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::Turn(TurnDirection::Right)).unwrap();
+        let new_state = actor.apply(new_state.clone());
+        tx.send(Action::PickUp).unwrap();
+        let new_state = actor.apply(new_state.clone());
+
+        // The player should now be holding the second crate and the crate's position
+        // should be the same as the player's.
+        assert_eq!(
+            new_state.crates[1],
+            Crate {
+                pos: Pos::new(1, 1),
+                held: true,
+                color: CrateColor::Red,
+            }
+        );
+        assert_eq!(new_state.player.held_crate_index, Some(1));
+        assert_eq!(new_state.player.anim_state, PlayerAnimState::PickingUp);
+        assert_eq!(new_state.player.err_message, String::from(""));
     }
 
     #[test]

@@ -96,6 +96,7 @@ export default function MiniBoard(props: MiniBoardProps) {
           offset={fixedPlayerOffset}
           energy={props.state.player.energy}
           message={props.state.player.message}
+          errMessage={props.state.player.err_message}
           animState={props.state.player.anim_state}
           animData={props.state.player.anim_data}
           enableAnimations={props.enableAnimations}

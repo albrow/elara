@@ -154,6 +154,7 @@ export default function Board(props: BoardProps) {
         offset={posToOffset(props.gameState.player.pos)}
         energy={props.gameState.player.energy}
         message={props.gameState.player.message}
+        errMessage={props.gameState.player.err_message}
         animState={props.gameState.player.anim_state}
         animData={props.gameState.player.anim_data}
         facing={props.gameState.player.facing}

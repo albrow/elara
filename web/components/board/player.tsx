@@ -28,6 +28,7 @@ interface PlayerProps {
   offset: Offset;
   energy: number;
   message: string;
+  errMessage: string;
   animState: string;
   animData?: TeleAnimData;
   enableAnimations: boolean;
@@ -79,6 +80,7 @@ export default function Player(props: PlayerProps) {
   const teleportSound = useMemo(() => getSound("teleport"), [getSound]);
   const bumpSound = useMemo(() => getSound("bump"), [getSound]);
   const speakSound = useMemo(() => getSound("speak"), [getSound]);
+  const errorSound = useMemo(() => getSound("wrong_password"), [getSound]);
 
   const stopMySoundEffects = useCallback(() => {
     moveSound.stop();
@@ -86,7 +88,8 @@ export default function Player(props: PlayerProps) {
     bumpSound.stop();
     teleportSound.stop();
     speakSound.stop();
-  }, [moveSound, turnSound, bumpSound, teleportSound, speakSound]);
+    errorSound.stop();
+  }, [moveSound, turnSound, bumpSound, teleportSound, speakSound, errorSound]);
 
   const formattedMessage = useMemo(() => {
     if (props.message.startsWith(SPECIAL_MARKDOWN_TAG)) {
@@ -120,6 +123,8 @@ export default function Player(props: PlayerProps) {
       teleportSound.play();
     } else if (props.message !== "") {
       speakSound.play();
+    } else if (props.errMessage !== "") {
+      errorSound.play();
     }
 
     prevState.current = props;
@@ -131,6 +136,7 @@ export default function Player(props: PlayerProps) {
     bumpSound,
     teleportSound,
     speakSound,
+    errorSound,
   ]);
 
   return (
@@ -148,16 +154,21 @@ export default function Player(props: PlayerProps) {
         zIndex={PLAYER_Z_INDEX}
         style={animation.style}
       >
+        {/*
+          Note: This Tooltip contains both speech bubbles when the player calls the "say" 
+          function and error messages (e.g. when the player calls "drop" but they
+          aren't holding anything.)
+          */}
         <Tooltip
           hasArrow
-          isOpen={props.message !== ""}
+          isOpen={props.message !== "" || props.errMessage !== ""}
           label={
             <Text className="rover-message-md-content" as="div">
-              {formattedMessage}
+              {formattedMessage || props.errMessage}
             </Text>
           }
-          bg="white"
-          color="black"
+          bg={props.message !== "" ? "white" : "red.600"}
+          color={props.message !== "" ? "black" : "white"}
           placement={roverMessagePlacement(props.offset.pos)}
           fontFamily="monospace"
           variant="rover-message"
