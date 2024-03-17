@@ -111,9 +111,14 @@ const builtInFuncs: PartialFuncOption[] = [
     apply: applyFuncWithoutArgs,
   },
   {
-    label: "push",
-    info: "Add an element to the end of an array.",
-    apply: applyFuncWithArgs,
+    label: "pick_up",
+    info: "Pick up an item in front of G.R.O.V.E.R.",
+    apply: applyFuncWithoutArgs,
+  },
+  {
+    label: "drop",
+    info: "Drop an item in front of G.R.O.V.E.R.",
+    apply: applyFuncWithoutArgs,
   },
 ];
 
