@@ -181,7 +181,7 @@ const RAW_SCENES: RawScene[] = [
       "You don't need a semicolon (`;`) after the closing curly brace (`}`).",
     ]
   ),
-
+  // TODO(albrow): Add dialog.
   levelScene(
     "button_and_gate",
     ["hover_over_text", "hover_over_board"],
@@ -199,7 +199,10 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
+  // TODO(albrow): Add hints and dialog.
   levelScene("crates_part_one", [], [], ["pick_up", "drop"]),
+  // TODO(albrow): Add hints and dialog.
+  levelScene("crates_part_two", [], []),
   journalScene("function_outputs", ["get_orientation", "read_data"]),
   levelScene(
     "data_points_part_one",
