@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { compiler } from "markdown-to-jsx";
 
 import {
+  PLAYER_DEFAULT_CSS_ANIM_DELAY,
   PLAYER_Z_INDEX,
   SPRITE_DROP_SHADOW,
   TILE_SIZE,
@@ -54,7 +55,7 @@ export default function Player(props: PlayerProps) {
         props.enableAnimations,
         props.animState,
         props.animData,
-        0.1
+        PLAYER_DEFAULT_CSS_ANIM_DELAY
       ),
     [props.animData, props.animState, props.enableAnimations]
   );

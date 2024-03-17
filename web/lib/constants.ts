@@ -28,6 +28,7 @@ export const WIRE_DROP_SHADOW = "drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3))";
 export const DEFAULT_GAME_SPEED = 1; // steps per second
 export const DEFAULT_STEP_TIME = 1000 / DEFAULT_GAME_SPEED; // milliseconds
 export const CSS_ANIM_DURATION = (1 / DEFAULT_GAME_SPEED) * 0.75; // seconds
+export const PLAYER_DEFAULT_CSS_ANIM_DELAY = 0.1; // seconds
 
 // Constants related to the game's UI.
 export const FUNCTION_LIST_WIDTH = 160;

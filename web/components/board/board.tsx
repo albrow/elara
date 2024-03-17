@@ -310,6 +310,7 @@ export default function Board(props: BoardProps) {
           offset={posToOffset(crate.pos)}
           color={crate.color as "red" | "blue" | "green"}
           held={crate.held}
+          enableAnimations={props.enableAnimations}
         />
       ))}
     </>

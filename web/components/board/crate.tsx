@@ -1,16 +1,24 @@
 import { Image } from "@chakra-ui/react";
 
 import { useMemo } from "react";
-import { SPRITE_DROP_SHADOW, CRATE_Z_INDEX } from "../../lib/constants";
+import {
+  SPRITE_DROP_SHADOW,
+  CRATE_Z_INDEX,
+  CSS_ANIM_DURATION,
+  PLAYER_DEFAULT_CSS_ANIM_DELAY,
+} from "../../lib/constants";
 import redCrateImgUrl from "../../images/board/crate_red.png";
 import blueCrateImgUrl from "../../images/board/crate_blue.png";
 import greenCrateImgUrl from "../../images/board/crate_green.png";
 import { Offset } from "../../lib/utils";
+import { CSSAnimation } from "./anim_utils";
 
 interface CrateProps {
   offset: Offset;
   color: "red" | "blue" | "green";
+  // TODO(albrow): Add rotation or facing property to crates.
   held: boolean;
+  enableAnimations: boolean;
 }
 
 export default function Crate(props: CrateProps) {
@@ -27,19 +35,53 @@ export default function Crate(props: CrateProps) {
     }
   }, [props.color]);
 
+  // If animations are enabled, always animate the position of the crate
+  // Note: This should always match the player animation so that the crate
+  // moves with the player.
+  const animation = useMemo((): CSSAnimation => {
+    if (!props.enableAnimations) {
+      return { style: { transition: "none" } };
+    }
+
+    return {
+      style: {
+        animation: "none",
+        transition:
+          `left ${CSS_ANIM_DURATION}s ${PLAYER_DEFAULT_CSS_ANIM_DELAY}s, ` +
+          `top ${CSS_ANIM_DURATION}s ${PLAYER_DEFAULT_CSS_ANIM_DELAY}s, ` +
+          // `transform ${CSS_ANIM_DURATION}s 0.3s`,
+          `width ${CSS_ANIM_DURATION}s 0.3s, ` +
+          `height ${CSS_ANIM_DURATION}s 0.3s, ` +
+          `margin ${CSS_ANIM_DURATION}s 0.3s`,
+      },
+    };
+  }, [props.enableAnimations]);
+
   return (
     <Image
       alt=""
       src={imgUrl}
-      w="48px"
-      h="48px"
-      mt="1px"
-      ml="1px"
+      //
+      // TODO(albrow): Replace with a smaller base sprite so we don't have to adjust the size
+      // in CSS.
+      // TODO(albrow): When the crate is being held, change it's position slightly so that it
+      // always lines up on top of G.R.O.V.E.R.
+      //
+      // transform={props.held ? "scale(0.67)" : "scale(1)"}
+      // h="48px"
+      // w="48px"
+      // mt={props.held ? "-4px" : "1px"}
+      // ml={props.held ? "0" : "1px"}
+      w={props.held ? "32px" : "48px"}
+      h={props.held ? "32px" : "48px"}
+      mt={props.held ? "2px" : "1px"}
+      ml={props.held ? "8px" : "1px"}
       position="absolute"
       left={props.offset.left}
       top={props.offset.top}
       zIndex={CRATE_Z_INDEX}
       filter={SPRITE_DROP_SHADOW}
+      style={animation.style}
     />
   );
 }
