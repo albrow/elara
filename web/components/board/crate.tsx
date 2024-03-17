@@ -16,7 +16,6 @@ import { CSSAnimation } from "./anim_utils";
 interface CrateProps {
   offset: Offset;
   color: "red" | "blue" | "green";
-  // TODO(albrow): Add rotation or facing property to crates.
   held: boolean;
   enableAnimations: boolean;
 }
@@ -49,7 +48,6 @@ export default function Crate(props: CrateProps) {
         transition:
           `left ${CSS_ANIM_DURATION}s ${PLAYER_DEFAULT_CSS_ANIM_DELAY}s, ` +
           `top ${CSS_ANIM_DURATION}s ${PLAYER_DEFAULT_CSS_ANIM_DELAY}s, ` +
-          // `transform ${CSS_ANIM_DURATION}s 0.3s`,
           `width ${CSS_ANIM_DURATION}s 0.3s, ` +
           `height ${CSS_ANIM_DURATION}s 0.3s, ` +
           `margin ${CSS_ANIM_DURATION}s 0.3s`,
@@ -61,17 +59,6 @@ export default function Crate(props: CrateProps) {
     <Image
       alt=""
       src={imgUrl}
-      //
-      // TODO(albrow): Replace with a smaller base sprite so we don't have to adjust the size
-      // in CSS.
-      // TODO(albrow): When the crate is being held, change it's position slightly so that it
-      // always lines up on top of G.R.O.V.E.R.
-      //
-      // transform={props.held ? "scale(0.67)" : "scale(1)"}
-      // h="48px"
-      // w="48px"
-      // mt={props.held ? "-4px" : "1px"}
-      // ml={props.held ? "0" : "1px"}
       w={props.held ? "32px" : "48px"}
       h={props.held ? "32px" : "48px"}
       mt={props.held ? "2px" : "1px"}
