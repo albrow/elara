@@ -1,16 +1,12 @@
 use super::{std_check_win, Level, Outcome};
-use crate::{
-    actors::{Bounds, EvilRoverActor},
-    script_runner::ScriptStats,
-    simulation::{Actor, Crate, CrateColor, Enemy, Goal, Obstacle, Orientation, Player, State},
-};
+use crate::simulation::{Actor, Crate, CrateColor, Goal, Obstacle, Orientation, Player, State};
 
 #[derive(Copy, Clone)]
 pub struct CratesPartOne {}
 
 impl Level for CratesPartOne {
     fn name(&self) -> &'static str {
-        "(TBD) Crates Part One"
+        "Blocking the Way"
     }
     fn short_name(&self) -> &'static str {
         "crates_part_one"
@@ -19,30 +15,34 @@ impl Level for CratesPartOne {
         "Move the rover ({robot}) to the goal ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"
+        r#"// Looks like there's a crate blocking the way. Use the pick_up
+// and drop functions to move it.
+
 "#
     }
     fn initial_states(&self) -> Vec<State> {
         let mut state = State::new();
-        state.player = Player::new(0, 3, 10, Orientation::Right);
-        state.goals = vec![Goal::new(7, 3)];
-        state.obstacles = vec![Obstacle::new(3, 3)];
-        state.crates = vec![Crate::new(2, 3, CrateColor::Blue)];
-        // state.enemies = vec![Enemy::new(3, 3, Orientation::Left)];
+        state.player = Player::new(8, 4, 10, Orientation::Left);
+        state.goals = vec![Goal::new(4, 4)];
+        state.obstacles = vec![
+            Obstacle::new(3, 3),
+            Obstacle::new(3, 4),
+            Obstacle::new(3, 5),
+            Obstacle::new(4, 3),
+            Obstacle::new(4, 5),
+            Obstacle::new(5, 3),
+            Obstacle::new(5, 5),
+            Obstacle::new(6, 3),
+            Obstacle::new(6, 5),
+        ];
+        state.crates = vec![Crate::new(6, 4, CrateColor::Blue)];
         vec![state]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
-        // vec![Box::new(EvilRoverActor::new(0, Bounds::default()))]
         vec![]
     }
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
-    }
-    fn challenge(&self) -> Option<&'static str> {
-        Some("Code length must be 40 characters or less.")
-    }
-    fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
-        stats.code_len <= 40
     }
 }
 
