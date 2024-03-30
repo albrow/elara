@@ -5,10 +5,6 @@ import { useMemo } from "react";
 import { useCurrScene, useSceneNavigator } from "../../hooks/scenes_hooks";
 import "../../styles/md_content.css";
 import { getNextJournalPage } from "../../lib/utils";
-import {
-  BUTTON_RESPONSIVE_FONT_SCALE,
-  BUTTON_RESPONSIVE_SCALE,
-} from "../../lib/constants";
 import { JOURNAL_SECTIONS, SectionName } from "./sections";
 
 export interface JournalProps {
@@ -45,8 +41,8 @@ export default function JournalSection(props: JournalProps) {
       </Box>
       <Flex alignItems="right" justifyContent="right" width="100%">
         <Button
-          fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
-          size={BUTTON_RESPONSIVE_SCALE}
+          // fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+          // size={BUTTON_RESPONSIVE_SCALE}
           colorScheme="teal"
           onClick={navigateToHub}
         >
@@ -55,8 +51,8 @@ export default function JournalSection(props: JournalProps) {
         </Button>
         {shouldShowNextButton && (
           <Button
-            fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
-            size={BUTTON_RESPONSIVE_SCALE}
+            // fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+            // size={BUTTON_RESPONSIVE_SCALE}
             colorScheme="blue"
             onClick={() => navigateToScene(nextJournalPage!)}
             ml="5px"

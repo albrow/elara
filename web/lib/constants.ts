@@ -37,8 +37,8 @@ export const NAVBAR_HEIGHT_2XL = 72;
 export const NAVBAR_HEIGHT_3XL = 88;
 export const NAVBAR_RESPONSIVE_HEIGHT = {
   base: `${NAVBAR_HEIGHT_BASE}px`,
-  "2xl": `${NAVBAR_HEIGHT_2XL}px`,
-  "3xl": `${NAVBAR_HEIGHT_3XL}px`,
+  // "2xl": `${NAVBAR_HEIGHT_2XL}px`,
+  // "3xl": `${NAVBAR_HEIGHT_3XL}px`,
 };
 export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
 export const HOVER_DOC_BOX_SHADOW = "2px 2px 10px";
@@ -51,29 +51,29 @@ const BOARD_RESPONSIVE_3XL = 1.5;
 export const BOARD_WRAPPER_RESPONSIVE_TRANSFORM = {
   base: `scale(${BOARD_RESPONSIVE_BASE})`, // 477.4px
   xl: "none", // 620px
-  "2xl": `scale(${BOARD_RESPONSIVE_2XL})`, // 744px
-  "3xl": `scale(${BOARD_RESPONSIVE_3XL})`, // 930px
+  // "2xl": `scale(${BOARD_RESPONSIVE_2XL})`, // 744px
+  // "3xl": `scale(${BOARD_RESPONSIVE_3XL})`, // 930px
 };
 
 // Function list responsive definitions.
 const FUNCTION_LIST_WIDTH_BASE = 160;
-const FUNCTION_LIST_WIDTH_XL = 200;
-const FUNCTION_LIST_WIDTH_2XL = 240;
-const FUNCTION_LIST_WIDTH_3XL = 280;
+// const FUNCTION_LIST_WIDTH_XL = 200;
+// const FUNCTION_LIST_WIDTH_2XL = 240;
+// const FUNCTION_LIST_WIDTH_3XL = 280;
 export const FUNCTION_LIST_RESPONSIVE_WIDTH = {
   base: `${FUNCTION_LIST_WIDTH_BASE}px`,
-  xl: `${FUNCTION_LIST_WIDTH_XL}px`,
-  "2xl": `${FUNCTION_LIST_WIDTH_2XL}px`,
-  "3xl": `${FUNCTION_LIST_WIDTH_3XL}px`,
+  // xl: `${FUNCTION_LIST_WIDTH_XL}px`,
+  // "2xl": `${FUNCTION_LIST_WIDTH_2XL}px`,
+  // "3xl": `${FUNCTION_LIST_WIDTH_3XL}px`,
 };
 
 // Function list item hover responsive definitions.
 const FUNCTION_LIST_HOVER_RIGHT_OFFSET = 14;
 export const FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_RIGHT = {
   base: `${FUNCTION_LIST_WIDTH_BASE - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
-  xl: `${FUNCTION_LIST_WIDTH_XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
-  "2xl": `${FUNCTION_LIST_WIDTH_2XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
-  "3xl": `${FUNCTION_LIST_WIDTH_3XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
+  // xl: `${FUNCTION_LIST_WIDTH_XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
+  // "2xl": `${FUNCTION_LIST_WIDTH_2XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
+  // "3xl": `${FUNCTION_LIST_WIDTH_3XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
 };
 export const FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_TRANSFORM = {
   "2xl": `scale(${BOARD_RESPONSIVE_2XL})`,
@@ -85,8 +85,8 @@ export const EDITOR_BORDER_WIDTH = 2;
 export const EDITOR_SECTION_RESPONSIVE_WIDTH = {
   base: `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_BASE}px`,
   xl: `${BOARD_TOTAL_WIDTH}px`,
-  "2xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL}px`,
-  "3xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL}px`,
+  // "2xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL}px`,
+  // "3xl": `${BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL}px`,
 };
 
 // Monitor responsive definitions.
@@ -100,16 +100,16 @@ export const MONITOR_FRAME_RESPONSIVE_WIDTH = {
     MONITOR_BORDER_WIDTH * 2
   }px + 0.5rem)`,
   xl: "fit-content",
-  "2xl": `calc(${
-    BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL * 2 +
-    MONITOR_PADDING_2XL * 2 +
-    MONITOR_BORDER_WIDTH * 2
-  }px + 0.5rem)`,
-  "3xl": `calc(${
-    BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL * 2 +
-    MONITOR_PADDING_2XL * 2 +
-    MONITOR_BORDER_WIDTH * 2
-  }px + 0.5rem)`,
+  // "2xl": `calc(${
+  //   BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_2XL * 2 +
+  //   MONITOR_PADDING_2XL * 2 +
+  //   MONITOR_BORDER_WIDTH * 2
+  // }px + 0.5rem)`,
+  // "3xl": `calc(${
+  //   BOARD_TOTAL_WIDTH * BOARD_RESPONSIVE_3XL * 2 +
+  //   MONITOR_PADDING_2XL * 2 +
+  //   MONITOR_BORDER_WIDTH * 2
+  // }px + 0.5rem)`,
 };
 
 // Title font responsive definitions.
@@ -126,9 +126,9 @@ export const TITLE_FONT_SIZE_3XL = "2.6em";
  */
 export const TITLE_RESPONSIVE_FONT_SCALE = {
   base: TITLE_FONT_SIZE_BASE,
-  xl: TITLE_FONT_SIZE_XL,
-  "2xl": TITLE_FONT_SIZE_2XL,
-  "3xl": TITLE_FONT_SIZE_3XL,
+  // xl: TITLE_FONT_SIZE_XL,
+  // "2xl": TITLE_FONT_SIZE_2XL,
+  // "3xl": TITLE_FONT_SIZE_3XL,
 };
 
 // Body (e.g. text in code mirror and tooltips) font responsive definitions.
@@ -136,9 +136,9 @@ export const TITLE_RESPONSIVE_FONT_SCALE = {
  * @example fontSize={BODY_RESPONSIVE_FONT_SCALE}
  */
 export const BODY_RESPONSIVE_FONT_SCALE = {
-  xl: "1em",
-  "2xl": "1.2em",
-  "3xl": "1.6em",
+  // xl: "1em",
+  // "2xl": "1.2em",
+  // "3xl": "1.6em",
 };
 
 // CTA button (e.g. buttons in the editor control bar and modals) responsive definitions.
@@ -148,15 +148,15 @@ export const BODY_RESPONSIVE_FONT_SCALE = {
 export const BUTTON_RESPONSIVE_SCALE = {
   base: "xs",
   xl: "sm",
-  "2xl": "md",
-  "3xl": "lg",
+  // "2xl": "md",
+  // "3xl": "lg",
 };
 
 /**
  * @example fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
  */
 export const BUTTON_RESPONSIVE_FONT_SCALE = {
-  "3xl": "1.25rem",
+  // "3xl": "1.25rem",
 };
 
 /**
@@ -164,7 +164,7 @@ export const BUTTON_RESPONSIVE_FONT_SCALE = {
  */
 export const TOOLTIP_RESPONSIVE_MAX_WIDTH = {
   base: "300px",
-  "3xl": "400px",
+  // "3xl": "400px",
 };
 
 // Breakpoints for responsive design. In pixels.

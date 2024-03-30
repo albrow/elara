@@ -7,20 +7,20 @@ export interface NavbarButtonProps {
 
 const NAVBAR_BUTTON_RESPONSIVE_HEIGHT = {
   base: 10,
-  "2xl": 12,
-  "3xl": 14,
+  // "2xl": 12,
+  // "3xl": 14,
 };
 
 const NAVBAR_BUTTON_RESPONSIVE_FONT_SIZE = {
-  base: '16px',
-  "2xl": '20px',
-  "3xl": '24px',
+  base: "16px",
+  // "2xl": '20px',
+  // "3xl": '24px',
 };
 
 const NAVBAR_BUTTON_RESPONSIVE_PADDING_X = {
   base: 4,
-  "2xl": 5,
-  "3xl": 6,
+  // "2xl": 5,
+  // "3xl": 6,
 };
 
 export default function NavbarButton(

@@ -71,7 +71,13 @@ export default function MiniBoard(props: MiniBoardProps) {
       id="mini-board"
       overflow="hidden"
       minH="110px"
-      width={{ base: "350px", xl: "400px", "2xl": "600px", "3xl": "750px" }}
+      // width={{
+      //   base: "350px",
+      //   xl: "400px",
+      //   "2xl": "600px",
+      //   "3xl": "750px",
+      // }}
+      width="400px"
       p={4}
       ml={3}
       bgImage={`url("${lunarSurfaceBgUrl}")`}

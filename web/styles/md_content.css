@@ -1,4 +1,5 @@
-.hover-doc {
+/* Might be necessary for responsive hover doc scaling. */
+/* .hover-doc {
   transform-origin: top;
   @media screen and (min-width: 1920px) {
     transform: scale(1.2);
@@ -6,7 +7,7 @@
   @media screen and (min-width: 2560px) {
     transform: scale(1.5);
   }
-}
+} */
 
 .md-content h1,
 .md-content h2,
@@ -71,7 +72,7 @@
   background: var(--chakra-colors-gray-200);
   border: solid 1px var(--chakra-colors-gray-300);
   padding: 0.1rem 0.4rem;
-  font-size: 0.8em;
+  font-size: 0.8rem;
   font-family: monospace;
 }
 

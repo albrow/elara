@@ -14,7 +14,6 @@ import { syntaxTree } from "@codemirror/language";
 import { MDXProps } from "mdx/types";
 import { createRoot } from "react-dom/client";
 
-import { HOVER_DOC_BOX_SHADOW } from "../../../lib/constants";
 import TurnRight from "./pages/turn_right.mdx";
 import TurnLeft from "./pages/turn_left.mdx";
 import MoveForward from "./pages/move_forward.mdx";
@@ -111,17 +110,7 @@ function showDocsOnHover(availFuncs: string[]) {
         dom.className = "hover-doc-container";
         const root = createRoot(dom);
         root.render(
-          <Box
-            px="15px"
-            pb="5px"
-            maxW="500px"
-            // I don't know why borderColor="gray.500" doesn't work here.
-            border="1px #718096 solid"
-            // I don't know why bg="gray.200" doesn't work here.
-            backgroundColor="#E2E8F0"
-            boxShadow={HOVER_DOC_BOX_SHADOW}
-            className="md-content hover-doc"
-          >
+          <Box px="15px" pb="5px" maxW="500px" className="md-content hover-doc">
             <Page />
           </Box>
         );

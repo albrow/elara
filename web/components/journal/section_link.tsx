@@ -53,10 +53,10 @@ export default function SceneLink(props: SceneLinkProps) {
         <Badge
           colorScheme="green"
           mr="0.3rem"
-          fontSize={{
-            base: "12px",
-            "3xl": "16px",
-          }}
+          // fontSize={{
+          //   base: "12px",
+          //   "3xl": "16px",
+          // }}
         >
           New
         </Badge>
@@ -90,16 +90,16 @@ export default function SceneLink(props: SceneLinkProps) {
         px="14px"
         py={{
           base: "6px",
-          xl: "8px",
-          "2xl": "10px",
-          "3xl": "12px",
+          // xl: "8px",
+          // "2xl": "10px",
+          // "3xl": "12px",
         }}
-        fontSize={{
-          base: "md",
-          xl: "lg",
-          "2xl": "xl",
-          "3xl": "3xl",
-        }}
+        // fontSize={{
+        //   base: "md",
+        //   xl: "lg",
+        //   "2xl": "xl",
+        //   "3xl": "3xl",
+        // }}
       >
         <Box>
           <Text

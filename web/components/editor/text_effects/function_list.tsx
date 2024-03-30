@@ -1,7 +1,7 @@
 import { Menu, MenuButton, MenuList, Tooltip } from "@chakra-ui/react";
-import { BsJournalCode } from "react-icons/bs";
+import { BsJournalCode as JournalIcon } from "react-icons/bs";
 import { useMemo } from "react";
-import { BP_2XL, BP_3XL, BP_XL, BODY_RESPONSIVE_FONT_SCALE, FUNCTION_LIST_RESPONSIVE_WIDTH } from "../../../lib/constants";
+import { BP_XL, FUNCTION_LIST_RESPONSIVE_WIDTH } from "../../../lib/constants";
 import { useWindowWidth } from "../../../hooks/responsive_hooks";
 import FunctionListItem from "./function_list_item";
 
@@ -12,24 +12,27 @@ export interface FunctionListProps {
 export default function FunctionList(props: FunctionListProps) {
   const windowWidth = useWindowWidth();
 
-  const journalCodeSize = useMemo(() => {
-    if (windowWidth >= BP_3XL) {
-      return "1.6em";
-    }
-    if (windowWidth >= BP_2XL) {
-      return "1.4em";
-    }
+  const journalIconSize = useMemo(() => {
+    // if (windowWidth >= BP_3XL) {
+    //   return "1.6em";
+    // }
+    // if (windowWidth >= BP_2XL) {
+    //   return "1.4em";
+    // }
     if (windowWidth >= BP_XL) {
       return "1.2em";
     }
-    return '1em';
+    return "1em";
   }, [windowWidth]);
 
   return (
     <Menu placement="bottom-end" closeOnSelect={false} closeOnBlur>
       {/* Larger button */}
 
-      <Tooltip fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Function list">
+      <Tooltip
+        // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+        label="Function list"
+      >
         <MenuButton
           rounded={{ base: "3px", xl: "md" }}
           _hover={{ background: "gray.700" }}
@@ -37,7 +40,7 @@ export default function FunctionList(props: FunctionListProps) {
           p={{ base: "4px", xl: "6px" }}
           px={{ base: "8px", xl: "9px" }}
         >
-          <BsJournalCode size={journalCodeSize} />
+          <JournalIcon size={journalIconSize} />
         </MenuButton>
       </Tooltip>
 

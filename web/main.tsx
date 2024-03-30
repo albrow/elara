@@ -58,8 +58,9 @@ const elaraTheme = extendTheme({
   },
   sizes: {
     "container.xl": `${BP_XL}px`,
-    "container.2xl": `${BP_2XL}px`,
-    "container.3xl": `${BP_3XL}px`,
+    // Not sure if sizes should equal breakpoints here.
+    // "container.2xl": `${BP_2XL}px`,
+    // "container.3xl": `${BP_3XL}px`,
   },
   components: {
     Tooltip: {

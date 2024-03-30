@@ -22,7 +22,6 @@ import { useHintsModal } from "../hooks/hints_modal_hooks";
 import {
   BG_Z_INDEX,
   BOARD_WRAPPER_RESPONSIVE_TRANSFORM,
-  BODY_RESPONSIVE_FONT_SCALE,
   EDITOR_SECTION_RESPONSIVE_WIDTH,
   MONITOR_BORDER_WIDTH,
   MONITOR_FRAME_RESPONSIVE_WIDTH,
@@ -96,8 +95,9 @@ export default function Level() {
     if (!currScene) {
       return;
     }
-    document.title = `Elara | Level ${currScene.levelIndex}: ${currLevel().name
-      }`;
+    document.title = `Elara | Level ${currScene.levelIndex}: ${
+      currLevel().name
+    }`;
   }, [currLevel, currScene]);
 
   const initialCode = useCallback(
@@ -370,7 +370,10 @@ export default function Level() {
             mx="auto"
             my="auto"
             w={MONITOR_FRAME_RESPONSIVE_WIDTH}
-            px={{ base: `${MONTIOR_PADDING_BASE}px`, "2xl": `${MONITOR_PADDING_2XL}px` }}
+            px={{
+              base: `${MONTIOR_PADDING_BASE}px`,
+              "2xl": `${MONITOR_PADDING_2XL}px`,
+            }}
             pt={{ base: "18px", "2xl": "24px" }}
             pb={{ lg: "0px", "2xl": "12px" }}
             border={`${MONITOR_BORDER_WIDTH}px solid`}
@@ -399,7 +402,9 @@ export default function Level() {
               </Flex>
             </Box>
             {/* Objective/challenge text */}
-            <Box fontSize={BODY_RESPONSIVE_FONT_SCALE}>
+            <Box
+            // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+            >
               <Text as="span" verticalAlign="middle">
                 {getObjectiveIcon()}
                 <Text as="span" verticalAlign="middle" fontWeight="bold">
@@ -421,28 +426,30 @@ export default function Level() {
             <Stack
               direction="row"
               mt="16px"
-              h={{ base: "332px", xl: "fit-content" }}
+              mb="16px"
+              h={{ base: "323.4px", xl: "fit-content" }}
             >
-              <Box id="editor-section" mr={0}>
-                <Box
-                  w={EDITOR_SECTION_RESPONSIVE_WIDTH}
-                >
-                  <Editor
-                    type="level"
-                    requestedState={requestedEditorState}
-                    code={initialCode()}
-                    originalCode={currLevel().initial_code}
-                    availableFunctions={availFuncs}
-                    disabledFunctions={currLevel().disabled_funcs}
-                    runScript={runScript}
-                    onReplayDone={onReplayDone}
-                    onScriptError={onScriptError}
-                    onStep={onEditorStep}
-                    onCancel={onScriptCancel}
-                    persistCode={persistCode}
-                    onStateChange={onEditorStateChange}
-                  />
-                </Box>
+              <Box
+                id="editor-section"
+                mr={0}
+                position="relative"
+                w={EDITOR_SECTION_RESPONSIVE_WIDTH}
+              >
+                <Editor
+                  type="level"
+                  requestedState={requestedEditorState}
+                  code={initialCode()}
+                  originalCode={currLevel().initial_code}
+                  availableFunctions={availFuncs}
+                  disabledFunctions={currLevel().disabled_funcs}
+                  runScript={runScript}
+                  onReplayDone={onReplayDone}
+                  onScriptError={onScriptError}
+                  onStep={onEditorStep}
+                  onCancel={onScriptCancel}
+                  persistCode={persistCode}
+                  onStateChange={onEditorStateChange}
+                />
               </Box>
               <Box
                 id="board-wrapper"

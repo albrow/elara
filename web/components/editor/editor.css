@@ -44,7 +44,7 @@ to indicate the line of code is currently running */
 }
 
 /* This should match the BODY_RESPONSIVE_FONT_SCALE that we've set up for
-the editor */
+the editor. These variables are used in media queries at the bottom of the page. */
 .active-line-primary::before,
 .active-line-primary::after,
 .active-line-secondary::after {
@@ -174,9 +174,9 @@ plugin for any functions which are currently disabled. */
   }
 }
 
-@media (min-width: 1920px) {
+/* @media (min-width: 1920px) {
   .active-line-primary::after,
-  .active-line-seconday::after {
+  .active-line-secondary::after {
     top: var(--font-size-2xl);
   }
 
@@ -198,4 +198,4 @@ plugin for any functions which are currently disabled. */
     top: calc(var(--font-size-3xl) / 4 * -1);
     left: calc((var(--font-size-3xl) + 2px) * -1);
   }
-}
+} */

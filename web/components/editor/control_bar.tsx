@@ -23,7 +23,11 @@ import {
 import { FaSatelliteDish } from "react-icons/fa";
 
 import { range } from "../../lib/utils";
-import { BODY_RESPONSIVE_FONT_SCALE, BUTTON_RESPONSIVE_FONT_SCALE, BUTTON_RESPONSIVE_SCALE, TOOLTIP_RESPONSIVE_MAX_WIDTH } from "../../lib/constants";
+import {
+  BUTTON_RESPONSIVE_FONT_SCALE,
+  BUTTON_RESPONSIVE_SCALE,
+  TOOLTIP_RESPONSIVE_MAX_WIDTH,
+} from "../../lib/constants";
 import type { EditorState } from "./editor";
 import FunctionList from "./text_effects/function_list";
 
@@ -77,7 +81,11 @@ export default function ControlBar(props: ControlBarProps) {
         <Box>
           {props.editorState === "editing" && (
             <>
-              <Tooltip maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH} fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Deploy the code to the rover">
+              <Tooltip
+                maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+                // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+                label="Deploy the code to the rover"
+              >
                 <Button
                   size={BUTTON_RESPONSIVE_SCALE}
                   fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
@@ -93,7 +101,11 @@ export default function ControlBar(props: ControlBarProps) {
                 </Button>
               </Tooltip>
               {props.onReset && (
-                <Tooltip maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH} fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Reset back to the original code">
+                <Tooltip
+                  maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+                  // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+                  label="Reset back to the original code"
+                >
                   <Button
                     ml={{ base: "6px", xl: "8px" }}
                     size={BUTTON_RESPONSIVE_SCALE}
@@ -112,36 +124,48 @@ export default function ControlBar(props: ControlBarProps) {
         <Box>
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-              <Tooltip maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH} fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Stop">
-                <Button
-                  colorScheme="red"
-                  color="black"
-                  size={BUTTON_RESPONSIVE_SCALE}
-                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
-                  rounded={{ base: "3px", xl: "md" }}
-                  ml="4px"
-                  onClick={props.onCancel}
-                >
-                  <MdStop size="1.3em" />
-                </Button>
-              </Tooltip>
-            )}
+            <Tooltip
+              maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+              // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+              label="Stop"
+            >
+              <Button
+                colorScheme="red"
+                color="black"
+                size={BUTTON_RESPONSIVE_SCALE}
+                fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+                rounded={{ base: "3px", xl: "md" }}
+                ml="4px"
+                onClick={props.onCancel}
+              >
+                <MdStop size="1.3em" />
+              </Button>
+            </Tooltip>
+          )}
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-              <Tooltip maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH} fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Skip backward">
-                <Button
-                  size={BUTTON_RESPONSIVE_SCALE}
-                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
-                  rounded={{ base: "3px", xl: "md" }}
-                  ml="4px"
-                  onClick={props.onStepBack}
-                >
-                  <MdSkipPrevious size="1.3em" />
-                </Button>
-              </Tooltip>
-            )}
+            <Tooltip
+              maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+              // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+              label="Skip backward"
+            >
+              <Button
+                size={BUTTON_RESPONSIVE_SCALE}
+                fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+                rounded={{ base: "3px", xl: "md" }}
+                ml="4px"
+                onClick={props.onStepBack}
+              >
+                <MdSkipPrevious size="1.3em" />
+              </Button>
+            </Tooltip>
+          )}
           {props.editorState === "running" && (
-            <Tooltip maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH} fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Pause">
+            <Tooltip
+              maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+              // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+              label="Pause"
+            >
               <Button
                 colorScheme="yellow"
                 color="black"
@@ -156,7 +180,11 @@ export default function ControlBar(props: ControlBarProps) {
             </Tooltip>
           )}
           {props.editorState === "paused" && (
-            <Tooltip maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH} fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Play">
+            <Tooltip
+              maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+              // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+              label="Play"
+            >
               <Button
                 colorScheme="green"
                 color="black"
@@ -172,18 +200,22 @@ export default function ControlBar(props: ControlBarProps) {
           )}
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-              <Tooltip maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH} fontSize={BODY_RESPONSIVE_FONT_SCALE} label="Skip forward">
-                <Button
-                  size={BUTTON_RESPONSIVE_SCALE}
-                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
-                  rounded={{ base: "3px", xl: "md" }}
-                  ml="4px"
-                  onClick={props.onStepForward}
-                >
-                  <MdSkipNext size="1.3em" />
-                </Button>
-              </Tooltip>
-            )}
+            <Tooltip
+              maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+              // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+              label="Skip forward"
+            >
+              <Button
+                size={BUTTON_RESPONSIVE_SCALE}
+                fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+                rounded={{ base: "3px", xl: "md" }}
+                ml="4px"
+                onClick={props.onStepForward}
+              >
+                <MdSkipNext size="1.3em" />
+              </Button>
+            </Tooltip>
+          )}
         </Box>
         {props.numSteps && props.stepIndex !== undefined && (
           <>
@@ -202,7 +234,11 @@ export default function ControlBar(props: ControlBarProps) {
                   <SliderMark
                     key={i}
                     color="white"
-                    fontSize={{ base: "sm", xl: "md", "2xl": "lg" }}
+                    fontSize={{
+                      base: "sm",
+                      xl: "md",
+                      // "2xl": "lg"
+                    }}
                     fontWeight="bold"
                     value={i}
                     ml="-2px"
@@ -213,7 +249,9 @@ export default function ControlBar(props: ControlBarProps) {
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
-                <Tooltip maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH} fontSize={BODY_RESPONSIVE_FONT_SCALE}
+                <Tooltip
+                  maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+                  // fontSize={BODY_RESPONSIVE_FONT_SCALE}
                   label="Click and drag to move through the code"
                   hidden={!showSliderTip}
                 >
@@ -222,7 +260,16 @@ export default function ControlBar(props: ControlBarProps) {
               </Slider>
             </Box>
             <Box my="auto" ml="12px">
-              <Text as="span" fontSize={{ base: "sm", xl: "md", "2xl": "lg" }} color="white" verticalAlign="top">
+              <Text
+                as="span"
+                fontSize={{
+                  base: "sm",
+                  // xl: "md",
+                  // "2xl": "lg",
+                }}
+                color="white"
+                verticalAlign="top"
+              >
                 Step: {props.stepIndex + 1}/{props.numSteps}
               </Text>
             </Box>
