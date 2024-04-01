@@ -58,6 +58,10 @@ import asteroidFalling from "../audio/sfx/asteroid_falling.ogg";
 import asteroidFallingFallback from "../audio/sfx/asteroid_falling.mp3";
 import asteroidImpact from "../audio/sfx/asteroid_impact.ogg";
 import asteroidImpactFallback from "../audio/sfx/asteroid_impact.mp3";
+import pickUp from "../audio/sfx/pick_up.ogg";
+import pickUpFallback from "../audio/sfx/pick_up.mp3";
+import drop from "../audio/sfx/drop.ogg";
+import dropFallback from "../audio/sfx/drop.mp3";
 import intro from "../audio/dialog/intro.ogg";
 import introFallback from "../audio/dialog/intro.mp3";
 import askAboutJourney from "../audio/dialog/ask_about_journey.ogg";
@@ -261,6 +265,10 @@ export function SoundProvider(props: PropsWithChildren<{}>) {
         [asteroidImpact, asteroidImpactFallback],
         { baseGain: 0.25 }
       ),
+      pick_up: new Sound("pick_up", "sfx", [pickUp, pickUpFallback], {
+        baseGain: 0.8,
+      }),
+      drop: new Sound("drop", "sfx", [drop, dropFallback], { baseGain: 0.8 }),
       ringtone: new Sound("ringtone", "sfx", [ringtone, ringtoneFallback], {
         baseGain: 0.8,
         loop: true,

@@ -82,6 +82,8 @@ export default function Player(props: PlayerProps) {
   const bumpSound = useMemo(() => getSound("bump"), [getSound]);
   const speakSound = useMemo(() => getSound("speak"), [getSound]);
   const errorSound = useMemo(() => getSound("wrong_password"), [getSound]);
+  const pickUpSound = useMemo(() => getSound("pick_up"), [getSound]);
+  const dropSound = useMemo(() => getSound("drop"), [getSound]);
 
   const stopMySoundEffects = useCallback(() => {
     moveSound.stop();
@@ -90,7 +92,18 @@ export default function Player(props: PlayerProps) {
     teleportSound.stop();
     speakSound.stop();
     errorSound.stop();
-  }, [moveSound, turnSound, bumpSound, teleportSound, speakSound, errorSound]);
+    pickUpSound.stop();
+    dropSound.stop();
+  }, [
+    moveSound,
+    turnSound,
+    bumpSound,
+    teleportSound,
+    speakSound,
+    errorSound,
+    pickUpSound,
+    dropSound,
+  ]);
 
   const formattedMessage = useMemo(() => {
     if (props.message.startsWith(SPECIAL_MARKDOWN_TAG)) {
@@ -126,6 +139,10 @@ export default function Player(props: PlayerProps) {
       speakSound.play();
     } else if (props.errMessage !== "") {
       errorSound.play();
+    } else if (props.animState === "picking_up") {
+      pickUpSound.play();
+    } else if (props.animState === "dropping") {
+      dropSound.play();
     }
 
     prevState.current = props;
@@ -138,6 +155,8 @@ export default function Player(props: PlayerProps) {
     teleportSound,
     speakSound,
     errorSound,
+    pickUpSound,
+    dropSound,
   ]);
 
   return (
