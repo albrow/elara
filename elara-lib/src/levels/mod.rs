@@ -5,6 +5,7 @@ mod button_and_gate;
 mod button_and_gate_part_two;
 mod buttons_part_one;
 mod crates_part_one;
+mod crates_part_three;
 mod crates_part_two;
 mod data_point_demo;
 mod data_points_part_one;
@@ -161,6 +162,7 @@ lazy_static! {
         m.insert(button_and_gate_part_two::ButtonAndGatePartTwo{}.short_name(), Box::new(button_and_gate_part_two::ButtonAndGatePartTwo{}));
         m.insert(crates_part_one::CratesPartOne{}.short_name(), Box::new(crates_part_one::CratesPartOne{}));
         m.insert(crates_part_two::CratesPartTwo{}.short_name(), Box::new(crates_part_two::CratesPartTwo{}));
+        m.insert(crates_part_three::CratesPartThree{}.short_name(), Box::new(crates_part_three::CratesPartThree{}));
 
         m
     };
