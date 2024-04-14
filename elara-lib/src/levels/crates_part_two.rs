@@ -73,6 +73,17 @@ drop();
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
+    fn challenge(&self) -> Option<&'static str> {
+        Some("Reach the goal in 18 steps or fewer.")
+    }
+    fn check_challenge(
+        &self,
+        _states: &[State],
+        _script: &str,
+        stats: &crate::script_runner::ScriptStats,
+    ) -> bool {
+        stats.time_taken <= 18
+    }
 }
 
 #[cfg(test)]
@@ -113,5 +124,53 @@ mod tests {
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
         assert_eq!(result.outcome, Outcome::Success);
+    }
+
+    #[test]
+    fn challenge() {
+        let mut game = crate::Game::new();
+        const LEVEL: &'static dyn Level = &CratesPartTwo {};
+
+        // This code beats the level but doesn't pass the challenge.
+        let script = r#"
+            move_forward(3);
+            turn_left();
+            pick_up();
+            turn_left();
+            move_forward(2);
+            drop();
+            move_backward(2);
+            turn_right();
+            move_forward(1);
+            pick_up();
+            move_forward(2);
+            turn_left();
+            move_forward(3);
+        "#;
+        let result = game
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert!(!result.passes_challenge);
+
+        // This code beats the level and passes the challenge.
+        let script = r#"
+            move_forward(3);
+            turn_left();
+            pick_up();
+            turn_left();
+            drop();
+            turn_right();
+            move_forward(1);
+            pick_up();
+            move_forward(2);
+            turn_left();
+            move_forward(3);
+        "#;
+        let result = game
+            .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
+            .unwrap();
+        assert_eq!(result.outcome, Outcome::Success);
+        assert!(result.passes_challenge);
     }
 }
