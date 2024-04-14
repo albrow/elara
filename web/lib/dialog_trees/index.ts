@@ -21,6 +21,8 @@ import * as BigEnemy from "./level_big_enemy";
 import * as ServerRoom from "./level_server_room";
 import * as KalinaInTrouble from "./kalina_in_trouble";
 import * as ExplainJournal from "./explain_journal";
+import * as ButtonAndGate from "./level_button_and_gate";
+import * as CratesPartOne from "./level_crates_part_one";
 
 // NodeIds and ChoiceIds must be unique and declared ahead of time. This ensures
 // that the compiler will catch any incorrect or missing references.
@@ -41,7 +43,9 @@ type NodeIds =
   | BigEnemy.NodeIds
   | ServerRoom.NodeIds
   | KalinaInTrouble.NodeIds
-  | ExplainJournal.NodeIds;
+  | ExplainJournal.NodeIds
+  | ButtonAndGate.NodeIds
+  | CratesPartOne.NodeIds;
 type ChoiceIds =
   | Intro.ChoiceIds
   | DataPointsPartOne.ChoiceIds
@@ -59,7 +63,9 @@ type ChoiceIds =
   | BigEnemy.ChoiceIds
   | ServerRoom.ChoiceIds
   | KalinaInTrouble.ChoiceIds
-  | ExplainJournal.ChoiceIds;
+  | ExplainJournal.ChoiceIds
+  | ButtonAndGate.ChoiceIds
+  | CratesPartOne.ChoiceIds;
 
 export interface DialogNode {
   text: string;
@@ -106,6 +112,8 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
   ...ServerRoom.NODES,
   ...KalinaInTrouble.NODES,
   ...ExplainJournal.NODES,
+  ...ButtonAndGate.NODES,
+  ...CratesPartOne.NODES,
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
@@ -126,6 +134,8 @@ export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ...ServerRoom.CHOICES,
   ...KalinaInTrouble.CHOICES,
   ...ExplainJournal.CHOICES,
+  ...ButtonAndGate.CHOICES,
+  ...CratesPartOne.CHOICES,
 };
 
 export const TREES: DialogTrees = {
@@ -146,4 +156,6 @@ export const TREES: DialogTrees = {
   ...ServerRoom.TREES,
   ...KalinaInTrouble.TREES,
   ...ExplainJournal.TREES,
+  ...ButtonAndGate.TREES,
+  ...CratesPartOne.TREES,
 };

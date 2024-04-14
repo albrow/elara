@@ -73,17 +73,6 @@ drop();
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
     }
-    fn challenge(&self) -> Option<&'static str> {
-        Some("Use 12 energy or less _and_ have a code length of 190 chars or less.")
-    }
-    fn check_challenge(
-        &self,
-        _states: &[State],
-        _script: &str,
-        stats: &crate::script_runner::ScriptStats,
-    ) -> bool {
-        stats.code_len <= 190 && stats.energy_used <= 12
-    }
 }
 
 #[cfg(test)]
@@ -112,7 +101,6 @@ mod tests {
             turn_left();
             move_forward(2);
             drop();
-            // ADD YOUR CODE BELOW:
             move_backward(2);
             turn_right();
             move_forward(1);

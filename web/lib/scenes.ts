@@ -56,7 +56,9 @@ const musicMap: Record<string, string> = {
   buttons_part_one: "gettingOffTheGround",
   button_and_gate: "gettingOffTheGround",
   button_and_gate_part_two: "gettingOffTheGround",
-  data_points_part_one: "gettingOffTheGround",
+  crates_part_one: "gettingOffTheGround",
+  crates_part_two: "gettingOffTheGround",
+  data_points_part_one: "driftingIntoSpace",
   gates: "driftingIntoSpace",
   variables_intro: "driftingIntoSpace",
   gate_and_data_point: "driftingIntoSpace",
@@ -181,7 +183,6 @@ const RAW_SCENES: RawScene[] = [
       "You don't need a semicolon (`;`) after the closing curly brace (`}`).",
     ]
   ),
-  // TODO(albrow): Add dialog.
   levelScene(
     "button_and_gate",
     ["hover_over_text", "hover_over_board"],
@@ -199,10 +200,24 @@ const RAW_SCENES: RawScene[] = [
       "Feel free to copy & paste pieces of code from previous levels or journal pages.",
     ]
   ),
-  // TODO(albrow): Add hints and dialog.
-  levelScene("crates_part_one", [], [], ["pick_up", "drop"]),
-  // TODO(albrow): Add hints and dialog.
-  levelScene("crates_part_two", [], []),
+  levelScene(
+    "crates_part_one",
+    [],
+    [
+      "G.R.O.V.E.R. needs to be facing a crate in order to pick it up.",
+      "G.R.O.V.E.R. needs to be facing an empty space in order to drop a crate.",
+    ],
+    ["pick_up", "drop"]
+  ),
+  levelScene(
+    "crates_part_two",
+    [],
+    [
+      "G.R.O.V.E.R. needs to be facing a crate in order to pick it up.",
+      "G.R.O.V.E.R. needs to be facing an empty space in order to drop a crate.",
+      "G.R.O.V.E.R. can only carry one crate at a time. You'll need to drop the first one in order to pick up the second.",
+    ]
+  ),
   journalScene("function_outputs", ["get_orientation", "read_data"]),
   levelScene(
     "data_points_part_one",
