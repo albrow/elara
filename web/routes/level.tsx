@@ -370,7 +370,6 @@ export default function Level() {
             mx="auto"
             my="auto"
             w={MONITOR_FRAME_RESPONSIVE_WIDTH}
-            maxW="100%"
             px={{
               base: `${MONTIOR_PADDING_BASE}px`,
               "2xl": `${MONITOR_PADDING_2XL}px`,
@@ -434,6 +433,7 @@ export default function Level() {
                 id="editor-section"
                 mr={0}
                 position="relative"
+                flexShrink={0}
                 w={EDITOR_SECTION_RESPONSIVE_WIDTH}
               >
                 <Editor
