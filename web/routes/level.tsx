@@ -370,6 +370,7 @@ export default function Level() {
             mx="auto"
             my="auto"
             w={MONITOR_FRAME_RESPONSIVE_WIDTH}
+            maxW="100%"
             px={{
               base: `${MONTIOR_PADDING_BASE}px`,
               "2xl": `${MONITOR_PADDING_2XL}px`,
