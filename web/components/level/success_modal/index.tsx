@@ -94,6 +94,7 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
         scrollBehavior="inside"
         preserveScrollBarGap
         closeOnOverlayClick={false}
+        autoFocus={false}
       >
         <ModalOverlay />
         <ModalContent minW="container.md">

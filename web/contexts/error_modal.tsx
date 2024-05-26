@@ -171,6 +171,7 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
             scrollBehavior="inside"
             preserveScrollBarGap
             closeOnOverlayClick={false}
+            autoFocus={false}
           >
             <ModalOverlay />
             <ModalContent minW="container.md">

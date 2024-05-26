@@ -93,6 +93,7 @@ export function HintsModalProvider(props: PropsWithChildren<{}>) {
             scrollBehavior="inside"
             preserveScrollBarGap
             closeOnOverlayClick={false}
+            autoFocus={false}
           >
             <ModalOverlay />
             <ModalContent

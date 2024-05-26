@@ -61,15 +61,10 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
           <Modal
             isOpen={visible}
             onClose={handleClose}
-            size={{
-              base: "sm",
-              // xl: "md",
-              // "2xl": "xl",
-              // "3xl": "2xl",
-            }}
             scrollBehavior="inside"
             preserveScrollBarGap
             motionPreset="slideInBottom"
+            autoFocus={false}
           >
             <ModalOverlay />
             <ModalContent bg="gray.800" color="white" border="1px solid black">

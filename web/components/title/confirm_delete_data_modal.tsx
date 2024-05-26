@@ -21,7 +21,11 @@ export default function ConfirmDeleteExistingDataModal(
   props: ConfirmDeleteExistingDataModalProps
 ) {
   return (
-    <Modal isOpen={props.visible} onClose={() => props.setVisible(false)}>
+    <Modal
+      isOpen={props.visible}
+      onClose={() => props.setVisible(false)}
+      autoFocus={false}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
