@@ -5,6 +5,7 @@ import { MDXProps } from "mdx/types";
 import {
   BOARD_HOVER_INFO_Z_INDEX,
   BOARD_INNER_WIDTH,
+  HOVER_DOC_BOX_SHADOW,
   TILE_SIZE,
 } from "../../lib/constants";
 import { Offset } from "../../lib/utils";
@@ -90,10 +91,16 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
             w={`${pixelWidth}px`}
             py="5px"
             px="12px"
-            boxShadow="2px 2px 10px"
+            boxShadow={HOVER_DOC_BOX_SHADOW}
             _hover={{ cursor: "text" }}
           >
-            <Box className="md-content hover-doc">
+            <Box
+              className="md-content hover-doc"
+              // For board hover info, we need to manually reset this
+              // scale back to 1 because the board itself takes care of all
+              // of the responsive scaling.
+              transform="scale(1)"
+            >
               <props.page additionalInfo={props.additionalInfo} />
             </Box>
           </Box>

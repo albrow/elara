@@ -1,7 +1,8 @@
-import { Menu, MenuButton, MenuList, Tooltip, Box } from "@chakra-ui/react";
-import { BsJournalCode } from "react-icons/bs";
-
-import { FUNCTION_LIST_WIDTH } from "../../../lib/constants";
+import { Menu, MenuButton, MenuList, Tooltip } from "@chakra-ui/react";
+import { BsJournalCode as JournalIcon } from "react-icons/bs";
+import { useMemo } from "react";
+import { BP_XL, FUNCTION_LIST_RESPONSIVE_WIDTH } from "../../../lib/constants";
+import { useWindowWidth } from "../../../hooks/responsive_hooks";
 import FunctionListItem from "./function_list_item";
 
 export interface FunctionListProps {
@@ -9,11 +10,29 @@ export interface FunctionListProps {
 }
 
 export default function FunctionList(props: FunctionListProps) {
+  const windowWidth = useWindowWidth();
+
+  const journalIconSize = useMemo(() => {
+    // if (windowWidth >= BP_3XL) {
+    //   return "1.6em";
+    // }
+    // if (windowWidth >= BP_2XL) {
+    //   return "1.4em";
+    // }
+    if (windowWidth >= BP_XL) {
+      return "1.2em";
+    }
+    return "1em";
+  }, [windowWidth]);
+
   return (
     <Menu placement="bottom-end" closeOnSelect={false} closeOnBlur>
       {/* Larger button */}
 
-      <Tooltip label="Function list">
+      <Tooltip
+        // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+        label="Function list"
+      >
         <MenuButton
           rounded={{ base: "3px", xl: "md" }}
           _hover={{ background: "gray.700" }}
@@ -21,12 +40,7 @@ export default function FunctionList(props: FunctionListProps) {
           p={{ base: "4px", xl: "6px" }}
           px={{ base: "8px", xl: "9px" }}
         >
-          <Box display={{ base: "none", xl: "inline" }}>
-            <BsJournalCode size="1.2em" />
-          </Box>
-          <Box display={{ base: "inline", xl: "none" }}>
-            <BsJournalCode size="1.0em" />
-          </Box>
+          <JournalIcon size={journalIconSize} />
         </MenuButton>
       </Tooltip>
 
@@ -34,9 +48,9 @@ export default function FunctionList(props: FunctionListProps) {
         background="gray.700"
         borderColor="black"
         shadow="dark-lg"
-        w={`${FUNCTION_LIST_WIDTH}px`}
-        maxW={`${FUNCTION_LIST_WIDTH}px`}
-        minW={`${FUNCTION_LIST_WIDTH}px`}
+        w={FUNCTION_LIST_RESPONSIVE_WIDTH}
+        maxW={FUNCTION_LIST_RESPONSIVE_WIDTH}
+        minW={FUNCTION_LIST_RESPONSIVE_WIDTH}
         onKeyDown={(e) => {
           // Workaround to re-enable the cmd+c and ctrl+c shortcuts.
           // TODO(albrow): Since the execCommand method is deprecated, we

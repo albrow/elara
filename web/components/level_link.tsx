@@ -180,6 +180,8 @@ export default function LevelLink(props: LevelLinkProps) {
       onClick={props.onClick}
     >
       <Tooltip
+        // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+        // maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
         label={lockExplanationText}
         placement="bottom"
         bgColor="red.700"
@@ -187,6 +189,11 @@ export default function LevelLink(props: LevelLinkProps) {
         mt="-10px"
       >
         <Button
+          // fontSize={{
+          //   base: "16px",
+          //   "2xl": "22px",
+          //   "3xl": "26px",
+          // }}
           background="transparent"
           _hover={getHoverStyle()}
           w="100%"
@@ -195,7 +202,11 @@ export default function LevelLink(props: LevelLinkProps) {
           isDisabled={props.isLocked}
           h="max-content"
           px="14px"
-          py="6px"
+          py={{
+            base: "6px",
+            // "2xl": "10px",
+            // "3xl": "12px",
+          }}
           mb="2px"
         >
           <Box>

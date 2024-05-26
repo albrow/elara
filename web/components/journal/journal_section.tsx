@@ -40,12 +40,19 @@ export default function JournalSection(props: JournalProps) {
         <SectionComponent />
       </Box>
       <Flex alignItems="right" justifyContent="right" width="100%">
-        <Button colorScheme="teal" onClick={navigateToHub}>
+        <Button
+          // fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+          // size={BUTTON_RESPONSIVE_SCALE}
+          colorScheme="teal"
+          onClick={navigateToHub}
+        >
           Back to Hub
           <MdHome size="1.3em" style={{ marginLeft: "0.2rem" }} />
         </Button>
         {shouldShowNextButton && (
           <Button
+            // fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+            // size={BUTTON_RESPONSIVE_SCALE}
             colorScheme="blue"
             onClick={() => navigateToScene(nextJournalPage!)}
             ml="5px"

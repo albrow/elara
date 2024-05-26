@@ -1,7 +1,6 @@
 import { Box, MenuItem, Text } from "@chakra-ui/react";
 import { useState } from "react";
-
-import { FUNCTION_LIST_WIDTH } from "../../../lib/constants";
+import { FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_RIGHT } from "../../../lib/constants";
 import { docPages, HoverWord } from ".";
 
 export interface FunctionListItemProps {
@@ -39,7 +38,7 @@ export default function FunctionListItem(props: FunctionListItemProps) {
             position="absolute"
             top="0"
             transform="translateY(calc(-100% + 20px))"
-            right={`${FUNCTION_LIST_WIDTH - 14}px`}
+            right={FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_RIGHT}
             shadow="dark-lg"
             onKeyDown={() => {}}
           >
@@ -54,6 +53,8 @@ export default function FunctionListItem(props: FunctionListItemProps) {
               color="black"
               userSelect="text"
               _hover={{ cursor: "text" }}
+              // transform={FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_TRANSFORM}
+              // transformOrigin="right"
             >
               <Page />
             </Box>

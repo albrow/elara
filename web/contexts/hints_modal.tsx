@@ -6,7 +6,6 @@ import {
   ModalOverlay,
   Text,
   Box,
-  ModalCloseButton,
   Flex,
 } from "@chakra-ui/react";
 import {
@@ -19,6 +18,7 @@ import {
 import { FaThumbsUp } from "react-icons/fa";
 
 import { useCurrScene } from "../hooks/scenes_hooks";
+import { ResponsiveModalCloseButton } from "../components/modal/responsive_modal_close_button";
 
 export const HintsModalContext = createContext<
   readonly [() => void, (onClose: () => void) => void]
@@ -95,20 +95,37 @@ export function HintsModalProvider(props: PropsWithChildren<{}>) {
             closeOnOverlayClick={false}
           >
             <ModalOverlay />
-            <ModalContent minW="container.md">
-              <ModalCloseButton />
+            <ModalContent
+              minW={{
+                base: "container.md",
+                // "3xl": "container.lg",
+              }}
+            >
+              <ResponsiveModalCloseButton />
               <ModalBody>
                 <Text
-                  fontSize={32}
+                  fontSize="2rem"
                   fontWeight="bold"
-                  mt="10px"
+                  mt={{
+                    base: "10px",
+                    // "3xl": "20px",
+                  }}
                   mb="5px"
                   align="center"
                 >
                   Hint(s)
                 </Text>
-                <Box maxW="650px" mx="auto" my="20px" className="md-content">
-                  <Text as="span" fontSize={18} lineHeight="1.4em" mt="18px">
+                <Box
+                  maxW={{
+                    base: "650px",
+                    // "3xl": "850px",
+                  }}
+                  mx="auto"
+                  my="20px"
+                  className="md-content"
+                  // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+                >
+                  <Text as="span" lineHeight="1.4em" mt="18px">
                     {currScene?.hints && currScene.hints.length > 0 && (
                       <ul>
                         {currScene.hints.map((hint, i) => (
@@ -132,7 +149,12 @@ export function HintsModalProvider(props: PropsWithChildren<{}>) {
                   </Box>
                 )}
                 <Flex mt={10} mb={3} justifyContent="right" w="100%">
-                  <Button colorScheme="blue" onClick={handleClose}>
+                  <Button
+                    // fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+                    // size={BUTTON_RESPONSIVE_SCALE}
+                    colorScheme="blue"
+                    onClick={handleClose}
+                  >
                     Got it!
                     <FaThumbsUp
                       size="1.0em"

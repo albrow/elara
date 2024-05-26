@@ -1,3 +1,14 @@
+/* Might be necessary for responsive hover doc scaling. */
+/* .hover-doc {
+  transform-origin: top;
+  @media screen and (min-width: 1920px) {
+    transform: scale(1.2);
+  }
+  @media screen and (min-width: 2560px) {
+    transform: scale(1.5);
+  }
+} */
+
 .md-content h1,
 .md-content h2,
 .md-content h3,
