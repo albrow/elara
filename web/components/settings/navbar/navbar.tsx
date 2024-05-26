@@ -3,10 +3,8 @@ import { MdHome, MdSettings } from "react-icons/md";
 import { FaBullhorn } from "react-icons/fa";
 import { useState } from "react";
 
-import {
-  NAVBAR_RESPONSIVE_HEIGHT,
-  NAVBAR_Z_INDEX,
-} from "../../../lib/constants";
+import { NAVBAR_Z_INDEX } from "../../../lib/constants";
+import { NAVBAR_RESPONSIVE_HEIGHT } from "../../../lib/responsive_design";
 import { useSceneNavigator } from "../../../hooks/scenes_hooks";
 import SettingsModal from "./settings_modal";
 import NavbarButton from "./navbar_button";

@@ -30,11 +30,8 @@ import {
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
 import "./editor.css";
 import { Replayer } from "../../lib/replayer";
-import {
-  BP_XL,
-  CODE_LEN_EXPLANATION,
-  EDITOR_BORDER_WIDTH,
-} from "../../lib/constants";
+import { CODE_LEN_EXPLANATION } from "../../lib/constants";
+import { BP_XL, EDITOR_BORDER_WIDTH } from "../../lib/responsive_design";
 import { useWindowWidth } from "../../hooks/responsive_hooks";
 import { textEffects } from "./text_effects";
 import ControlBar from "./control_bar";

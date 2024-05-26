@@ -73,14 +73,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
           >
             <ModalOverlay />
             <ModalContent bg="gray.800" color="white" border="1px solid black">
-              <ModalHeader
-              // py={{
-              //   base: 4,
-              //   "2xl": 5,
-              //   "3xl": 6,
-              // }}
-              // fontSize={TITLE_RESPONSIVE_FONT_SCALE}
-              >
+              <ModalHeader>
                 <Text
                   fontSize="24px"
                   fontWeight="bold"
@@ -95,11 +88,6 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
               <ModalBody
                 id="level-select-modal-body"
                 className="dark-scrollbar"
-                // px={{
-                //   base: 6,
-                //   "2xl": 8,
-                //   "3xl": 10,
-                // }}
               >
                 <Box>
                   {LEVELS.map((scene) => (

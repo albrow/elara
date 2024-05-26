@@ -1,16 +1,14 @@
 import { Box, Image } from "@chakra-ui/react";
 import { AnimateKeyframes } from "react-simple-animate";
 
-import {
-  TILE_SIZE,
-  DEFAULT_ENERGY_CELL_GAIN,
-  ENERGY_CELL_Z_INDEX,
-} from "../../lib/constants";
+import { TILE_SIZE, ENERGY_CELL_Z_INDEX } from "../../lib/constants";
 import energyCellImgUrl from "../../images/board/energy_cell.png";
 import { Offset } from "../../lib/utils";
 import SpriteLabel from "./sprite_label";
 import EnergyCellPage from "./hover_info_pages/energy_cell.mdx";
 import BoardHoverInfo from "./board_hover_info";
+
+const DEFAULT_ENERGY_CELL_GAIN = 10;
 
 interface EnergyCellProps {
   offset: Offset;

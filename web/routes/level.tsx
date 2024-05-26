@@ -19,17 +19,16 @@ import { useErrorModal } from "../hooks/error_modal_hooks";
 import ShowDialogButton from "../components/level/show_dialog_button";
 import ShowHintButton from "../components/level/show_hint_button";
 import { useHintsModal } from "../hooks/hints_modal_hooks";
+import { BG_Z_INDEX, MONITOR_FRAME_Z_INDEX } from "../lib/constants";
 import {
-  BG_Z_INDEX,
   BOARD_WRAPPER_RESPONSIVE_TRANSFORM,
   EDITOR_SECTION_RESPONSIVE_WIDTH,
   MONITOR_BORDER_WIDTH,
   MONITOR_FRAME_RESPONSIVE_WIDTH,
-  MONITOR_FRAME_Z_INDEX,
   MONITOR_PADDING_2XL,
   MONTIOR_PADDING_BASE,
   NAVBAR_RESPONSIVE_HEIGHT,
-} from "../lib/constants";
+} from "../lib/responsive_design";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
 import { ErrorType } from "../contexts/error_modal";
 import LevelTitle from "../components/level/level_title";

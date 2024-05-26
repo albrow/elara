@@ -23,13 +23,15 @@ import {
   CHAKRA_TOOL_TIP_Z_INDEX,
   ROVER_MESSAGE_Z_INDEX,
   CHAKRA_MODAL_Z_INDEX,
+} from "./lib/constants";
+import {
   BP_SM,
   BP_MD,
   BP_LG,
   BP_XL,
   BP_2XL,
   BP_3XL,
-} from "./lib/constants";
+} from "./lib/responsive_design";
 
 // This file doesn't play nicely with HMR/Fast refresh, so we just reload the page
 // if any changes are detected.

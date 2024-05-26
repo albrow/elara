@@ -9,13 +9,14 @@ import {
   BUTTON_Z_INDEX,
   SPRITE_DROP_SHADOW,
   TILE_SIZE,
-  WIRE_DROP_SHADOW,
 } from "../../lib/constants";
 import buttonImgUrl from "../../images/board/button.png";
 import buttonPressedImgUrl from "../../images/board/button_pressed.png";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
 import BoardHoverInfo from "./board_hover_info";
 import ButtonPage from "./hover_info_pages/button.mdx";
+
+const WIRE_DROP_SHADOW = "drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3))";
 
 interface ButtonProps {
   offset: Offset;

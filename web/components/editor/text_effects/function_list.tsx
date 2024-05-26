@@ -1,7 +1,10 @@
 import { Menu, MenuButton, MenuList, Tooltip } from "@chakra-ui/react";
 import { BsJournalCode as JournalIcon } from "react-icons/bs";
 import { useMemo } from "react";
-import { BP_XL, FUNCTION_LIST_RESPONSIVE_WIDTH } from "../../../lib/constants";
+import {
+  BP_XL,
+  FUNCTION_LIST_RESPONSIVE_WIDTH,
+} from "../../../lib/responsive_design";
 import { useWindowWidth } from "../../../hooks/responsive_hooks";
 import FunctionListItem from "./function_list_item";
 

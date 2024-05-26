@@ -5,10 +5,11 @@ import { MDXProps } from "mdx/types";
 import {
   BOARD_HOVER_INFO_Z_INDEX,
   BOARD_INNER_WIDTH,
-  HOVER_DOC_BOX_SHADOW,
   TILE_SIZE,
 } from "../../lib/constants";
 import { Offset } from "../../lib/utils";
+
+export const HOVER_DOC_BOX_SHADOW = "2px 2px 10px";
 
 export interface BoardHoverInfoProps {
   offset: Offset;

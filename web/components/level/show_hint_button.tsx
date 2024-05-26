@@ -1,6 +1,6 @@
 import { Button, Tooltip } from "@chakra-ui/react";
 import { FaLightbulb } from "react-icons/fa";
-import { LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_BASE } from "../../lib/constants";
+import { LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_BASE } from "../../lib/responsive_design";
 
 const buttonSize = {
   base: `${LEVEL_TITLE_HINT_BUTTON_LIGHTBULB_SIZE_BASE * 2}px`,

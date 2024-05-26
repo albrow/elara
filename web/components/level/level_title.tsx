@@ -2,7 +2,7 @@ import { Text, Tooltip, Box } from "@chakra-ui/react";
 import { useState } from "react";
 import { RxDropdownMenu } from "react-icons/rx";
 import { useLevelSelectModal } from "../../hooks/level_select_modal_hooks";
-import { TITLE_FONT_SIZE_BASE } from "../../lib/constants";
+import { TITLE_FONT_SIZE_BASE } from "../../lib/responsive_design";
 
 export interface LevelTitleProps {
   title: string;

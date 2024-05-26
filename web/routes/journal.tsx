@@ -17,11 +17,13 @@ import JournalSection from "../components/journal/journal_section";
 import { TREES } from "../lib/dialog_trees";
 import JournalSidebar from "../components/journal/journal_sidebar";
 import {
-  NAVBAR_HEIGHT_BASE,
-  NAVBAR_RESPONSIVE_HEIGHT,
   JOURNAL_HANDLES_Z_INDEX,
   SCROLL_INDICATOR_Z_INDEX,
 } from "../lib/constants";
+import {
+  NAVBAR_HEIGHT_BASE,
+  NAVBAR_RESPONSIVE_HEIGHT,
+} from "../lib/responsive_design";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";
 
 import journalBgImage from "../images/journal_bg_only.jpg";

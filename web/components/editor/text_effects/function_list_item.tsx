@@ -1,6 +1,6 @@
 import { Box, MenuItem, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import { FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_RIGHT } from "../../../lib/constants";
+import { FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_RIGHT } from "../../../lib/responsive_design";
 import { docPages, HoverWord } from ".";
 
 export interface FunctionListItemProps {

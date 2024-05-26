@@ -27,7 +27,7 @@ import {
   BUTTON_RESPONSIVE_FONT_SCALE,
   BUTTON_RESPONSIVE_SCALE,
   TOOLTIP_RESPONSIVE_MAX_WIDTH,
-} from "../../lib/constants";
+} from "../../lib/responsive_design";
 import type { EditorState } from "./editor";
 import FunctionList from "./text_effects/function_list";
 
