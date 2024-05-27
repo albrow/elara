@@ -4,8 +4,10 @@ import {
   ModalContent,
   ModalBody,
   Box,
-  ModalHeader,
   Text,
+  Flex,
+  Stack,
+  Button,
 } from "@chakra-ui/react";
 import React, {
   createContext,
@@ -16,9 +18,16 @@ import React, {
 } from "react";
 
 import { useRouter } from "react-router5";
-import { useLevels } from "../hooks/scenes_hooks";
-import LevelLink from "../components/level_link";
+import {
+  useSceneNavigator,
+  useCurrScene,
+  useLevels,
+} from "../hooks/scenes_hooks";
+import Board from "../components/board/board";
+import LevelSelectOption from "../components/level_select_option";
 import { ResponsiveModalCloseButton } from "../components/modal/responsive_modal_close_button";
+
+import "../styles/effects.css";
 
 /**
  * Provider for a modal that displays a list of levels that the user can choose
@@ -38,6 +47,8 @@ export const LevelSelectModalContext = createContext<readonly [() => void]>([
 export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
   const LEVELS = useLevels();
   const router = useRouter();
+  const currScene = useCurrScene();
+  const { navigateToScene } = useSceneNavigator();
 
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -54,6 +65,13 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
     setVisible(false);
   }, []);
 
+  const [selectedScene, setSelectedScene] = useState(() => {
+    if (currScene && currScene.type === "level") {
+      return currScene;
+    }
+    return LEVELS[0];
+  });
+
   return (
     <LevelSelectModalContext.Provider value={providerValue}>
       {visible && (
@@ -61,46 +79,99 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
           <Modal
             isOpen={visible}
             onClose={handleClose}
-            scrollBehavior="inside"
+            scrollBehavior="outside"
             preserveScrollBarGap
             motionPreset="slideInBottom"
             autoFocus={false}
+            size="4xl"
           >
             <ModalOverlay />
-            <ModalContent bg="gray.800" color="white" border="1px solid black">
-              <ModalHeader>
-                <Text
-                  fontSize="24px"
-                  fontWeight="bold"
-                  mt="2px"
-                  mb="2px"
-                  align="center"
-                >
-                  Choose Level
-                </Text>
-              </ModalHeader>
+            <ModalContent h="600px" bg="gray.700" color="white">
               <ResponsiveModalCloseButton />
-              <ModalBody
-                id="level-select-modal-body"
-                className="dark-scrollbar"
-              >
-                <Box>
-                  {LEVELS.map((scene) => (
-                    <Box key={scene.name}>
-                      <LevelLink
-                        scene={scene}
-                        key={router.buildPath(
-                          scene.routeName,
-                          scene.routeParams
-                        )}
-                        isLocked={!scene.unlocked}
-                        onClick={() => {
-                          if (scene.unlocked) handleClose();
-                        }}
-                      />
+              <ModalBody id="level-select-modal-body" p="0px" h="100%">
+                <Flex h="100%">
+                  <Stack borderRight="1px solid black">
+                    <Box p="6px" pt="16px">
+                      <Text
+                        fontSize="24px"
+                        fontWeight="bold"
+                        mt="2px"
+                        mb="2px"
+                        align="center"
+                      >
+                        Choose Level
+                      </Text>
                     </Box>
-                  ))}
-                </Box>
+                    <Box
+                      bg="gray.800"
+                      overflowY="auto"
+                      className="dark-scrollbar scrollbar-left"
+                      h="100%"
+                      w="fit-content"
+                      p="6px"
+                    >
+                      {LEVELS.map((scene) => (
+                        <Box key={scene.name}>
+                          <LevelSelectOption
+                            scene={scene}
+                            key={router.buildPath(
+                              scene.routeName,
+                              scene.routeParams
+                            )}
+                            isLocked={!scene.unlocked}
+                            isActive={scene.level === selectedScene.level}
+                            onClick={() => {
+                              if (scene.unlocked) {
+                                setSelectedScene(scene);
+                              }
+                            }}
+                          />
+                        </Box>
+                      ))}
+                    </Box>
+                  </Stack>
+                  <Stack p="30px">
+                    <Text fontSize="24px" fontWeight="bold" mt="2px" mb="2px">
+                      Level {selectedScene?.levelIndex || 0}:{" "}
+                      {selectedScene.level?.name}
+                    </Text>
+                    <Box
+                      height="fit-content"
+                      transformOrigin="top left"
+                      color="black"
+                      id="level-select-preview-wrapper"
+                      transform="scale(0.75)"
+                    >
+                      <Box
+                        id="level-select-preview-inner-wrapper"
+                        w="100%"
+                        h="100%"
+                        position="relative"
+                        overflow="hidden"
+                        // Add an heavy inner shadow
+                        boxShadow="inset 0 0 10px 10px rgba(0, 0, 0, 0.5)"
+                      >
+                        <Board
+                          gameState={selectedScene.level!.initial_state}
+                          asteroidWarnings={
+                            selectedScene.level!.asteroid_warnings
+                          }
+                          enableAnimations={false}
+                          enableHoverInfo={false}
+                          showInitialState
+                        />
+                      </Box>
+                      <Button
+                        onClick={() => {
+                          navigateToScene(selectedScene);
+                          handleClose();
+                        }}
+                      >
+                        Go!
+                      </Button>
+                    </Box>
+                  </Stack>
+                </Flex>
               </ModalBody>
             </ModalContent>
           </Modal>

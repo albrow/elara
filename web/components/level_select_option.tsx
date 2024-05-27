@@ -8,15 +8,15 @@ import {
   useNextLevelToBeUnlocked,
   useNextUnlockedScene,
 } from "../hooks/scenes_hooks";
-import DisablableLink from "./scene_link";
 
-interface LevelLinkProps {
+interface LevelSelectOptionProps {
   scene: Scene;
   isLocked: boolean;
+  isActive: boolean;
   onClick?: () => void;
 }
 
-export default function LevelLink(props: LevelLinkProps) {
+export default function LevelSelectOption(props: LevelSelectOptionProps) {
   const nextLevelToBeUnlocked = useNextLevelToBeUnlocked();
   const nextUnlockedScene = useNextUnlockedScene();
 
@@ -174,56 +174,37 @@ export default function LevelLink(props: LevelLinkProps) {
   //    2. Automatically select the next level that is unlocked.
   //
   return (
-    <DisablableLink
-      scene={props.scene}
-      disabled={props.isLocked}
-      onClick={props.onClick}
+    <Tooltip
+      label={lockExplanationText}
+      placement="bottom"
+      bgColor="red.700"
+      isDisabled={!enableLockExplanationTooltip}
+      mt="-10px"
     >
-      <Tooltip
-        // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-        // maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
-        label={lockExplanationText}
-        placement="bottom"
-        bgColor="red.700"
-        isDisabled={!enableLockExplanationTooltip}
-        mt="-10px"
+      <Button
+        isActive={props.isActive}
+        background="transparent"
+        _hover={getHoverStyle()}
+        _active={getHoverStyle()}
+        w="100%"
+        textAlign="left"
+        justifyContent="left"
+        isDisabled={props.isLocked}
+        h="max-content"
+        px="14px"
+        py="6px"
+        mb="2px"
+        onClick={props.onClick}
       >
-        <Button
-          // fontSize={{
-          //   base: "16px",
-          //   "2xl": "22px",
-          //   "3xl": "26px",
-          // }}
-          background="transparent"
-          _hover={getHoverStyle()}
-          w="100%"
-          textAlign="left"
-          justifyContent="left"
-          isDisabled={props.isLocked}
-          h="max-content"
-          px="14px"
-          py={{
-            base: "6px",
-            // "2xl": "10px",
-            // "3xl": "12px",
-          }}
-          mb="2px"
-        >
-          <Box>
-            <Text as="span" display="inline" fontWeight="bold" color="gray.300">
-              <Text
-                display="inline"
-                verticalAlign="middle"
-                align="left"
-                mr="8px"
-              >
-                {getSceneName()}
-              </Text>
-              {getSceneIcons()}
+        <Box>
+          <Text as="span" display="inline" fontWeight="bold" color="gray.300">
+            <Text display="inline" verticalAlign="middle" align="left" mr="8px">
+              {getSceneName()}
             </Text>
-          </Box>
-        </Button>
-      </Tooltip>
-    </DisablableLink>
+            {getSceneIcons()}
+          </Text>
+        </Box>
+      </Button>
+    </Tooltip>
   );
 }

@@ -1,12 +1,24 @@
-#board table {
-  border: 1px solid black;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
 #board table td,
 table th {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 0;
+  /*
+  NOTE(albrow): Using regular table borders sometimes results in
+  weird effects when scaling the board on certain browsers. Instead,
+  we use box shadows to create the appearance of borders. As a
+  side-effect of this workaround, there aren't any borders on the top
+  or left side, so later we add those back in separately.
+  */
+  box-shadow: inset -1px -1px black;
+}
+
+#board table {
+  table-layout: fixed;
+  border-collapse: none;
+  /*
+  NOTE(albrow): Add left and top shadows to account for the fact
+  that there is otherwise no border on those sides. This is fixing
+  the side-effect of the workaround mentioned above.
+  */
+  border: none;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
 }
