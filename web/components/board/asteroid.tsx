@@ -7,20 +7,21 @@ import {
   ASTEROID_Z_INDEX,
   ROCK_Z_INDEX,
   SPRITE_DROP_SHADOW,
-  TILE_SIZE,
 } from "../../lib/constants";
 import rockImgUrl from "../../images/board/rock.png";
 import impactImgUrl from "../../images/board/impact.png";
-import { Offset } from "../../lib/utils";
+import { Offset, getTileSize } from "../../lib/board_utils";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
 
 interface AsteroidProps {
   offset: Offset;
+  scale: number;
 }
 
 export default function Asteroid(props: AsteroidProps) {
   const xOffset = Math.random() * 200 - 100;
   const [hasImpacted, setHasImpacted] = useState(false);
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
 
   const { getSound } = useSoundManager();
   const fallingSound = useMemo(() => getSound("asteroid_falling"), [getSound]);
@@ -74,8 +75,8 @@ export default function Asteroid(props: AsteroidProps) {
         left={props.offset.left}
         top={props.offset.top}
         position="absolute"
-        w={`${TILE_SIZE}px`}
-        h={`${TILE_SIZE}px`}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
         zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
       >
         <Animate

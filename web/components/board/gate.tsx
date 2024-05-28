@@ -12,7 +12,7 @@ import neswLockedImgUrl from "../../images/board/gate_ne_sw_locked.png";
 import neswUnlockedImgUrl from "../../images/board/gate_ne_sw_unlocked.png";
 import neswOverlayImgUrl from "../../images/board/gate_ne_sw_overlay.gif";
 import nwseOverlayImgUrl from "../../images/board/gate_nw_se_overlay.gif";
-import { Offset } from "../../lib/utils";
+import { Offset } from "../../lib/board_utils";
 import BoardHoverInfo from "./board_hover_info";
 import GatePage from "./hover_info_pages/gate.mdx";
 
@@ -22,6 +22,7 @@ export interface GateProps {
   additionalInfo: string;
   enableHoverInfo: boolean;
   variant: "nwse" | "nesw";
+  scale: number;
 }
 
 export default function Gate(props: GateProps) {
@@ -46,6 +47,7 @@ export default function Gate(props: GateProps) {
           page={GatePage}
           offset={props.offset}
           additionalInfo={props.additionalInfo}
+          scale={props.scale}
         />
       )}
 

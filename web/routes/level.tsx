@@ -473,6 +473,8 @@ export default function Level() {
                     enableHoverInfo={editorState !== "running"}
                     showInitialState={editorState === "editing"}
                     asteroidWarnings={currLevel().asteroid_warnings}
+                    // TODO(albrow): Change the scale responsively
+                    scale={1}
                   />
                 </Box>
               </Box>

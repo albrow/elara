@@ -10,7 +10,7 @@ import {
 import redCrateImgUrl from "../../images/board/crate_red.png";
 import blueCrateImgUrl from "../../images/board/crate_blue.png";
 import greenCrateImgUrl from "../../images/board/crate_green.png";
-import { Offset } from "../../lib/utils";
+import { Offset } from "../../lib/board_utils";
 import { CSSAnimation } from "./anim_utils";
 import BoardHoverInfo from "./board_hover_info";
 import CratePage from "./hover_info_pages/crate.mdx";
@@ -21,6 +21,7 @@ interface CrateProps {
   held: boolean;
   enableAnimations: boolean;
   enableHoverInfo: boolean;
+  scale: number;
 }
 
 export default function Crate(props: CrateProps) {
@@ -61,11 +62,16 @@ export default function Crate(props: CrateProps) {
   return (
     <>
       {props.enableHoverInfo && (
-        <BoardHoverInfo page={CratePage} offset={props.offset} />
+        <BoardHoverInfo
+          page={CratePage}
+          offset={props.offset}
+          scale={props.scale}
+        />
       )}
       <Image
         alt=""
         src={imgUrl}
+        // TODO(albrow): Update width, height, etc based on scale.
         w={props.held ? "32px" : "48px"}
         h={props.held ? "32px" : "48px"}
         mt={props.held ? "2px" : "1px"}

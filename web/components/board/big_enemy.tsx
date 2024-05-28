@@ -1,13 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Img } from "@chakra-ui/react";
 
-import {
-  ENEMY_Z_INDEX,
-  SPRITE_DROP_SHADOW,
-  TILE_SIZE,
-} from "../../lib/constants";
+import { ENEMY_Z_INDEX, SPRITE_DROP_SHADOW } from "../../lib/constants";
 import { TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
-import { Offset } from "../../lib/utils";
+import { getTileSize, Offset } from "../../lib/board_utils";
 import gretaUpUrl from "../../images/board/greta_up.png";
 import gretaDownUrl from "../../images/board/greta_down.png";
 import gretaLeftUrl from "../../images/board/greta_left.png";
@@ -29,6 +25,7 @@ interface BigEnemyProps {
   enableAnimations: boolean;
   facing: string;
   enableHoverInfo: boolean;
+  scale: number;
 }
 
 export default function BigEnemy(props: BigEnemyProps) {
@@ -45,16 +42,19 @@ export default function BigEnemy(props: BigEnemyProps) {
     gretaDownRightUrl,
   ]);
 
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+
   const animation = useMemo(
     () =>
       getSpriteAnimations(
+        props.scale,
         props.enableAnimations,
         props.animState,
         props.animData,
         0.2,
         144
       ),
-    [props.animData, props.animState, props.enableAnimations]
+    [props.animData, props.animState, props.enableAnimations, props.scale]
   );
 
   const imgUrl = useMemo(() => {
@@ -116,6 +116,7 @@ export default function BigEnemy(props: BigEnemyProps) {
         <BoardHoverInfo
           page={GretaHoverPage}
           offset={props.offset}
+          scale={props.scale}
           width={3}
           height={3}
         />
@@ -125,8 +126,8 @@ export default function BigEnemy(props: BigEnemyProps) {
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}
-        w={`${TILE_SIZE * 3}px`}
-        h={`${TILE_SIZE * 3}px`}
+        w={`${tileSize * 3}px`}
+        h={`${tileSize * 3}px`}
         zIndex={ENEMY_Z_INDEX}
         style={animation.style}
       >
@@ -145,10 +146,10 @@ export default function BigEnemy(props: BigEnemyProps) {
           zIndex={ENEMY_Z_INDEX + 2}
           transform={lightningTransform}
           style={{
-            top: `${TILE_SIZE * 0.2}px`,
-            left: `${TILE_SIZE * 0.6}px`,
-            width: `${TILE_SIZE * 1.5}px`,
-            height: `${TILE_SIZE * 1.5}px`,
+            top: `${tileSize * 0.2}px`,
+            left: `${tileSize * 0.6}px`,
+            width: `${tileSize * 1.5}px`,
+            height: `${tileSize * 1.5}px`,
           }}
         >
           <img

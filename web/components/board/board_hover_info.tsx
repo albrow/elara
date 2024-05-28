@@ -2,12 +2,8 @@ import { Box } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 
 import { MDXProps } from "mdx/types";
-import {
-  BOARD_HOVER_INFO_Z_INDEX,
-  BOARD_INNER_WIDTH,
-  TILE_SIZE,
-} from "../../lib/constants";
-import { Offset } from "../../lib/utils";
+import { BOARD_HOVER_INFO_Z_INDEX } from "../../lib/constants";
+import { Offset, getBoardDimensions, getTileSize } from "../../lib/board_utils";
 
 export const HOVER_DOC_BOX_SHADOW = "2px 2px 10px";
 
@@ -16,6 +12,7 @@ export interface BoardHoverInfoProps {
   // Note the page prop *is* actually used.
   // eslint-disable-next-line react/no-unused-prop-types
   page: <T extends MDXProps>(props: T) => JSX.Element;
+  scale: number;
   additionalInfo?: string;
   // Width of the thing we're hovering over (in board spaces)
   // Defaults to 1.
@@ -28,13 +25,19 @@ export interface BoardHoverInfoProps {
 export default function BoardHoverInfo(props: BoardHoverInfoProps) {
   const [isHovered, setIsHovered] = useState(false);
 
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+  const boardDims = useMemo(
+    () => getBoardDimensions(props.scale),
+    [props.scale]
+  );
+
   // Width of the hover info in pixels.
   const pixelWidth = 400;
 
   // If the hover info is too close to the right or left edge of the screen, we
   // offset it so that it doesn't hang off the edge.
   const rightOffset = useMemo(() => {
-    if (props.offset.leftNum + pixelWidth > BOARD_INNER_WIDTH) {
+    if (props.offset.leftNum + pixelWidth > boardDims.innerWidth) {
       // Would hang off the right.
       if (props.offset.leftNum - pixelWidth < 0) {
         // Would hang off the left too. Position in the middle.
@@ -44,7 +47,7 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
       return "0px";
     }
     return "auto";
-  }, [props.offset.leftNum]);
+  }, [boardDims.innerWidth, props.offset.leftNum]);
 
   // Bottom offset is used to make sure the hover info doesn't hang off the top or
   // bottom of the screen.
@@ -62,8 +65,8 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
       zIndex={BOARD_HOVER_INFO_Z_INDEX}
       left={props.offset.left}
       top={props.offset.top}
-      w={`${TILE_SIZE * props.width!}px`}
-      h={`${TILE_SIZE * props.height!}px`}
+      w={`${tileSize * props.width!}px`}
+      h={`${tileSize * props.height!}px`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       _hover={{ cursor: "help" }}

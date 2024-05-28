@@ -1,9 +1,14 @@
 import { Box, Image } from "@chakra-ui/react";
 import { AnimateKeyframes } from "react-simple-animate";
 
-import { TILE_SIZE, ENERGY_CELL_Z_INDEX } from "../../lib/constants";
+import { useMemo } from "react";
+import { ENERGY_CELL_Z_INDEX } from "../../lib/constants";
 import energyCellImgUrl from "../../images/board/energy_cell.png";
-import { Offset } from "../../lib/utils";
+import {
+  Offset,
+  getTileSize,
+  getDefaultSpriteDims,
+} from "../../lib/board_utils";
 import SpriteLabel from "./sprite_label";
 import EnergyCellPage from "./hover_info_pages/energy_cell.mdx";
 import BoardHoverInfo from "./board_hover_info";
@@ -15,26 +20,38 @@ interface EnergyCellProps {
   energyGain?: number;
   collected: boolean;
   enableHoverInfo: boolean;
+  scale: number;
 }
 
 export default function EnergyCell(props: EnergyCellProps) {
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+  const spriteDims = useMemo(
+    () => getDefaultSpriteDims(props.scale),
+    [props.scale]
+  );
+
   return props.collected ? null : (
     <>
       {props.enableHoverInfo && !props.collected && (
-        <BoardHoverInfo page={EnergyCellPage} offset={props.offset} />
+        <BoardHoverInfo
+          page={EnergyCellPage}
+          offset={props.offset}
+          scale={props.scale}
+        />
       )}
       <Box
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}
-        w={`${TILE_SIZE}px`}
-        h={`${TILE_SIZE}px`}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
         zIndex={ENERGY_CELL_Z_INDEX}
       >
         <Box
-          w={`${TILE_SIZE - 2}px`}
-          h={`${TILE_SIZE - 2}px`}
-          mt="1px"
+          w={`${spriteDims.width}px`}
+          h={`${spriteDims.height}px`}
+          mt={`${spriteDims.marginTop}px`}
+          ml={`${spriteDims.marginLeft}px`}
           zIndex={ENERGY_CELL_Z_INDEX}
         >
           <AnimateKeyframes

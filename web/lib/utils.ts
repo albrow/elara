@@ -1,9 +1,8 @@
 import prettydate from "pretty-date";
 
-import { LevelData, Pos } from "../../elara-lib/pkg/elara_lib";
+import { LevelData } from "../../elara-lib/pkg/elara_lib";
 import { SaveData } from "../contexts/save_data";
 import type { Scene } from "../lib/scenes";
-import { TILE_SIZE, AXIS_HEIGHT, AXIS_WIDTH } from "./constants";
 
 // Returns a read-only array of the given size.
 export function range(size: number): ReadonlyArray<number> {
@@ -14,26 +13,6 @@ export function range(size: number): ReadonlyArray<number> {
 export async function sleep(ms: number) {
   // eslint-disable-next-line no-promise-executor-return
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export interface Offset {
-  pos?: Pos;
-  top: string;
-  left: string;
-  topNum: number;
-  leftNum: number;
-}
-
-export function posToOffset(pos: Pos): Offset {
-  const leftNum = pos.x * TILE_SIZE + AXIS_WIDTH + 1;
-  const topNum = pos.y * TILE_SIZE + AXIS_HEIGHT + 1;
-  return {
-    pos,
-    left: `${leftNum}px`,
-    top: `${topNum}px`,
-    leftNum,
-    topNum,
-  };
 }
 
 export interface ChallengeProgress {

@@ -2,28 +2,36 @@ import { MdOutlineWarningAmber } from "react-icons/md";
 import { Box } from "@chakra-ui/react";
 import { AnimateKeyframes } from "react-simple-animate";
 
-import { ASTEROID_WARNING_Z_INDEX, TILE_SIZE } from "../../lib/constants";
-import { Offset } from "../../lib/utils";
+import { useMemo } from "react";
+import { ASTEROID_WARNING_Z_INDEX } from "../../lib/constants";
+import { Offset, getTileSize } from "../../lib/board_utils";
 import AsteroidWarningPage from "./hover_info_pages/asteroid_warning.mdx";
 import BoardHoverInfo from "./board_hover_info";
 
 interface RockProps {
   offset: Offset;
   enableHoverInfo: boolean;
+  scale: number;
 }
 
 export default function Rock(props: RockProps) {
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+
   return (
     <>
       {props.enableHoverInfo && (
-        <BoardHoverInfo page={AsteroidWarningPage} offset={props.offset} />
+        <BoardHoverInfo
+          page={AsteroidWarningPage}
+          offset={props.offset}
+          scale={props.scale}
+        />
       )}
       <Box
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}
-        w={`${TILE_SIZE}px`}
-        h={`${TILE_SIZE}px`}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
         zIndex={ASTEROID_WARNING_Z_INDEX}
         pt="5px"
       >
