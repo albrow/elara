@@ -12,7 +12,7 @@ import neswLockedImgUrl from "../../images/board/gate_ne_sw_locked.png";
 import neswUnlockedImgUrl from "../../images/board/gate_ne_sw_unlocked.png";
 import neswOverlayImgUrl from "../../images/board/gate_ne_sw_overlay.gif";
 import nwseOverlayImgUrl from "../../images/board/gate_nw_se_overlay.gif";
-import { Offset } from "../../lib/board_utils";
+import { Offset, getDefaultSpriteDims } from "../../lib/board_utils";
 import BoardHoverInfo from "./board_hover_info";
 import GatePage from "./hover_info_pages/gate.mdx";
 
@@ -32,6 +32,11 @@ export default function Gate(props: GateProps) {
     }
     return props.open ? neswUnlockedImgUrl : neswLockedImgUrl;
   }, [props.open, props.variant]);
+
+  const spriteDims = useMemo(
+    () => getDefaultSpriteDims(props.scale),
+    [props.scale]
+  );
 
   const overlayImageUrl = useMemo(() => {
     if (props.variant === "nwse") {
@@ -55,8 +60,8 @@ export default function Gate(props: GateProps) {
         alt="gate"
         src={imgUrl}
         position="absolute"
-        w="48px"
-        h="48px"
+        w={`${spriteDims.width}px`}
+        h={`${spriteDims.height}px`}
         zIndex={props.open ? UNLOCKED_GATE_Z_INDEX : LOCKED_GATE_Z_INDEX}
         left={props.offset.left}
         top={props.offset.top}
@@ -67,8 +72,8 @@ export default function Gate(props: GateProps) {
           alt="gate"
           src={overlayImageUrl}
           position="absolute"
-          w="48px"
-          h="48px"
+          w={`${spriteDims.width}px`}
+          h={`${spriteDims.height}px`}
           zIndex={
             props.open ? UNLOCKED_GATE_Z_INDEX + 1 : LOCKED_GATE_Z_INDEX + 1
           }

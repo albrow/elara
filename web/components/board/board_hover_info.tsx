@@ -32,22 +32,22 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
   );
 
   // Width of the hover info in pixels.
-  const pixelWidth = 400;
+  const infoBoxWidth = useMemo(() => 400 * props.scale, [props.scale]);
 
   // If the hover info is too close to the right or left edge of the screen, we
   // offset it so that it doesn't hang off the edge.
   const rightOffset = useMemo(() => {
-    if (props.offset.leftNum + pixelWidth > boardDims.innerWidth) {
+    if (props.offset.leftNum + infoBoxWidth > boardDims.innerWidth) {
       // Would hang off the right.
-      if (props.offset.leftNum - pixelWidth < 0) {
+      if (props.offset.leftNum - infoBoxWidth < 0) {
         // Would hang off the left too. Position in the middle.
-        return `${props.offset.leftNum - pixelWidth}px`;
+        return `${props.offset.leftNum - infoBoxWidth}px`;
       }
       // Would hang off the right, but not the left.
       return "0px";
     }
     return "auto";
-  }, [boardDims.innerWidth, props.offset.leftNum]);
+  }, [boardDims.innerWidth, infoBoxWidth, props.offset.leftNum]);
 
   // Bottom offset is used to make sure the hover info doesn't hang off the top or
   // bottom of the screen.
@@ -92,19 +92,13 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
             position="absolute"
             bottom={bottomOffset}
             right={rightOffset}
-            w={`${pixelWidth}px`}
-            py="5px"
-            px="12px"
+            w={`${infoBoxWidth}px`}
+            py={`${3 * props.scale}px`}
+            px={`${12 * props.scale}px`}
             boxShadow={HOVER_DOC_BOX_SHADOW}
             _hover={{ cursor: "text" }}
           >
-            <Box
-              className="md-content hover-doc"
-              // For board hover info, we need to manually reset this
-              // scale back to 1 because the board itself takes care of all
-              // of the responsive scaling.
-              transform="scale(1)"
-            >
+            <Box className="md-content hover-doc">
               <props.page additionalInfo={props.additionalInfo} />
             </Box>
           </Box>

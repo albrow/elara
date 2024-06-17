@@ -10,7 +10,11 @@ import {
 import redCrateImgUrl from "../../images/board/crate_red.png";
 import blueCrateImgUrl from "../../images/board/crate_blue.png";
 import greenCrateImgUrl from "../../images/board/crate_green.png";
-import { Offset } from "../../lib/board_utils";
+import {
+  Offset,
+  SpriteDimensions,
+  getDefaultSpriteDims,
+} from "../../lib/board_utils";
 import { CSSAnimation } from "./anim_utils";
 import BoardHoverInfo from "./board_hover_info";
 import CratePage from "./hover_info_pages/crate.mdx";
@@ -37,6 +41,18 @@ export default function Crate(props: CrateProps) {
         throw new Error(`Invalid crate color: ${props.color}`);
     }
   }, [props.color]);
+
+  const crateDims: SpriteDimensions = useMemo(() => {
+    if (props.held) {
+      return {
+        width: 32 * props.scale,
+        height: 32 * props.scale,
+        marginLeft: 9 * props.scale,
+        marginTop: 2 * props.scale,
+      };
+    }
+    return getDefaultSpriteDims(props.scale);
+  }, [props.held, props.scale]);
 
   // If animations are enabled, always animate the position of the crate
   // Note: This should always match the player animation so that the crate
@@ -71,11 +87,10 @@ export default function Crate(props: CrateProps) {
       <Image
         alt=""
         src={imgUrl}
-        // TODO(albrow): Update width, height, etc based on scale.
-        w={props.held ? "32px" : "48px"}
-        h={props.held ? "32px" : "48px"}
-        mt={props.held ? "2px" : "1px"}
-        ml={props.held ? "8px" : "1px"}
+        w={`${crateDims.width}px`}
+        h={`${crateDims.height}px`}
+        mt={`${crateDims.marginTop}px`}
+        ml={`${crateDims.marginLeft}px`}
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}

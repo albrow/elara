@@ -43,7 +43,7 @@ export default function Rock(props: RockProps) {
           keyframes={["opacity: 0", "opacity: 1"]}
         >
           <MdOutlineWarningAmber
-            size="40px"
+            size={`${40 * props.scale}px`}
             color="var(--chakra-colors-red-500)"
             style={{
               margin: "auto",

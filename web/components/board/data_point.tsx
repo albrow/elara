@@ -92,13 +92,15 @@ export default function DataPoint(props: DataPointProps) {
           ml={`${spriteDims.marginLeft}px`}
         />
         {props.reading && (
-          // TODO(albrow): Update reading indicator based on scale.
-          // (Maybe just make it percentage based?)
           <Box
             position="absolute"
-            left="19px"
-            top="18.5px"
+            left="38%"
+            top="36%"
             zIndex={DATA_POINT_Z_INDEX + 1}
+            style={{
+              transform: `scale(${props.scale})`,
+              transformOrigin: "top left",
+            }}
           >
             <Spinner
               size="xs"

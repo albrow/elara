@@ -93,10 +93,8 @@ export default function Enemy(props: EnemyProps) {
       >
         <div
           style={{
-            width: `${spriteDims.width}px`,
-            height: `${spriteDims.height}px`,
-            marginTop: `${spriteDims.marginTop}px`,
-            marginLeft: `${spriteDims.marginLeft}px`,
+            width: `${tileSize}px`,
+            height: `${tileSize}px`,
             zIndex: ENEMY_Z_INDEX,
           }}
         >
@@ -104,8 +102,8 @@ export default function Enemy(props: EnemyProps) {
             alt="enemy"
             src={getRobotImgUrl()}
             style={{
-              width: `${spriteDims}px`,
-              height: `${spriteDims}px`,
+              width: `${spriteDims.width}px`,
+              height: `${spriteDims.height}px`,
               marginTop: `${spriteDims.marginTop}px`,
               marginLeft: `${spriteDims.marginLeft}px`,
               position: "absolute",

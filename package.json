@@ -59,6 +59,7 @@
     "@fontsource/caveat": "^5.0.5",
     "@fontsource/nunito": "^4.5.11",
     "@mdx-js/rollup": "^2.1.5",
+    "@uidotdev/usehooks": "^2.4.1",
     "@uiw/codemirror-themes": "^4.13.2",
     "@uiw/react-codemirror": "^4.12.4",
     "@vimeo/player": "^2.20.1",

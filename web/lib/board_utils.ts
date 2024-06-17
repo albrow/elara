@@ -16,8 +16,8 @@ export interface Offset {
 }
 
 export function posToOffset(scale: number, pos: Pos): Offset {
-  const leftNum = pos.x * DEFAULT_TILE_SIZE * scale + AXIS_WIDTH + 1;
-  const topNum = pos.y * DEFAULT_TILE_SIZE + scale + AXIS_HEIGHT + 1;
+  const leftNum = (pos.x * (DEFAULT_TILE_SIZE + 1) + 1) * scale + AXIS_WIDTH;
+  const topNum = (pos.y * (DEFAULT_TILE_SIZE + 1) + 2) * scale + AXIS_HEIGHT;
   return {
     pos,
     left: `${leftNum}px`,
@@ -59,10 +59,12 @@ export interface BoardDimensions {
 }
 
 export function getBoardDimensions(scale: number): BoardDimensions {
+  const innerWidth = WIDTH * (DEFAULT_TILE_SIZE + 1) * scale + 1;
+  const innerHeight = HEIGHT * (DEFAULT_TILE_SIZE + 1) * scale + 1;
   return {
-    innerWidth: WIDTH * DEFAULT_TILE_SIZE * scale,
-    innerHeight: HEIGHT * DEFAULT_TILE_SIZE * scale,
-    totalWidth: WIDTH * DEFAULT_TILE_SIZE * scale + AXIS_WIDTH,
-    totalHeight: HEIGHT * DEFAULT_TILE_SIZE * scale + AXIS_HEIGHT,
+    innerWidth,
+    innerHeight,
+    totalWidth: innerWidth + AXIS_WIDTH,
+    totalHeight: innerHeight + AXIS_HEIGHT,
   };
 }

@@ -48,8 +48,8 @@ export default function EnergyCell(props: EnergyCellProps) {
         zIndex={ENERGY_CELL_Z_INDEX}
       >
         <Box
-          w={`${spriteDims.width}px`}
-          h={`${spriteDims.height}px`}
+          w="100%"
+          h="100%"
           mt={`${spriteDims.marginTop}px`}
           ml={`${spriteDims.marginLeft}px`}
           zIndex={ENERGY_CELL_Z_INDEX}
@@ -71,7 +71,12 @@ export default function EnergyCell(props: EnergyCellProps) {
             duration={1.5}
             easeType="ease-in-out"
           >
-            <Image alt="energyCell" src={energyCellImgUrl} w="48px" h="48px" />
+            <Image
+              alt="energyCell"
+              src={energyCellImgUrl}
+              w={`${spriteDims.width}px`}
+              h={`${spriteDims.height}px`}
+            />
           </AnimateKeyframes>
           <SpriteLabel
             zIndex={ENERGY_CELL_Z_INDEX + 1}

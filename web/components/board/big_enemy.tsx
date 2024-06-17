@@ -3,7 +3,7 @@ import { Box, Img } from "@chakra-ui/react";
 
 import { ENEMY_Z_INDEX, SPRITE_DROP_SHADOW } from "../../lib/constants";
 import { TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
-import { getTileSize, Offset } from "../../lib/board_utils";
+import { getTileSize, Offset, SpriteDimensions } from "../../lib/board_utils";
 import gretaUpUrl from "../../images/board/greta_up.png";
 import gretaDownUrl from "../../images/board/greta_down.png";
 import gretaLeftUrl from "../../images/board/greta_left.png";
@@ -55,6 +55,16 @@ export default function BigEnemy(props: BigEnemyProps) {
         144
       ),
     [props.animData, props.animState, props.enableAnimations, props.scale]
+  );
+
+  const spriteDims: SpriteDimensions = useMemo(
+    () => ({
+      marginTop: 1 * props.scale,
+      marginLeft: 1 * props.scale,
+      width: 144 * props.scale,
+      height: 144 * props.scale,
+    }),
+    [props.scale]
   );
 
   const imgUrl = useMemo(() => {
@@ -134,10 +144,10 @@ export default function BigEnemy(props: BigEnemyProps) {
         <Img
           position="absolute"
           src={imgUrl}
-          top="1px"
-          left="1px"
-          w="144px"
-          h="144px"
+          w={`${spriteDims.width}px`}
+          h={`${spriteDims.height}px`}
+          mt={`${spriteDims.marginTop}px`}
+          ml={`${spriteDims.marginLeft}px`}
           zIndex={ENEMY_Z_INDEX + 1}
           filter={SPRITE_DROP_SHADOW}
         />
