@@ -7,20 +7,29 @@ import {
   ASTEROID_Z_INDEX,
   ROCK_Z_INDEX,
   SPRITE_DROP_SHADOW,
-  TILE_SIZE,
 } from "../../lib/constants";
 import rockImgUrl from "../../images/board/rock.png";
 import impactImgUrl from "../../images/board/impact.png";
-import { Offset } from "../../lib/utils";
+import {
+  Offset,
+  getDefaultSpriteDims,
+  getTileSize,
+} from "../../lib/board_utils";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
 
 interface AsteroidProps {
   offset: Offset;
+  scale: number;
 }
 
 export default function Asteroid(props: AsteroidProps) {
   const xOffset = Math.random() * 200 - 100;
   const [hasImpacted, setHasImpacted] = useState(false);
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+  const spriteDims = useMemo(
+    () => getDefaultSpriteDims(props.scale),
+    [props.scale]
+  );
 
   const { getSound } = useSoundManager();
   const fallingSound = useMemo(() => getSound("asteroid_falling"), [getSound]);
@@ -74,8 +83,8 @@ export default function Asteroid(props: AsteroidProps) {
         left={props.offset.left}
         top={props.offset.top}
         position="absolute"
-        w={`${TILE_SIZE}px`}
-        h={`${TILE_SIZE}px`}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
         zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
       >
         <Animate
@@ -91,8 +100,10 @@ export default function Asteroid(props: AsteroidProps) {
             alt="rock"
             // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
             src={rockImgUrl}
-            w="48px"
-            h="48px"
+            h={`${spriteDims.height}px`}
+            w={`${spriteDims.width}px`}
+            mt={`${spriteDims.marginTop}px`}
+            ml={`${spriteDims.marginLeft}px`}
             zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
             filter={SPRITE_DROP_SHADOW}
           />
@@ -110,13 +121,13 @@ export default function Asteroid(props: AsteroidProps) {
         }}
       >
         <Image
-          left={`${props.offset.leftNum - 8}px`}
-          top={`${props.offset.topNum - 8}px`}
+          left={`${props.offset.leftNum - 8 * props.scale}px`}
+          top={`${props.offset.topNum - 8 * props.scale}px`}
           display={hasImpacted ? "block" : "none"}
           position="absolute"
           alt=""
-          w="66px"
-          h="66px"
+          w={`${66 * props.scale}px`}
+          h={`${66 * props.scale}px`}
           src={impactImgUrl}
           filter={SPRITE_DROP_SHADOW}
           zIndex={ROCK_Z_INDEX - 1}

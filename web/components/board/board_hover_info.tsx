@@ -2,12 +2,8 @@ import { Box } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 
 import { MDXProps } from "mdx/types";
-import {
-  BOARD_HOVER_INFO_Z_INDEX,
-  BOARD_INNER_WIDTH,
-  TILE_SIZE,
-} from "../../lib/constants";
-import { Offset } from "../../lib/utils";
+import { BOARD_HOVER_INFO_Z_INDEX } from "../../lib/constants";
+import { Offset, getBoardDimensions, getTileSize } from "../../lib/board_utils";
 
 export const HOVER_DOC_BOX_SHADOW = "2px 2px 10px";
 
@@ -16,6 +12,7 @@ export interface BoardHoverInfoProps {
   // Note the page prop *is* actually used.
   // eslint-disable-next-line react/no-unused-prop-types
   page: <T extends MDXProps>(props: T) => JSX.Element;
+  scale: number;
   additionalInfo?: string;
   // Width of the thing we're hovering over (in board spaces)
   // Defaults to 1.
@@ -28,23 +25,29 @@ export interface BoardHoverInfoProps {
 export default function BoardHoverInfo(props: BoardHoverInfoProps) {
   const [isHovered, setIsHovered] = useState(false);
 
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+  const boardDims = useMemo(
+    () => getBoardDimensions(props.scale),
+    [props.scale]
+  );
+
   // Width of the hover info in pixels.
-  const pixelWidth = 400;
+  const infoBoxWidth = useMemo(() => 400 * props.scale, [props.scale]);
 
   // If the hover info is too close to the right or left edge of the screen, we
   // offset it so that it doesn't hang off the edge.
   const rightOffset = useMemo(() => {
-    if (props.offset.leftNum + pixelWidth > BOARD_INNER_WIDTH) {
+    if (props.offset.leftNum + infoBoxWidth > boardDims.innerWidth) {
       // Would hang off the right.
-      if (props.offset.leftNum - pixelWidth < 0) {
+      if (props.offset.leftNum - infoBoxWidth < 0) {
         // Would hang off the left too. Position in the middle.
-        return `${props.offset.leftNum - pixelWidth}px`;
+        return `${props.offset.leftNum - infoBoxWidth}px`;
       }
       // Would hang off the right, but not the left.
       return "0px";
     }
     return "auto";
-  }, [props.offset.leftNum]);
+  }, [boardDims.innerWidth, infoBoxWidth, props.offset.leftNum]);
 
   // Bottom offset is used to make sure the hover info doesn't hang off the top or
   // bottom of the screen.
@@ -62,8 +65,8 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
       zIndex={BOARD_HOVER_INFO_Z_INDEX}
       left={props.offset.left}
       top={props.offset.top}
-      w={`${TILE_SIZE * props.width!}px`}
-      h={`${TILE_SIZE * props.height!}px`}
+      w={`${tileSize * props.width!}px`}
+      h={`${tileSize * props.height!}px`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       _hover={{ cursor: "help" }}
@@ -89,19 +92,13 @@ export default function BoardHoverInfo(props: BoardHoverInfoProps) {
             position="absolute"
             bottom={bottomOffset}
             right={rightOffset}
-            w={`${pixelWidth}px`}
-            py="5px"
-            px="12px"
+            w={`${infoBoxWidth}px`}
+            py={`${3 * props.scale}px`}
+            px={`${12 * props.scale}px`}
             boxShadow={HOVER_DOC_BOX_SHADOW}
             _hover={{ cursor: "text" }}
           >
-            <Box
-              className="md-content hover-doc"
-              // For board hover info, we need to manually reset this
-              // scale back to 1 because the board itself takes care of all
-              // of the responsive scaling.
-              transform="scale(1)"
-            >
+            <Box className="md-content hover-doc">
               <props.page additionalInfo={props.additionalInfo} />
             </Box>
           </Box>

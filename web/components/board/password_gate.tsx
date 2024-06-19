@@ -5,7 +5,6 @@ import {
   DEFAULT_STEP_TIME,
   LOCKED_GATE_Z_INDEX,
   SPRITE_DROP_SHADOW,
-  TILE_SIZE,
   UNLOCKED_GATE_Z_INDEX,
 } from "../../lib/constants";
 import nwseLockedImgUrl from "../../images/board/pw_gate_nw_se_locked.png";
@@ -14,7 +13,11 @@ import neswLockedImgUrl from "../../images/board/pw_gate_ne_sw_locked.png";
 import neswUnlockedImgUrl from "../../images/board/gate_ne_sw_unlocked.png";
 import neswOverlayImgUrl from "../../images/board/pw_gate_ne_sw_overlay.gif";
 import nwseOverlayImgUrl from "../../images/board/pw_gate_nw_se_overlay.gif";
-import { Offset } from "../../lib/utils";
+import {
+  Offset,
+  getTileSize,
+  getDefaultSpriteDims,
+} from "../../lib/board_utils";
 import { Pos } from "../../../elara-lib/pkg/elara_lib";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
 import BoardHoverInfo from "./board_hover_info";
@@ -37,9 +40,16 @@ export interface PasswordGateProps {
   playerPos: Pos;
   // Whether to enable motion-based animations and sound effects.
   enableAnimations: boolean;
+  scale: number;
 }
 
 export default function PasswordGate(props: PasswordGateProps) {
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+  const spriteDims = useMemo(
+    () => getDefaultSpriteDims(props.scale),
+    [props.scale]
+  );
+
   const { getSound } = useSoundManager();
   const wrongPasswordSound = useMemo(
     () => getSound("wrong_password"),
@@ -155,14 +165,15 @@ export default function PasswordGate(props: PasswordGateProps) {
           page={PasswordGatePage}
           offset={props.offset}
           additionalInfo={props.additionalInfo}
+          scale={props.scale}
         />
       )}
       <Box
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}
-        w={`${TILE_SIZE}px`}
-        h={`${TILE_SIZE}px`}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
         zIndex={props.open ? UNLOCKED_GATE_Z_INDEX : LOCKED_GATE_Z_INDEX}
       >
         <Tooltip
@@ -180,13 +191,15 @@ export default function PasswordGate(props: PasswordGateProps) {
           placement={getWrongPasswordPlacement()}
           variant="rover-message" // Not technically a rover message, but this gives us the right z-index.
         >
-          <Box w={`${TILE_SIZE}px`} h={`${TILE_SIZE}px`}>
+          <Box w={`${tileSize}px`} h={`${tileSize}px`}>
             <Image
               position="absolute"
               alt="password gate"
               src={imgUrl}
-              w="48px"
-              h="48px"
+              h={`${spriteDims.height}px`}
+              w={`${spriteDims.width}px`}
+              ml={`${spriteDims.marginLeft}px`}
+              mt={`${spriteDims.marginTop}px`}
               zIndex={props.open ? UNLOCKED_GATE_Z_INDEX : LOCKED_GATE_Z_INDEX}
               filter={SPRITE_DROP_SHADOW}
             />
@@ -195,8 +208,10 @@ export default function PasswordGate(props: PasswordGateProps) {
                 position="absolute"
                 alt="password gate"
                 src={overlayImageUrl}
-                w="48px"
-                h="48px"
+                h={`${spriteDims.height}px`}
+                w={`${spriteDims.width}px`}
+                ml={`${spriteDims.marginLeft}px`}
+                mt={`${spriteDims.marginTop}px`}
                 zIndex={
                   props.open
                     ? UNLOCKED_GATE_Z_INDEX + 1

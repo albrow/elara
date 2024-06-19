@@ -2,13 +2,16 @@ import { Box, Spinner, Image } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo } from "react";
 
 import {
-  TILE_SIZE,
   CSS_ANIM_DURATION,
   DATA_POINT_Z_INDEX,
   SPRITE_DROP_SHADOW,
 } from "../../lib/constants";
 import dataPointImg from "../../images/board/data_point.png";
-import { Offset } from "../../lib/utils";
+import {
+  Offset,
+  getTileSize,
+  getDefaultSpriteDims,
+} from "../../lib/board_utils";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
 import BoardHoverInfo from "./board_hover_info";
 import DataPointPage from "./hover_info_pages/data_point.mdx";
@@ -20,11 +23,18 @@ interface DataPointProps {
   enableHoverInfo: boolean;
   // Whether to enable sound effects.
   enableSfx: boolean;
+  scale: number;
   // Wether or not the position property should be CSS animated (default false)
   animatePos?: boolean;
 }
 
 export default function DataPoint(props: DataPointProps) {
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+  const spriteDims = useMemo(
+    () => getDefaultSpriteDims(props.scale),
+    [props.scale]
+  );
+
   const { getSound } = useSoundManager();
   const readingDataSound = useMemo(() => getSound("reading_data"), [getSound]);
   const getCssTransition = useCallback(() => {
@@ -60,14 +70,15 @@ export default function DataPoint(props: DataPointProps) {
           page={DataPointPage}
           offset={props.offset}
           additionalInfo={props.additionalInfo}
+          scale={props.scale}
         />
       )}
       <Box
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}
-        w={`${TILE_SIZE}px`}
-        h={`${TILE_SIZE}px`}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
         zIndex={DATA_POINT_Z_INDEX}
         filter={SPRITE_DROP_SHADOW}
         transition={getCssTransition()}
@@ -75,17 +86,21 @@ export default function DataPoint(props: DataPointProps) {
         <Image
           alt="dataPoint"
           src={dataPointImg}
-          w="48px"
-          h="48px"
-          mt="1px"
-          ml="1px"
+          w={`${spriteDims.width}px`}
+          h={`${spriteDims.height}px`}
+          mt={`${spriteDims.marginTop}px`}
+          ml={`${spriteDims.marginLeft}px`}
         />
         {props.reading && (
           <Box
             position="absolute"
-            left="19px"
-            top="18.5px"
+            left="38%"
+            top="36%"
             zIndex={DATA_POINT_Z_INDEX + 1}
+            style={{
+              transform: `scale(${props.scale})`,
+              transformOrigin: "top left",
+            }}
           >
             <Spinner
               size="xs"

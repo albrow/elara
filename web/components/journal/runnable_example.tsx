@@ -126,6 +126,7 @@ export default function RunnableExample(props: RunnableExampleProps) {
         state={boardState}
         // Only enable animations when the editor is running.
         enableAnimations={editorState === "running"}
+        scale={1}
       />
     </Stack>
   );

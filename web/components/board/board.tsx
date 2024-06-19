@@ -1,4 +1,5 @@
 import { Box } from "@chakra-ui/react";
+import { useMemo } from "react";
 
 import {
   DataPoint as RDataPoint,
@@ -15,15 +16,15 @@ import {
   AsteroidWarning as RAsteroidWarning,
   Crate as RCrate,
 } from "../../../elara-lib/pkg";
+import { range } from "../../lib/utils";
 import {
+  WIDTH,
+  HEIGHT,
+  getBoardDimensions,
+  posToOffset,
   AXIS_HEIGHT,
   AXIS_WIDTH,
-  BOARD_TOTAL_WIDTH,
-  BOARD_TOTAL_HEIGHT,
-  HEIGHT,
-  WIDTH,
-} from "../../lib/constants";
-import { Offset, posToOffset, range } from "../../lib/utils";
+} from "../../lib/board_utils";
 import "./board.css";
 import lunarSurfaceBgUrl from "../../images/board/lunar_surface_bg.jpg";
 import DataPoint from "./data_point";
@@ -42,10 +43,6 @@ import BigEnemy from "./big_enemy";
 import AsteroidWarning from "./asteroid_warning";
 import Crate from "./crate";
 
-// The order of colors to use for wires (i.e. connections between buttons
-// and other objects).
-const WIRE_COLORS = ["blue", "green"] as const;
-
 interface BoardProps {
   gameState: RState;
   asteroidWarnings: RAsteroidWarning[];
@@ -54,31 +51,17 @@ interface BoardProps {
   // Whether or not to show the initial, pre-run state of the board.
   // E.g., this includes whether or not to show asteroid warnings.
   showInitialState: boolean;
-}
-
-// Returns the offset for whatever the button is connected to.
-function getConnectionOffset(
-  state: RState,
-  buttonIndex: number
-): Offset | null {
-  if (buttonIndex >= state.buttons.length) {
-    throw new Error(`Button index ${buttonIndex} is out of range.`);
-  }
-  const button = state.buttons[buttonIndex];
-  switch (button.connection_type) {
-    case "gate":
-      if (button.connection_index >= state.gates.length) {
-        throw new Error(
-          `Gate index ${button.connection_index} is out of range.`
-        );
-      }
-      return posToOffset((state.gates[button.connection_index] as RGate).pos);
-    default:
-      return null;
-  }
+  // How much to scale the size of the board up or down.
+  // 1 = normal size, 2 = double size, 0.5 = half size, etc.
+  scale: number;
 }
 
 export default function Board(props: BoardProps) {
+  const boardDims = useMemo(
+    () => getBoardDimensions(props.scale),
+    [props.scale]
+  );
+
   return (
     <>
       <div
@@ -89,8 +72,8 @@ export default function Board(props: BoardProps) {
       >
         <table
           style={{
-            width: `${BOARD_TOTAL_WIDTH}px`,
-            height: `${BOARD_TOTAL_HEIGHT}px`,
+            width: `${boardDims.totalWidth}px`,
+            height: `${boardDims.totalHeight}px`,
           }}
         >
           <tbody>
@@ -145,14 +128,15 @@ export default function Board(props: BoardProps) {
             <AsteroidWarning
               // eslint-disable-next-line react/no-array-index-key
               key={i}
-              offset={posToOffset(asteroidWarning.pos)}
+              offset={posToOffset(props.scale, asteroidWarning.pos)}
               enableHoverInfo={props.enableHoverInfo}
+              scale={props.scale}
             />
           )
         )}
 
       <Player
-        offset={posToOffset(props.gameState.player.pos)}
+        offset={posToOffset(props.scale, props.gameState.player.pos)}
         energy={props.gameState.player.energy}
         message={props.gameState.player.message}
         errMessage={props.gameState.player.err_message}
@@ -162,13 +146,15 @@ export default function Board(props: BoardProps) {
         enableAnimations={props.enableAnimations}
         enableHoverInfo={props.enableHoverInfo}
         truePos={props.gameState.player.pos}
+        scale={props.scale}
       />
       {(props.gameState.goals as RGoal[]).map((goal, i) => (
         <Goal
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(goal.pos)}
+          offset={posToOffset(props.scale, goal.pos)}
           enableHoverInfo={props.enableHoverInfo}
+          scale={props.scale}
         />
       ))}
       {(props.gameState.energy_cells as REnergyCell[]).map((energyCell, i) => (
@@ -176,20 +162,22 @@ export default function Board(props: BoardProps) {
           collected={energyCell.collected}
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(energyCell.pos)}
+          offset={posToOffset(props.scale, energyCell.pos)}
           enableHoverInfo={props.enableHoverInfo}
+          scale={props.scale}
         />
       ))}
       {(props.gameState.enemies as REnemy[]).map((enemy, i) => (
         <Enemy
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(enemy.pos)}
+          offset={posToOffset(props.scale, enemy.pos)}
           facing={enemy.facing}
           enableAnimations={props.enableAnimations}
           animState={enemy.anim_state}
           animData={enemy.anim_data}
           enableHoverInfo={props.enableHoverInfo}
+          scale={props.scale}
         />
       ))}
       {(props.gameState.obstacles as RObstacle[]).map((obstacle, i) => {
@@ -199,7 +187,8 @@ export default function Board(props: BoardProps) {
               <Rock
                 // eslint-disable-next-line react/no-array-index-key
                 key={i}
-                offset={posToOffset(obstacle.pos)}
+                offset={posToOffset(props.scale, obstacle.pos)}
+                scale={props.scale}
               />
             );
           case "server":
@@ -207,7 +196,8 @@ export default function Board(props: BoardProps) {
               <Server
                 // eslint-disable-next-line react/no-array-index-key
                 key={i}
-                offset={posToOffset(obstacle.pos)}
+                offset={posToOffset(props.scale, obstacle.pos)}
+                scale={props.scale}
               />
             );
           case "asteroid":
@@ -215,7 +205,8 @@ export default function Board(props: BoardProps) {
               <Asteroid
                 // eslint-disable-next-line react/no-array-index-key
                 key={i}
-                offset={posToOffset(obstacle.pos)}
+                offset={posToOffset(props.scale, obstacle.pos)}
+                scale={props.scale}
               />
             );
           default:
@@ -226,31 +217,31 @@ export default function Board(props: BoardProps) {
         <Button
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(button.pos)}
+          offset={posToOffset(props.scale, button.pos)}
           currentlyPressed={button.currently_pressed}
-          connectionOffset={getConnectionOffset(props.gameState, i)}
           additionalInfo={button.additional_info}
           enableAnimations={props.enableAnimations}
           enableHoverInfo={props.enableHoverInfo}
-          wireColor={WIRE_COLORS[i % WIRE_COLORS.length]}
+          scale={props.scale}
         />
       ))}
       {(props.gameState.gates as RGate[]).map((gate, i) => (
         <Gate
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(gate.pos)}
+          offset={posToOffset(props.scale, gate.pos)}
           open={gate.open}
           additionalInfo={gate.additional_info}
           enableHoverInfo={props.enableHoverInfo}
           variant={gate.variant as "nwse" | "nesw"}
+          scale={props.scale}
         />
       ))}
       {(props.gameState.password_gates as RPasswordGate[]).map((gate, i) => (
         <PasswordGate
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(gate.pos)}
+          offset={posToOffset(props.scale, gate.pos)}
           open={gate.open}
           additionalInfo={gate.additional_info}
           enableHoverInfo={props.enableHoverInfo}
@@ -258,17 +249,19 @@ export default function Board(props: BoardProps) {
           wrongPassword={gate.wrong_password}
           playerPos={props.gameState.player.pos}
           enableAnimations={props.enableAnimations}
+          scale={props.scale}
         />
       ))}
       {(props.gameState.data_points as RDataPoint[]).map((dataPoint, i) => (
         <DataPoint
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(dataPoint.pos)}
+          offset={posToOffset(props.scale, dataPoint.pos)}
           reading={dataPoint.reading}
           additionalInfo={dataPoint.additional_info}
           enableHoverInfo={props.enableHoverInfo}
           enableSfx={props.enableAnimations}
+          scale={props.scale}
         />
       ))}
       {(props.gameState.telepads as RTelepad[]).map((telepad, i) => (
@@ -277,18 +270,20 @@ export default function Board(props: BoardProps) {
           <Telepad
             // eslint-disable-next-line react/no-array-index-key
             key={`entrance_${i}`}
-            offset={posToOffset(telepad.start_pos)}
+            offset={posToOffset(props.scale, telepad.start_pos)}
             kind="entrance"
             telepadIndex={i}
             enableHoverInfo={props.enableHoverInfo}
+            scale={props.scale}
           />
           <Telepad
             // eslint-disable-next-line react/no-array-index-key
             key={`exit_${i}`}
-            offset={posToOffset(telepad.end_pos)}
+            offset={posToOffset(props.scale, telepad.end_pos)}
             kind="exit"
             telepadIndex={i}
             enableHoverInfo={props.enableHoverInfo}
+            scale={props.scale}
           />
         </Box>
       ))}
@@ -296,23 +291,25 @@ export default function Board(props: BoardProps) {
         <BigEnemy
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(enemy.pos)}
+          offset={posToOffset(props.scale, enemy.pos)}
           facing={enemy.facing}
           enableAnimations={props.enableAnimations}
           animState={enemy.anim_state}
           animData={enemy.anim_data}
           enableHoverInfo={props.enableHoverInfo}
+          scale={props.scale}
         />
       ))}
       {(props.gameState.crates as RCrate[]).map((crate, i) => (
         <Crate
           // eslint-disable-next-line react/no-array-index-key
           key={i}
-          offset={posToOffset(crate.pos)}
+          offset={posToOffset(props.scale, crate.pos)}
           color={crate.color as "red" | "blue" | "green"}
           held={crate.held}
           enableAnimations={props.enableAnimations}
           enableHoverInfo={props.enableHoverInfo}
+          scale={props.scale}
         />
       ))}
     </>

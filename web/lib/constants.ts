@@ -10,17 +10,6 @@ export const SOUND_DELAY_TIME_MS = 100;
 // How long it takes to fade out one song before playing the next.
 export const MUSIC_FADE_OUT_TIME_MS = 1000;
 
-// Constants related to the game board and game logic.
-export const WIDTH = 12;
-export const HEIGHT = 8;
-export const TILE_SIZE = 50;
-export const AXIS_HEIGHT = 18; // Width of the axis labels at left of the game board.
-export const AXIS_WIDTH = 18; // Width of the axis labels at top of the game board.
-export const BOARD_INNER_WIDTH = TILE_SIZE * WIDTH;
-export const BOARD_INNER_HEIGHT = TILE_SIZE * HEIGHT;
-export const BOARD_TOTAL_WIDTH = BOARD_INNER_WIDTH + AXIS_WIDTH + 2;
-export const BOARD_TOTAL_HEIGHT = BOARD_INNER_HEIGHT + AXIS_HEIGHT + 2;
-
 // Game speed and animations.
 export const DEFAULT_GAME_SPEED = 1; // steps per second
 export const DEFAULT_STEP_TIME = 1000 / DEFAULT_GAME_SPEED; // milliseconds

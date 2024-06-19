@@ -1,40 +1,40 @@
+import { Box, Text, Tooltip } from "@chakra-ui/react";
+import { acceptCompletion, completionStatus } from "@codemirror/autocomplete";
 import { indentLess, indentMore } from "@codemirror/commands";
-import { completionStatus, acceptCompletion } from "@codemirror/autocomplete";
-import { lintGutter, setDiagnostics, Diagnostic } from "@codemirror/lint";
+import { Diagnostic, lintGutter, setDiagnostics } from "@codemirror/lint";
+import { Compartment } from "@codemirror/state";
 import { EditorView, KeyBinding, keymap } from "@codemirror/view";
+import { tags as t } from "@lezer/highlight";
+import { useWindowSize } from "@uidotdev/usehooks";
+import { createTheme } from "@uiw/codemirror-themes";
 import { useCodeMirror } from "@uiw/react-codemirror";
+import debounce from "lodash.debounce";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
+  useMemo,
   useRef,
   useState,
-  useMemo,
-  useLayoutEffect,
 } from "react";
-import { createTheme } from "@uiw/codemirror-themes";
-import { tags as t } from "@lezer/highlight";
-import { Box, Text, Tooltip } from "@chakra-ui/react";
-import { Compartment } from "@codemirror/state";
 import { Unsubscribe } from "router5/dist/types/base";
-import debounce from "lodash.debounce";
-
 import { useRouter } from "react-router5";
-import { highlightLines, unhighlightAll } from "../../lib/highlight_line";
+
 import {
-  StateWithLines,
   RhaiError,
   RunResult,
+  StateWithLines,
   // eslint-disable-next-line camelcase
   get_compact_code_len,
 } from "../../../elara-lib/pkg";
 import { rhaiSupport } from "../../lib/cm_rhai_extension";
-import "./editor.css";
-import { Replayer } from "../../lib/replayer";
 import { CODE_LEN_EXPLANATION } from "../../lib/constants";
-import { BP_XL, EDITOR_BORDER_WIDTH } from "../../lib/responsive_design";
-import { useWindowWidth } from "../../hooks/responsive_hooks";
-import { textEffects } from "./text_effects";
+import { highlightLines, unhighlightAll } from "../../lib/highlight_line";
+import { Replayer } from "../../lib/replayer";
+import { BP_LG, BP_XL, EDITOR_BORDER_WIDTH } from "../../lib/responsive_design";
 import ControlBar from "./control_bar";
+import "./editor.css";
+import { textEffects } from "./text_effects";
 
 const CODE_LENGTH_COUNTER_OFFSET = 16;
 
@@ -231,23 +231,20 @@ export default function Editor(props: EditorProps) {
 
   // Note: We have to use JavaScript to control the size of the editor because
   // CodeMirror requires you to pass in the height as a string.
-  const windowWidth = useWindowWidth();
+  const windowSize = useWindowSize();
 
   const codeMirrorHeight = useMemo(() => {
     if (props.type === "level") {
-      // if (windowWidth >= BP_3XL) {
-      //   return 572;
-      // }
-      // if (windowWidth >= BP_2XL) {
-      //   return 446;
-      // }
-      if (windowWidth >= BP_XL) {
-        return 370;
+      if (windowSize.width && windowSize.width >= BP_XL) {
+        return 377;
       }
-      return 284;
+      if (windowSize.width && windowSize.width >= BP_LG) {
+        return 306;
+      }
+      return 285;
     }
     return undefined;
-  }, [props.type, windowWidth]);
+  }, [props.type, windowSize]);
 
   const editorWrapperHeight = codeMirrorHeight
     ? `${codeMirrorHeight + EDITOR_BORDER_WIDTH}px`

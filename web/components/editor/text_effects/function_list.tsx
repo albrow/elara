@@ -1,11 +1,11 @@
 import { Menu, MenuButton, MenuList, Tooltip } from "@chakra-ui/react";
 import { BsJournalCode as JournalIcon } from "react-icons/bs";
 import { useMemo } from "react";
+import { useWindowSize } from "@uidotdev/usehooks";
 import {
   BP_XL,
   FUNCTION_LIST_RESPONSIVE_WIDTH,
 } from "../../../lib/responsive_design";
-import { useWindowWidth } from "../../../hooks/responsive_hooks";
 import FunctionListItem from "./function_list_item";
 
 export interface FunctionListProps {
@@ -13,7 +13,7 @@ export interface FunctionListProps {
 }
 
 export default function FunctionList(props: FunctionListProps) {
-  const windowWidth = useWindowWidth();
+  const windowSize = useWindowSize();
 
   const journalIconSize = useMemo(() => {
     // if (windowWidth >= BP_3XL) {
@@ -22,11 +22,11 @@ export default function FunctionList(props: FunctionListProps) {
     // if (windowWidth >= BP_2XL) {
     //   return "1.4em";
     // }
-    if (windowWidth >= BP_XL) {
+    if (windowSize.width && windowSize.width >= BP_XL) {
       return "1.2em";
     }
     return "1em";
-  }, [windowWidth]);
+  }, [windowSize]);
 
   return (
     <Menu placement="bottom-end" closeOnSelect={false} closeOnBlur>

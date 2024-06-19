@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import Player from "../board/player";
 import DataPoint from "../board/data_point";
 import {
@@ -10,24 +10,32 @@ import {
   DataPoint as RDataPoint,
   Pos,
 } from "../../../elara-lib/pkg/elara_lib";
-import { Offset, posToOffset } from "../../lib/utils";
+import {
+  Offset,
+  posToOffset,
+  AXIS_WIDTH,
+  getTileSize,
+} from "../../lib/board_utils";
 
 import lunarSurfaceBgUrl from "../../images/board/lunar_surface_bg.jpg";
-import { AXIS_WIDTH, CSS_ANIM_DURATION, TILE_SIZE } from "../../lib/constants";
+import { CSS_ANIM_DURATION } from "../../lib/constants";
 
 export interface MiniBoardProps {
   state: RState;
   enableAnimations: boolean;
+  scale: number;
 }
 
 export default function MiniBoard(props: MiniBoardProps) {
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+
   // For mini board, player is always at 0,0.
-  const fixedPlayerOffset: Offset = posToOffset(new_pos());
+  const fixedPlayerOffset: Offset = posToOffset(props.scale, new_pos());
 
   const getBgOffset = useCallback(() => {
     const { x, y } = props.state.player.pos;
-    return [x * -TILE_SIZE, y * -TILE_SIZE];
-  }, [props.state.player.pos]);
+    return [x * -tileSize, y * -tileSize];
+  }, [props.state.player.pos, tileSize]);
 
   // Returns the offset to apply to other sprites on the board.
   // The camera is always centered on the player, so we need to adjust
@@ -42,14 +50,14 @@ export default function MiniBoard(props: MiniBoardProps) {
         // left: `${pos.x * (TILE_SIZE + 1) + AXIS_WIDTH + 2}px`,
         // top: `${pos.y * (TILE_SIZE + 1) + AXIS_HEIGHT + 2}px`,
         top: `${
-          (spritePos.y - playerPos.y) * (TILE_SIZE + 1) + AXIS_WIDTH + 2
+          (spritePos.y - playerPos.y) * (tileSize + 1) + AXIS_WIDTH + 2
         }px`,
         left: `${
-          (spritePos.x - playerPos.x) * (TILE_SIZE + 1) + AXIS_WIDTH + 2
+          (spritePos.x - playerPos.x) * (tileSize + 1) + AXIS_WIDTH + 2
         }px`,
       } as Offset;
     },
-    [props.state.player.pos]
+    [props.state.player.pos, tileSize]
   );
 
   // The css transition for the background image.
@@ -96,6 +104,7 @@ export default function MiniBoard(props: MiniBoardProps) {
             animatePos={shouldAnimSpritePos()}
             enableHoverInfo={false}
             enableSfx={props.enableAnimations}
+            scale={props.scale}
           />
         ))}
         <Player
@@ -109,6 +118,7 @@ export default function MiniBoard(props: MiniBoardProps) {
           facing={props.state.player.facing}
           enableHoverInfo={false}
           truePos={props.state.player.pos}
+          scale={props.scale}
         />
       </Box>
     </Box>

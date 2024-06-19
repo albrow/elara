@@ -2,8 +2,8 @@
 // WARNING: If you change this, you also need to update board.css, editor.css and md_content.css.
 export const BP_SM = 480;
 export const BP_MD = 768;
-export const BP_LG = 992;
-export const BP_XL = 1268;
+export const BP_LG = 1112;
+export const BP_XL = 1274;
 export const BP_2XL = 1920;
 export const BP_3XL = 2400;
 
@@ -17,18 +17,6 @@ export const NAVBAR_RESPONSIVE_HEIGHT = {
   // "3xl": `${NAVBAR_HEIGHT_3XL}px`,
 };
 export const NAVBAR_DROPDOWN_ITEMS_PER_COLUMN = 12;
-
-// Board responsive definitions.
-// WARNING: If you change these, remember to also update md_content.css.
-const BOARD_RESPONSIVE_BASE = 0.77;
-const BOARD_RESPONSIVE_2XL = 1.2;
-const BOARD_RESPONSIVE_3XL = 1.5;
-export const BOARD_WRAPPER_RESPONSIVE_TRANSFORM = {
-  base: `scale(${BOARD_RESPONSIVE_BASE})`,
-  xl: "none",
-  // "2xl": `scale(${BOARD_RESPONSIVE_2XL})`,
-  // "3xl": `scale(${BOARD_RESPONSIVE_3XL})`,
-};
 
 // Function list responsive definitions.
 const FUNCTION_LIST_WIDTH_BASE = 160;
@@ -50,10 +38,10 @@ export const FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_RIGHT = {
   // "2xl": `${FUNCTION_LIST_WIDTH_2XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
   // "3xl": `${FUNCTION_LIST_WIDTH_3XL - FUNCTION_LIST_HOVER_RIGHT_OFFSET}px`,
 };
-export const FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_TRANSFORM = {
-  "2xl": `scale(${BOARD_RESPONSIVE_2XL})`,
-  "3xl": `scale(${BOARD_RESPONSIVE_3XL})`,
-};
+// export const FUNCTION_LIST_ITEM_HOVER_RESPONSIVE_TRANSFORM = {
+//   "2xl": `scale(${BOARD_RESPONSIVE_2XL})`,
+//   "3xl": `scale(${BOARD_RESPONSIVE_3XL})`,
+// };
 
 // Editor responsive definitions.
 export const EDITOR_BORDER_WIDTH = 2;

@@ -5,6 +5,7 @@ import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
 import { useRouter } from "react-router5";
 import { Unsubscribe } from "router5/dist/types/base";
 
+import { useWindowSize } from "@uidotdev/usehooks";
 import { StateWithLines, Game, RunResult } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
@@ -21,10 +22,10 @@ import ShowHintButton from "../components/level/show_hint_button";
 import { useHintsModal } from "../hooks/hints_modal_hooks";
 import { BG_Z_INDEX, MONITOR_FRAME_Z_INDEX } from "../lib/constants";
 import {
-  BOARD_WRAPPER_RESPONSIVE_TRANSFORM,
+  BP_LG,
+  BP_XL,
   EDITOR_SECTION_RESPONSIVE_WIDTH,
   MONITOR_BORDER_WIDTH,
-  MONITOR_FRAME_RESPONSIVE_WIDTH,
   MONITOR_PADDING_2XL,
   MONTIOR_PADDING_BASE,
   NAVBAR_RESPONSIVE_HEIGHT,
@@ -49,6 +50,24 @@ export default function Level() {
   ] = useSaveData();
   const currScene = useCurrScene();
   const router = useRouter();
+
+  // We need to know the window size to control the scale of the board. This also
+  // affects position of board elements.
+  const windowSize = useWindowSize();
+  const boardScale = useMemo(() => {
+    const { width } = windowSize;
+    if (width == null) {
+      return 1;
+    }
+    if (width < BP_LG) {
+      return 0.75;
+    }
+    if (width < BP_XL) {
+      return 0.8;
+    }
+
+    return 1;
+  }, [windowSize]);
 
   // Note: unsafeSetEditorState should only be called in response to an onStateChange
   // event from the Editor component. It does not actually change the state inside the
@@ -368,7 +387,8 @@ export default function Level() {
             bg="white"
             mx="auto"
             my="auto"
-            w={MONITOR_FRAME_RESPONSIVE_WIDTH}
+            // w={MONITOR_FRAME_RESPONSIVE_WIDTH}
+            w="fit-content"
             px={{
               base: `${MONTIOR_PADDING_BASE}px`,
               "2xl": `${MONITOR_PADDING_2XL}px`,
@@ -422,18 +442,14 @@ export default function Level() {
               )}
             </Box>
             {/* Editor and board */}
-            <Stack
-              direction="row"
-              mt="16px"
-              mb="16px"
-              h={{ base: "323.4px", xl: "fit-content" }}
-            >
+            <Stack direction="row" mt="16px" mb="16px" h="100%">
               <Box
                 id="editor-section"
                 mr={0}
                 position="relative"
                 flexShrink={0}
                 w={EDITOR_SECTION_RESPONSIVE_WIDTH}
+                h="100%"
               >
                 <Editor
                   type="level"
@@ -451,12 +467,7 @@ export default function Level() {
                   onStateChange={onEditorStateChange}
                 />
               </Box>
-              <Box
-                id="board-wrapper"
-                transformOrigin="top left"
-                height="fit-content"
-                transform={BOARD_WRAPPER_RESPONSIVE_TRANSFORM}
-              >
+              <Box id="board-wrapper" height="fit-content">
                 <Box
                   position="relative"
                   id="board-inner-wrapper"
@@ -473,6 +484,7 @@ export default function Level() {
                     enableHoverInfo={editorState !== "running"}
                     showInitialState={editorState === "editing"}
                     asteroidWarnings={currLevel().asteroid_warnings}
+                    scale={boardScale}
                   />
                 </Box>
               </Box>

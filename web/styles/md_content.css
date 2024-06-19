@@ -1,14 +1,3 @@
-/* Might be necessary for responsive hover doc scaling. */
-/* .hover-doc {
-  transform-origin: top;
-  @media screen and (min-width: 1920px) {
-    transform: scale(1.2);
-  }
-  @media screen and (min-width: 2560px) {
-    transform: scale(1.5);
-  }
-} */
-
 .md-content h1,
 .md-content h2,
 .md-content h3,
@@ -165,6 +154,48 @@
   padding: 0.05rem 0.3rem;
   font-size: 0.8rem;
   font-family: monospace;
+}
+
+/*
+  For smaller screen sizes, we need to scale down the hover info
+  so that it still fits on the screen. This breakpoint must match
+  BP_XL in responsive_design.ts.
+*/
+@media screen and (max-width: 1274px) {
+  .md-content.hover-doc {
+    h1 {
+      font-size: 1.3rem;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+    }
+
+    h3 {
+      font-size: 0.9rem;
+    }
+
+    h4 {
+      font-size: 0.8rem;
+    }
+
+    h5 {
+      font-size: 0.7rem;
+    }
+
+    h6 {
+      font-size: 0.6rem;
+    }
+
+    p {
+      font-size: 0.7rem;
+    }
+
+    code {
+      padding: 0.05rem 0.3rem;
+      font-size: 0.6rem;
+    }
+  }
 }
 
 .md-content.function-unlocked-modal h1,

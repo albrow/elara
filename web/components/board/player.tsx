@@ -6,7 +6,6 @@ import {
   PLAYER_DEFAULT_CSS_ANIM_DELAY,
   PLAYER_Z_INDEX,
   SPRITE_DROP_SHADOW,
-  TILE_SIZE,
 } from "../../lib/constants";
 import groverUpUrl from "../../images/board/grover_up.png";
 import groverDownUrl from "../../images/board/grover_down.png";
@@ -14,7 +13,11 @@ import groverLeftUrl from "../../images/board/grover_left.png";
 import groverRightUrl from "../../images/board/grover_right.png";
 import { Pos, TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
-import { Offset } from "../../lib/utils";
+import {
+  Offset,
+  getTileSize,
+  getDefaultSpriteDims,
+} from "../../lib/board_utils";
 import SpriteLabel from "./sprite_label";
 import { getSpriteAnimations } from "./anim_utils";
 import BoardHoverInfo from "./board_hover_info";
@@ -35,6 +38,7 @@ interface PlayerProps {
   enableAnimations: boolean;
   enableHoverInfo: boolean;
   facing: string;
+  scale: number;
   // Usually truePos == offset.pos, but for the sandbox, truePos is the actual
   // position of the player in the simulation, and pos is the position of the
   // player on the board (the latter is fixed to [0, 0]).
@@ -49,15 +53,22 @@ function roverMessagePlacement(pos: Pos | undefined): PlacementWithLogical {
 }
 
 export default function Player(props: PlayerProps) {
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
+  const spriteDims = useMemo(
+    () => getDefaultSpriteDims(props.scale),
+    [props.scale]
+  );
+
   const animation = useMemo(
     () =>
       getSpriteAnimations(
+        props.scale,
         props.enableAnimations,
         props.animState,
         props.animData,
         PLAYER_DEFAULT_CSS_ANIM_DELAY
       ),
-    [props.animData, props.animState, props.enableAnimations]
+    [props.animData, props.animState, props.enableAnimations, props.scale]
   );
 
   const getRobotImgUrl = useCallback(() => {
@@ -162,15 +173,19 @@ export default function Player(props: PlayerProps) {
   return (
     <>
       {props.enableHoverInfo && (
-        <BoardHoverInfo page={GroverPage} offset={props.offset} />
+        <BoardHoverInfo
+          page={GroverPage}
+          offset={props.offset}
+          scale={props.scale}
+        />
       )}
       {animation.definitions}
       <Box
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}
-        w={`${TILE_SIZE}px`}
-        h={`${TILE_SIZE}px`}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
         zIndex={PLAYER_Z_INDEX}
         style={animation.style}
       >
@@ -195,9 +210,10 @@ export default function Player(props: PlayerProps) {
         >
           <div
             style={{
-              width: `${TILE_SIZE - 2}px`,
-              height: `${TILE_SIZE - 2}px`,
-              marginTop: "1px",
+              width: `${spriteDims.width}px`,
+              height: `${spriteDims.height}px`,
+              marginTop: `${spriteDims.marginTop}px`,
+              marginLeft: `${spriteDims.marginLeft}px`,
               zIndex: PLAYER_Z_INDEX,
               filter: SPRITE_DROP_SHADOW,
             }}

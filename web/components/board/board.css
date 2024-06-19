@@ -10,22 +10,3 @@ table th {
   border-collapse: collapse;
   padding: 0;
 }
-
-/* 
-Fix for table borders on Firefox when scaling transforms are applied to the board.
-See: https://stackoverflow.com/questions/35826845/incorrect-border-rendering-when-using-css-transform-in-firefox
-*/
-@-moz-document url-prefix() {
-  @media (max-width: 1268px) {
-    #board table {
-      border-right: none;
-      border-top: none;
-    }
-
-    #board table td,
-    table th {
-      border: none;
-      box-shadow: inset -1px 1px black;
-    }
-  }
-}

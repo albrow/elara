@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { BumpAnimData, TeleAnimData } from "../../../elara-lib/pkg/elara_lib";
 import { CSS_ANIM_DURATION } from "../../lib/constants";
-import { Offset, posToOffset } from "../../lib/utils";
+import { Offset, posToOffset } from "../../lib/board_utils";
 
 export interface CSSAnimation {
   // A style object to be applied to the sprite (e.g. in the style prop).
@@ -32,6 +32,7 @@ function computeInBetween(
 // states (e.g. for the teloprtation animation). It returns a style tag containing
 // the keyframe definitions based on the given animation state and animation data.
 function getSpriteAnimationDefinitions(
+  scale: number,
   animState: string,
   animData: TeleAnimData | BumpAnimData | undefined,
   animId: string,
@@ -39,9 +40,9 @@ function getSpriteAnimationDefinitions(
 ) {
   if (animState === "teleporting") {
     const data = animData as TeleAnimData;
-    const startOffset = posToOffset(data!.start_pos);
-    const enterOffset = posToOffset(data!.enter_pos);
-    const exitOffset = posToOffset(data!.exit_pos);
+    const startOffset = posToOffset(scale, data!.start_pos);
+    const enterOffset = posToOffset(scale, data!.enter_pos);
+    const exitOffset = posToOffset(scale, data!.exit_pos);
     return (
       <style>
         {`@keyframes ${animId} {
@@ -81,8 +82,8 @@ function getSpriteAnimationDefinitions(
     // For the bumping animation, we animate 10% of the way to the obstacle,
     // then back.
     const data = animData as BumpAnimData;
-    const startOffset = posToOffset(data!.pos);
-    const obsOffset = posToOffset(data!.obstacle_pos);
+    const startOffset = posToOffset(scale, data!.pos);
+    const obsOffset = posToOffset(scale, data!.obstacle_pos);
 
     // Use a bigger offset for bigger sprites.
     const offsetAmount = spriteSize === 48 ? 0.1 : 0.2;
@@ -116,6 +117,7 @@ function getSpriteAnimationDefinitions(
 // A helper function for generating CSS styles and keyframe definitions for
 // different kinds of animations.
 export function getSpriteAnimations(
+  scale: number,
   enableAnimations: boolean,
   animState: string,
   animData: TeleAnimData | BumpAnimData | undefined,
@@ -133,6 +135,7 @@ export function getSpriteAnimations(
     return {
       style: { animation: `${CSS_ANIM_DURATION}s ease-in-out ${animId}` },
       definitions: getSpriteAnimationDefinitions(
+        scale,
         animState,
         animData,
         animId,
@@ -148,6 +151,7 @@ export function getSpriteAnimations(
         animation: `${CSS_ANIM_DURATION}s ease-in-out ${animId}`,
       },
       definitions: getSpriteAnimationDefinitions(
+        scale,
         animState,
         animData,
         animId,
