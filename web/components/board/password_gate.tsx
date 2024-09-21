@@ -41,6 +41,7 @@ export interface PasswordGateProps {
   // Whether to enable motion-based animations and sound effects.
   enableAnimations: boolean;
   scale: number;
+  filter?: string;
 }
 
 export default function PasswordGate(props: PasswordGateProps) {
@@ -175,6 +176,7 @@ export default function PasswordGate(props: PasswordGateProps) {
         w={`${tileSize}px`}
         h={`${tileSize}px`}
         zIndex={props.open ? UNLOCKED_GATE_Z_INDEX : LOCKED_GATE_Z_INDEX}
+        filter={props.filter}
       >
         <Tooltip
           label="Wrong password"

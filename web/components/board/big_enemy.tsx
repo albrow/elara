@@ -26,6 +26,7 @@ interface BigEnemyProps {
   facing: string;
   enableHoverInfo: boolean;
   scale: number;
+  filter?: string;
 }
 
 export default function BigEnemy(props: BigEnemyProps) {
@@ -140,6 +141,7 @@ export default function BigEnemy(props: BigEnemyProps) {
         h={`${tileSize * 3}px`}
         zIndex={ENEMY_Z_INDEX}
         style={animation.style}
+        filter={props.filter}
       >
         <Img
           position="absolute"

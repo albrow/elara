@@ -24,6 +24,7 @@ interface EnemyProps {
   facing: string;
   enableHoverInfo: boolean;
   scale: number;
+  filter?: string;
 }
 
 export default function Enemy(props: EnemyProps) {
@@ -90,6 +91,7 @@ export default function Enemy(props: EnemyProps) {
         h={`${tileSize}px`}
         zIndex={ENEMY_Z_INDEX}
         style={animation.style}
+        filter={props.filter}
       >
         <div
           style={{

@@ -54,6 +54,9 @@ interface BoardProps {
   // How much to scale the size of the board up or down.
   // 1 = normal size, 2 = double size, 0.5 = half size, etc.
   scale: number;
+  // A CSS filter to apply to the board.
+  // E.g., "grayscale(100%)"
+  filter?: string;
 }
 
 export default function Board(props: BoardProps) {
@@ -68,6 +71,7 @@ export default function Board(props: BoardProps) {
         id="board"
         style={{
           backgroundImage: `url("${lunarSurfaceBgUrl}")`,
+          filter: props.filter,
         }}
       >
         <table
@@ -133,6 +137,7 @@ export default function Board(props: BoardProps) {
               offset={posToOffset(props.scale, asteroidWarning.pos)}
               enableHoverInfo={props.enableHoverInfo}
               scale={props.scale}
+              filter={props.filter}
             />
           )
         )}
@@ -149,6 +154,7 @@ export default function Board(props: BoardProps) {
         enableHoverInfo={props.enableHoverInfo}
         truePos={props.gameState.player.pos}
         scale={props.scale}
+        filter={props.filter}
       />
       {(props.gameState.goals as RGoal[]).map((goal, i) => (
         <Goal
@@ -157,6 +163,7 @@ export default function Board(props: BoardProps) {
           offset={posToOffset(props.scale, goal.pos)}
           enableHoverInfo={props.enableHoverInfo}
           scale={props.scale}
+          filter={props.filter}
         />
       ))}
       {(props.gameState.energy_cells as REnergyCell[]).map((energyCell, i) => (
@@ -167,6 +174,7 @@ export default function Board(props: BoardProps) {
           offset={posToOffset(props.scale, energyCell.pos)}
           enableHoverInfo={props.enableHoverInfo}
           scale={props.scale}
+          filter={props.filter}
         />
       ))}
       {(props.gameState.enemies as REnemy[]).map((enemy, i) => (
@@ -180,6 +188,7 @@ export default function Board(props: BoardProps) {
           animData={enemy.anim_data}
           enableHoverInfo={props.enableHoverInfo}
           scale={props.scale}
+          filter={props.filter}
         />
       ))}
       {(props.gameState.obstacles as RObstacle[]).map((obstacle, i) => {
@@ -191,6 +200,7 @@ export default function Board(props: BoardProps) {
                 key={i}
                 offset={posToOffset(props.scale, obstacle.pos)}
                 scale={props.scale}
+                filter={props.filter}
               />
             );
           case "server":
@@ -200,6 +210,7 @@ export default function Board(props: BoardProps) {
                 key={i}
                 offset={posToOffset(props.scale, obstacle.pos)}
                 scale={props.scale}
+                filter={props.filter}
               />
             );
           case "asteroid":
@@ -209,6 +220,7 @@ export default function Board(props: BoardProps) {
                 key={i}
                 offset={posToOffset(props.scale, obstacle.pos)}
                 scale={props.scale}
+                filter={props.filter}
               />
             );
           default:
@@ -225,6 +237,7 @@ export default function Board(props: BoardProps) {
           enableAnimations={props.enableAnimations}
           enableHoverInfo={props.enableHoverInfo}
           scale={props.scale}
+          filter={props.filter}
         />
       ))}
       {(props.gameState.gates as RGate[]).map((gate, i) => (
@@ -237,6 +250,7 @@ export default function Board(props: BoardProps) {
           enableHoverInfo={props.enableHoverInfo}
           variant={gate.variant as "nwse" | "nesw"}
           scale={props.scale}
+          filter={props.filter}
         />
       ))}
       {(props.gameState.password_gates as RPasswordGate[]).map((gate, i) => (
@@ -252,6 +266,7 @@ export default function Board(props: BoardProps) {
           playerPos={props.gameState.player.pos}
           enableAnimations={props.enableAnimations}
           scale={props.scale}
+          filter={props.filter}
         />
       ))}
       {(props.gameState.data_points as RDataPoint[]).map((dataPoint, i) => (
@@ -264,6 +279,7 @@ export default function Board(props: BoardProps) {
           enableHoverInfo={props.enableHoverInfo}
           enableSfx={props.enableAnimations}
           scale={props.scale}
+          filter={props.filter}
         />
       ))}
       {(props.gameState.telepads as RTelepad[]).map((telepad, i) => (
@@ -277,6 +293,7 @@ export default function Board(props: BoardProps) {
             telepadIndex={i}
             enableHoverInfo={props.enableHoverInfo}
             scale={props.scale}
+            filter={props.filter}
           />
           <Telepad
             // eslint-disable-next-line react/no-array-index-key
@@ -286,6 +303,7 @@ export default function Board(props: BoardProps) {
             telepadIndex={i}
             enableHoverInfo={props.enableHoverInfo}
             scale={props.scale}
+            filter={props.filter}
           />
         </Box>
       ))}
@@ -300,6 +318,7 @@ export default function Board(props: BoardProps) {
           animData={enemy.anim_data}
           enableHoverInfo={props.enableHoverInfo}
           scale={props.scale}
+          filter={props.filter}
         />
       ))}
       {(props.gameState.crates as RCrate[]).map((crate, i) => (
@@ -312,6 +331,7 @@ export default function Board(props: BoardProps) {
           enableAnimations={props.enableAnimations}
           enableHoverInfo={props.enableHoverInfo}
           scale={props.scale}
+          filter={props.filter}
         />
       ))}
     </>

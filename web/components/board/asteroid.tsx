@@ -20,6 +20,7 @@ import { useSoundManager } from "../../hooks/sound_manager_hooks";
 interface AsteroidProps {
   offset: Offset;
   scale: number;
+  filter?: string;
 }
 
 export default function Asteroid(props: AsteroidProps) {
@@ -86,6 +87,7 @@ export default function Asteroid(props: AsteroidProps) {
         w={`${tileSize}px`}
         h={`${tileSize}px`}
         zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
+        filter={props.filter}
       >
         <Animate
           play

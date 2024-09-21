@@ -8,7 +8,11 @@ import telepadGreenEntranceUrl from "../../images/board/telepad_green_entrance.p
 import telepadGreenExitUrl from "../../images/board/telepad_green_exit.png";
 import telepadPurpleEntranceUrl from "../../images/board/telepad_purple_entrance.png";
 import telepadPurpleExitUrl from "../../images/board/telepad_purple_exit.png";
-import { Offset, getDefaultSpriteDims } from "../../lib/board_utils";
+import {
+  Offset,
+  getDefaultSpriteDims,
+  getTileSize,
+} from "../../lib/board_utils";
 import TelepadExitPage from "./hover_info_pages/telepad_exit.mdx";
 import TelepadEntrancePage from "./hover_info_pages/telepad_entrance.mdx";
 import BoardHoverInfo from "./board_hover_info";
@@ -21,6 +25,7 @@ interface TelepadProps {
   telepadIndex: number;
   enableHoverInfo: boolean;
   scale: number;
+  filter?: string;
 }
 
 const SPRITE_URLS = [
@@ -43,6 +48,7 @@ export default function Telepad(props: TelepadProps) {
     () => getDefaultSpriteDims(props.scale),
     [props.scale]
   );
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
 
   const imgUrl = useMemo(
     () =>
@@ -63,18 +69,21 @@ export default function Telepad(props: TelepadProps) {
           scale={props.scale}
         />
       )}
-      <Box>
+      <Box
+        position="absolute"
+        left={props.offset.left}
+        top={props.offset.top}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
+        zIndex={TELEPAD_Z_INDEX}
+        filter={props.filter}
+      >
         <Image
-          alt="telepad_entrance"
           src={imgUrl}
-          position="absolute"
-          left={props.offset.left}
-          top={props.offset.top}
           w={`${spriteDims.width}px`}
           h={`${spriteDims.height}px`}
           mt={`${spriteDims.marginTop}px`}
           ml={`${spriteDims.marginLeft}px`}
-          zIndex={TELEPAD_Z_INDEX}
           filter={SPRITE_DROP_SHADOW}
         />
       </Box>
