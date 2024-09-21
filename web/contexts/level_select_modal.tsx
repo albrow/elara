@@ -153,7 +153,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
               <ResponsiveModalCloseButton />
               <ModalBody id="level-select-modal-body" p="0px" h="100%">
                 <Flex h="100%">
-                  <Stack borderRight="1px solid black">
+                  <Stack borderRight="1px solid black" w="320px" flexShrink={0}>
                     <Box p="6px" pt="16px">
                       <Text
                         fontSize="24px"
@@ -170,7 +170,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                       overflowY="auto"
                       className="dark-scrollbar scrollbar-left"
                       h="100%"
-                      w="fit-content"
+                      w="100%"
                       p="6px"
                     >
                       {LEVELS.map((scene) => (
@@ -193,8 +193,10 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                       ))}
                     </Box>
                   </Stack>
-                  <Stack p="30px">
+                  <Stack p="16px" w="100%">
                     <Box
+                      mt="28px"
+                      mb="8px"
                       id="level-select-preview-outer-wrapper"
                       overflow="hidden"
                       position="relative"
@@ -203,7 +205,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                     >
                       <Box
                         id="level-select-preview-inner-wrapper"
-                        zIndex={999999999}
+                        zIndex={1}
                         position="absolute"
                         top="0"
                         left="0"
@@ -276,7 +278,9 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                           </>
                         )}
                     </Box>
+                    <Box flexGrow={1} />
                     <Button
+                      colorScheme="blue"
                       onClick={() => {
                         navigateToScene(selectedScene);
                         handleClose();
