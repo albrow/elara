@@ -18,6 +18,8 @@ import React, {
 } from "react";
 
 import { useRouter } from "react-router5";
+import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
+import { BsStar, BsStarFill } from "react-icons/bs";
 import {
   useSceneNavigator,
   useCurrScene,
@@ -28,6 +30,10 @@ import LevelSelectOption from "../components/level_select_option";
 import { ResponsiveModalCloseButton } from "../components/modal/responsive_modal_close_button";
 
 import "../styles/effects.css";
+import ObjectiveText from "../components/level/objective_text";
+import ChallengeText from "../components/level/challenge_text";
+import { Scene } from "../lib/scenes";
+import { getBoardDimensions } from "../lib/board_utils";
 
 /**
  * Provider for a modal that displays a list of levels that the user can choose
@@ -43,6 +49,60 @@ export const LevelSelectModalContext = createContext<readonly [() => void]>([
     );
   },
 ] as const);
+
+function getMiniObjectiveIcon(scene: Scene) {
+  if (scene !== null && scene.completed) {
+    return (
+      <MdCheckCircle
+        size="1.1em"
+        color="var(--chakra-colors-green-400)"
+        style={{
+          marginRight: "0.2rem",
+          display: "inline",
+          verticalAlign: "middle",
+        }}
+      />
+    );
+  }
+  return (
+    <MdCheckCircleOutline
+      size="1.1em"
+      color="var(--chakra-colors-gray-400)"
+      style={{
+        marginRight: "0.2rem",
+        display: "inline",
+        verticalAlign: "middle",
+      }}
+    />
+  );
+}
+
+function getMiniChallengeIcon(scene: Scene) {
+  if (scene !== null && scene.challengeCompleted) {
+    return (
+      <BsStarFill
+        size="1.1em"
+        color="var(--chakra-colors-yellow-400)"
+        style={{
+          marginRight: "0.2rem",
+          display: "inline",
+          verticalAlign: "middle",
+        }}
+      />
+    );
+  }
+  return (
+    <BsStar
+      size="1.1em"
+      color="var(--chakra-colors-gray-400)"
+      style={{
+        marginRight: "0.2rem",
+        display: "inline",
+        verticalAlign: "middle",
+      }}
+    />
+  );
+}
 
 export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
   const LEVELS = useLevels();
@@ -71,6 +131,9 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
     }
     return LEVELS[0];
   });
+
+  const levelPreviewScale = 0.8;
+  const boardDims = useMemo(() => getBoardDimensions(levelPreviewScale), []);
 
   return (
     <LevelSelectModalContext.Provider value={providerValue}>
@@ -131,15 +194,12 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                     </Box>
                   </Stack>
                   <Stack p="30px">
-                    <Text fontSize="24px" fontWeight="bold" mt="2px" mb="2px">
-                      Level {selectedScene?.levelIndex || 0}:{" "}
-                      {selectedScene.level?.name}
-                    </Text>
-
                     <Box
                       id="level-select-preview-outer-wrapper"
                       overflow="hidden"
                       position="relative"
+                      w={`${boardDims.totalWidth}px`}
+                      h={`${boardDims.totalHeight}px`}
                     >
                       <Box
                         id="level-select-preview-inner-wrapper"
@@ -177,6 +237,44 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                         scale={0.8}
                         filter="grayscale(1)"
                       />
+                    </Box>
+                    <Text fontSize="24px" fontWeight="bold" mt="2px" mb="2px">
+                      Level {selectedScene?.levelIndex || 0}:{" "}
+                      {selectedScene.level?.name}
+                    </Text>
+                    <Box fontSize="14px">
+                      <Text as="span" verticalAlign="middle">
+                        {getMiniObjectiveIcon(selectedScene)}
+                        <Text
+                          as="span"
+                          verticalAlign="middle"
+                          fontWeight="bold"
+                        >
+                          Objective:
+                        </Text>{" "}
+                        <ObjectiveText
+                          text={selectedScene?.level?.objective || ""}
+                        />
+                      </Text>
+                      {selectedScene?.level?.challenge !== "" &&
+                        selectedScene?.completed && (
+                          <>
+                            <br />
+                            <Text as="span" verticalAlign="middle">
+                              {getMiniChallengeIcon(selectedScene)}
+                              <Text
+                                as="span"
+                                verticalAlign="middle"
+                                fontWeight="bold"
+                              >
+                                Challenge:
+                              </Text>{" "}
+                              <ChallengeText
+                                text={selectedScene?.level?.challenge || ""}
+                              />
+                            </Text>
+                          </>
+                        )}
                     </Box>
                     <Button
                       onClick={() => {
