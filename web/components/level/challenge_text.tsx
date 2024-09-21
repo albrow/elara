@@ -23,7 +23,11 @@ function injectTooltips(text: string) {
     return (
       <>
         <span key={beforeText}>{compiler(beforeText)}</span>
-        <Tooltip label={CODE_LEN_EXPLANATION} placement="top" hasArrow>
+        <Tooltip
+          label={CODE_LEN_EXPLANATION}
+          placement="top"
+          variant="challenge"
+        >
           <Text
             as="span"
             fontStyle="italic"
@@ -62,7 +66,7 @@ function injectTooltips(text: string) {
         <Tooltip
           label="A list of all available functions for this level. Click the icon in the top right of the code editor to view the function list."
           placement="top"
-          hasArrow
+          variant="challenge"
         >
           <Text as="span">
             <Text

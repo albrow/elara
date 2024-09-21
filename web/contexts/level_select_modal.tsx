@@ -34,6 +34,7 @@ import ObjectiveText from "../components/level/objective_text";
 import ChallengeText from "../components/level/challenge_text";
 import { Scene } from "../lib/scenes";
 import { getBoardDimensions } from "../lib/board_utils";
+import { LEVEL_SELECT_OVERLAY_Z_INDEX } from "../lib/constants";
 
 /**
  * Provider for a modal that displays a list of levels that the user can choose
@@ -205,7 +206,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                     >
                       <Box
                         id="level-select-preview-inner-wrapper"
-                        zIndex={1}
+                        zIndex={LEVEL_SELECT_OVERLAY_Z_INDEX}
                         position="absolute"
                         top="0"
                         left="0"

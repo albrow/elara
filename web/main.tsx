@@ -23,6 +23,7 @@ import {
   CHAKRA_TOOL_TIP_Z_INDEX,
   ROVER_MESSAGE_Z_INDEX,
   CHAKRA_MODAL_Z_INDEX,
+  CHALLENGE_TOOL_TIP_Z_INDEX,
 } from "./lib/constants";
 import {
   BP_SM,
@@ -69,6 +70,10 @@ const elaraTheme = extendTheme({
       variants: {
         "rover-message": {
           zIndex: ROVER_MESSAGE_Z_INDEX,
+        },
+        challenge: {
+          zIndex: CHALLENGE_TOOL_TIP_Z_INDEX,
+          border: "1px solid black",
         },
       },
     },

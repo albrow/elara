@@ -62,6 +62,8 @@ export const VIDEO_SKIP_BUTTON_Z_INDEX = FULLSCREEN_VIDEO_Z_INDEX + 1;
 export const VIDEO_END_SCREEN_Z_INDEX = VIDEO_SKIP_BUTTON_Z_INDEX + 1; // Shown when fullscreen videos end. Should cover the video.
 export const NAVBAR_Z_INDEX = 2000;
 export const CHAKRA_MODAL_Z_INDEX = 2050; // Used for Chakra modals.
+export const CHALLENGE_TOOL_TIP_Z_INDEX = 3000; // Used for challenge tooltips. (We want this to be above the level select modal.)
+export const LEVEL_SELECT_OVERLAY_Z_INDEX = 4000; // Used for the overlay over the level preview in the level select modal. We want this to be higher than anything else on the board.
 
 // Various messages that are displayed to the user.
 export const CODE_LEN_EXPLANATION =
