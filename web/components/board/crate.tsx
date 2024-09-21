@@ -1,4 +1,4 @@
-import { Image } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 import { useMemo } from "react";
 
 import {
@@ -14,6 +14,7 @@ import {
   Offset,
   SpriteDimensions,
   getDefaultSpriteDims,
+  getTileSize,
 } from "../../lib/board_utils";
 import { CSSAnimation } from "./anim_utils";
 import BoardHoverInfo from "./board_hover_info";
@@ -26,6 +27,7 @@ interface CrateProps {
   enableAnimations: boolean;
   enableHoverInfo: boolean;
   scale: number;
+  filter?: string;
 }
 
 export default function Crate(props: CrateProps) {
@@ -53,6 +55,7 @@ export default function Crate(props: CrateProps) {
     }
     return getDefaultSpriteDims(props.scale);
   }, [props.held, props.scale]);
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
 
   // If animations are enabled, always animate the position of the crate
   // Note: This should always match the player animation so that the crate
@@ -84,20 +87,25 @@ export default function Crate(props: CrateProps) {
           scale={props.scale}
         />
       )}
-      <Image
-        alt=""
-        src={imgUrl}
-        w={`${crateDims.width}px`}
-        h={`${crateDims.height}px`}
-        mt={`${crateDims.marginTop}px`}
-        ml={`${crateDims.marginLeft}px`}
+      <Box
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
         zIndex={CRATE_Z_INDEX}
-        filter={SPRITE_DROP_SHADOW}
-        style={animation.style}
-      />
+        filter={props.filter}
+      >
+        <Image
+          src={imgUrl}
+          w={`${crateDims.width}px`}
+          h={`${crateDims.height}px`}
+          mt={`${crateDims.marginTop}px`}
+          ml={`${crateDims.marginLeft}px`}
+          filter={SPRITE_DROP_SHADOW}
+          style={animation.style}
+        />
+      </Box>
     </>
   );
 }

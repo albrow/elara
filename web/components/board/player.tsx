@@ -43,6 +43,8 @@ interface PlayerProps {
   // position of the player in the simulation, and pos is the position of the
   // player on the board (the latter is fixed to [0, 0]).
   truePos?: Pos;
+  // A filter to apply to the sprite. (e.g. "grayscale(1)")
+  filter?: string;
 }
 
 function roverMessagePlacement(pos: Pos | undefined): PlacementWithLogical {
@@ -188,6 +190,7 @@ export default function Player(props: PlayerProps) {
         h={`${tileSize}px`}
         zIndex={PLAYER_Z_INDEX}
         style={animation.style}
+        filter={props.filter}
       >
         {/*
           Note: This Tooltip contains both speech bubbles when the player calls the "say" 
@@ -218,7 +221,7 @@ export default function Player(props: PlayerProps) {
               filter: SPRITE_DROP_SHADOW,
             }}
           >
-            <img alt="rover" className="playerImage" src={getRobotImgUrl()} />
+            <img alt="" className="playerImage" src={getRobotImgUrl()} />
             <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.energy} />
           </div>
         </Tooltip>

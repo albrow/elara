@@ -25,6 +25,14 @@
   display: none;
 }
 
+.scrollbar-left {
+  direction: rtl;
+}
+
+.scrollbar-left > div {
+  direction: ltr;
+}
+
 .dark-scrollbar {
   scrollbar-color: var(--chakra-colors-gray-600) transparent;
 }

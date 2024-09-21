@@ -20,6 +20,7 @@ import { useSoundManager } from "../../hooks/sound_manager_hooks";
 interface AsteroidProps {
   offset: Offset;
   scale: number;
+  filter?: string;
 }
 
 export default function Asteroid(props: AsteroidProps) {
@@ -86,6 +87,7 @@ export default function Asteroid(props: AsteroidProps) {
         w={`${tileSize}px`}
         h={`${tileSize}px`}
         zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
+        filter={props.filter}
       >
         <Animate
           play
@@ -97,7 +99,6 @@ export default function Asteroid(props: AsteroidProps) {
         >
           <Image
             position="absolute"
-            alt="rock"
             // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
             src={rockImgUrl}
             h={`${spriteDims.height}px`}
@@ -125,7 +126,6 @@ export default function Asteroid(props: AsteroidProps) {
           top={`${props.offset.topNum - 8 * props.scale}px`}
           display={hasImpacted ? "block" : "none"}
           position="absolute"
-          alt=""
           w={`${66 * props.scale}px`}
           h={`${66 * props.scale}px`}
           src={impactImgUrl}

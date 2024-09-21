@@ -8,13 +8,14 @@ import { Offset, getTileSize } from "../../lib/board_utils";
 import AsteroidWarningPage from "./hover_info_pages/asteroid_warning.mdx";
 import BoardHoverInfo from "./board_hover_info";
 
-interface RockProps {
+interface AsteroidWarningProps {
   offset: Offset;
   enableHoverInfo: boolean;
   scale: number;
+  filter?: string;
 }
 
-export default function Rock(props: RockProps) {
+export default function AsteroidWarning(props: AsteroidWarningProps) {
   const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
 
   return (
@@ -34,6 +35,7 @@ export default function Rock(props: RockProps) {
         h={`${tileSize}px`}
         zIndex={ASTEROID_WARNING_Z_INDEX}
         pt="5px"
+        filter={props.filter}
       >
         <AnimateKeyframes
           play

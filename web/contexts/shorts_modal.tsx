@@ -123,11 +123,7 @@ export function ShortsModalProvider(props: PropsWithChildren<{}>) {
                 mx="auto"
                 width="fit-content"
               >
-                <Image
-                  maxH="300px"
-                  src={currShort().imageUrl}
-                  alt={currShort().title}
-                />
+                <Image maxH="300px" src={currShort().imageUrl} />
               </Box>
             </ModalBody>
             <Box w="100%">

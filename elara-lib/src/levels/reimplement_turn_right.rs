@@ -13,7 +13,7 @@ lazy_static! {
 
 impl Level for ReimplementTurnRight {
     fn name(&self) -> &'static str {
-        "Three Lefts Make a Right"
+        "How to Make a Right"
     }
     fn short_name(&self) -> &'static str {
         "reimplement_turn_right"

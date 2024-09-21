@@ -1,8 +1,12 @@
-import { Image } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { BUTTON_Z_INDEX, SPRITE_DROP_SHADOW } from "../../lib/constants";
-import { Offset, getDefaultSpriteDims } from "../../lib/board_utils";
+import {
+  Offset,
+  getDefaultSpriteDims,
+  getTileSize,
+} from "../../lib/board_utils";
 import buttonImgUrl from "../../images/board/button.png";
 import buttonPressedImgUrl from "../../images/board/button_pressed.png";
 import { useSoundManager } from "../../hooks/sound_manager_hooks";
@@ -16,6 +20,7 @@ interface ButtonProps {
   enableAnimations: boolean;
   enableHoverInfo: boolean;
   scale: number;
+  filter?: string;
 }
 
 // Amount of time to wait before we play the "unpress" animation and
@@ -27,6 +32,7 @@ export default function Button(props: ButtonProps) {
     () => getDefaultSpriteDims(props.scale),
     [props.scale]
   );
+  const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
 
   // Refs used to access the wire and image elements. Used for
   // the "unpress" animation.
@@ -101,20 +107,25 @@ export default function Button(props: ButtonProps) {
           scale={props.scale}
         />
       )}
-      <Image
-        ref={imgRef}
-        alt="button"
+      <Box
         position="absolute"
         left={props.offset.left}
         top={props.offset.top}
+        w={`${tileSize}px`}
+        h={`${tileSize}px`}
         zIndex={BUTTON_Z_INDEX}
-        src={props.currentlyPressed ? buttonPressedImgUrl : buttonImgUrl}
-        w={`${spriteDims.width}px`}
-        h={`${spriteDims.height}px`}
-        mt={`${spriteDims.marginTop}px`}
-        ml={`${spriteDims.marginLeft}px`}
-        filter={SPRITE_DROP_SHADOW}
-      />
+        filter={props.filter}
+      >
+        <Image
+          ref={imgRef}
+          src={props.currentlyPressed ? buttonPressedImgUrl : buttonImgUrl}
+          w={`${spriteDims.width}px`}
+          h={`${spriteDims.height}px`}
+          mt={`${spriteDims.marginTop}px`}
+          ml={`${spriteDims.marginLeft}px`}
+          filter={SPRITE_DROP_SHADOW}
+        />
+      </Box>
     </>
   );
 }

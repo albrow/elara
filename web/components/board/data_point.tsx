@@ -23,9 +23,10 @@ interface DataPointProps {
   enableHoverInfo: boolean;
   // Whether to enable sound effects.
   enableSfx: boolean;
-  scale: number;
   // Wether or not the position property should be CSS animated (default false)
   animatePos?: boolean;
+  scale: number;
+  filter?: string;
 }
 
 export default function DataPoint(props: DataPointProps) {
@@ -80,16 +81,16 @@ export default function DataPoint(props: DataPointProps) {
         w={`${tileSize}px`}
         h={`${tileSize}px`}
         zIndex={DATA_POINT_Z_INDEX}
-        filter={SPRITE_DROP_SHADOW}
+        filter={props.filter}
         transition={getCssTransition()}
       >
         <Image
-          alt="dataPoint"
           src={dataPointImg}
           w={`${spriteDims.width}px`}
           h={`${spriteDims.height}px`}
           mt={`${spriteDims.marginTop}px`}
           ml={`${spriteDims.marginLeft}px`}
+          filter={SPRITE_DROP_SHADOW}
         />
         {props.reading && (
           <Box

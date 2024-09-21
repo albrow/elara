@@ -21,6 +21,7 @@ interface EnergyCellProps {
   collected: boolean;
   enableHoverInfo: boolean;
   scale: number;
+  filter?: string;
 }
 
 export default function EnergyCell(props: EnergyCellProps) {
@@ -46,6 +47,7 @@ export default function EnergyCell(props: EnergyCellProps) {
         w={`${tileSize}px`}
         h={`${tileSize}px`}
         zIndex={ENERGY_CELL_Z_INDEX}
+        filter={props.filter}
       >
         <Box
           w="100%"
@@ -72,7 +74,6 @@ export default function EnergyCell(props: EnergyCellProps) {
             easeType="ease-in-out"
           >
             <Image
-              alt="energyCell"
               src={energyCellImgUrl}
               w={`${spriteDims.width}px`}
               h={`${spriteDims.height}px`}
