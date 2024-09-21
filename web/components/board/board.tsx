@@ -83,6 +83,7 @@ export default function Board(props: BoardProps) {
                 background: "white",
                 fontSize: "var(--chakra-fontSizes-xs)",
                 height: `${AXIS_HEIGHT}px`,
+                color: "black",
               }}
             >
               {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
@@ -106,6 +107,7 @@ export default function Board(props: BoardProps) {
                     fontWeight: "bold",
                     fontSize: "var(--chakra-fontSizes-xs)",
                     width: `${AXIS_WIDTH}px`,
+                    color: "black",
                   }}
                 >
                   {y}

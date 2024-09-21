@@ -135,41 +135,42 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                       Level {selectedScene?.levelIndex || 0}:{" "}
                       {selectedScene.level?.name}
                     </Text>
+
                     <Box
-                      height="fit-content"
-                      transformOrigin="top left"
-                      color="black"
-                      id="level-select-preview-wrapper"
-                      transform="scale(0.75)"
+                      id="level-select-preview-outer-wrapper"
+                      overflow="hidden"
+                      position="relative"
                     >
                       <Box
                         id="level-select-preview-inner-wrapper"
+                        zIndex={999999999}
+                        position="absolute"
+                        top="0"
+                        left="0"
                         w="100%"
                         h="100%"
-                        position="relative"
-                        overflow="hidden"
                         // Add an heavy inner shadow
                         boxShadow="inset 0 0 10px 10px rgba(0, 0, 0, 0.5)"
-                      >
-                        <Board
-                          gameState={selectedScene.level!.initial_state}
-                          asteroidWarnings={
-                            selectedScene.level!.asteroid_warnings
-                          }
-                          enableAnimations={false}
-                          enableHoverInfo={false}
-                          showInitialState
-                        />
-                      </Box>
-                      <Button
-                        onClick={() => {
-                          navigateToScene(selectedScene);
-                          handleClose();
-                        }}
-                      >
-                        Go!
-                      </Button>
+                      />
+                      <Board
+                        gameState={selectedScene.level!.initial_state}
+                        asteroidWarnings={
+                          selectedScene.level!.asteroid_warnings
+                        }
+                        enableAnimations={false}
+                        enableHoverInfo={false}
+                        showInitialState
+                        scale={0.75}
+                      />
                     </Box>
+                    <Button
+                      onClick={() => {
+                        navigateToScene(selectedScene);
+                        handleClose();
+                      }}
+                    >
+                      Go!
+                    </Button>
                   </Stack>
                 </Flex>
               </ModalBody>
