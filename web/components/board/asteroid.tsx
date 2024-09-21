@@ -99,7 +99,6 @@ export default function Asteroid(props: AsteroidProps) {
         >
           <Image
             position="absolute"
-            alt="rock"
             // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
             src={rockImgUrl}
             h={`${spriteDims.height}px`}
@@ -127,7 +126,6 @@ export default function Asteroid(props: AsteroidProps) {
           top={`${props.offset.topNum - 8 * props.scale}px`}
           display={hasImpacted ? "block" : "none"}
           position="absolute"
-          alt=""
           w={`${66 * props.scale}px`}
           h={`${66 * props.scale}px`}
           src={impactImgUrl}

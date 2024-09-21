@@ -167,7 +167,7 @@ export default function BigEnemy(props: BigEnemyProps) {
           <img
             ref={lightningImg}
             src={lightningEffectUrl}
-            alt="lightning effect"
+            alt=""
             style={{
               filter:
                 "drop-shadow(0px 0px 4px rgba(255, 0, 0, 0.9)) saturate(200%) brightness(150%)",

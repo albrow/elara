@@ -101,7 +101,7 @@ export default function Enemy(props: EnemyProps) {
           }}
         >
           <img
-            alt="enemy"
+            alt=""
             src={getRobotImgUrl()}
             style={{
               width: `${spriteDims.width}px`,
@@ -126,7 +126,7 @@ export default function Enemy(props: EnemyProps) {
             <img
               ref={lightningImg}
               src={lightningEffectUrl}
-              alt="lightning effect"
+              alt=""
               style={{
                 position: "relative",
                 top: `${tileSize * 0.2 * props.scale}px`,

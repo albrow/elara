@@ -85,7 +85,6 @@ export default function DataPoint(props: DataPointProps) {
         transition={getCssTransition()}
       >
         <Image
-          alt="dataPoint"
           src={dataPointImg}
           w={`${spriteDims.width}px`}
           h={`${spriteDims.height}px`}

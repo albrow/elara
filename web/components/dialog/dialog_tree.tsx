@@ -141,12 +141,7 @@ export default function DialogTree(props: DialogTreeProps) {
     <Flex direction="row" height="100%">
       {props.showNpcProfile && (
         <Box id="img-column" marginTop="auto">
-          <Image
-            src={npcRightImgUrl}
-            alt="profile"
-            width={128}
-            display="inline"
-          />
+          <Image src={npcRightImgUrl} width={128} display="inline" />
         </Box>
       )}
       <Box

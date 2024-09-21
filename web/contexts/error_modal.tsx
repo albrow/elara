@@ -108,24 +108,10 @@ export function ErrorModalProvider(props: PropsWithChildren<{}>) {
   const getIconOrImage = useCallback(() => {
     if (modalKind === "error") {
       if (errType === "err_no_button") {
-        return (
-          <Image
-            src={errorNoButtonImg}
-            alt="No button error"
-            maxW="500px"
-            margin="auto"
-          />
-        );
+        return <Image src={errorNoButtonImg} maxW="500px" margin="auto" />;
       }
       if (errType === "err_no_data_point") {
-        return (
-          <Image
-            src={errorNoDataPointImg}
-            alt="No data point error"
-            maxW="500px"
-            margin="auto"
-          />
-        );
+        return <Image src={errorNoDataPointImg} maxW="500px" margin="auto" />;
       }
       if (errType !== undefined) {
         throw new Error(`Unknown error type: ${errType}`);

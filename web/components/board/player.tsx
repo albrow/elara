@@ -221,7 +221,7 @@ export default function Player(props: PlayerProps) {
               filter: SPRITE_DROP_SHADOW,
             }}
           >
-            <img alt="rover" className="playerImage" src={getRobotImgUrl()} />
+            <img alt="" className="playerImage" src={getRobotImgUrl()} />
             <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.energy} />
           </div>
         </Tooltip>

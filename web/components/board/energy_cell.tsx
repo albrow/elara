@@ -74,7 +74,6 @@ export default function EnergyCell(props: EnergyCellProps) {
             easeType="ease-in-out"
           >
             <Image
-              alt="energyCell"
               src={energyCellImgUrl}
               w={`${spriteDims.width}px`}
               h={`${spriteDims.height}px`}

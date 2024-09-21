@@ -196,7 +196,6 @@ export default function PasswordGate(props: PasswordGateProps) {
           <Box w={`${tileSize}px`} h={`${tileSize}px`}>
             <Image
               position="absolute"
-              alt="password gate"
               src={imgUrl}
               h={`${spriteDims.height}px`}
               w={`${spriteDims.width}px`}
@@ -208,7 +207,6 @@ export default function PasswordGate(props: PasswordGateProps) {
             {!props.open && (
               <Image
                 position="absolute"
-                alt="password gate"
                 src={overlayImageUrl}
                 h={`${spriteDims.height}px`}
                 w={`${spriteDims.width}px`}
