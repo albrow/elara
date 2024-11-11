@@ -67,4 +67,4 @@ export const LEVEL_SELECT_OVERLAY_Z_INDEX = 4000; // Used for the overlay over t
 
 // Various messages that are displayed to the user.
 export const CODE_LEN_EXPLANATION =
-  "The number of characters in your code not including comments, spaces, newlines, or tabs.";
+  "The number of characters in your code not including things like comments, newlines, or tabs.";
