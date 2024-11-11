@@ -721,7 +721,7 @@ pub struct ScriptStats {
 
 fn compute_stats(engine: &Engine, script: &str, states: &Vec<State>) -> ScriptStats {
     let energy_used = states.last().unwrap().player.total_energy_used;
-    let time_taken = states.len() as u32;
+    let time_taken = (states.len() - 1) as u32;
     // Note that we use compact_script to remove all comments and unnecessary whitespace
     // prior to computing the length.
     let code_len = engine.compact_script(script).unwrap().len();

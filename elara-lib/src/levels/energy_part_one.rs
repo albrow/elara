@@ -68,10 +68,10 @@ move_forward(4);
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Complete the objective in 12 or fewer steps.")
+        Some("Complete the objective in 11 or fewer steps.")
     }
     fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
-        stats.time_taken <= 12
+        stats.time_taken <= 11
     }
 }
 

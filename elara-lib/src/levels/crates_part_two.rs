@@ -74,7 +74,7 @@ drop();
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal in 18 steps or fewer.")
+        Some("Reach the goal in 17 steps or fewer.")
     }
     fn check_challenge(
         &self,
@@ -82,7 +82,7 @@ drop();
         _script: &str,
         stats: &crate::script_runner::ScriptStats,
     ) -> bool {
-        stats.time_taken <= 18
+        stats.time_taken <= 17
     }
 }
 

@@ -133,10 +133,10 @@ impl Level for EnemiesAndAsteroids {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Complete the objective in 22 or fewer steps.")
+        Some("Complete the objective in 21 or fewer steps.")
     }
     fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
-        stats.time_taken <= 22
+        stats.time_taken <= 21
     }
 }
 

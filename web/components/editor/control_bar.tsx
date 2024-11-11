@@ -224,13 +224,13 @@ export default function ControlBar(props: ControlBarProps) {
                 defaultValue={0}
                 value={props.stepIndex}
                 min={0}
-                max={props.numSteps - 1}
+                max={props.numSteps}
                 step={1}
                 focusThumbOnChange={false}
                 onChange={onSliderChange}
                 onChangeEnd={onSliderChangeEnd}
               >
-                {range(props.numSteps).map((i) => (
+                {range(props.numSteps + 1).map((i) => (
                   <SliderMark
                     key={i}
                     color="white"
@@ -270,7 +270,7 @@ export default function ControlBar(props: ControlBarProps) {
                 color="white"
                 verticalAlign="top"
               >
-                Step: {props.stepIndex + 1}/{props.numSteps}
+                Step: {props.stepIndex}/{props.numSteps}
               </Text>
             </Box>
           </>

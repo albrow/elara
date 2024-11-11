@@ -450,7 +450,7 @@ export default function Editor(props: EditorProps) {
       }
       setStepIndex(0);
       onReplayStep(0, result.states[0]);
-      setNumSteps(result.states.length);
+      setNumSteps(result.stats.time_taken);
       if (replayer.current) {
         replayer.current.stop();
       }
