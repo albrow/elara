@@ -27,6 +27,7 @@ function injectTooltips(text: string) {
           label={CODE_LEN_EXPLANATION}
           placement="top"
           variant="challenge"
+          bg="gray.600"
         >
           <Text
             as="span"
@@ -67,6 +68,7 @@ function injectTooltips(text: string) {
           label="A list of all available functions for this level. Click the icon in the top right of the code editor to view the function list."
           placement="top"
           variant="challenge"
+          bg="gray.600"
         >
           <Text as="span">
             <Text
