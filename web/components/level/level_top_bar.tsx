@@ -93,7 +93,6 @@ export default function LevelTopBar(props: LevelTopBarProps) {
       position="fixed"
       w="100%"
       minW="1200px"
-      // overflowX="auto"
       mt={NAVBAR_RESPONSIVE_HEIGHT}
       whiteSpace="nowrap"
       bg="gray.700"
@@ -106,12 +105,7 @@ export default function LevelTopBar(props: LevelTopBarProps) {
       <Box p="10px" maxW="1200px" mx="auto">
         <Box>
           <Flex>
-            {/* <LevelTitle
-              title={props.currLevel.name}
-              levelIndex={props.currScene?.levelIndex || 0}
-            /> */}
             <Text
-              // fontSize={TITLE_RESPONSIVE_FONT_SCALE}
               fontSize={TITLE_FONT_SIZE_BASE}
               fontWeight="bold"
               as="span"
