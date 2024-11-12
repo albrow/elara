@@ -10,12 +10,7 @@ import {
   DataPoint as RDataPoint,
   Pos,
 } from "../../../elara-lib/pkg/elara_lib";
-import {
-  Offset,
-  posToOffset,
-  AXIS_WIDTH,
-  getTileSize,
-} from "../../lib/board_utils";
+import { Offset, posToOffset, getTileSize } from "../../lib/board_utils";
 
 import lunarSurfaceBgUrl from "../../images/board/lunar_surface_bg.jpg";
 import { CSS_ANIM_DURATION } from "../../lib/constants";
@@ -47,14 +42,8 @@ export default function MiniBoard(props: MiniBoardProps) {
       const playerPos = props.state.player.pos;
       return {
         pos: spritePos,
-        // left: `${pos.x * (TILE_SIZE + 1) + AXIS_WIDTH + 2}px`,
-        // top: `${pos.y * (TILE_SIZE + 1) + AXIS_HEIGHT + 2}px`,
-        top: `${
-          (spritePos.y - playerPos.y) * (tileSize + 1) + AXIS_WIDTH + 2
-        }px`,
-        left: `${
-          (spritePos.x - playerPos.x) * (tileSize + 1) + AXIS_WIDTH + 2
-        }px`,
+        top: `${(spritePos.y - playerPos.y) * (tileSize + 1) + 2}px`,
+        left: `${(spritePos.x - playerPos.x) * (tileSize + 1) + 2}px`,
       } as Offset;
     },
     [props.state.player.pos, tileSize]

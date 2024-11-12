@@ -387,7 +387,6 @@ export default function Level() {
             bg="white"
             mx="auto"
             my="auto"
-            // w={MONITOR_FRAME_RESPONSIVE_WIDTH}
             w="fit-content"
             px={{
               base: `${MONTIOR_PADDING_BASE}px`,
@@ -398,6 +397,7 @@ export default function Level() {
             border={`${MONITOR_BORDER_WIDTH}px solid`}
             borderColor="gray.500"
             boxShadow="0 0 20px 2px rgba(255, 255, 255, 0.5)"
+            // background="repeating-linear-gradient(0deg, var(--chakra-colors-gray-100), var(--chakra-colors-gray-100) 1px,white 1px,white 2px)"
           >
             {/* Level name and upper UI elements */}
             <Box>
@@ -468,25 +468,17 @@ export default function Level() {
                 />
               </Box>
               <Box id="board-wrapper" height="fit-content">
-                <Box
-                  position="relative"
-                  id="board-inner-wrapper"
-                  overflow="hidden"
-                  w="100%"
-                  h="100%"
-                >
-                  <Board
-                    gameState={boardState}
-                    // Note: We only want to enable animations if the editor is in the "running" state.
-                    // If the editor is in the "paused" state, it's more clear to move the sprites in
-                    // discrete steps.
-                    enableAnimations={editorState === "running"}
-                    enableHoverInfo={editorState !== "running"}
-                    showInitialState={editorState === "editing"}
-                    asteroidWarnings={currLevel().asteroid_warnings}
-                    scale={boardScale}
-                  />
-                </Box>
+                <Board
+                  gameState={boardState}
+                  // Note: We only want to enable animations if the editor is in the "running" state.
+                  // If the editor is in the "paused" state, it's more clear to move the sprites in
+                  // discrete steps.
+                  enableAnimations={editorState === "running"}
+                  enableHoverInfo={editorState !== "running"}
+                  showInitialState={editorState === "editing"}
+                  asteroidWarnings={currLevel().asteroid_warnings}
+                  scale={boardScale}
+                />
               </Box>
             </Stack>
           </Box>

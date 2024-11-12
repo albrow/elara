@@ -4,8 +4,6 @@ import { Pos } from "../../elara-lib/pkg/elara_lib";
 export const WIDTH = 12; // in tiles
 export const HEIGHT = 8; // in tiles
 export const DEFAULT_TILE_SIZE = 50;
-export const AXIS_HEIGHT = 18; // Width of the axis labels at left of the game board (in pixels).
-export const AXIS_WIDTH = 18; // Width of the axis labels at top of the game board (in pixels).
 
 export interface Offset {
   pos?: Pos;
@@ -16,8 +14,8 @@ export interface Offset {
 }
 
 export function posToOffset(scale: number, pos: Pos): Offset {
-  const leftNum = (pos.x * (DEFAULT_TILE_SIZE + 1) + 1) * scale + AXIS_WIDTH;
-  const topNum = (pos.y * (DEFAULT_TILE_SIZE + 1) + 2) * scale + AXIS_HEIGHT;
+  const leftNum = (pos.x * (DEFAULT_TILE_SIZE + 1) + 1) * scale;
+  const topNum = (pos.y * (DEFAULT_TILE_SIZE + 1) + 2) * scale;
   return {
     pos,
     left: `${leftNum}px`,
@@ -54,8 +52,6 @@ export function getDefaultSpriteDims(scale: number): SpriteDimensions {
 export interface BoardDimensions {
   innerWidth: number;
   innerHeight: number;
-  totalWidth: number;
-  totalHeight: number;
 }
 
 export function getBoardDimensions(scale: number): BoardDimensions {
@@ -64,7 +60,5 @@ export function getBoardDimensions(scale: number): BoardDimensions {
   return {
     innerWidth,
     innerHeight,
-    totalWidth: innerWidth + AXIS_WIDTH,
-    totalHeight: innerHeight + AXIS_HEIGHT,
   };
 }

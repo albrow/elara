@@ -236,12 +236,12 @@ export default function Editor(props: EditorProps) {
   const codeMirrorHeight = useMemo(() => {
     if (props.type === "level") {
       if (windowSize.width && windowSize.width >= BP_XL) {
-        return 377;
+        return 380;
       }
       if (windowSize.width && windowSize.width >= BP_LG) {
-        return 306;
+        return 309;
       }
-      return 285;
+      return 288;
     }
     return undefined;
   }, [props.type, windowSize]);
