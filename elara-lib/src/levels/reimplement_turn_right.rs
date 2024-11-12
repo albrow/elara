@@ -19,7 +19,7 @@ impl Level for ReimplementTurnRight {
         "reimplement_turn_right"
     }
     fn objective(&self) -> &'static str {
-        "Use the `three_lefts` function to move the rover ({robot}) to the goal ({goal})."
+        "Use the `three_lefts` function to reach the goal ({goal})."
     }
     fn disabled_functions(&self) -> &'static Vec<&'static str> {
         &DISABLED_FUNCS

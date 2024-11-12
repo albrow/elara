@@ -83,7 +83,7 @@ export default function MonitorStand(props: MonitorStandProps) {
     if (monitorPosition) {
       return {
         x: monitorPosition.left + 2,
-        y: monitorPosition.bottom - 2,
+        y: monitorPosition.bottom,
       };
     }
     return { x: -100, y: -100 };
@@ -93,7 +93,7 @@ export default function MonitorStand(props: MonitorStandProps) {
     if (monitorPosition) {
       return {
         x: monitorPosition.right - 2,
-        y: monitorPosition.bottom - 2,
+        y: monitorPosition.bottom,
       };
     }
     return { x: -100, y: -100 };
@@ -135,7 +135,7 @@ export default function MonitorStand(props: MonitorStandProps) {
             y1={standpointLeft.y}
             y2={standpointBottom.y}
             stroke={fillColor}
-            strokeWidth="2"
+            strokeWidth="1"
             strokeLinecap="butt"
           />
           <line
@@ -144,7 +144,7 @@ export default function MonitorStand(props: MonitorStandProps) {
             y1={standpointRight.y}
             y2={standpointBottom.y}
             stroke={fillColor}
-            strokeWidth="2"
+            strokeWidth="1"
             strokeLinecap="butt"
           />
         </svg>
