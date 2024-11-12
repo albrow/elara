@@ -1,12 +1,12 @@
 #board table {
-  border: 1px solid black;
+  border: 1px solid var(--chakra-colors-gray-800);
   border-collapse: collapse;
   table-layout: fixed;
 }
 
 #board table td,
 table th {
-  border: 1px solid black;
+  border: 1px solid var(--chakra-colors-gray-800);
   border-collapse: collapse;
   padding: 0;
 }

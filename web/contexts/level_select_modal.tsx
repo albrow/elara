@@ -133,7 +133,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
     return LEVELS[0];
   });
 
-  const levelPreviewScale = 0.8;
+  const levelPreviewScale = 0.86;
   const boardDims = useMemo(() => getBoardDimensions(levelPreviewScale), []);
 
   return (
@@ -201,8 +201,8 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                       id="level-select-preview-outer-wrapper"
                       overflow="hidden"
                       position="relative"
-                      w={`${boardDims.totalWidth}px`}
-                      h={`${boardDims.totalHeight}px`}
+                      w={`${boardDims.innerWidth}px`}
+                      h={`${boardDims.innerHeight}px`}
                     >
                       <Box
                         id="level-select-preview-inner-wrapper"
@@ -237,8 +237,9 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                         enableAnimations={false}
                         enableHoverInfo={false}
                         showInitialState
-                        scale={0.8}
+                        scale={levelPreviewScale}
                         filter="grayscale(1)"
+                        showDecoration={false}
                       />
                     </Box>
                     <Text fontSize="24px" fontWeight="bold" mt="2px" mb="2px">
