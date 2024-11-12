@@ -72,6 +72,7 @@ const elaraTheme = extendTheme({
           zIndex: ROVER_MESSAGE_Z_INDEX,
         },
         challenge: {
+          // backgroundColor: "gray.600",
           zIndex: CHALLENGE_TOOL_TIP_Z_INDEX,
           border: "1px solid black",
         },

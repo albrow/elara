@@ -53,10 +53,32 @@ export const EDITOR_SECTION_RESPONSIVE_WIDTH = {
 // Monitor responsive definitions.
 export const MONTIOR_PADDING_BASE = 10;
 export const MONITOR_PADDING_2XL = 24;
-export const MONITOR_BORDER_WIDTH = 3;
+export const MONITOR_BORDER_WIDTH = 1;
 export const MONITOR_FRAME_RESPONSIVE_WIDTH = {
   base: "1080px",
   xl: "fit-content",
+};
+
+// Level top bar responsive definitions.
+export const LEVEL_TOP_BAR_HEIGHT_BASE = 86; // In pixels
+// export const LEVEL_TOP_BAR_HEIGHT_2XL = 72;
+// export const LEVEL_TOP_BAR_HEIGHT_3XL = 88;
+export const LEVEL_TOP_BAR_RESPONSIVE_HEIGHT = {
+  base: `${LEVEL_TOP_BAR_HEIGHT_BASE}px`,
+  // "2xl": `${LEVEL_TOP_BAR_HEIGHT_2XL}px`,
+  // "3xl": `${LEVEL_TOP_BAR_HEIGHT_3XL}px`,
+};
+
+// Total height of the navbar and level top bar.
+// This is used for spacing the level content below the navbar and level top bar.
+export const LEVEL_TOTAL_TOP_HEIGHT_BASE =
+  NAVBAR_HEIGHT_BASE + LEVEL_TOP_BAR_HEIGHT_BASE;
+// export const LEVEL_TOTAL_TOP_HEIGHT_2XL = NAVBAR_HEIGHT_2XL + LEVEL_TOP_BAR_HEIGHT_2XL;
+// export const LEVEL_TOTAL_TOP_HEIGHT_3XL = NAVBAR_HEIGHT_3XL + LEVEL_TOP_BAR_HEIGHT_3XL;
+export const LEVEL_TOTAL_TOP_RESPONSIVE_HEIGHT = {
+  base: `${LEVEL_TOTAL_TOP_HEIGHT_BASE}px`,
+  // "2xl": `${LEVEL_TOTAL_TOP_HEIGHT_2XL}px`,
+  // "3xl": `${LEVEL_TOTAL_TOP_HEIGHT_3XL}px`,
 };
 
 // Title font responsive definitions.

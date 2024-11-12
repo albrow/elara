@@ -154,7 +154,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
               <ResponsiveModalCloseButton />
               <ModalBody id="level-select-modal-body" p="0px" h="100%">
                 <Flex h="100%">
-                  <Stack borderRight="1px solid black" w="320px" flexShrink={0}>
+                  <Stack borderRight="1px solid black" w="324px" flexShrink={0}>
                     <Box p="6px" pt="16px">
                       <Text
                         fontSize="24px"

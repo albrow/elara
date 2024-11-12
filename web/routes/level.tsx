@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Flex, Text, Box, Stack } from "@chakra-ui/react";
-import { BsStar, BsStarFill } from "react-icons/bs";
-import { MdCheckCircle, MdCheckCircleOutline } from "react-icons/md";
+import { Flex, Box, Stack } from "@chakra-ui/react";
 import { useRouter } from "react-router5";
 import { Unsubscribe } from "router5/dist/types/base";
 
@@ -9,22 +7,18 @@ import { useWindowSize } from "@uidotdev/usehooks";
 import { StateWithLines, Game, RunResult } from "../../elara-lib/pkg";
 import Board from "../components/board/board";
 import Editor, { EditorState } from "../components/editor/editor";
-import ObjectiveText from "../components/level/objective_text";
 import { useSaveData } from "../hooks/save_data_hooks";
 import { TREES } from "../lib/dialog_trees";
 import { useShortsModal } from "../hooks/shorts_modal_hooks";
 import LevelSuccessModal from "../components/level/success_modal";
 import { useCurrScene } from "../hooks/scenes_hooks";
-import ChallengeText from "../components/level/challenge_text";
 import { useErrorModal } from "../hooks/error_modal_hooks";
-import ShowDialogButton from "../components/level/show_dialog_button";
-import ShowHintButton from "../components/level/show_hint_button";
-import { useHintsModal } from "../hooks/hints_modal_hooks";
 import { BG_Z_INDEX, MONITOR_FRAME_Z_INDEX } from "../lib/constants";
 import {
   BP_LG,
   BP_XL,
   EDITOR_SECTION_RESPONSIVE_WIDTH,
+  LEVEL_TOTAL_TOP_RESPONSIVE_HEIGHT,
   MONITOR_BORDER_WIDTH,
   MONITOR_PADDING_2XL,
   MONTIOR_PADDING_BASE,
@@ -32,11 +26,11 @@ import {
 } from "../lib/responsive_design";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
 import { ErrorType } from "../contexts/error_modal";
-import LevelTitle from "../components/level/level_title";
 import { useDialogModal } from "../hooks/dialog_modal_hooks";
 import MonitorStand from "../components/level/monitor_stand";
 
 import monitorBgImage from "../images/monitor_bg_only.jpg";
+import LevelTopBar from "../components/level/level_top_bar";
 
 const game = Game.new();
 
@@ -82,7 +76,6 @@ export default function Level() {
 
   const [showErrorModal, _hideErrorModal, setErrorModalOnClose] =
     useErrorModal();
-  const [showHintsModal] = useHintsModal();
 
   // Load sound effects.
   const { getSound } = useSoundManager();
@@ -293,60 +286,6 @@ export default function Level() {
     resetLevelState();
   }, [resetLevelState]);
 
-  const getObjectiveIcon = useCallback(() => {
-    if (currScene !== null && currScene.completed) {
-      return (
-        <MdCheckCircle
-          size="1.1em"
-          color="var(--chakra-colors-green-400)"
-          style={{
-            marginRight: "0.2rem",
-            display: "inline",
-            verticalAlign: "middle",
-          }}
-        />
-      );
-    }
-    return (
-      <MdCheckCircleOutline
-        size="1.1em"
-        color="var(--chakra-colors-gray-400)"
-        style={{
-          marginRight: "0.2rem",
-          display: "inline",
-          verticalAlign: "middle",
-        }}
-      />
-    );
-  }, [currScene]);
-
-  const getChallengeIcon = useCallback(() => {
-    if (currScene !== null && currScene.challengeCompleted) {
-      return (
-        <BsStarFill
-          size="1.1em"
-          color="var(--chakra-colors-yellow-400)"
-          style={{
-            marginRight: "0.2rem",
-            display: "inline",
-            verticalAlign: "middle",
-          }}
-        />
-      );
-    }
-    return (
-      <BsStar
-        size="1.1em"
-        color="var(--chakra-colors-gray-400)"
-        style={{
-          marginRight: "0.2rem",
-          display: "inline",
-          verticalAlign: "middle",
-        }}
-      />
-    );
-  }, [currScene]);
-
   const monitorFrame = useRef<HTMLDivElement>(null);
 
   return (
@@ -371,12 +310,17 @@ export default function Level() {
         overflowX="auto"
       />
       <MonitorStand monitorFrameRef={monitorFrame} />
+      <LevelTopBar
+        currScene={currScene}
+        currLevel={currLevel()}
+        dialogTreeName={getDialogTree()}
+      />
       <Box
         position="fixed"
         w="100%"
         h="100%"
         zIndex={MONITOR_FRAME_Z_INDEX}
-        pt={NAVBAR_RESPONSIVE_HEIGHT}
+        pt={LEVEL_TOTAL_TOP_RESPONSIVE_HEIGHT}
         overflow="auto"
       >
         <Flex h="100%">
@@ -384,65 +328,22 @@ export default function Level() {
           <Box
             ref={monitorFrame}
             h="fit-content"
-            bg="white"
+            w="fit-content"
             mx="auto"
             my="auto"
-            w="fit-content"
-            px={{
+            py="0px"
+            p={{
               base: `${MONTIOR_PADDING_BASE}px`,
               "2xl": `${MONITOR_PADDING_2XL}px`,
             }}
-            pt={{ base: "18px", "2xl": "24px" }}
-            pb={{ lg: "0px", "2xl": "12px" }}
+            bg="rgba(255, 255, 255, 0.3)"
             border={`${MONITOR_BORDER_WIDTH}px solid`}
-            borderColor="gray.500"
+            borderColor="rgba(255, 255, 255, 0.3)"
             boxShadow="0 0 20px 2px rgba(255, 255, 255, 0.5)"
-            // background="repeating-linear-gradient(0deg, var(--chakra-colors-gray-100), var(--chakra-colors-gray-100) 1px,white 1px,white 2px)"
+            background="repeating-linear-gradient(0deg, rgba(200, 200, 200, 0.4), rgba(200, 200, 200, 0.4) 1px,rgba(255, 255, 255, 0.4) 1px,rgba(255, 255, 255, 0.4) 2px)"
           >
-            {/* Level name and upper UI elements */}
-            <Box>
-              <Flex>
-                <LevelTitle
-                  title={currLevel().name}
-                  levelIndex={currScene?.levelIndex || 0}
-                />
-                {currScene?.hints != null && currScene?.hints.length > 0 && (
-                  <Box ml="8px" my="auto" mt="auto">
-                    <ShowHintButton onClick={showHintsModal} />
-                  </Box>
-                )}
-                {getDialogTree() !== null && (
-                  <Box ml="12px" my="auto" mt="3px">
-                    <ShowDialogButton
-                      onClick={() => showDialogModal(getDialogTree()!)}
-                    />
-                  </Box>
-                )}
-              </Flex>
-            </Box>
-            {/* Objective/challenge text */}
-            <Box
-            // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-            >
-              <Text as="span" verticalAlign="middle">
-                {getObjectiveIcon()}
-                <Text as="span" verticalAlign="middle" fontWeight="bold">
-                  Objective:
-                </Text>{" "}
-                <ObjectiveText text={currLevel().objective} />
-              </Text>
-              {currLevel().challenge !== "" && currScene?.completed && (
-                <Text as="span" ml="0.5em" verticalAlign="middle">
-                  {getChallengeIcon()}
-                  <Text as="span" verticalAlign="middle" fontWeight="bold">
-                    Challenge:
-                  </Text>{" "}
-                  <ChallengeText text={currLevel().challenge} />
-                </Text>
-              )}
-            </Box>
             {/* Editor and board */}
-            <Stack direction="row" mt="16px" mb="16px" h="100%">
+            <Stack direction="row" h="100%">
               <Box
                 id="editor-section"
                 mr={0}
