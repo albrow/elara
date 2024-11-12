@@ -387,7 +387,6 @@ export default function Level() {
             bg="white"
             mx="auto"
             my="auto"
-            // w={MONITOR_FRAME_RESPONSIVE_WIDTH}
             w="fit-content"
             px={{
               base: `${MONTIOR_PADDING_BASE}px`,
