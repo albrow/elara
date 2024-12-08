@@ -57,10 +57,11 @@ export default function Crate(props: CrateProps) {
   }, [props.held, props.scale]);
   const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
 
-  // If animations are enabled, always animate the position of the crate
+  // If animations are enabled animate the position of the crate.
+  // Outer animations apply to the crate's position on the board.
   // Note: This should always match the player animation so that the crate
   // moves with the player.
-  const animation = useMemo((): CSSAnimation => {
+  const outerAnimations = useMemo((): CSSAnimation => {
     if (!props.enableAnimations) {
       return { style: { transition: "none" } };
     }
@@ -70,7 +71,22 @@ export default function Crate(props: CrateProps) {
         animation: "none",
         transition:
           `left ${CSS_ANIM_DURATION}s ${PLAYER_DEFAULT_CSS_ANIM_DELAY}s, ` +
-          `top ${CSS_ANIM_DURATION}s ${PLAYER_DEFAULT_CSS_ANIM_DELAY}s, ` +
+          `top ${CSS_ANIM_DURATION}s ${PLAYER_DEFAULT_CSS_ANIM_DELAY}s`,
+      },
+    };
+  }, [props.enableAnimations]);
+
+  // If animations are enabled, animate the size of the crate and its margins.
+  // Inner animations apply to the crate sprite itself.
+  const innerAnimations = useMemo((): CSSAnimation => {
+    if (!props.enableAnimations) {
+      return { style: { transition: "none" } };
+    }
+
+    return {
+      style: {
+        animation: "none",
+        transition:
           `width ${CSS_ANIM_DURATION}s 0.3s, ` +
           `height ${CSS_ANIM_DURATION}s 0.3s, ` +
           `margin ${CSS_ANIM_DURATION}s 0.3s`,
@@ -95,6 +111,7 @@ export default function Crate(props: CrateProps) {
         h={`${tileSize}px`}
         zIndex={CRATE_Z_INDEX}
         filter={props.filter}
+        style={outerAnimations.style}
       >
         <Image
           src={imgUrl}
@@ -103,7 +120,7 @@ export default function Crate(props: CrateProps) {
           mt={`${crateDims.marginTop}px`}
           ml={`${crateDims.marginLeft}px`}
           filter={SPRITE_DROP_SHADOW}
-          style={animation.style}
+          style={innerAnimations.style}
         />
       </Box>
     </>
