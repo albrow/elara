@@ -24,6 +24,7 @@ import {
   useSceneNavigator,
   useCurrScene,
   useLevels,
+  useNextUnlockedScene,
 } from "../hooks/scenes_hooks";
 import Board from "../components/board/board";
 import LevelSelectOption from "../components/level_select_option";
@@ -108,6 +109,7 @@ function getMiniChallengeIcon(scene: Scene) {
 export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
   const LEVELS = useLevels();
   const router = useRouter();
+  const nextUnlockedScene = useNextUnlockedScene();
   const currScene = useCurrScene();
   const { navigateToScene } = useSceneNavigator();
 
@@ -127,9 +129,18 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
   }, []);
 
   const [selectedScene, setSelectedScene] = useState(() => {
+    // If the current scene is a level, start with that level selected.
+    // This can happen when using the "Choose level" button at the top of the
+    // level screen.
     if (currScene && currScene.type === "level") {
       return currScene;
     }
+    // Next, check if the next unlocked scene is a level. If so, automatically
+    // select that level.
+    if (nextUnlockedScene.type === "level") {
+      return nextUnlockedScene;
+    }
+    // Otherwise, default to the first level.
     return LEVELS[0];
   });
 

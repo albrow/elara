@@ -41,7 +41,8 @@ export const useLevels = () =>
 export const useJournalPages = () =>
   useContext(ScenesContext).filter((s) => s.type === "journal");
 
-// A custom hook that always returns the current scene.
+// A custom hook that always returns the current scene or null if
+// we're in the hub (which doesn't count as a scene).
 export function useCurrScene() {
   const scenes = useScenes();
   const { route } = useRouteNode("");
@@ -64,15 +65,22 @@ function getNextUnlockedScene(scenes: Scene[]) {
   return scenes[0];
 }
 
-// Returns the next/latest unlocked scene. This tells us what scene the
-// player should go to next.
+/**
+ * Used to get the next/latest unlocked scene. This tells us what scene the
+ * player should go to next.
+ *
+ * @returns the next/latest unlocked scene
+ */
 export function useNextUnlockedScene() {
   const scenes = useScenes();
   return getNextUnlockedScene(scenes);
 }
 
-// Returns the next level which will be unlocked. I.e. the furst
-// level which is not unlocked.
+/**
+ * Used to get the next level which will be unlocked (but is not yet).
+ *
+ * @returns the next level which wil be unlocked
+ */
 export function useNextLevelToBeUnlocked() {
   const levels = useLevels();
   for (let i = 0; i < levels.length; i += 1) {
