@@ -65,7 +65,7 @@ export const SHORTS: { [key: string]: TutorialShort } = {
   },
   show_hints_and_dialog: {
     title: "Hints and dialog",
-    text: 'If you\'re feeling stuck, you can press the lightbulb icon near the top of the screen to get a hint. If a level has dialog, you can also press the "Show dialog" button to see the dialog again.',
+    text: 'If you\'re feeling stuck, you can press the "Show hints" button near the top of the screen to get a hint. If a level has dialog, you can also press the "Show dialog" button to see the dialog again.',
     imageUrl: showHintsAndDialogUrl,
   },
   hover_over_text: {
