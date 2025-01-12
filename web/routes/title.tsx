@@ -104,6 +104,10 @@ export default function Title() {
       // so if the user has played the game at all, assume the changelog is new for those users.
       return saveData.seenDialogTrees.length > 0;
     }
+    if (saveData.lastSeenChangelogVersion == null) {
+      // If the user has never opened the changelog, and has played the game, assume the changelog is new.
+      return saveData.seenDialogTrees.length > 0;
+    }
     return false;
   }, [saveData]);
 
