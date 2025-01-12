@@ -112,37 +112,47 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
   const nextUnlockedScene = useNextUnlockedScene();
   const currScene = useCurrScene();
   const { navigateToScene } = useSceneNavigator();
-
   const [visible, setVisible] = useState<boolean>(false);
-
-  const showLevelSelectModal = useCallback(() => {
-    setVisible(true);
-  }, []);
-
-  const providerValue = useMemo(
-    () => [showLevelSelectModal] as const,
-    [showLevelSelectModal]
-  );
 
   const handleClose = useCallback(() => {
     setVisible(false);
   }, []);
 
-  const [selectedScene, setSelectedScene] = useState(() => {
-    // If the current scene is a level, start with that level selected.
-    // This can happen when using the "Choose level" button at the top of the
-    // level screen.
+  const getSelectedSceneFromCurrScene = useCallback((currScene: Scene | null, LEVELS: Scene[]) => {
+    // If we're currently in a level, select that level by default.
     if (currScene && currScene.type === "level") {
       return currScene;
     }
-    // Next, check if the next unlocked scene is a level. If so, automatically
-    // select that level.
-    if (nextUnlockedScene.type === "level") {
-      return nextUnlockedScene;
+    // Otherwise, select the first unlocked level by default.
+    for (let level of LEVELS) {
+      if (!level.completed && level.unlocked) {
+        return level;
+      }
     }
-    // Otherwise, default to the first level.
+    // If no levels are unlocked, select the first level by default.
     return LEVELS[0];
-  });
+  }, []);
+
+  const [selectedScene, setSelectedScene] = useState(() =>
+    getSelectedSceneFromCurrScene(currScene, LEVELS)
+  );
+
+  const showLevelSelectModal = useCallback(() => {
+    // Note(albrow): For some reason, the selected scene is not always updated
+    // when the modal loads. Seems to have something to do with how router5 interacts
+    // with the currScene hook.
+    //
+    // As a workaround, we update the selected scene here right before the modal is shown.
+    // Without this workaround, the selected scene is sometimes based on the _previous_
+    // scene instead of the current.
+    setSelectedScene(getSelectedSceneFromCurrScene(currScene, LEVELS));
+    setVisible(true);
+  }, [currScene, LEVELS]);
+
+  const providerValue = useMemo(
+    () => [showLevelSelectModal] as const,
+    [showLevelSelectModal]
+  );
 
   const levelPreviewScale = 0.86;
   const boardDims = useMemo(() => getBoardDimensions(levelPreviewScale), []);
@@ -165,7 +175,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
               <ResponsiveModalCloseButton />
               <ModalBody id="level-select-modal-body" p="0px" h="100%">
                 <Flex h="100%">
-                  <Stack borderRight="1px solid black" w="336px" flexShrink={0}>
+                  <Stack borderRight="1px solid black" w="338px" flexShrink={0}>
                     <Box p="6px" pt="16px">
                       <Text
                         fontSize="24px"
