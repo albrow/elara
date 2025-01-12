@@ -1,12 +1,12 @@
 {
   "name": "elara-electron",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Electron build for Elara: a free coding game",
   "main": "main.js",
   "build": {
     "appId": "com.elaragame.app",
     "productName": "Elara",
-    "copyright": "Copyright (c) 2022-2023 Alex Browne",
+    "copyright": "Copyright (c) 2022-2025 Alex Browne",
     "mac": {
       "category": "public.app-category.games"
     }
