@@ -7,4 +7,5 @@
 /web/dist-*
 /electron/dist
 /electron/static
+/electron/node_modules
 /web/videos
