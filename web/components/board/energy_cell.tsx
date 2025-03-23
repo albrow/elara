@@ -2,7 +2,7 @@ import { Box, Image } from "@chakra-ui/react";
 import { AnimateKeyframes } from "react-simple-animate";
 
 import { useMemo } from "react";
-import { ENERGY_CELL_Z_INDEX } from "../../lib/constants";
+import { ENERGY_CELL_Z_INDEX, REFLECTION_Z_INDEX } from "../../lib/constants";
 import energyCellImgUrl from "../../images/board/energy_cell.png";
 import {
   Offset,
@@ -22,6 +22,7 @@ interface EnergyCellProps {
   enableHoverInfo: boolean;
   scale: number;
   filter?: string;
+  showReflection?: boolean;
 }
 
 export default function EnergyCell(props: EnergyCellProps) {
@@ -84,6 +85,44 @@ export default function EnergyCell(props: EnergyCellProps) {
             value={`+${props.energyGain}`}
           />
         </Box>
+        {props.showReflection && (
+          <Box
+            w="100%"
+            h="100%"
+            mt={`${spriteDims.marginTop}px`}
+            ml={`${spriteDims.marginLeft}px`}
+            position="absolute"
+            top="62%"
+            zIndex={REFLECTION_Z_INDEX}
+          >
+            <AnimateKeyframes
+              keyframes={[
+                {
+                  transform: "translateY(3px) scaleY(-1)",
+                },
+                {
+                  transform: "translateY(-1px) scaleY(-1)",
+                },
+              ]}
+              play
+              iterationCount="infinite"
+              direction="alternate"
+              duration={1.5}
+              easeType="ease-in-out"
+            >
+              <Image
+                src={energyCellImgUrl}
+                w={`${spriteDims.width}px`}
+                h={`${spriteDims.height}px`}
+                style={{
+                  opacity: 0.3,
+                  filter: "blur(1px)",
+                  maskImage: "linear-gradient(transparent 30%, black 90%)",
+                }}
+              />
+            </AnimateKeyframes>
+          </Box>
+        )}
       </Box>
     </>
   );

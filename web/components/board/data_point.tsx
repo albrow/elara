@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import {
   CSS_ANIM_DURATION,
   DATA_POINT_Z_INDEX,
+  REFLECTION_Z_INDEX,
   SPRITE_DROP_SHADOW,
 } from "../../lib/constants";
 import dataPointImg from "../../images/board/data_point.png";
@@ -27,6 +28,7 @@ interface DataPointProps {
   animatePos?: boolean;
   scale: number;
   filter?: string;
+  showReflection?: boolean;
 }
 
 export default function DataPoint(props: DataPointProps) {
@@ -92,6 +94,24 @@ export default function DataPoint(props: DataPointProps) {
           ml={`${spriteDims.marginLeft}px`}
           filter={SPRITE_DROP_SHADOW}
         />
+        {props.showReflection && (
+          <Image
+            src={dataPointImg}
+            w={`${spriteDims.width}px`}
+            h={`${spriteDims.height}px`}
+            mt={`${spriteDims.marginTop}px`}
+            ml={`${spriteDims.marginLeft}px`}
+            position="absolute"
+            top="72%"
+            zIndex={REFLECTION_Z_INDEX}
+            style={{
+              transform: "scaleY(-1)",
+              opacity: 0.3,
+              filter: "blur(1px)",
+              maskImage: "linear-gradient(transparent 30%, black 90%)",
+            }}
+          />
+        )}
         {props.reading && (
           <Box
             position="absolute"

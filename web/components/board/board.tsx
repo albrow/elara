@@ -134,6 +134,7 @@ export default function Board(props: BoardProps) {
           truePos={props.gameState.player.pos}
           scale={props.scale}
           filter={props.filter}
+          showReflection={props.levelStyle === "glossy_tiles"}
         />
         {(props.gameState.goals as RGoal[]).map((goal, i) => (
           <Goal
@@ -155,6 +156,7 @@ export default function Board(props: BoardProps) {
               enableHoverInfo={props.enableHoverInfo}
               scale={props.scale}
               filter={props.filter}
+              showReflection={props.levelStyle === "glossy_tiles"}
             />
           )
         )}
@@ -192,6 +194,7 @@ export default function Board(props: BoardProps) {
                   offset={posToOffset(props.scale, obstacle.pos)}
                   scale={props.scale}
                   filter={props.filter}
+                  showReflection={props.levelStyle === "glossy_tiles"}
                 />
               );
             case "asteroid":
@@ -219,6 +222,7 @@ export default function Board(props: BoardProps) {
             enableHoverInfo={props.enableHoverInfo}
             scale={props.scale}
             filter={props.filter}
+            showReflection={props.levelStyle === "glossy_tiles"}
           />
         ))}
         {(props.gameState.gates as RGate[]).map((gate, i) => (
@@ -261,6 +265,7 @@ export default function Board(props: BoardProps) {
             enableSfx={props.enableAnimations}
             scale={props.scale}
             filter={props.filter}
+            showReflection={props.levelStyle === "glossy_tiles"}
           />
         ))}
         {(props.gameState.telepads as RTelepad[]).map((telepad, i) => (

@@ -1,10 +1,11 @@
-import { Tooltip, PlacementWithLogical, Box, Text } from "@chakra-ui/react";
+import { Tooltip, PlacementWithLogical, Box, Text, Image } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { compiler } from "markdown-to-jsx";
 
 import {
   PLAYER_DEFAULT_CSS_ANIM_DELAY,
   PLAYER_Z_INDEX,
+  REFLECTION_Z_INDEX,
   SPRITE_DROP_SHADOW,
 } from "../../lib/constants";
 import groverUpUrl from "../../images/board/grover_up.png";
@@ -45,6 +46,7 @@ interface PlayerProps {
   truePos?: Pos;
   // A filter to apply to the sprite. (e.g. "grayscale(1)")
   filter?: string;
+  showReflection?: boolean;
 }
 
 function roverMessagePlacement(pos: Pos | undefined): PlacementWithLogical {
@@ -225,6 +227,31 @@ export default function Player(props: PlayerProps) {
             <SpriteLabel zIndex={PLAYER_Z_INDEX + 1} value={props.energy} />
           </div>
         </Tooltip>
+        {props.showReflection && (
+          <div
+            style={{
+              width: `${spriteDims.width}px`,
+              height: `${spriteDims.height}px`,
+              marginTop: `${spriteDims.marginTop}px`,
+              marginLeft: `${spriteDims.marginLeft}px`,
+              position: "absolute",
+              top: "93%",
+              zIndex: REFLECTION_Z_INDEX,
+            }}
+          >
+            <Image
+              src={getRobotImgUrl()}
+              w={`${spriteDims.width}px`}
+              h={`${spriteDims.height}px`}
+              style={{
+                transform: "scaleY(-1)",
+                opacity: 0.3,
+                filter: "blur(1px)",
+                maskImage: "linear-gradient(transparent 34%, black 100%)",
+              }}
+            />
+          </div>
+        )}
       </Box>
     </>
   );

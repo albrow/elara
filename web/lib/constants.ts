@@ -34,6 +34,7 @@ export const JOURNAL_HANDLES_Z_INDEX = -800;
 
 // Next section is for the board/map and the elements that appear on top of it.
 export const BOARD_BG_Z_INDEX = -100;
+export const REFLECTION_Z_INDEX = 5;
 export const BUTTON_WIRE_Z_INDEX = 10;
 export const ASTEROID_WARNING_Z_INDEX = 20;
 export const ROCK_Z_INDEX = 20;
