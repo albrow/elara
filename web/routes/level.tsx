@@ -381,6 +381,11 @@ export default function Level() {
                   levelStyle={currLevel().style}
                   cameraText={currLevel().camera_text}
                   showDecoration={true}
+                  filter={
+                    currLevel().style === "glossy_tiles"
+                      ? "brightness(0.8) contrast(0.85) saturate(1.2)"
+                      : ""
+                  }
                 />
               </Box>
             </Stack>
