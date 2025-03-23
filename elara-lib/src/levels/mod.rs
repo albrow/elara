@@ -58,6 +58,8 @@ pub enum LevelStyle {
     Default,
     // Glossy tile background. Like in the interior of Moonbase Alpha.
     GlossyTiles,
+    // Plain gray background. Used for the level preview in the level selection menu.
+    Gray,
 }
 
 lazy_static! {

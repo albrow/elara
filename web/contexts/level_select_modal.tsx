@@ -259,8 +259,9 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                         enableHoverInfo={false}
                         showInitialState
                         scale={levelPreviewScale}
-                        filter="grayscale(1)"
+                        filter="saturate(0.4) sepia(0.8) hue-rotate(175deg) brightness(0.8)"
                         showDecoration={false}
+                        levelStyle="gray"
                       />
                     </Box>
                     <Text fontSize="24px" fontWeight="bold" mt="2px" mb="2px">

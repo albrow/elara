@@ -153,6 +153,7 @@ impl LevelData {
             style: match level.style() {
                 LevelStyle::Default => "default".to_string(),
                 LevelStyle::GlossyTiles => "glossy_tiles".to_string(),
+                LevelStyle::Gray => "gray".to_string(),
             },
             camera_text: level.camera_text().to_string(),
             objective: level.objective().to_string(),
