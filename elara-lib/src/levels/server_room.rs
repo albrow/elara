@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use super::{Level, Outcome};
+use super::{Level, LevelStyle, Outcome};
 use crate::{
     constants::ERR_OUT_OF_ENERGY,
     simulation::{
@@ -89,6 +89,12 @@ impl Level for ServerRoom {
     }
     fn short_name(&self) -> &'static str {
         "server_room"
+    }
+    fn style(&self) -> LevelStyle {
+        LevelStyle::GlossyTiles
+    }
+    fn camera_text(&self) -> &'static str {
+        "Moonbase Alpha: Interior Camera A"
     }
     fn objective(&self) -> &'static str {
         "Press the button ({button}) to shut down the servers."

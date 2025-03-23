@@ -21,7 +21,7 @@ import {
   LEVEL_TOTAL_TOP_RESPONSIVE_HEIGHT,
   MONITOR_BORDER_WIDTH,
   MONITOR_PADDING_2XL,
-  MONTIOR_PADDING_BASE,
+  MONITOR_PADDING_BASE,
   NAVBAR_RESPONSIVE_HEIGHT,
 } from "../lib/responsive_design";
 import { useSoundManager } from "../hooks/sound_manager_hooks";
@@ -106,9 +106,8 @@ export default function Level() {
     if (!currScene) {
       return;
     }
-    document.title = `Elara | Level ${currScene.levelIndex}: ${
-      currLevel().name
-    }`;
+    document.title = `Elara | Level ${currScene.levelIndex}: ${currLevel().name
+      }`;
   }, [currLevel, currScene]);
 
   const initialCode = useCallback(
@@ -333,7 +332,7 @@ export default function Level() {
             my="auto"
             py="0px"
             p={{
-              base: `${MONTIOR_PADDING_BASE}px`,
+              base: `${MONITOR_PADDING_BASE}px`,
               "2xl": `${MONITOR_PADDING_2XL}px`,
             }}
             bg="rgba(255, 255, 255, 0.3)"
@@ -379,6 +378,14 @@ export default function Level() {
                   showInitialState={editorState === "editing"}
                   asteroidWarnings={currLevel().asteroid_warnings}
                   scale={boardScale}
+                  levelStyle={currLevel().style}
+                  cameraText={currLevel().camera_text}
+                  showDecoration={true}
+                  filter={
+                    currLevel().style === "glossy_tiles"
+                      ? "brightness(0.8) contrast(0.85) saturate(1.2)"
+                      : ""
+                  }
                 />
               </Box>
             </Stack>

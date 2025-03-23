@@ -1,7 +1,7 @@
 import { Box, Image } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import { BUTTON_Z_INDEX, SPRITE_DROP_SHADOW } from "../../lib/constants";
+import { BUTTON_Z_INDEX, REFLECTION_Z_INDEX, SPRITE_DROP_SHADOW } from "../../lib/constants";
 import {
   Offset,
   getDefaultSpriteDims,
@@ -21,6 +21,7 @@ interface ButtonProps {
   enableHoverInfo: boolean;
   scale: number;
   filter?: string;
+  showReflection?: boolean;
 }
 
 // Amount of time to wait before we play the "unpress" animation and
@@ -65,7 +66,7 @@ export default function Button(props: ButtonProps) {
     if (props.currentlyPressed) {
       if (prevState.current?.currentlyPressed === props.currentlyPressed) {
         // No need to play a sound effect if the button state has not changed.
-        return () => {};
+        return () => { };
       }
 
       // If the button is pressed, we always want to update the image
@@ -125,6 +126,24 @@ export default function Button(props: ButtonProps) {
           ml={`${spriteDims.marginLeft}px`}
           filter={SPRITE_DROP_SHADOW}
         />
+        {props.showReflection && (
+          <Image
+            src={props.currentlyPressed ? buttonPressedImgUrl : buttonImgUrl}
+            w={`${spriteDims.width}px`}
+            h={`${spriteDims.height}px`}
+            mt={`${spriteDims.marginTop}px`}
+            ml={`${spriteDims.marginLeft}px`}
+            position="absolute"
+            top="60%"
+            zIndex={REFLECTION_Z_INDEX}
+            style={{
+              transform: "scaleY(-1)",
+              opacity: 0.3,
+              filter: "blur(1px)",
+              maskImage: "linear-gradient(transparent 30%, black 90%)",
+            }}
+          />
+        )}
       </Box>
     </>
   );

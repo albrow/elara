@@ -2,7 +2,7 @@ use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
 use crate::constants::{ERR_NO_BUTTON, ERR_NO_DATA_POINT};
-use crate::levels::Outcome;
+use crate::levels::{LevelStyle, Outcome};
 use crate::script_runner;
 use crate::simulation::{
     BigEnemyAnimState, EnemyAnimState, GateVariant, ObstacleKind, Orientation,
@@ -122,6 +122,8 @@ pub fn to_js_run_result(result: &script_runner::ScriptResult) -> RunResult {
 pub struct LevelData {
     pub name: String,
     pub short_name: String,
+    pub style: String, // LevelStyle
+    pub camera_text: String,
     pub objective: String,
     pub initial_state: State,
     pub initial_code: String,
@@ -148,6 +150,12 @@ impl LevelData {
         Self {
             name: level.name().to_string(),
             short_name: level.short_name().to_string(),
+            style: match level.style() {
+                LevelStyle::Default => "default".to_string(),
+                LevelStyle::GlossyTiles => "glossy_tiles".to_string(),
+                LevelStyle::Gray => "gray".to_string(),
+            },
+            camera_text: level.camera_text().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
             initial_state: State::from(level.filtered_initial_state()),
