@@ -59,6 +59,9 @@ interface BoardProps {
   // Whether or not to show the decoration at the bottom of the board
   // that makes it look like a video feed.
   showDecoration?: boolean;
+  // The style of the corresponding level (affects background image and other
+  // visual elements).
+  levelStyle: string;
 }
 
 export default function Board(props: BoardProps) {
@@ -80,7 +83,9 @@ export default function Board(props: BoardProps) {
         <div
           id="board"
           style={{
-            backgroundImage: `url("${lunarSurfaceBgUrl}")`,
+            background: props.levelStyle === "glossy_tiles"
+              ? "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSIVBzuIOGSoThZERRy1CkWoEGqFVh1MLv2CJg1Jiouj4Fpw8GOx6uDirKuDqyAIfoA4OTopukiJ/0sKLWI8OO7Hu3uPu3eAUC8zzeoYBzTdNlOJuJjJroqhVwQRQgCDGJKZZcxJUhK+4+seAb7exXiW/7k/R4+asxgQEIlnmWHaxBvE05u2wXmfOMKKskp8Tjxm0gWJH7muePzGueCywDMjZjo1TxwhFgttrLQxK5oa8RRxVNV0yhcyHquctzhr5Spr3pO/MJzTV5a5TnMICSxiCRJEKKiihDJsxGjVSbGQov24j3/Q9UvkUshVAiPHAirQILt+8D/43a2Vn5zwksJxoPPFcT5GgNAu0Kg5zvex4zROgOAzcKW3/JU6MPNJeq2lRY+Avm3g4rqlKXvA5Q4w8GTIpuxKQZpCPg+8n9E3ZYH+W6B7ze2tuY/TByBDXaVugINDYKRA2ese7+7u7O3fM63+fgDFjHLHQhL4PQAAAAZYSGVUAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAFpJREFUeJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4GtmvAABQNi1YAAAAABJRU5ErkJggg==') center/100px 100px, linear-gradient(45deg, #606060, #6a6a6a)"
+              : `url("${lunarSurfaceBgUrl}")`,
             filter: props.filter,
           }}
         >
@@ -310,7 +315,7 @@ export default function Board(props: BoardProps) {
             filter={props.filter}
           />
         ))}
-      </Box>
+      </Box >
     </>
   );
 }

@@ -53,6 +53,13 @@ pub enum Outcome {
     NoObjective,
 }
 
+pub enum LevelStyle {
+    // Default style used for most levels. Lunar landscape background.
+    Default,
+    // Glossy tile background. Like in the interior of Moonbase Alpha.
+    GlossyTiles,
+}
+
 lazy_static! {
     static ref EMPTY_VEC: Vec<&'static str> = vec![];
 }
@@ -72,6 +79,9 @@ pub trait Level {
             min_y: 0,
             max_y: (HEIGHT - 1) as i32,
         }
+    }
+    fn style(&self) -> LevelStyle {
+        LevelStyle::Default
     }
     fn disabled_functions(&self) -> &'static Vec<&'static str> {
         &EMPTY_VEC
@@ -107,6 +117,7 @@ pub trait Level {
         });
         filtered_state
     }
+
 }
 
 // Special constants for sandbox levels. Used in some tests.

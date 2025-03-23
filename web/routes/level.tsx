@@ -106,9 +106,8 @@ export default function Level() {
     if (!currScene) {
       return;
     }
-    document.title = `Elara | Level ${currScene.levelIndex}: ${
-      currLevel().name
-    }`;
+    document.title = `Elara | Level ${currScene.levelIndex}: ${currLevel().name
+      }`;
   }, [currLevel, currScene]);
 
   const initialCode = useCallback(
@@ -379,6 +378,7 @@ export default function Level() {
                   showInitialState={editorState === "editing"}
                   asteroidWarnings={currLevel().asteroid_warnings}
                   scale={boardScale}
+                  levelStyle={currLevel().style}
                 />
               </Box>
             </Stack>
