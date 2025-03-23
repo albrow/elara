@@ -51,7 +51,7 @@ export const EDITOR_SECTION_RESPONSIVE_WIDTH = {
 };
 
 // Monitor responsive definitions.
-export const MONTIOR_PADDING_BASE = 10;
+export const MONITOR_PADDING_BASE = 10;
 export const MONITOR_PADDING_2XL = 24;
 export const MONITOR_BORDER_WIDTH = 1;
 export const MONITOR_FRAME_RESPONSIVE_WIDTH = {
