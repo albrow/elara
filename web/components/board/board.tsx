@@ -56,9 +56,11 @@ interface BoardProps {
   // A CSS filter to apply to the board.
   // E.g., "grayscale(100%)"
   filter?: string;
-  // Whether or not to show the decoration at the bottom of the board
+  // Whether or not to show the decoration at the top of the board
   // that makes it look like a video feed.
   showDecoration?: boolean;
+  // The text to display in the decoration at the top of the board.
+  cameraText?: string;
   // The style of the corresponding level (affects background image and other
   // visual elements).
   levelStyle: string;
@@ -70,9 +72,13 @@ export default function Board(props: BoardProps) {
     [props.scale]
   );
 
+  if (props.showDecoration && !props.cameraText) {
+    throw new Error("cameraText is required when showDecoration is true");
+  }
+
   return (
     <>
-      {props.showDecoration && <BoardDecoration text="Live satellite feed" />}
+      {props.showDecoration && <BoardDecoration text={props.cameraText!} />}
       <Box
         position="relative"
         id="board-inner-wrapper"

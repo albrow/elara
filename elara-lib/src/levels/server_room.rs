@@ -93,6 +93,9 @@ impl Level for ServerRoom {
     fn style(&self) -> LevelStyle {
         LevelStyle::GlossyTiles
     }
+    fn camera_text(&self) -> &'static str {
+        "Moonbase Alpha: Interior Camera A"
+    }
     fn objective(&self) -> &'static str {
         "Press the button ({button}) to shut down the servers."
     }

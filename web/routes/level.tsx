@@ -379,6 +379,8 @@ export default function Level() {
                   asteroidWarnings={currLevel().asteroid_warnings}
                   scale={boardScale}
                   levelStyle={currLevel().style}
+                  cameraText={currLevel().camera_text}
+                  showDecoration={true}
                 />
               </Box>
             </Stack>

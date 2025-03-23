@@ -83,6 +83,9 @@ pub trait Level {
     fn style(&self) -> LevelStyle {
         LevelStyle::Default
     }
+    fn camera_text(&self) -> &'static str {
+        "Live satellite feed"
+    }
     fn disabled_functions(&self) -> &'static Vec<&'static str> {
         &EMPTY_VEC
     }
@@ -117,7 +120,6 @@ pub trait Level {
         });
         filtered_state
     }
-
 }
 
 // Special constants for sandbox levels. Used in some tests.

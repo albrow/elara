@@ -123,6 +123,7 @@ pub struct LevelData {
     pub name: String,
     pub short_name: String,
     pub style: String, // LevelStyle
+    pub camera_text: String,
     pub objective: String,
     pub initial_state: State,
     pub initial_code: String,
@@ -153,6 +154,7 @@ impl LevelData {
                 LevelStyle::Default => "default".to_string(),
                 LevelStyle::GlossyTiles => "glossy_tiles".to_string(),
             },
+            camera_text: level.camera_text().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
             initial_state: State::from(level.filtered_initial_state()),
