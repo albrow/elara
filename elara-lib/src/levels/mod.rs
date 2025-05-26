@@ -38,8 +38,8 @@ use crate::actors::{Bounds, BIG_ENEMY_SIZE};
 use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_ENERGY, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
 use crate::simulation::State;
-use crate::simulation::{Actor, AsteroidWarning, ObstacleKind, Orientation, Pos};
-use std::collections::{HashMap, HashSet};
+use crate::simulation::{Actor, Orientation, Pos};
+use std::collections::HashMap;
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum Outcome {
@@ -96,31 +96,6 @@ pub trait Level {
     }
     fn check_challenge(&self, _states: &[State], _script: &str, _stats: &ScriptStats) -> bool {
         false
-    }
-
-    /// Returns asteroid warnings based on the given possible initial states
-    /// for this level.
-    fn asteroid_warnings(&self) -> Vec<AsteroidWarning> {
-        generate_asteroid_warnings(self.initial_states())
-    }
-    /// Returns an initial state which only contains elements which are present
-    /// in ALL possible initial states. E.g. if an asteroid is present in one state
-    /// but not another, it will not be included in the filtered state. Note that this
-    /// only considers the position of elements, not their details (e.g. it doesn't consider
-    /// what data a DataPoint holds).
-    fn filtered_initial_state(&self) -> State {
-        // For now, asteroids are the only thing we need to worry about. We can simplify
-        // this by re-using our asteroid warnings logic.
-        let warnings = self.asteroid_warnings();
-
-        // Then remove any asteroids with a position equal to a warning's position.
-        let mut filtered_state = self.initial_states()[0].clone();
-        filtered_state.obstacles.retain(|x| {
-            !warnings
-                .iter()
-                .any(|warning| warning.pos == x.pos && x.kind == ObstacleKind::Asteroid)
-        });
-        filtered_state
     }
 }
 
@@ -213,52 +188,6 @@ fn did_reach_goal(state: &State) -> bool {
         }
     }
     false
-}
-
-/// Returns asteroid warnings based on the given possible initial states.
-/// An AsteroidWarning is generated any time that an asteroid may exist in
-/// one state but not another.
-pub fn generate_asteroid_warnings(initial_states: Vec<State>) -> Vec<AsteroidWarning> {
-    if initial_states.is_empty() {
-        panic!("Error computing fuzzy state: states cannot be empty");
-    }
-
-    // Start by looking at only the first possible state.
-    let first_state = &initial_states[0];
-    let first_state_asteroids = first_state
-        .obstacles
-        .iter()
-        .filter(|x| x.kind == ObstacleKind::Asteroid);
-    let mut warnings = HashSet::new();
-
-    // Iterate through the remaining states (i.e. starting at index 1), and if
-    // any asteroids exist in the first state but not in another, add a corresponding
-    // warning.
-    for state in initial_states.iter().skip(1) {
-        // If an asteroid is present in first_state state but not this one, add a warning.
-        for asteroid in first_state_asteroids.clone() {
-            if !state.obstacles.contains(asteroid) {
-                warnings.insert(AsteroidWarning {
-                    pos: asteroid.pos.clone(),
-                });
-            }
-        }
-
-        // Likewise if an asteroid is present in this state but not first_state, add a warning.
-        let this_state_asteroids = state
-            .obstacles
-            .iter()
-            .filter(|x| x.kind == ObstacleKind::Asteroid);
-        for asteroid in this_state_asteroids {
-            if !first_state.obstacles.contains(asteroid) {
-                warnings.insert(AsteroidWarning {
-                    pos: asteroid.pos.clone(),
-                });
-            }
-        }
-    }
-
-    warnings.into_iter().collect()
 }
 
 /// An implementation of Level::check_win which covers some common
@@ -362,52 +291,6 @@ mod tests {
         simulation::{Obstacle, Orientation, Pos, Telepad},
         state_maker::StateMaker,
     };
-
-    #[test]
-    fn asteroid_warnings() {
-        let initial_states = vec![
-            StateMaker::new()
-                .with_obstacles(vec![
-                    Obstacle::new_with_kind(0, 1, ObstacleKind::Rock),
-                    Obstacle::new_with_kind(0, 2, ObstacleKind::Asteroid),
-                    Obstacle::new_with_kind(0, 3, ObstacleKind::Asteroid),
-                ])
-                .build(),
-            StateMaker::new()
-                .with_obstacles(vec![
-                    Obstacle::new_with_kind(0, 1, ObstacleKind::Rock),
-                    Obstacle::new_with_kind(0, 2, ObstacleKind::Asteroid),
-                    Obstacle::new_with_kind(0, 4, ObstacleKind::Asteroid),
-                ])
-                .build(),
-            StateMaker::new()
-                .with_obstacles(vec![
-                    Obstacle::new_with_kind(0, 1, ObstacleKind::Rock),
-                    Obstacle::new_with_kind(0, 2, ObstacleKind::Asteroid),
-                    Obstacle::new_with_kind(0, 5, ObstacleKind::Asteroid),
-                ])
-                .build(),
-        ];
-
-        // Note: Warnings can come out in any order, so we sort them by y position
-        // before comparing.
-        let mut warnings = generate_asteroid_warnings(initial_states);
-        warnings.sort_by(|a, b| a.pos.y.cmp(&b.pos.y));
-        assert_eq!(
-            warnings,
-            vec![
-                AsteroidWarning {
-                    pos: Pos::new(0, 3)
-                },
-                AsteroidWarning {
-                    pos: Pos::new(0, 4)
-                },
-                AsteroidWarning {
-                    pos: Pos::new(0, 5)
-                },
-            ]
-        );
-    }
 
     #[test]
     fn test_make_all_initial_states_for_telepads() {

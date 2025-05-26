@@ -27,16 +27,6 @@ pub struct StateWithLines {
 }
 
 #[wasm_bindgen]
-impl StateWithLines {
-    // pub fn new() -> StateWithLines {
-    //     StateWithLines {
-    //         state: State::new(),
-    //         lines: Array::new_with_length(0),
-    //     }
-    // }
-}
-
-#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Pos {
     pub x: i32,
@@ -129,7 +119,6 @@ pub struct LevelData {
     pub initial_code: String,
     pub disabled_funcs: Array, // Array<String>
     pub challenge: String,
-    pub asteroid_warnings: Array, // Array<AsteroidWarning>
 }
 
 impl LevelData {
@@ -137,15 +126,6 @@ impl LevelData {
         let disabled_funcs = Array::new();
         for func in level.disabled_functions() {
             disabled_funcs.push(&JsValue::from(func.to_string()));
-        }
-        let asteroid_warnings = Array::new();
-        for warning in level.asteroid_warnings() {
-            asteroid_warnings.push(&JsValue::from(AsteroidWarning {
-                pos: Pos {
-                    x: warning.pos.x,
-                    y: warning.pos.y,
-                },
-            }));
         }
         Self {
             name: level.name().to_string(),
@@ -158,10 +138,9 @@ impl LevelData {
             camera_text: level.camera_text().to_string(),
             objective: level.objective().to_string(),
             initial_code: level.initial_code().to_string(),
-            initial_state: State::from(level.filtered_initial_state()),
+            initial_state: State::from(level.initial_states()[0].clone()),
             disabled_funcs,
             challenge: level.challenge().unwrap_or_default().to_string(),
-            asteroid_warnings,
         }
     }
 }
@@ -186,6 +165,8 @@ pub fn to_level_data_obj(levels: levels::LEVELS) -> Object {
 #[derive(Clone, PartialEq, Debug)]
 pub struct AsteroidWarning {
     pub pos: Pos,
+    pub steps_until_impact: i32,
+    pub will_hit: bool,
 }
 
 /// Special metadata which can be used for teleportation animations in the UI.
@@ -273,43 +254,21 @@ fn get_js_big_enemy_anim_data(anim_state: &BigEnemyAnimState) -> Option<JsValue>
 #[derive(Clone, PartialEq, Debug)]
 pub struct State {
     pub player: Player,
-    pub energy_cells: Array,   // Array<EnergyCell>
-    pub goals: Array,          // Array<Goal>
-    pub enemies: Array,        // Array<Enemy>
-    pub obstacles: Array,      // Array<Obstacle>
-    pub password_gates: Array, // Array<PasswordGate>
-    pub data_points: Array,    // Array<DataPoint>
-    pub telepads: Array,       // Array<Telepad>
-    pub buttons: Array,        // Array<Button>
-    pub gates: Array,          // Array<Gate>
-    pub big_enemies: Array,    // Array<BigEnemy>
-    pub crates: Array,         // Array<Crate>
+    pub energy_cells: Array,      // Array<EnergyCell>
+    pub goals: Array,             // Array<Goal>
+    pub enemies: Array,           // Array<Enemy>
+    pub obstacles: Array,         // Array<Obstacle>
+    pub password_gates: Array,    // Array<PasswordGate>
+    pub data_points: Array,       // Array<DataPoint>
+    pub telepads: Array,          // Array<Telepad>
+    pub buttons: Array,           // Array<Button>
+    pub gates: Array,             // Array<Gate>
+    pub big_enemies: Array,       // Array<BigEnemy>
+    pub crates: Array,            // Array<Crate>
+    pub asteroid_warnings: Array, // Array<AsteroidWarning>
 }
 
 impl State {
-    // pub fn new() -> Self {
-    //     State {
-    //         player: Player {
-    //             pos: Pos { x: 0, y: 0 },
-    //             energy: 0,
-    //             message: String::new(),
-    //             anim_state: String::new(),
-    //             anim_data: JsValue::UNDEFINED,
-    //             facing: String::new(),
-    //         },
-    //         energy_cells: Array::new(),
-    //         goals: Array::new(),
-    //         enemies: Array::new(),
-    //         obstacles: Array::new(),
-    //         password_gates: Array::new(),
-    //         data_points: Array::new(),
-    //         telepads: Array::new(),
-    //         buttons: Array::new(),
-    //         gates: Array::new(),
-    //         big_enemies: Array::new(),
-    //     }
-    // }
-
     pub fn from(state: simulation::State) -> Self {
         let energy_cells = Array::new_with_length(state.energy_cells.len() as u32);
         for (i, energy_cell) in state.energy_cells.iter().enumerate() {
@@ -542,6 +501,21 @@ impl State {
             );
         }
 
+        let asteroid_warnings = Array::new_with_length(state.asteroid_warnings.len() as u32);
+        for (i, asteroid_warning) in state.asteroid_warnings.iter().enumerate() {
+            asteroid_warnings.set(
+                i as u32,
+                JsValue::from(AsteroidWarning {
+                    pos: Pos {
+                        x: asteroid_warning.pos.x,
+                        y: asteroid_warning.pos.y,
+                    },
+                    steps_until_impact: asteroid_warning.steps_until_impact as i32,
+                    will_hit: asteroid_warning.will_hit,
+                }),
+            );
+        }
+
         State {
             player: Player::from(state.player),
             energy_cells,
@@ -555,6 +529,7 @@ impl State {
             gates,
             big_enemies,
             crates,
+            asteroid_warnings,
         }
     }
 }

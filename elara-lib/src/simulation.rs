@@ -143,6 +143,7 @@ pub struct State {
     pub enemies: Vec<Enemy>,
     pub big_enemies: Vec<BigEnemy>,
     pub crates: Vec<Crate>,
+    pub asteroid_warnings: Vec<AsteroidWarning>,
 }
 
 impl State {
@@ -160,6 +161,7 @@ impl State {
             enemies: vec![],
             big_enemies: vec![],
             crates: vec![],
+            asteroid_warnings: vec![],
         }
     }
 }
@@ -186,6 +188,7 @@ impl fmt::Debug for State {
             .field("telepads", &self.telepads)
             .field("enemies", &self.enemies)
             .field("crates", &self.crates)
+            .field("asteroid_warnings", &self.asteroid_warnings)
             .finish()
     }
 }
@@ -538,8 +541,26 @@ impl Obstacle {
 }
 
 #[derive(Clone, PartialEq, Debug, Hash, Eq)]
+/// An asteroid warning is a position where an asteroid may potentially hit.
+/// If an asteroid will hit here, the warning will be replaced with an asteroid after
+/// a certain number of steps.
+/// If an asteroid will not hit here, the warning will be replaced with an empty space.
 pub struct AsteroidWarning {
     pub pos: Pos,
+    /// The number of steps until the asteroid hits the ground.
+    pub steps_until_impact: u32,
+    /// Whether or not an asteroid will hit here.
+    pub will_hit: bool,
+}
+
+impl AsteroidWarning {
+    pub fn new(x: u32, y: u32, steps_until_impact: u32, hit: bool) -> AsteroidWarning {
+        AsteroidWarning {
+            pos: Pos::new(x as i32, y as i32),
+            steps_until_impact,
+            will_hit: hit,
+        }
+    }
 }
 
 #[allow(clippy::upper_case_acronyms)]

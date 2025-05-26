@@ -44,12 +44,8 @@ import BoardDecoration from "./board_decoration";
 
 interface BoardProps {
   gameState: RState;
-  asteroidWarnings: RAsteroidWarning[];
   enableAnimations: boolean;
   enableHoverInfo: boolean;
-  // Whether or not to show the initial, pre-run state of the board.
-  // E.g., this includes whether or not to show asteroid warnings.
-  showInitialState: boolean;
   // How much to scale the size of the board up or down.
   // 1 = normal size, 2 = double size, 0.5 = half size, etc.
   scale: number;
@@ -129,19 +125,6 @@ export default function Board(props: BoardProps) {
           </table>
         </div>
 
-        {props.showInitialState &&
-          (props.asteroidWarnings as RAsteroidWarning[]).map(
-            (asteroidWarning, i) => (
-              <AsteroidWarning
-                // eslint-disable-next-line react/no-array-index-key
-                key={i}
-                offset={posToOffset(props.scale, asteroidWarning.pos)}
-                enableHoverInfo={props.enableHoverInfo}
-                scale={props.scale}
-                filter={props.filter}
-              />
-            )
-          )}
 
         <Player
           offset={posToOffset(props.scale, props.gameState.player.pos)}
@@ -337,6 +320,16 @@ export default function Board(props: BoardProps) {
             color={crate.color as "red" | "blue" | "green"}
             held={crate.held}
             enableAnimations={props.enableAnimations}
+            enableHoverInfo={props.enableHoverInfo}
+            scale={props.scale}
+            filter={props.filter}
+          />
+        ))}
+        {(props.gameState.asteroid_warnings as RAsteroidWarning[]).map((asteroidWarning, i) => (
+          <AsteroidWarning
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
+            offset={posToOffset(props.scale, asteroidWarning.pos)}
             enableHoverInfo={props.enableHoverInfo}
             scale={props.scale}
             filter={props.filter}
