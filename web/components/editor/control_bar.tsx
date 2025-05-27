@@ -124,42 +124,42 @@ export default function ControlBar(props: ControlBarProps) {
         <Box>
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-            <Tooltip
-              maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
-              // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-              label="Stop"
-            >
-              <Button
-                colorScheme="red"
-                color="black"
-                size={BUTTON_RESPONSIVE_SCALE}
-                fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
-                rounded={{ base: "3px", xl: "md" }}
-                ml="4px"
-                onClick={props.onCancel}
+              <Tooltip
+                maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+                // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+                label="Stop"
               >
-                <MdStop size="1.3em" />
-              </Button>
-            </Tooltip>
-          )}
+                <Button
+                  colorScheme="red"
+                  color="black"
+                  size={BUTTON_RESPONSIVE_SCALE}
+                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+                  rounded={{ base: "3px", xl: "md" }}
+                  ml="4px"
+                  onClick={props.onCancel}
+                >
+                  <MdStop size="1.3em" />
+                </Button>
+              </Tooltip>
+            )}
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-            <Tooltip
-              maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
-              // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-              label="Skip backward"
-            >
-              <Button
-                size={BUTTON_RESPONSIVE_SCALE}
-                fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
-                rounded={{ base: "3px", xl: "md" }}
-                ml="4px"
-                onClick={props.onStepBack}
+              <Tooltip
+                maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+                // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+                label="Skip backward"
               >
-                <MdSkipPrevious size="1.3em" />
-              </Button>
-            </Tooltip>
-          )}
+                <Button
+                  size={BUTTON_RESPONSIVE_SCALE}
+                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+                  rounded={{ base: "3px", xl: "md" }}
+                  ml="4px"
+                  onClick={props.onStepBack}
+                >
+                  <MdSkipPrevious size="1.3em" />
+                </Button>
+              </Tooltip>
+            )}
           {props.editorState === "running" && (
             <Tooltip
               maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
@@ -200,22 +200,22 @@ export default function ControlBar(props: ControlBarProps) {
           )}
           {(props.editorState === "running" ||
             props.editorState === "paused") && (
-            <Tooltip
-              maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
-              // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-              label="Skip forward"
-            >
-              <Button
-                size={BUTTON_RESPONSIVE_SCALE}
-                fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
-                rounded={{ base: "3px", xl: "md" }}
-                ml="4px"
-                onClick={props.onStepForward}
+              <Tooltip
+                maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
+                // fontSize={BODY_RESPONSIVE_FONT_SCALE}
+                label="Skip forward"
               >
-                <MdSkipNext size="1.3em" />
-              </Button>
-            </Tooltip>
-          )}
+                <Button
+                  size={BUTTON_RESPONSIVE_SCALE}
+                  fontSize={BUTTON_RESPONSIVE_FONT_SCALE}
+                  rounded={{ base: "3px", xl: "md" }}
+                  ml="4px"
+                  onClick={props.onStepForward}
+                >
+                  <MdSkipNext size="1.3em" />
+                </Button>
+              </Tooltip>
+            )}
         </Box>
         {props.numSteps && props.stepIndex !== undefined && (
           <>

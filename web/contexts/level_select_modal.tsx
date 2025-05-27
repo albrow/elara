@@ -252,12 +252,8 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                       />
                       <Board
                         gameState={selectedScene.level!.initial_state}
-                        asteroidWarnings={
-                          selectedScene.level!.asteroid_warnings
-                        }
                         enableAnimations={false}
                         enableHoverInfo={false}
-                        showInitialState
                         scale={levelPreviewScale}
                         filter="saturate(0.4) sepia(0.8) hue-rotate(175deg) brightness(0.8)"
                         showDecoration={false}

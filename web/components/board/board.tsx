@@ -15,6 +15,7 @@ import {
   BigEnemy as RBigEnemy,
   AsteroidWarning as RAsteroidWarning,
   Crate as RCrate,
+  Asteroid as RAsteroid,
 } from "../../../elara-lib/pkg";
 import { range } from "../../lib/utils";
 import {
@@ -44,12 +45,8 @@ import BoardDecoration from "./board_decoration";
 
 interface BoardProps {
   gameState: RState;
-  asteroidWarnings: RAsteroidWarning[];
   enableAnimations: boolean;
   enableHoverInfo: boolean;
-  // Whether or not to show the initial, pre-run state of the board.
-  // E.g., this includes whether or not to show asteroid warnings.
-  showInitialState: boolean;
   // How much to scale the size of the board up or down.
   // 1 = normal size, 2 = double size, 0.5 = half size, etc.
   scale: number;
@@ -129,19 +126,6 @@ export default function Board(props: BoardProps) {
           </table>
         </div>
 
-        {props.showInitialState &&
-          (props.asteroidWarnings as RAsteroidWarning[]).map(
-            (asteroidWarning, i) => (
-              <AsteroidWarning
-                // eslint-disable-next-line react/no-array-index-key
-                key={i}
-                offset={posToOffset(props.scale, asteroidWarning.pos)}
-                enableHoverInfo={props.enableHoverInfo}
-                scale={props.scale}
-                filter={props.filter}
-              />
-            )
-          )}
 
         <Player
           offset={posToOffset(props.scale, props.gameState.player.pos)}
@@ -217,16 +201,6 @@ export default function Board(props: BoardProps) {
                   scale={props.scale}
                   filter={props.filter}
                   showReflection={props.levelStyle === "glossy_tiles"}
-                />
-              );
-            case "asteroid":
-              return (
-                <Asteroid
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={i}
-                  offset={posToOffset(props.scale, obstacle.pos)}
-                  scale={props.scale}
-                  filter={props.filter}
                 />
               );
             default:
@@ -339,6 +313,26 @@ export default function Board(props: BoardProps) {
             enableAnimations={props.enableAnimations}
             enableHoverInfo={props.enableHoverInfo}
             scale={props.scale}
+            filter={props.filter}
+          />
+        ))}
+        {(props.gameState.asteroid_warnings as RAsteroidWarning[]).map((asteroidWarning, i) => (
+          <AsteroidWarning
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
+            offset={posToOffset(props.scale, asteroidWarning.pos)}
+            enableHoverInfo={props.enableHoverInfo}
+            scale={props.scale}
+            filter={props.filter}
+          />
+        ))}
+        {(props.gameState.asteroids as RAsteroid[]).map((asteroid) => (
+          <Asteroid
+            key={`asteroid_${asteroid.pos.x}_${asteroid.pos.y}`}
+            offset={posToOffset(props.scale, asteroid.pos)}
+            animState={asteroid.anim_state}
+            scale={props.scale}
+            enableAnimations={props.enableAnimations}
             filter={props.filter}
           />
         ))}

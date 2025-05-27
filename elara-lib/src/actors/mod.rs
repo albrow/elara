@@ -1,12 +1,14 @@
+mod asteroid_actor;
 mod big_enemy_actor;
 mod evil_rover_actor;
 mod player_actor;
 
 use crate::{
     constants::{HEIGHT, WIDTH},
-    simulation::{Pos, State, Telepad},
+    simulation::{AsteroidAnimState, Pos, State, Telepad},
 };
 
+pub use asteroid_actor::AsteroidActor;
 pub use big_enemy_actor::BigEnemyActor;
 pub use big_enemy_actor::BIG_ENEMY_SIZE;
 pub use evil_rover_actor::EvilRoverActor;
@@ -96,6 +98,12 @@ fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
     // Unheld crates are treated as obstacles.
     for crt in &state.crates {
         if crt.pos == *pos && !crt.held {
+            return true;
+        }
+    }
+    // Asteroids are treated as obstacles, but only if they are not in the "falling" state.
+    for asteroid in &state.asteroids {
+        if asteroid.pos == *pos && asteroid.anim_state != AsteroidAnimState::Falling {
             return true;
         }
     }

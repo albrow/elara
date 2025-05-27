@@ -68,7 +68,7 @@ export default function Level() {
   // Editor component. To do that, you have to use requestEditorState.
   const [editorState, unsafeSetEditorState] = useState<EditorState>("editing");
   // requestEditorState will request that the editor change its state to the given
-  // state. It is not gauranteed that the Editor will respect this request, but if it
+  // state. It is not guaranteed that the Editor will respect this request, but if it
   // does, it will trigger an onStateChange event with the new state. For now "editing"
   // is the only type of state that parent components can request.
   const [requestedEditorState, requestEditorState] =
@@ -131,7 +131,7 @@ export default function Level() {
   useEffect(() => {
     // Update the shorts modal state whenever the route changes.
     if (currScene?.tutorialShorts) {
-      // Note this may be overriden by the ShortsModalContext if the user
+      // Note this may be overridden by the ShortsModalContext if the user
       // has already seen these particular tutorials.
       showShortsModal(currScene.tutorialShorts);
     }
@@ -375,8 +375,6 @@ export default function Level() {
                   // discrete steps.
                   enableAnimations={editorState === "running"}
                   enableHoverInfo={editorState !== "running"}
-                  showInitialState={editorState === "editing"}
-                  asteroidWarnings={currLevel().asteroid_warnings}
                   scale={boardScale}
                   levelStyle={currLevel().style}
                   cameraText={currLevel().camera_text}

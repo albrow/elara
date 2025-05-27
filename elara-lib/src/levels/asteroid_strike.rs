@@ -1,8 +1,9 @@
 use rhai::Engine;
 
 use super::{std_check_win, Level, Outcome};
+use crate::actors::AsteroidActor;
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, DataPoint, ObstacleKind, Orientation};
+use crate::simulation::{Actor, AsteroidWarning, DataPoint, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
@@ -16,26 +17,31 @@ impl AsteroidStrike {
     // obstacles for each possible state.
     fn obstacles(&self) -> Vec<Obstacle> {
         vec![
+            Obstacle::new(1, 2),
+            Obstacle::new(1, 3),
             Obstacle::new(1, 4),
-            Obstacle::new(1, 5),
-            Obstacle::new(1, 6),
+            Obstacle::new(2, 2),
             Obstacle::new(2, 4),
-            Obstacle::new(2, 6),
+            Obstacle::new(3, 2),
             Obstacle::new(3, 4),
-            Obstacle::new(3, 6),
+            Obstacle::new(4, 2),
             Obstacle::new(4, 4),
+            Obstacle::new(4, 5),
             Obstacle::new(4, 6),
             Obstacle::new(4, 7),
+            Obstacle::new(5, 2),
+            Obstacle::new(6, 2),
             Obstacle::new(6, 4),
+            Obstacle::new(6, 5),
             Obstacle::new(6, 6),
             Obstacle::new(6, 7),
+            Obstacle::new(7, 2),
             Obstacle::new(7, 4),
-            Obstacle::new(7, 6),
+            Obstacle::new(8, 2),
             Obstacle::new(8, 4),
-            Obstacle::new(8, 6),
+            Obstacle::new(9, 2),
+            Obstacle::new(9, 3),
             Obstacle::new(9, 4),
-            Obstacle::new(9, 5),
-            Obstacle::new(9, 6),
         ]
     }
 }
@@ -54,62 +60,57 @@ impl Level for AsteroidStrike {
         r#"// This code reads the safe direction from the data point
 // (either "left" or "right") and stores it in a variable
 // called safe_direction. You DON'T need to change this part.
-move_forward(2);
 let safe_direction = read_data();
 say("The safe direction is: " + safe_direction);
 
 if safe_direction == "left" {
   // If the safe direction is "left", we should go left.
+  move_forward(3);
   turn_left();
   move_forward(3);
 }
 if safe_direction == "right" {
   // What should we do if the safe direction is "right"?
   // ADD YOUR CODE BELOW
-  
-  
+
 }"#
     }
     fn initial_states(&self) -> Vec<State> {
         vec![
             StateMaker::new()
-                .with_player(Player::new(5, 7, 12, Orientation::Up))
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![Obstacle::new_with_kind(6, 5, ObstacleKind::Asteroid)],
-                    ]
-                    .concat(),
-                )
-                .with_goals(vec![Goal::new(2, 5), Goal::new(8, 5)])
+                .with_player(Player::new(5, 6, 12, Orientation::Up))
+                .with_obstacles(self.obstacles())
+                .with_goals(vec![Goal::new(2, 3), Goal::new(8, 3)])
                 .with_data_points(vec![DataPoint::new_with_info(
                     5,
-                    4,
+                    7,
                     "left".into(),
                     DATA_POINT_INFO.into(),
                 )])
+                .with_asteroid_warnings(vec![
+                    AsteroidWarning::new(4, 3, 4, false),
+                    AsteroidWarning::new(6, 3, 4, true),
+                ])
                 .build(),
             StateMaker::new()
-                .with_player(Player::new(5, 7, 12, Orientation::Up))
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![Obstacle::new_with_kind(4, 5, ObstacleKind::Asteroid)],
-                    ]
-                    .concat(),
-                )
-                .with_goals(vec![Goal::new(2, 5), Goal::new(8, 5)])
+                .with_player(Player::new(5, 6, 12, Orientation::Up))
+                .with_obstacles(self.obstacles())
+                .with_goals(vec![Goal::new(2, 3), Goal::new(8, 3)])
                 .with_data_points(vec![DataPoint::new_with_info(
                     5,
-                    4,
+                    7,
                     "right".into(),
                     DATA_POINT_INFO.into(),
                 )])
+                .with_asteroid_warnings(vec![
+                    AsteroidWarning::new(4, 3, 4, true),
+                    AsteroidWarning::new(6, 3, 4, false),
+                ])
                 .build(),
         ]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
-        vec![]
+        vec![Box::new(AsteroidActor::new())]
     }
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)
@@ -147,15 +148,19 @@ mod tests {
         // Running this code should result in Outcome::Success because we
         // are accounting for both possible directions.
         let script = r#"
-            move_forward(2);
             let safe_direction = read_data();
             say("The safe direction is: " + safe_direction);
-            
+
             if safe_direction == "left" {
+                // If the safe direction is "left", we should go left.
+                move_forward(3);
                 turn_left();
                 move_forward(3);
             }
             if safe_direction == "right" {
+                // What should we do if the safe direction is "right"?
+                // ADD YOUR CODE BELOW
+                move_forward(3);
                 turn_right();
                 move_forward(3);
             }"#;
@@ -185,11 +190,12 @@ mod tests {
         // Only accounting for one branch of the if statement should
         // also result in failure.
         let script = r#"
-            move_forward(2);
             let safe_direction = read_data();
             say("The safe direction is: " + safe_direction);
-            
+
             if safe_direction == "left" {
+                // If the safe direction is "left", we should go left.
+                move_forward(3);
                 turn_left();
                 move_forward(3);
             }"#;
@@ -198,11 +204,13 @@ mod tests {
             .unwrap();
         assert_eq!(result.outcome, Outcome::Continue);
         let script = r#"
-            move_forward(2);
             let safe_direction = read_data();
             say("The safe direction is: " + safe_direction);
-            
+
             if safe_direction == "right" {
+                // What should we do if the safe direction is "right"?
+                // ADD YOUR CODE BELOW
+                move_forward(3);
                 turn_right();
                 move_forward(3);
             }"#;
@@ -219,15 +227,19 @@ mod tests {
 
         // This code beats the level, but doesn't satisfy the challenge conditions.
         let script = r#"
-            move_forward(2);
             let safe_direction = read_data();
             say("The safe direction is: " + safe_direction);
-            
+
             if safe_direction == "left" {
+                // If the safe direction is "left", we should go left.
+                move_forward(3);
                 turn_left();
                 move_forward(3);
             }
             if safe_direction == "right" {
+                // What should we do if the safe direction is "right"?
+                // ADD YOUR CODE BELOW
+                move_forward(3);
                 turn_right();
                 move_forward(3);
             }"#;
@@ -239,12 +251,10 @@ mod tests {
 
         // This code satisfies the challenge conditions.
         let script = r"
-            move_forward(2);
-            turn_left();
             move_forward(3);
             turn_right();
-            turn_right();
-            move_forward(3);";
+            move_forward(3);
+            move_backward(3);";
         let result = game
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();
@@ -255,12 +265,10 @@ mod tests {
         let script = r"
             // read_data();
             // read_data
-            move_forward(2);
-            turn_left();
             move_forward(3);
             turn_right();
-            turn_right();
-            move_forward(3);";
+            move_forward(3);
+            move_backward(3);";
         let result = game
             .run_player_script_with_all_funcs_unlocked(LEVEL, script.to_string())
             .unwrap();

@@ -1,3 +1,4 @@
+use std::any::Any;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
@@ -32,6 +33,10 @@ impl PlayerChannelActor {
 }
 
 impl Actor for PlayerChannelActor {
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
     fn apply(&mut self, state: State) -> State {
         let mut state = state.clone();
 
@@ -262,8 +267,8 @@ mod test {
     use crate::{
         constants::MAX_ENERGY,
         simulation::{
-            Button, Crate, CrateColor, DataPoint, Gate, GateVariant, Obstacle, PasswordGate,
-            Player, PlayerAnimState, Pos, State, Telepad,
+            Asteroid, AsteroidAnimState, Button, Crate, CrateColor, DataPoint, Gate, GateVariant,
+            Obstacle, PasswordGate, Player, PlayerAnimState, Pos, State, Telepad,
         },
     };
 
@@ -502,81 +507,83 @@ mod test {
     }
 
     /// Helper function that asserts that the player can move in any direction.
-    fn assert_player_can_move_in_any_direction(state: &mut State, actor: &PlayerChannelActor) {
+    fn assert_player_can_move_in_any_direction(state: &State, actor: &PlayerChannelActor) {
+        let mut state = state.clone();
         state.player.facing = Orientation::Up;
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Forward).0,
+            actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(1, 0)
         );
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Backward).0,
+            actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(1, 2)
         );
         state.player.facing = Orientation::Down;
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Forward).0,
+            actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(1, 2)
         );
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Backward).0,
+            actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(1, 0)
         );
         state.player.facing = Orientation::Left;
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Forward).0,
+            actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(0, 1)
         );
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Backward).0,
+            actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(2, 1)
         );
         state.player.facing = Orientation::Right;
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Forward).0,
+            actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(2, 1)
         );
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Backward).0,
+            actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(0, 1)
         );
     }
 
     /// Helper function that asserts the player *cannot* move in any direction.
-    fn assert_player_cannot_move_in_any_direction(state: &mut State, actor: &PlayerChannelActor) {
+    fn assert_player_cannot_move_in_any_direction(state: &State, actor: &PlayerChannelActor) {
+        let mut state = state.clone();
         state.player.facing = Orientation::Up;
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Forward).0,
+            actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Backward).0,
+            actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
         state.player.facing = Orientation::Down;
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Forward).0,
+            actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Backward).0,
+            actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
         state.player.facing = Orientation::Left;
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Forward).0,
+            actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Backward).0,
+            actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
         state.player.facing = Orientation::Right;
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Forward).0,
+            actor.try_to_move(&state, MoveDirection::Forward).0,
             Pos::new(1, 1)
         );
         assert_eq!(
-            actor.try_to_move(state, MoveDirection::Backward).0,
+            actor.try_to_move(&state, MoveDirection::Backward).0,
             Pos::new(1, 1)
         );
     }
@@ -604,7 +611,7 @@ mod test {
         ];
 
         // We should not be able to move past closed gates.
-        assert_player_cannot_move_in_any_direction(&mut state, &actor)
+        assert_player_cannot_move_in_any_direction(&state, &actor)
     }
 
     #[test]
@@ -630,7 +637,7 @@ mod test {
         ];
 
         // We should be able to move past open gates.
-        assert_player_can_move_in_any_direction(&mut state, &actor)
+        assert_player_can_move_in_any_direction(&state, &actor)
     }
 
     #[test]
@@ -656,7 +663,7 @@ mod test {
         ];
 
         // We can't move past closed password gates.
-        assert_player_cannot_move_in_any_direction(&mut state, &actor)
+        assert_player_cannot_move_in_any_direction(&state, &actor)
     }
 
     #[test]
@@ -682,7 +689,7 @@ mod test {
         ];
 
         // We *can* move past open password gates.
-        assert_player_can_move_in_any_direction(&mut state, &actor)
+        assert_player_can_move_in_any_direction(&state, &actor)
     }
 
     #[test]
@@ -706,7 +713,7 @@ mod test {
             Button::new(0, 2, ButtonConnection::None),
             Button::new(0, 1, ButtonConnection::None),
         ];
-        assert_player_cannot_move_in_any_direction(&mut state, &actor)
+        assert_player_cannot_move_in_any_direction(&state, &actor)
     }
 
     #[test]
@@ -730,7 +737,7 @@ mod test {
             DataPoint::new(0, 2, "apples".into()),
             DataPoint::new(0, 1, "apples".into()),
         ];
-        assert_player_cannot_move_in_any_direction(&mut state, &actor)
+        assert_player_cannot_move_in_any_direction(&state, &actor)
     }
 
     #[test]
@@ -754,7 +761,7 @@ mod test {
             Crate::new(0, 2, CrateColor::Red),
             Crate::new(0, 1, CrateColor::Red),
         ];
-        assert_player_cannot_move_in_any_direction(&mut state, &actor)
+        assert_player_cannot_move_in_any_direction(&state, &actor)
     }
 
     #[test]
@@ -783,6 +790,71 @@ mod test {
                 })
             )
         );
+    }
+
+    #[test]
+    fn try_to_move_through_falling_asteroids() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+        state.asteroids = vec![
+            Asteroid::new(0, 0, AsteroidAnimState::Falling),
+            Asteroid::new(1, 0, AsteroidAnimState::Falling),
+            Asteroid::new(2, 0, AsteroidAnimState::Falling),
+            Asteroid::new(2, 1, AsteroidAnimState::Falling),
+            Asteroid::new(2, 2, AsteroidAnimState::Falling),
+            Asteroid::new(1, 2, AsteroidAnimState::Falling),
+            Asteroid::new(0, 2, AsteroidAnimState::Falling),
+            Asteroid::new(0, 1, AsteroidAnimState::Falling),
+        ];
+
+        // We should be able to move through asteroids in the "falling" state.
+        assert_player_can_move_in_any_direction(&state, &actor)
+    }
+
+    #[test]
+    fn try_to_move_through_asteroids_on_ground() {
+        let bounds = Bounds {
+            min_x: 0,
+            max_x: 10,
+            min_y: 0,
+            max_y: 10,
+        };
+        let actor = PlayerChannelActor::new(Rc::new(RefCell::new(mpsc::channel().1)), bounds);
+        let mut state = State::new();
+        state.player = Player::new(1, 1, MAX_ENERGY, Orientation::Right);
+
+        // We should *not* be able to move through asteroids in the "recently hit ground" state.
+        state.asteroids = vec![
+            Asteroid::new(0, 0, AsteroidAnimState::RecentlyHitGround),
+            Asteroid::new(1, 0, AsteroidAnimState::RecentlyHitGround),
+            Asteroid::new(2, 0, AsteroidAnimState::RecentlyHitGround),
+            Asteroid::new(2, 1, AsteroidAnimState::RecentlyHitGround),
+            Asteroid::new(2, 2, AsteroidAnimState::RecentlyHitGround),
+            Asteroid::new(1, 2, AsteroidAnimState::RecentlyHitGround),
+            Asteroid::new(0, 2, AsteroidAnimState::RecentlyHitGround),
+            Asteroid::new(0, 1, AsteroidAnimState::RecentlyHitGround),
+        ];
+        assert_player_cannot_move_in_any_direction(&state, &actor);
+
+        // Similarly, we should be able to move through asteroids in the "stationary" state.
+        state.asteroids = vec![
+            Asteroid::new(0, 0, AsteroidAnimState::Stationary),
+            Asteroid::new(1, 0, AsteroidAnimState::Stationary),
+            Asteroid::new(2, 0, AsteroidAnimState::Stationary),
+            Asteroid::new(2, 1, AsteroidAnimState::Stationary),
+            Asteroid::new(2, 2, AsteroidAnimState::Stationary),
+            Asteroid::new(1, 2, AsteroidAnimState::Stationary),
+            Asteroid::new(0, 2, AsteroidAnimState::Stationary),
+            Asteroid::new(0, 1, AsteroidAnimState::Stationary),
+        ];
+        assert_player_cannot_move_in_any_direction(&state, &actor);
     }
 
     #[test]

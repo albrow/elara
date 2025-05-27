@@ -1,5 +1,6 @@
 use super::{std_check_win, Level, Outcome};
-use crate::simulation::{Actor, DataPoint, ObstacleKind, Orientation};
+use crate::actors::AsteroidActor;
+use crate::simulation::{Actor, AsteroidWarning, DataPoint, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
@@ -68,16 +69,12 @@ impl Level for AsteroidStrikePartTwo {
             StateMaker::new()
                 .with_player(Player::new(1, 3, 10, Orientation::Right))
                 .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![
-                            Obstacle::new_with_kind(5, 3, ObstacleKind::Asteroid),
-                            Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
-                        ],
-                    ]
-                    .concat(),
-                )
+                .with_obstacles(self.obstacles())
+                .with_asteroid_warnings(vec![
+                    AsteroidWarning::new(4, 2, 4, false),
+                    AsteroidWarning::new(4, 4, 4, true),
+                    AsteroidWarning::new(5, 3, 3, true),
+                ])
                 .with_data_points(vec![DataPoint::new_with_info(
                     0,
                     3,
@@ -88,16 +85,12 @@ impl Level for AsteroidStrikePartTwo {
             StateMaker::new()
                 .with_player(Player::new(1, 3, 10, Orientation::Right))
                 .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![
-                            Obstacle::new_with_kind(4, 2, ObstacleKind::Asteroid),
-                            Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
-                        ],
-                    ]
-                    .concat(),
-                )
+                .with_obstacles(self.obstacles())
+                .with_asteroid_warnings(vec![
+                    AsteroidWarning::new(4, 2, 4, true),
+                    AsteroidWarning::new(4, 4, 4, true),
+                    AsteroidWarning::new(5, 3, 3, false),
+                ])
                 .with_data_points(vec![DataPoint::new_with_info(
                     0,
                     3,
@@ -108,16 +101,12 @@ impl Level for AsteroidStrikePartTwo {
             StateMaker::new()
                 .with_player(Player::new(1, 3, 10, Orientation::Right))
                 .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![
-                            Obstacle::new_with_kind(4, 2, ObstacleKind::Asteroid),
-                            Obstacle::new_with_kind(5, 3, ObstacleKind::Asteroid),
-                        ],
-                    ]
-                    .concat(),
-                )
+                .with_obstacles(self.obstacles())
+                .with_asteroid_warnings(vec![
+                    AsteroidWarning::new(4, 2, 4, true),
+                    AsteroidWarning::new(4, 4, 4, false),
+                    AsteroidWarning::new(5, 3, 3, true),
+                ])
                 .with_data_points(vec![DataPoint::new_with_info(
                     0,
                     3,
@@ -128,7 +117,7 @@ impl Level for AsteroidStrikePartTwo {
         ]
     }
     fn actors(&self) -> Vec<Box<dyn Actor>> {
-        vec![]
+        vec![Box::new(AsteroidActor::new())]
     }
     fn check_win(&self, state: &State) -> Outcome {
         std_check_win(state)

@@ -1,4 +1,5 @@
 use rhai::Dynamic;
+use std::any::Any;
 use std::fmt;
 
 use crate::{
@@ -9,6 +10,8 @@ use crate::{
 
 pub trait Actor {
     fn apply(&mut self, state: State) -> State;
+
+    fn as_any(&self) -> &dyn Any;
 }
 
 pub struct Simulation {
@@ -143,6 +146,8 @@ pub struct State {
     pub enemies: Vec<Enemy>,
     pub big_enemies: Vec<BigEnemy>,
     pub crates: Vec<Crate>,
+    pub asteroid_warnings: Vec<AsteroidWarning>,
+    pub asteroids: Vec<Asteroid>,
 }
 
 impl State {
@@ -160,6 +165,8 @@ impl State {
             enemies: vec![],
             big_enemies: vec![],
             crates: vec![],
+            asteroid_warnings: vec![],
+            asteroids: vec![],
         }
     }
 }
@@ -186,6 +193,8 @@ impl fmt::Debug for State {
             .field("telepads", &self.telepads)
             .field("enemies", &self.enemies)
             .field("crates", &self.crates)
+            .field("asteroid_warnings", &self.asteroid_warnings)
+            .field("asteroids", &self.asteroids)
             .finish()
     }
 }
@@ -504,7 +513,6 @@ impl BigEnemy {
 pub enum ObstacleKind {
     Rock,
     Server,
-    Asteroid,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -537,9 +545,56 @@ impl Obstacle {
     }
 }
 
+#[derive(Clone, PartialEq, Debug)]
+pub enum AsteroidAnimState {
+    /// The asteroid is currently falling from the sky.
+    Falling,
+    /// The asteroid just hit the ground 1 step ago.
+    RecentlyHitGround,
+    /// The asteroid hit the ground more than 1 step ago and is now stationary.
+    Stationary,
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct Asteroid {
+    pub pos: Pos,
+    pub anim_state: AsteroidAnimState,
+}
+
+impl Asteroid {
+    pub fn new(x: u32, y: u32, anim_state: AsteroidAnimState) -> Asteroid {
+        Asteroid {
+            pos: Pos::new(x as i32, y as i32),
+            anim_state,
+        }
+    }
+}
+
 #[derive(Clone, PartialEq, Debug, Hash, Eq)]
+/// An asteroid warning is a position where an asteroid may potentially hit.
+/// If an asteroid will hit here, the warning will be replaced with an asteroid after
+/// a certain number of steps.
+/// If an asteroid will not hit here, the warning will be replaced with an empty space.
+///
+/// Typically, multiple AsteroidWarnings would be placed in a single level with multiple
+/// initial states. Different asteroids would hit in different states, which appears to
+/// the player as a random event.
 pub struct AsteroidWarning {
     pub pos: Pos,
+    /// The number of steps until the asteroid hits the ground.
+    pub steps_until_impact: u32,
+    /// Whether or not an asteroid will hit here.
+    pub will_hit: bool,
+}
+
+impl AsteroidWarning {
+    pub fn new(x: u32, y: u32, steps_until_impact: u32, hit: bool) -> AsteroidWarning {
+        AsteroidWarning {
+            pos: Pos::new(x as i32, y as i32),
+            steps_until_impact,
+            will_hit: hit,
+        }
+    }
 }
 
 #[allow(clippy::upper_case_acronyms)]
