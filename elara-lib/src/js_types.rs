@@ -5,7 +5,7 @@ use crate::constants::{ERR_NO_BUTTON, ERR_NO_DATA_POINT};
 use crate::levels::{LevelStyle, Outcome};
 use crate::script_runner;
 use crate::simulation::{
-    BigEnemyAnimState, EnemyAnimState, GateVariant, ObstacleKind, Orientation,
+    AsteroidAnimState, BigEnemyAnimState, EnemyAnimState, GateVariant, ObstacleKind, Orientation,
     OrientationWithDiagonals, PlayerAnimState, TermData,
 };
 use crate::{levels, simulation};
@@ -169,6 +169,13 @@ pub struct AsteroidWarning {
     pub will_hit: bool,
 }
 
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Clone, PartialEq, Debug)]
+pub struct Asteroid {
+    pub pos: Pos,
+    pub anim_state: String, // AsteroidAnimState
+}
+
 /// Special metadata which can be used for teleportation animations in the UI.
 /// Includes:
 ///    - start_pos: The position of the rover before entering telepad.
@@ -266,6 +273,7 @@ pub struct State {
     pub big_enemies: Array,       // Array<BigEnemy>
     pub crates: Array,            // Array<Crate>
     pub asteroid_warnings: Array, // Array<AsteroidWarning>
+    pub asteroids: Array,         // Array<Asteroid>
 }
 
 impl State {
@@ -339,7 +347,6 @@ impl State {
                     kind: match obstacle.kind {
                         ObstacleKind::Rock => "rock".to_string(),
                         ObstacleKind::Server => "server".to_string(),
-                        ObstacleKind::Asteroid => "asteroid".to_string(),
                     },
                 }),
             );
@@ -516,6 +523,25 @@ impl State {
             );
         }
 
+        let asteroids = Array::new_with_length(state.asteroids.len() as u32);
+        for (i, asteroid) in state.asteroids.iter().enumerate() {
+            let anim_state = match asteroid.anim_state {
+                AsteroidAnimState::Falling => "falling",
+                AsteroidAnimState::RecentlyHitGround => "recently_hit_ground",
+                AsteroidAnimState::Stationary => "stationary",
+            };
+            asteroids.set(
+                i as u32,
+                JsValue::from(Asteroid {
+                    pos: Pos {
+                        x: asteroid.pos.x,
+                        y: asteroid.pos.y,
+                    },
+                    anim_state: anim_state.to_string(),
+                }),
+            );
+        }
+
         State {
             player: Player::from(state.player),
             energy_cells,
@@ -530,6 +556,7 @@ impl State {
             big_enemies,
             crates,
             asteroid_warnings,
+            asteroids,
         }
     }
 }

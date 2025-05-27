@@ -1,7 +1,9 @@
 use super::{std_check_win, Level, Outcome};
 use crate::actors::{Bounds, EvilRoverActor};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{Actor, DataPoint, Enemy, EnergyCell, ObstacleKind, Orientation};
+use crate::simulation::{
+    Actor, Asteroid, AsteroidAnimState, DataPoint, Enemy, EnergyCell, ObstacleKind, Orientation,
+};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
@@ -56,6 +58,7 @@ impl EnemiesAndAsteroids {
     }
 }
 
+// TODO(albrow): Update this level to use the updated asteroid warnings.
 impl Level for EnemiesAndAsteroids {
     fn name(&self) -> &'static str {
         "Into Danger"
@@ -85,16 +88,16 @@ impl Level for EnemiesAndAsteroids {
         vec![
             base_state
                 .clone()
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![
-                            Obstacle::new_with_kind(4, 0, ObstacleKind::Asteroid),
-                            Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
-                        ],
-                    ]
-                    .concat(),
-                )
+                // .with_obstacles(
+                //     [
+                //         self.obstacles().clone(),
+                //         vec![
+                //             Asteroid::new(4, 0, AsteroidAnimState::HitGround),
+                //             Asteroid::new(4, 4, AsteroidAnimState::HitGround),
+                //         ],
+                //     ]
+                //     .concat(),
+                // )
                 .with_data_points(vec![DataPoint::new_with_info(
                     5,
                     7,
@@ -104,16 +107,16 @@ impl Level for EnemiesAndAsteroids {
                 .build(),
             base_state
                 .clone()
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![
-                            Obstacle::new_with_kind(6, 0, ObstacleKind::Asteroid),
-                            Obstacle::new_with_kind(6, 4, ObstacleKind::Asteroid),
-                        ],
-                    ]
-                    .concat(),
-                )
+                // .with_obstacles(
+                //     [
+                //         self.obstacles().clone(),
+                //         vec![
+                //             Obstacle::new_with_kind(6, 0, ObstacleKind::Asteroid),
+                //             Obstacle::new_with_kind(6, 4, ObstacleKind::Asteroid),
+                //         ],
+                //     ]
+                //     .concat(),
+                // )
                 .with_data_points(vec![DataPoint::new_with_info(
                     5,
                     7,

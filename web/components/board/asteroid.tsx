@@ -1,7 +1,6 @@
 import { Box, Image } from "@chakra-ui/react";
-import { Animate, AnimateGroup } from "react-simple-animate";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { once } from "lodash";
+import { Animate } from "react-simple-animate";
+import { useCallback, useEffect, useMemo } from "react";
 
 import {
   ASTEROID_Z_INDEX,
@@ -19,13 +18,14 @@ import { useSoundManager } from "../../hooks/sound_manager_hooks";
 
 interface AsteroidProps {
   offset: Offset;
+  animState: string;
+  enableAnimations: boolean;
   scale: number;
   filter?: string;
 }
 
 export default function Asteroid(props: AsteroidProps) {
   const xOffset = Math.random() * 200 - 100;
-  const [hasImpacted, setHasImpacted] = useState(false);
   const tileSize = useMemo(() => getTileSize(props.scale), [props.scale]);
   const spriteDims = useMemo(
     () => getDefaultSpriteDims(props.scale),
@@ -51,88 +51,121 @@ export default function Asteroid(props: AsteroidProps) {
 
   // Play the falling sound effect when the component mounts.
   useEffect(() => {
-    if (!hasImpacted) {
+    if (!props.enableAnimations) {
+      return;
+    }
+    if (props.animState === "falling") {
       if (fallingSound.isPlaying()) {
         return;
       }
       stopMySoundEffects();
       fallingSound.play();
+    } else if (props.animState === "recently_hit_ground") {
+      if (impactSound.isPlaying()) {
+        return;
+      }
+      stopMySoundEffects();
+      impactSound.play();
     }
-  }, [fallingSound, hasImpacted, props.offset, stopMySoundEffects]);
+  }, [fallingSound, props.offset, stopMySoundEffects]);
 
-  // Play the impact sound effect when the asteroid hits the ground.
-  const playImpactSound = useCallback(() => {
-    if (impactSound.isPlaying()) {
-      return;
+  if (props.animState === "falling") {
+    // If animations are enabled, show the falling animation.
+    if (props.enableAnimations) {
+      return (
+        <Box
+          left={props.offset.left}
+          top={props.offset.top}
+          position="absolute"
+          w={`${tileSize}px`}
+          h={`${tileSize}px`}
+          zIndex={ASTEROID_Z_INDEX}
+          filter={props.filter}
+        >
+          <Animate
+            play
+            delay={0.4}
+            duration={0.6}
+            start={{ transform: `translate(${xOffset}px, -500px) scale(1.5)` }}
+            end={{ transform: "translate(0, 0) scale(1.0)" }}
+          >
+            <Image
+              position="absolute"
+              // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
+              src={rockImgUrl}
+              h={`${spriteDims.height}px`}
+              w={`${spriteDims.width}px`}
+              mt={`${spriteDims.marginTop}px`}
+              ml={`${spriteDims.marginLeft}px`}
+              zIndex={ASTEROID_Z_INDEX}
+              filter={SPRITE_DROP_SHADOW}
+            />
+          </Animate>
+        </Box>
+      );
+    } else {
+      // If animations are disabled but we're in the "falling" state,
+      // we just show an empty space. This just means the asteroid hasn't
+      // quite hit the ground yet.
+      return (
+        <></>
+      )
     }
-    stopMySoundEffects();
-    impactSound.play();
-  }, [impactSound, stopMySoundEffects]);
+  }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const onFallAnimationComplete = useCallback(
-    once(() => {
-      playImpactSound();
-      setHasImpacted(true);
-    }),
-    [playImpactSound]
-  );
-
+  // If we reached here, it means the asteroid has either just hit the ground
+  // (i.e. the "recently_hit_ground" state) or has hit the ground more than one
+  // step ago (i.e. the "stationary" state). In either case, we show the actual
+  // asteroid.
   return (
-    <AnimateGroup play>
+    <>
       <Box
         left={props.offset.left}
         top={props.offset.top}
         position="absolute"
         w={`${tileSize}px`}
         h={`${tileSize}px`}
-        zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
+        zIndex={ROCK_Z_INDEX}
         filter={props.filter}
       >
-        <Animate
-          play
-          sequenceId={1}
-          duration={0.6}
-          start={{ transform: `translate(${xOffset}px, -500px) scale(1.5)` }}
-          end={{ transform: "translate(0, 0) scale(1.0)" }}
-          onComplete={onFallAnimationComplete}
-        >
-          <Image
-            position="absolute"
-            // TODO(albrow): Use unique art for asteroids. For now, just re-using the rock art.
-            src={rockImgUrl}
-            h={`${spriteDims.height}px`}
-            w={`${spriteDims.width}px`}
-            mt={`${spriteDims.marginTop}px`}
-            ml={`${spriteDims.marginLeft}px`}
-            zIndex={hasImpacted ? ROCK_Z_INDEX : ASTEROID_Z_INDEX}
-            filter={SPRITE_DROP_SHADOW}
-          />
-        </Animate>
-      </Box>
-      <Animate
-        play
-        sequenceId={2}
-        delay={1}
-        duration={1.5}
-        start={{ opacity: 1.0 }}
-        end={{ opacity: 0 }}
-        onComplete={() => {
-          stopMySoundEffects();
-        }}
-      >
         <Image
-          left={`${props.offset.leftNum - 8 * props.scale}px`}
-          top={`${props.offset.topNum - 8 * props.scale}px`}
-          display={hasImpacted ? "block" : "none"}
           position="absolute"
-          w={`${66 * props.scale}px`}
-          h={`${66 * props.scale}px`}
-          src={impactImgUrl}
+          src={rockImgUrl}
+          h={`${spriteDims.height}px`}
+          w={`${spriteDims.width}px`}
+          mt={`${spriteDims.marginTop}px`}
+          ml={`${spriteDims.marginLeft}px`}
+          zIndex={ROCK_Z_INDEX}
           filter={SPRITE_DROP_SHADOW}
-          zIndex={ROCK_Z_INDEX - 1}
         />
-      </Animate>
-    </AnimateGroup>
+      </Box>
+      <Box>
+        {
+          // If animations are enabled and we're in the "recently_hit_ground" state,
+          // show the impact animation.
+          props.enableAnimations && props.animState === "recently_hit_ground" && (
+            <Animate
+              play
+              duration={1.0}
+              start={{ opacity: 1.0 }}
+              end={{ opacity: 0 }}
+            >
+              <Image
+                left={`${props.offset.leftNum - 8 * props.scale}px`}
+                top={`${props.offset.topNum - 8 * props.scale}px`}
+                position="absolute"
+                w={`${66 * props.scale}px`}
+                h={`${66 * props.scale}px`}
+                src={impactImgUrl}
+                filter={SPRITE_DROP_SHADOW}
+                zIndex={ROCK_Z_INDEX - 1}
+              />
+            </Animate>
+          )
+        }
+      </Box>
+    </>
   );
+
+
 }

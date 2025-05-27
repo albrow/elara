@@ -1,6 +1,6 @@
 use crate::simulation::{
-    AsteroidWarning, BigEnemy, Button, Crate, DataPoint, Enemy, EnergyCell, Gate, Goal, Obstacle,
-    PasswordGate, Player, State, Telepad,
+    Asteroid, AsteroidWarning, BigEnemy, Button, Crate, DataPoint, Enemy, EnergyCell, Gate, Goal,
+    Obstacle, PasswordGate, Player, State, Telepad,
 };
 
 /// A convenience struct for building a State via chainable
@@ -86,6 +86,12 @@ impl StateMaker {
     #[allow(dead_code)]
     pub fn with_asteroid_warnings(&mut self, asteroid_warnings: Vec<AsteroidWarning>) -> &mut Self {
         self.state.asteroid_warnings = asteroid_warnings;
+        self
+    }
+
+    #[allow(dead_code)]
+    pub fn with_asteroids(&mut self, asteroids: Vec<Asteroid>) -> &mut Self {
+        self.state.asteroids = asteroids;
         self
     }
 }

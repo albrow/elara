@@ -5,7 +5,7 @@ mod player_actor;
 
 use crate::{
     constants::{HEIGHT, WIDTH},
-    simulation::{Pos, State, Telepad},
+    simulation::{AsteroidAnimState, Pos, State, Telepad},
 };
 
 pub use asteroid_actor::AsteroidActor;
@@ -98,6 +98,12 @@ fn is_obstacle_at(state: &State, pos: &Pos) -> bool {
     // Unheld crates are treated as obstacles.
     for crt in &state.crates {
         if crt.pos == *pos && !crt.held {
+            return true;
+        }
+    }
+    // Asteroids are treated as obstacles, but only if they are not in the "falling" state.
+    for asteroid in &state.asteroids {
+        if asteroid.pos == *pos && asteroid.anim_state != AsteroidAnimState::Falling {
             return true;
         }
     }

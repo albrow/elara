@@ -15,6 +15,7 @@ import {
   BigEnemy as RBigEnemy,
   AsteroidWarning as RAsteroidWarning,
   Crate as RCrate,
+  Asteroid as RAsteroid,
 } from "../../../elara-lib/pkg";
 import { range } from "../../lib/utils";
 import {
@@ -202,16 +203,6 @@ export default function Board(props: BoardProps) {
                   showReflection={props.levelStyle === "glossy_tiles"}
                 />
               );
-            case "asteroid":
-              return (
-                <Asteroid
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={i}
-                  offset={posToOffset(props.scale, obstacle.pos)}
-                  scale={props.scale}
-                  filter={props.filter}
-                />
-              );
             default:
               throw new Error(`Unknown obstacle kind: ${obstacle.kind}`);
           }
@@ -332,6 +323,17 @@ export default function Board(props: BoardProps) {
             offset={posToOffset(props.scale, asteroidWarning.pos)}
             enableHoverInfo={props.enableHoverInfo}
             scale={props.scale}
+            filter={props.filter}
+          />
+        ))}
+        {(props.gameState.asteroids as RAsteroid[]).map((asteroid, i) => (
+          <Asteroid
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
+            offset={posToOffset(props.scale, asteroid.pos)}
+            animState={asteroid.anim_state}
+            scale={props.scale}
+            enableAnimations={props.enableAnimations}
             filter={props.filter}
           />
         ))}

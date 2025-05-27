@@ -99,6 +99,25 @@ pub trait Level {
     }
 }
 
+/// Checks that the level is valid.
+fn validate_level(level: &dyn Level) {
+    // Check that the level has a name.
+    assert!(!level.name().is_empty());
+    // Check that the level has a short name.
+    assert!(!level.short_name().is_empty());
+    // Check that the level has an objective.
+    assert!(!level.objective().is_empty());
+    // Check that the level has initial states.
+    assert!(!level.initial_states().is_empty());
+    // Check each initial state for validity.
+    for state in level.initial_states() {
+        // Check that each asteroid warning has a steps_until_impact greater than or equal to 2.
+        for asteroid_warning in state.asteroid_warnings.iter() {
+            assert!(asteroid_warning.steps_until_impact >= 2);
+        }
+    }
+}
+
 // Special constants for sandbox levels. Used in some tests.
 #[allow(dead_code)]
 pub const SANDBOX_LEVEL: &'static dyn Level = &sandbox::Sandbox {};
@@ -153,6 +172,12 @@ lazy_static! {
         m.insert(crates_part_one::CratesPartOne{}.short_name(), Box::new(crates_part_one::CratesPartOne{}));
         m.insert(crates_part_two::CratesPartTwo{}.short_name(), Box::new(crates_part_two::CratesPartTwo{}));
         m.insert(crates_part_three::CratesPartThree{}.short_name(), Box::new(crates_part_three::CratesPartThree{}));
+
+
+        // Validate all the levels.
+        for (_, level) in m.iter() {
+            validate_level(level.as_ref());
+        }
 
         m
     };
@@ -288,7 +313,7 @@ pub fn make_all_initial_states_for_telepads(states: Vec<State>) -> Vec<State> {
 mod tests {
     use super::*;
     use crate::{
-        simulation::{Obstacle, Orientation, Pos, Telepad},
+        simulation::{Orientation, Telepad},
         state_maker::StateMaker,
     };
 

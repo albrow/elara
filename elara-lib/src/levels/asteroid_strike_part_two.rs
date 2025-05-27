@@ -8,6 +8,7 @@ const DATA_POINT_INFO: &str = r#"This data point will output either `"top"`, `"m
 #[derive(Copy, Clone)]
 pub struct AsteroidStrikePartTwo {}
 
+// TODO(albrow): Update this level to use the updated asteroid warnings.
 impl AsteroidStrikePartTwo {
     // Note: We make obstacles a method so we can re-use the same set of
     // obstacles for each possible state.
@@ -68,16 +69,16 @@ impl Level for AsteroidStrikePartTwo {
             StateMaker::new()
                 .with_player(Player::new(1, 3, 10, Orientation::Right))
                 .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![
-                            Obstacle::new_with_kind(5, 3, ObstacleKind::Asteroid),
-                            Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
-                        ],
-                    ]
-                    .concat(),
-                )
+                // .with_obstacles(
+                //     [
+                //         self.obstacles().clone(),
+                //         vec![
+                //             Obstacle::new_with_kind(5, 3, ObstacleKind::Asteroid),
+                //             Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
+                //         ],
+                //     ]
+                //     .concat(),
+                // )
                 .with_data_points(vec![DataPoint::new_with_info(
                     0,
                     3,
@@ -88,16 +89,16 @@ impl Level for AsteroidStrikePartTwo {
             StateMaker::new()
                 .with_player(Player::new(1, 3, 10, Orientation::Right))
                 .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![
-                            Obstacle::new_with_kind(4, 2, ObstacleKind::Asteroid),
-                            Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
-                        ],
-                    ]
-                    .concat(),
-                )
+                // .with_obstacles(
+                //     [
+                //         self.obstacles().clone(),
+                //         vec![
+                //             Obstacle::new_with_kind(4, 2, ObstacleKind::Asteroid),
+                //             Obstacle::new_with_kind(4, 4, ObstacleKind::Asteroid),
+                //         ],
+                //     ]
+                //     .concat(),
+                // )
                 .with_data_points(vec![DataPoint::new_with_info(
                     0,
                     3,
@@ -108,16 +109,16 @@ impl Level for AsteroidStrikePartTwo {
             StateMaker::new()
                 .with_player(Player::new(1, 3, 10, Orientation::Right))
                 .with_goals(vec![Goal::new(4, 0), Goal::new(7, 3), Goal::new(4, 6)])
-                .with_obstacles(
-                    [
-                        self.obstacles().clone(),
-                        vec![
-                            Obstacle::new_with_kind(4, 2, ObstacleKind::Asteroid),
-                            Obstacle::new_with_kind(5, 3, ObstacleKind::Asteroid),
-                        ],
-                    ]
-                    .concat(),
-                )
+                // .with_obstacles(
+                //     [
+                //         self.obstacles().clone(),
+                //         vec![
+                //             Obstacle::new_with_kind(4, 2, ObstacleKind::Asteroid),
+                //             Obstacle::new_with_kind(5, 3, ObstacleKind::Asteroid),
+                //         ],
+                //     ]
+                //     .concat(),
+                // )
                 .with_data_points(vec![DataPoint::new_with_info(
                     0,
                     3,
