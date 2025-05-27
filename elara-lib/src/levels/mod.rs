@@ -34,7 +34,7 @@ mod telepad_part_two;
 mod telepads_and_while_loop;
 mod variables_intro;
 
-use crate::actors::{Bounds, BIG_ENEMY_SIZE};
+use crate::actors::{AsteroidActor, BigEnemyActor, Bounds, EvilRoverActor, BIG_ENEMY_SIZE};
 use crate::constants::{ERR_DESTROYED_BY_ENEMY, ERR_OUT_OF_ENERGY, HEIGHT, WIDTH};
 use crate::script_runner::ScriptStats;
 use crate::simulation::State;
@@ -116,6 +116,56 @@ fn validate_level(level: &dyn Level) {
             assert!(asteroid_warning.steps_until_impact >= 2);
         }
     }
+    // Helper function to check if a level has entities and corresponding actors
+    fn check_entities_and_actors<T: 'static>(
+        level: &dyn Level,
+        entity_check: impl Fn(&State) -> bool,
+        entity_type_name: &str,
+        actor_type_name: &str,
+    ) {
+        if level.initial_states().iter().any(entity_check) {
+            assert!(
+                !level.actors().is_empty(),
+                "Level {} has {} but no actors",
+                level.short_name(),
+                actor_type_name
+            );
+            assert!(
+                level
+                    .actors()
+                    .iter()
+                    .any(|actor| actor.as_any().downcast_ref::<T>().is_some()),
+                "Level {} has {} but no {}",
+                level.short_name(),
+                entity_type_name,
+                actor_type_name
+            );
+        }
+    }
+
+    // If the level has AsteroidWarnings, it must also have AsteroidActors.
+    check_entities_and_actors::<AsteroidActor>(
+        level,
+        |state| !state.asteroid_warnings.is_empty(),
+        "AsteroidWarnings",
+        "AsteroidWarningActors",
+    );
+
+    // If the level has Enemies, it must also have EvilRoverActors.
+    check_entities_and_actors::<EvilRoverActor>(
+        level,
+        |state| !state.enemies.is_empty(),
+        "Enemies",
+        "EvilRoverActors",
+    );
+
+    // If the level has BigEnemies, it must also have BigEnemyActors.
+    check_entities_and_actors::<BigEnemyActor>(
+        level,
+        |state| !state.big_enemies.is_empty(),
+        "BigEnemies",
+        "BigEnemyActors",
+    );
 }
 
 // Special constants for sandbox levels. Used in some tests.

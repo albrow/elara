@@ -1,4 +1,5 @@
 use rhai::Dynamic;
+use std::any::Any;
 use std::fmt;
 
 use crate::{
@@ -9,6 +10,8 @@ use crate::{
 
 pub trait Actor {
     fn apply(&mut self, state: State) -> State;
+
+    fn as_any(&self) -> &dyn Any;
 }
 
 pub struct Simulation {

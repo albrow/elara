@@ -1,9 +1,7 @@
 use super::{std_check_win, Level, Outcome};
-use crate::actors::{Bounds, EvilRoverActor};
+use crate::actors::{AsteroidActor, Bounds, EvilRoverActor};
 use crate::script_runner::ScriptStats;
-use crate::simulation::{
-    Actor, Asteroid, AsteroidAnimState, DataPoint, Enemy, EnergyCell, ObstacleKind, Orientation,
-};
+use crate::simulation::{Actor, AsteroidWarning, DataPoint, Enemy, EnergyCell, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
@@ -88,16 +86,13 @@ impl Level for EnemiesAndAsteroids {
         vec![
             base_state
                 .clone()
-                // .with_obstacles(
-                //     [
-                //         self.obstacles().clone(),
-                //         vec![
-                //             Asteroid::new(4, 0, AsteroidAnimState::HitGround),
-                //             Asteroid::new(4, 4, AsteroidAnimState::HitGround),
-                //         ],
-                //     ]
-                //     .concat(),
-                // )
+                .with_obstacles(self.obstacles())
+                .with_asteroid_warnings(vec![
+                    AsteroidWarning::new(4, 0, 4, true),
+                    AsteroidWarning::new(4, 4, 2, true),
+                    AsteroidWarning::new(6, 0, 4, false),
+                    AsteroidWarning::new(6, 4, 2, false),
+                ])
                 .with_data_points(vec![DataPoint::new_with_info(
                     5,
                     7,
@@ -107,16 +102,13 @@ impl Level for EnemiesAndAsteroids {
                 .build(),
             base_state
                 .clone()
-                // .with_obstacles(
-                //     [
-                //         self.obstacles().clone(),
-                //         vec![
-                //             Obstacle::new_with_kind(6, 0, ObstacleKind::Asteroid),
-                //             Obstacle::new_with_kind(6, 4, ObstacleKind::Asteroid),
-                //         ],
-                //     ]
-                //     .concat(),
-                // )
+                .with_obstacles(self.obstacles())
+                .with_asteroid_warnings(vec![
+                    AsteroidWarning::new(4, 0, 4, false),
+                    AsteroidWarning::new(4, 4, 2, false),
+                    AsteroidWarning::new(6, 0, 4, true),
+                    AsteroidWarning::new(6, 4, 2, true),
+                ])
                 .with_data_points(vec![DataPoint::new_with_info(
                     5,
                     7,
@@ -130,6 +122,7 @@ impl Level for EnemiesAndAsteroids {
         vec![
             Box::new(EvilRoverActor::new(0, Bounds::default())),
             Box::new(EvilRoverActor::new(1, Bounds::default())),
+            Box::new(AsteroidActor::new()),
         ]
     }
     fn check_win(&self, state: &State) -> Outcome {

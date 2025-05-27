@@ -41,33 +41,31 @@ export default function Asteroid(props: AsteroidProps) {
     impactSound.stop();
   }, [fallingSound, impactSound]);
 
-  // Stop all sound effects when the component unmounts.
-  useEffect(
-    () => () => {
-      stopMySoundEffects();
-    },
-    [stopMySoundEffects]
-  );
+  // Stop all sound effects when the asteroid unmounts.
+  //
+  // Note(albrow): This currently causes issues with React Strict Mode.
+  // Strict Mode causes the asteroid to unmount and remount multiple times, which
+  // can cause sound effects to not trigger. (Basically one asteroid can mount right before
+  // another one unmounts, which can cause the sound effects for the first asteroid to not
+  // trigger.) In production, this shouldn't be an issue in practice.
+  useEffect(() => () => {
+    stopMySoundEffects();
+  }, [stopMySoundEffects]);
 
-  // Play the falling sound effect when the component mounts.
+  // Play sound effects when the asteroid is falling or recently hit the ground.
   useEffect(() => {
-    if (!props.enableAnimations) {
-      return;
-    }
-    if (props.animState === "falling") {
-      if (fallingSound.isPlaying()) {
-        return;
+    if (props.enableAnimations) {
+      if (props.animState === "falling") {
+        fallingSound.stop();
+        // console.log("playing falling sound");
+        fallingSound.play();
+      } else if (props.animState === "recently_hit_ground") {
+        impactSound.stop();
+        // console.log("playing impact sound");
+        impactSound.play();
       }
-      stopMySoundEffects();
-      fallingSound.play();
-    } else if (props.animState === "recently_hit_ground") {
-      if (impactSound.isPlaying()) {
-        return;
-      }
-      stopMySoundEffects();
-      impactSound.play();
     }
-  }, [fallingSound, props.offset, stopMySoundEffects]);
+  }, [props.animState, props.enableAnimations, fallingSound, impactSound]);
 
   if (props.animState === "falling") {
     // If animations are enabled, show the falling animation.
@@ -84,7 +82,7 @@ export default function Asteroid(props: AsteroidProps) {
         >
           <Animate
             play
-            delay={0.4}
+            delay={0.35}
             duration={0.6}
             start={{ transform: `translate(${xOffset}px, -500px) scale(1.5)` }}
             end={{ transform: "translate(0, 0) scale(1.0)" }}
@@ -103,14 +101,13 @@ export default function Asteroid(props: AsteroidProps) {
           </Animate>
         </Box>
       );
-    } else {
-      // If animations are disabled but we're in the "falling" state,
-      // we just show an empty space. This just means the asteroid hasn't
-      // quite hit the ground yet.
-      return (
-        <></>
-      )
     }
+    // If animations are disabled but we're in the "falling" state,
+    // we just show an empty space. This just means the asteroid hasn't
+    // quite hit the ground yet.
+    return (
+      <Box />
+    );
   }
 
   // If we reached here, it means the asteroid has either just hit the ground

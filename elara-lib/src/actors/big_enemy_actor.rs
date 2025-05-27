@@ -1,3 +1,5 @@
+use std::any::Any;
+
 use crate::simulation::{
     Actor, BigEnemyAnimState, BumpAnimData, OrientationWithDiagonals, Pos, State,
 };
@@ -256,6 +258,10 @@ impl BigEnemyActor {
 }
 
 impl Actor for BigEnemyActor {
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
     fn apply(&mut self, state: State) -> State {
         let mut state = state.clone();
 

@@ -1,3 +1,5 @@
+use std::any::Any;
+
 use crate::simulation::{
     Actor, BumpAnimData, EnemyAnimState, Orientation, Pos, State, TeleAnimData,
 };
@@ -240,6 +242,10 @@ impl EvilRoverActor {
 }
 
 impl Actor for EvilRoverActor {
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
     fn apply(&mut self, state: State) -> State {
         let mut state = state.clone();
 

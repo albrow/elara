@@ -1,3 +1,4 @@
+use std::any::Any;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc;
@@ -32,6 +33,10 @@ impl PlayerChannelActor {
 }
 
 impl Actor for PlayerChannelActor {
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
     fn apply(&mut self, state: State) -> State {
         let mut state = state.clone();
 

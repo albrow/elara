@@ -326,10 +326,9 @@ export default function Board(props: BoardProps) {
             filter={props.filter}
           />
         ))}
-        {(props.gameState.asteroids as RAsteroid[]).map((asteroid, i) => (
+        {(props.gameState.asteroids as RAsteroid[]).map((asteroid) => (
           <Asteroid
-            // eslint-disable-next-line react/no-array-index-key
-            key={i}
+            key={`asteroid_${asteroid.pos.x}_${asteroid.pos.y}`}
             offset={posToOffset(props.scale, asteroid.pos)}
             animState={asteroid.anim_state}
             scale={props.scale}

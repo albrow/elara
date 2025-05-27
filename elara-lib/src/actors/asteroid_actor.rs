@@ -1,4 +1,6 @@
-use crate::simulation::{Actor, Asteroid, AsteroidAnimState, Obstacle, ObstacleKind, State};
+use std::any::Any;
+
+use crate::simulation::{Actor, Asteroid, AsteroidAnimState, State};
 
 /// An actor for "malfunctioning" or "evil" rover enemies which always tries to chase
 /// the player down. It follows the same basic movement rules as the player but doesn't
@@ -12,6 +14,10 @@ impl AsteroidActor {
 }
 
 impl Actor for AsteroidActor {
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
     fn apply(&mut self, state: State) -> State {
         let mut state = state.clone();
 
