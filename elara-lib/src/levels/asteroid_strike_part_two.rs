@@ -9,7 +9,6 @@ const DATA_POINT_INFO: &str = r#"This data point will output either `"top"`, `"m
 #[derive(Copy, Clone)]
 pub struct AsteroidStrikePartTwo {}
 
-// TODO(albrow): Update this level to use the updated asteroid warnings.
 impl AsteroidStrikePartTwo {
     // Note: We make obstacles a method so we can re-use the same set of
     // obstacles for each possible state.

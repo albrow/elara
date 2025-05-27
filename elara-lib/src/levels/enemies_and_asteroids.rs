@@ -56,7 +56,6 @@ impl EnemiesAndAsteroids {
     }
 }
 
-// TODO(albrow): Update this level to use the updated asteroid warnings.
 impl Level for EnemiesAndAsteroids {
     fn name(&self) -> &'static str {
         "Into Danger"

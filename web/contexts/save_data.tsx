@@ -15,7 +15,7 @@ import { ShortId } from "../lib/tutorial_shorts";
 import { sleep } from "../lib/utils";
 import { SectionName } from "../components/journal/sections";
 
-export const SAVE_DATA_VERSION = 17;
+export const SAVE_DATA_VERSION = 18;
 const LOCAL_STORAGE_KEY = "elara.save";
 
 // Amount of time (in milliseconds) to wait for further updates before
@@ -70,7 +70,7 @@ export interface SaveData {
   lastSeenChangelogVersion?: string;
 }
 
-const DEFUALT_SETTINGS: Settings = {
+const DEFAULT_SETTINGS: Settings = {
   masterVolume: 0.8,
   musicVolume: 0.6,
   soundEffectsVolume: 1,
@@ -90,12 +90,12 @@ const DEFAULT_SAVE_DATA: SaveData = {
   levelStates: {},
   seenDialogTrees: [],
   seenTutorialShorts: [],
-  settings: DEFUALT_SETTINGS,
+  settings: DEFAULT_SETTINGS,
   seenJournalPages: [],
   unlockedFunctions: DEFAULT_UNLOCKED_FUNCTIONS,
   seenCutscenes: [],
 
-  // lastUpdated is intentially omitted from the default save data.
+  // lastUpdated is intentionally omitted from the default save data.
   // it will be set automatically when the save data is committed to
   // local storage.
 };
@@ -161,7 +161,7 @@ function migrateSaveData(saveData: SaveData): SaveData {
   if (newData.version === 7) {
     newData.version = 8;
     // Version 8 added user settings.
-    newData.settings = DEFUALT_SETTINGS;
+    newData.settings = DEFAULT_SETTINGS;
   }
 
   // Migrate from version 8 to 9.
@@ -175,7 +175,7 @@ function migrateSaveData(saveData: SaveData): SaveData {
   if (newData.version === 9) {
     newData.version = 10;
     // Version 10 added dialog volume.
-    newData.settings.dialogVolume = DEFUALT_SETTINGS.dialogVolume;
+    newData.settings.dialogVolume = DEFAULT_SETTINGS.dialogVolume;
   }
 
   // Migrate from version 10 to 11.
@@ -204,7 +204,7 @@ function migrateSaveData(saveData: SaveData): SaveData {
 
     // Note(albrow): We use a Set here to ensure that we don't add any
     // duplicate functions. Seems to be an issue if hooks trigger more
-    // than once in rapid sucession. In other words, using Set makes
+    // than once in rapid succession. In other words, using Set makes
     // this function idempotent.
     newData.unlockedFunctions = [...new Set(unlockedFunctions)];
   }
@@ -311,7 +311,7 @@ function migrateSaveData(saveData: SaveData): SaveData {
 
   // Version 15 changed the default musicVolume from 0.8 to 0.6.
   // We also want to change the user's current musicVolume to 0.6
-  // if it was previousy set to anything above 0.6. In other words,
+  // if it was previously set to anything above 0.6. In other words,
   // 0.6 is the new default maximum volume (but users can still
   // increase it later if they want to). The reason for this change is
   // that the new mastered music is slightly louder than before.
@@ -341,6 +341,14 @@ function migrateSaveData(saveData: SaveData): SaveData {
     if (newData.levelStates.telepad_part_one?.completed) {
       newData.seenCutscenes.push("grover_repaired");
     }
+  }
+
+  // Version 18 includes breaking changes to the level "asteroid_strike".
+  // Old code will no longer work, so we reset to the starting state for
+  // this level.
+  if (newData.version === 17) {
+    newData.version = 18;
+    delete newData.levelStates.asteroid_strike;
   }
 
   return newData;
@@ -418,7 +426,7 @@ export const SaveDataContext = createContext<
 ] as const);
 
 export function SaveDataProvider(props: PropsWithChildren<{}>) {
-  // Note(albrow): We use a combination of ref and state for represnting the save data.
+  // Note(albrow): We use a combination of ref and state for representing the save data.
   // This is admittedly a bit of a hack. 🐉
   //
   // The ref is used internally in SaveDataProvider to ensure that multiple
@@ -677,7 +685,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
+          settings: DEFAULT_SETTINGS,
           seenJournalPages: ["functions", "comments"],
           unlockedFunctions: [
             ...DEFAULT_UNLOCKED_FUNCTIONS,
@@ -702,7 +710,7 @@ if (import.meta.vitest) {
           levelStates: {},
           seenDialogTrees: [],
           seenTutorialShorts: [],
-          settings: DEFUALT_SETTINGS,
+          settings: DEFAULT_SETTINGS,
           seenJournalPages: [],
           unlockedFunctions: DEFAULT_UNLOCKED_FUNCTIONS,
           seenCutscenes: [],
@@ -724,7 +732,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["movement"],
           seenTutorialShorts: ["how_to_run_code"],
-          settings: DEFUALT_SETTINGS,
+          settings: DEFAULT_SETTINGS,
           seenJournalPages: ["functions", "comments"],
           unlockedFunctions: [
             ...DEFAULT_UNLOCKED_FUNCTIONS,
@@ -770,7 +778,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["intro"],
           seenTutorialShorts: [],
-          settings: { ...DEFUALT_SETTINGS, musicVolume: 0.9 },
+          settings: { ...DEFAULT_SETTINGS, musicVolume: 0.9 },
           seenJournalPages: ["functions", "comments", "strings", "loops"],
         };
 
@@ -802,7 +810,7 @@ if (import.meta.vitest) {
           },
           seenDialogTrees: ["intro"],
           seenTutorialShorts: [],
-          settings: DEFUALT_SETTINGS,
+          settings: DEFAULT_SETTINGS,
           seenJournalPages: ["functions", "comments", "strings", "loops"],
           unlockedFunctions: [
             ...DEFAULT_UNLOCKED_FUNCTIONS,
