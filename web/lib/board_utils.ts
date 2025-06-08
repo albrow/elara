@@ -15,7 +15,7 @@ export interface Offset {
 
 export function posToOffset(scale: number, pos: Pos): Offset {
   const leftNum = (pos.x * (DEFAULT_TILE_SIZE + 1) + 1) * scale;
-  const topNum = (pos.y * (DEFAULT_TILE_SIZE + 1) + 2) * scale;
+  const topNum = (pos.y * (DEFAULT_TILE_SIZE + 1) + 1) * scale;
   return {
     pos,
     left: `${leftNum}px`,
