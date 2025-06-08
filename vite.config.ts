@@ -21,6 +21,7 @@ export default defineConfig(async () => {
           pollInterval: 100,
         },
       },
+      host: "127.0.0.1"
     },
     // Set base="/elara/" as a workaround for hosting on GitHub Pages.
     // See: https://dev.to/shashannkbawa/deploying-vite-app-to-github-pages-3ane
