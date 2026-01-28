@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "name": "English",
+    "nativeName": "English",
+    "code": "en"
+  },
+  "common": {
+    "continue": "Continue",
+    "newGame": "New Game",
+    "settings": "Settings",
+    "changelog": "Changelog",
+    "help": "Help",
+    "quit": "Quit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "save": "Save",
+    "reset": "Reset",
+    "back": "Back",
+    "next": "Next",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "loading": "Loading...",
+    "error": "Error"
+  },
+  "title": {
+    "lastPlayed": "Last played: {{time}}",
+    "newGameWarning": "Are you sure you want to start a new game? This will delete all your current progress.",
+    "confirmDelete": "Yes, start new game",
+    "welcomeMessage": "Elara is still under development. Some features may not work as expected. Please report any bugs you find!",
+    "continueGame": "Continue Game",
+    "startNewGame": "Start New Game"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "audio": "Audio",
+    "music": "Music",
+    "soundEffects": "Sound Effects",
+    "volume": "Volume",
+    "graphics": "Graphics",
+    "fullscreen": "Fullscreen",
+    "accessibility": "Accessibility",
+    "textSize": "Text Size",
+    "highContrast": "High Contrast"
+  },
+  "editor": {
+    "deploy": "Deploy",
+    "deployTooltip": "Deploy the code to the rover",
+    "reset": "Reset",
+    "resetTooltip": "Reset back to the original code",
+    "play": "Play",
+    "pause": "Pause",
+    "step": "Step",
+    "speed": "Speed",
+    "functions": "Functions",
+    "errors": "Errors",
+    "console": "Console"
+  },
+  "level": {
+    "objective": "Objective",
+    "challenge": "Challenge",
+    "hints": "Hints",
+    "nextHint": "Next Hint",
+    "showHint": "Show Hint",
+    "completed": "Level Completed!",
+    "challengeCompleted": "Challenge Completed!",
+    "tryAgain": "Try Again",
+    "nextLevel": "Next Level",
+    "playAgain": "Play Level Again",
+    "backToHub": "Back to Hub",
+    "time": "Time",
+    "energyUsed": "Energy Used",
+    "codeLength": "Code Length"
+  },
+  "success": {
+    "greatJob": "Great Job!",
+    "objectiveComplete": "Objective Complete",
+    "challengeComplete": "Challenge Complete",
+    "stats": "Stats",
+    "bonusObjective": "Bonus Objective"
+  },
+  "journal": {
+    "title": "Journal",
+    "nextPage": "Next Page",
+    "prevPage": "Previous Page",
+    "tableOfContents": "Table of Contents"
+  },
+  "dialog": {
+    "continue": "Continue",
+    "skip": "Skip"
+  },
+  "hub": {
+    "title": "Mission Hub",
+    "selectLevel": "Select Level",
+    "progress": "Progress",
+    "locked": "Locked",
+    "completed": "Completed"
+  },
+  "tutorial": {
+    "howToRunCode": "Press \"Deploy\" and then \"Play\" to run your code. The code will cause the rover to move around and do things.",
+    "whereToFindObjectives": "Look at the \"Objective\" panel on the right side of the screen to see what you need to do.",
+    "howToSeeErrors": "If your code has errors, they will show up in the \"Errors\" panel at the bottom of the screen.",
+    "backToHub": "Click the \"Back\" button or press Escape to go back to the hub and select a different level.",
+    "howToViewFunctionList": "Click the \"Functions\" button to see a list of all available functions.",
+    "extraChallenges": "After completing a level, try the optional challenge for extra difficulty!",
+    "movingTakesEnergy": "Moving takes energy. Keep an eye on the energy meter!",
+    "howToGetMoreEnergy": "Collect energy cells to get more energy.",
+    "showHintsAndDialog": "If you're stuck, try clicking the \"Hints\" button for help.",
+    "howToPauseAndStep": "Use the \"Pause\" and \"Step\" buttons to run your code one line at a time.",
+    "hoverOverText": "Hover over code to see tooltips explaining what it does.",
+    "hoverOverBoard": "Hover over objects on the board to learn more about them."
+  },
+  "errors": {
+    "infiniteLoop": "Error: Possible infinite loop detected.",
+    "missingSemicolon": "Syntax Error: Missing semicolon ';' at end of line.",
+    "missingSemicolonAfterCall": "Syntax Error: Missing semicolon ';' after function call or other statement.",
+    "functionNotUnlocked": "Error: You haven't unlocked the {{funcName}} function yet",
+    "functionDisabled": "Error: The {{funcName}} function is disabled for this level",
+    "functionWrongArgs": "Error: The {{funcName}} function should have {{argDesc}} as an input.",
+    "functionNotFound": "Error: There is no function named {{funcName}} (maybe you made a typo?)",
+    "variableNotFound": "Error: Variable not found: {{varName}}",
+    "unterminatedString": "Error: String is missing a quotation mark at the end.",
+    "unexpectedLineBreak": "Syntax Error: Unexpected line break inside function call. Try putting the function arguments on the same line.",
+    "unexpectedSpaceInVarName": "Syntax Error: Variable names cannot contain spaces. Use underscores instead (e.g., my_variable).",
+    "unexpectedSpaceInFuncName": "Syntax Error: Function names cannot contain spaces. Use underscores instead (e.g., my_function).",
+    "missingClosingParen": "Syntax Error: Missing a closing parenthesis ')' for the {{funcName}} function.",
+    "missingParentheses": "Syntax Error: Missing parentheses '()' after function name '{{funcName}}'.",
+    "extraParentheses": "Syntax Error: Extra set of parentheses '()'.",
+    "extraClosingParen": "Syntax Error: Extra closing parenthesis ')'."
+  },
+  "hints": {
+    "variableHintLoop": "Did you mean loop with a lowercase 'l'?",
+    "variableHintLet": "Did you mean let with a lowercase 'l'?",
+    "variableHintIf": "Did you mean if with a lowercase 'i'?",
+    "variableHintString": "If you meant a string, you might be missing quotation marks."
+  }
+}

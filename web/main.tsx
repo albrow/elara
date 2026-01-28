@@ -19,6 +19,7 @@ import { ShortsModalProvider } from "./contexts/shorts_modal";
 import { ErrorModalProvider } from "./contexts/error_modal";
 import { FunctionUnlockedModalProvider } from "./contexts/function_unlocked_modal";
 import { DialogModalProvider } from "./contexts/dialog_modal";
+import { I18nProvider } from "./contexts/i18n";
 import {
   CHAKRA_TOOL_TIP_Z_INDEX,
   ROVER_MESSAGE_Z_INDEX,
@@ -192,27 +193,29 @@ function getDefaultRouteOptions() {
     <React.StrictMode>
       <RouterProvider router={router}>
         <ChakraProvider theme={elaraTheme} resetCSS>
-          <SaveDataProvider>
-            <SoundProvider>
-              <JukeboxProvider>
-                <ScenesProvider>
-                  <ShortsModalProvider>
-                    <ErrorModalProvider>
-                      <HintsModalProvider>
-                        <FunctionUnlockedModalProvider>
-                          <LevelSelectModalProvider>
-                            <DialogModalProvider>
-                              <Root />
-                            </DialogModalProvider>
-                          </LevelSelectModalProvider>
-                        </FunctionUnlockedModalProvider>
-                      </HintsModalProvider>
-                    </ErrorModalProvider>
-                  </ShortsModalProvider>
-                </ScenesProvider>
-              </JukeboxProvider>
-            </SoundProvider>
-          </SaveDataProvider>
+          <I18nProvider>
+            <SaveDataProvider>
+              <SoundProvider>
+                <JukeboxProvider>
+                  <ScenesProvider>
+                    <ShortsModalProvider>
+                      <ErrorModalProvider>
+                        <HintsModalProvider>
+                          <FunctionUnlockedModalProvider>
+                            <LevelSelectModalProvider>
+                              <DialogModalProvider>
+                                <Root />
+                              </DialogModalProvider>
+                            </LevelSelectModalProvider>
+                          </FunctionUnlockedModalProvider>
+                        </HintsModalProvider>
+                      </ErrorModalProvider>
+                    </ShortsModalProvider>
+                  </ScenesProvider>
+                </JukeboxProvider>
+              </SoundProvider>
+            </SaveDataProvider>
+          </I18nProvider>
         </ChakraProvider>
       </RouterProvider>
     </React.StrictMode>
