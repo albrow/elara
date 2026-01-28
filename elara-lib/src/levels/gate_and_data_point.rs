@@ -8,23 +8,23 @@ pub struct GateAndDataPoint {}
 
 impl Level for GateAndDataPoint {
     fn name(&self) -> &'static str {
-        "Forgotten Password"
+        "Забытый пароль"
     }
     fn short_name(&self) -> &'static str {
         "gate_and_data_point"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This code reads the password from the data point and
-// stores it in a variable called password. (You DON'T
-// need to change this part).
+        r#"// Этот код читает пароль из точки данных и
+// сохраняет его в переменную password. (Эту часть
+// изменять НЕ нужно).
 move_forward(1);
 let password = read_data();
 
-// Now you just need to unlock the gate and move to the goal.
-// ADD YOUR CODE BELOW
+// Теперь вам нужно открыть шлюз и добраться до цели.
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 
 "#
     }
@@ -49,13 +49,13 @@ let password = read_data();
             "turing".to_string(),
             false,
             GateVariant::NESW,
-            "The password for this gate is stored in the nearby data point.".into(),
+            "Пароль для этого шлюза хранится в ближайшей точке данных.".into(),
         )];
         state.data_points = vec![DataPoint::new_with_info(
             4,
             1,
             "turing".into(),
-            "This data point contains the password you need.".into(),
+            "Эта точка данных содержит нужный вам пароль.".into(),
         )];
         vec![state]
     }

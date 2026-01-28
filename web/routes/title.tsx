@@ -37,8 +37,6 @@ export default function Title() {
 
   useEffect(() => {
     if (ELARA_BUILD_TARGET === "electron") {
-      // Electron apps don't have a loading screen, so we need to manually
-      // load and play the title screen music for the first time.
       requestSong("prelude");
     }
   }, [requestSong]);
@@ -87,25 +85,17 @@ export default function Title() {
     setChangelogModalVisisble(true);
   }, [markChangelogSeen]);
 
-  /**
-   * Whether or not the changelog should be considered "new" for the user and highlighted as such.
-   */
   const shouldHighlightChangelog = useMemo(() => {
     if (
       saveData.lastSeenChangelogVersion &&
       semver.lt(saveData.lastSeenChangelogVersion, APP_VERSION)
     ) {
-      // User has not seen the changelog for this version yet. We should
-      // highlight the changelog button.
       return true;
     }
     if (semver.lt(APP_VERSION, "0.3.0")) {
-      // Versions before 0.3.0 didn't track the last seen changelog version,
-      // so if the user has played the game at all, assume the changelog is new for those users.
       return saveData.seenDialogTrees.length > 0;
     }
     if (saveData.lastSeenChangelogVersion == null) {
-      // If the user has never opened the changelog, and has played the game, assume the changelog is new.
       return saveData.seenDialogTrees.length > 0;
     }
     return false;
@@ -174,7 +164,7 @@ export default function Title() {
             <Box minW="fit-content" mb="10px">
               <Button w="100%" size="lg" onClick={onContinue}>
                 <MdPlayCircle style={{ marginRight: "0.2em" }} />
-                Continue
+                Продолжить
               </Button>
               {saveData.lastUpdated && (
                 <Text
@@ -184,23 +174,23 @@ export default function Title() {
                   color="white"
                   textAlign="center"
                 >
-                  Last saved: {humanFriendlyTimestamp(saveData.lastUpdated)}
+                  Сохранено: {humanFriendlyTimestamp(saveData.lastUpdated)}
                 </Text>
               )}
             </Box>
           )}
           <Button size="lg" onClick={onNewGame}>
             <MdSave style={{ marginRight: "0.2em" }} />
-            New Game
+            Новая игра
           </Button>
           <Button size="lg" onClick={onSettings}>
             <MdSettings style={{ marginRight: "0.2em" }} />
-            Settings
+            Настройки
           </Button>
           <a href="https://elaragame.com" target="_blank" rel="noreferrer">
             <Button size="lg" w="100%">
               <MdOutlineHelp style={{ marginRight: "0.3em" }} />
-              About
+              Об игре
             </Button>
           </a>
           <Button
@@ -210,9 +200,9 @@ export default function Title() {
             borderColor="yellow.500"
           >
             <MdNewspaper style={{ marginRight: "0.2em" }} />
-            What&apos;s New
+            Что нового
           </Button>
-          {shouldHighlightChangelog && <BlinkingText text="New Updates!" />}
+          {shouldHighlightChangelog && <BlinkingText text="Новые обновления!" />}
         </Flex>
       </Container>
       <Text
@@ -222,17 +212,15 @@ export default function Title() {
         bottom="10px"
         right="10px"
       >
-        public beta version {APP_VERSION}
+        публичная бета-версия {APP_VERSION}
       </Text>
       {ELARA_BUILD_TARGET === "electron" && (
-        // Show a quit button in the bottom left corner if we're running in Electron
         <Box position="fixed" bottom="10px" left="10px">
           <Button
             variant="ghost"
             colorScheme="whiteAlpha"
             onClick={() => window.close()}
           >
-            {/* Horizontally flip the icon so it points in the right direction */}
             <MdExitToApp
               color="white"
               size="1.3em"
@@ -242,7 +230,7 @@ export default function Title() {
               }}
             />
             <Text fontSize="1.2em" color="white" fontWeight={700}>
-              Quit
+              Выход
             </Text>
           </Button>
         </Box>

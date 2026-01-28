@@ -4,53 +4,53 @@ import Card from "../card";
 import { getLocalVideoUrl } from "../../../lib/utils";
 import { SANDBOX_WITH_DATA_POINT_LEVEL } from "../../../lib/scenes";
 
-### Variables
+### Переменные
 
 <Video youTubeId="BBerbG81LrI" localVideoUrl={getLocalVideoUrl("variables")}/>
 
-You can think of variables as "containers" that you can put values into and then
-use later. Almost anything can be stored in a variable: numbers, strings,
-or even the output of a function.
+Переменные можно представить как «контейнеры», в которые можно
+положить значения и использовать их позже. Почти всё можно хранить
+в переменной: числа, строки или даже вывод функции.
 
-To create a new variable, use the `let` keyword. In the example below, we
-create a new variable called `x` and set it to `2`.
+Чтобы создать новую переменную, используйте ключевое слово `let`.
+В примере ниже мы создаём новую переменную `x` и присваиваем ей значение `2`.
 
-<Card type="try_it">Change `2` to a different number and see what happens.</Card>
+<Card type="try_it">Измените `2` на другое число и посмотрите, что произойдёт.</Card>
 
 <RunnableExample
-  code={`// Create a new variable named x and set it to 2.
+  code={`// Создаём новую переменную x и присваиваем ей значение 2.
 let x = 2;
 
-// Now we can use x as the input to the say function.
+// Теперь мы можем использовать x как аргумент функции say.
 say(x);
 
-// We can treat x as a number and use it in math.
+// Мы можем использовать x как число в математических операциях.
 say(x + 1);
 `}
 />
 
-A variable can hold any type of value, including strings. In the example below,
-we create a new variable called `greeting` and set it to `"Hello"`.
+Переменная может хранить любой тип значения, включая строки. В примере ниже
+мы создаём новую переменную `greeting` и присваиваем ей значение `"Привет"`.
 
-<Card type="tip">Don't use quotes around a variable name.</Card>
+<Card type="tip">Не используйте кавычки вокруг имени переменной.</Card>
 
-<Card type="try_it">Change `"Hello"` to a different string.</Card>
+<Card type="try_it">Измените `"Привет"` на другую строку.</Card>
 
 <RunnableExample
-  code={`// Create a new variable named greeting and set it to "Hello".
-let greeting = "Hello";
+  code={`// Создаём новую переменную greeting и присваиваем ей значение "Привет".
+let greeting = "Привет";
 say(greeting);
 `}
 />
 
-If a function has an output, you can store it in a variable. This is super useful
-when you want to save the output and use it later on.
+Если функция имеет вывод, можно сохранить его в переменной. Это очень полезно,
+когда нужно сохранить вывод и использовать его позже.
 
 <RunnableExample
-  code={`// Store the output of the read_data function in a variable.
+  code={`// Сохраняем вывод функции read_data в переменную.
 let data = read_data();
 
-// Now we can use the variable later on in our code...
+// Теперь мы можем использовать переменную позже в коде...
 turn_right();
 move_forward(1);
 say(data);

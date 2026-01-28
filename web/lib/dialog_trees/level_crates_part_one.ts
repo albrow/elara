@@ -17,25 +17,25 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   explain_crates: {
-    text: `Looks like there's a crate blocking G.R.O.V.E.R.'s path. Not a problem though...`,
+    text: `Похоже, ящик преграждает путь Г.Р.О.В.Е.Р.у. Но это не проблема...`,
     choiceIds: [],
     nextId: "explain_crates_2",
   },
   explain_crates_2: {
-    text: `G.R.O.V.E.R. can easily pick up crates with the \`pick_up\` function and drop them with the \`drop\` function.`,
+    text: `Г.Р.О.В.Е.Р. может легко поднимать ящики функцией \`pick_up\` и ставить их функцией \`drop\`.`,
     choiceIds: ["ask_about_crate_weight", "ack_crates"],
   },
   explain_low_gravity: {
-    text: `Well, the gravity on Elara is a tiny fraction of what it is on Earth. A lot of things that look heavy are really light as a feather.`,
+    text: `Ну, гравитация на Эларе — лишь малая доля от земной. Многие вещи, которые выглядят тяжёлыми, на самом деле лёгкие как пёрышко.`,
     choiceIds: ["ask_about_jumping", "ack_low_gravity"],
   },
   jumping_in_low_grav: {
-    text: `Yeah! In fact, when I go out on the surface it's hard to keep my feet on the ground!`,
+    text: `Ага! На самом деле, когда я выхожу на поверхность, трудно удержаться на ногах!`,
     choiceIds: [],
     nextId: "jumping_in_low_grav_2",
   },
   jumping_in_low_grav_2: {
-    text: "Maybe you'll get to try it sometime!",
+    text: "Может, когда-нибудь и ты попробуешь!",
     choiceIds: ["ack_jumping_in_low_grav"],
   },
 };
@@ -44,27 +44,27 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   ack_crates: {
-    text: "Let's go!",
+    text: "Поехали!",
   },
   ask_about_crate_weight: {
-    text: "How can G.R.O.V.E.R. pick up that big crate with his tiny little arm?",
+    text: "Как Г.Р.О.В.Е.Р. может поднять такой большой ящик своей крошечной рукой?",
     nextId: "explain_low_gravity",
   },
   ack_low_gravity: {
-    text: "Oh! That makes sense.",
+    text: "А! Теперь понятно.",
   },
   ask_about_jumping: {
-    text: "Does that mean you can jump really high?",
+    text: "Значит, можно прыгать очень высоко?",
     nextId: "jumping_in_low_grav",
   },
   ack_jumping_in_low_grav: {
-    text: "Wow! That sounds really amazing.",
+    text: "Ого! Звучит потрясающе.",
   },
 };
 
 export const TREES: DialogTrees = {
   level_crates_part_one: {
-    name: "Crates",
+    name: "Ящики",
     startId: "explain_crates",
   },
 };

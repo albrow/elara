@@ -8,20 +8,20 @@ pub struct ButtonAndGate {}
 
 impl Level for ButtonAndGate {
     fn name(&self) -> &'static str {
-        "Let Me In"
+        "Пустите меня"
     }
     fn short_name(&self) -> &'static str {
         "button_and_gate"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This code tries to move the rover to the goal, but
-// there's a locked gate blocking the way. Try pressing the
-// button first to unlock the gate.
+        r#"// Этот код пытается переместить ровер к цели, но
+// закрытые ворота преграждают путь. Попробуйте сначала нажать
+// кнопку, чтобы открыть ворота.
 //
-// CHANGE THE CODE BELOW:
+// ИЗМЕНИТЕ КОД НИЖЕ:
 move_forward(4);
 "#
     }
@@ -32,14 +32,14 @@ move_forward(4);
             11,
             3,
             ButtonConnection::Gate(0),
-            "Press this button to unlock the gate.".into(),
+            "Нажмите эту кнопку, чтобы открыть ворота.".into(),
         )];
         state.gates = vec![Gate::new_with_info(
             9,
             7,
             false,
             GateVariant::NESW,
-            "This gate can be unlocked by pressing the nearby button.".into(),
+            "Эти ворота можно открыть нажатием ближайшей кнопки.".into(),
         )];
         state.obstacles = vec![
             Obstacle::new(6, 6),

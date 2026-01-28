@@ -10,16 +10,16 @@ export interface ChallengeTextProps {
 }
 
 function injectTooltips(text: string) {
-  if (text.toLowerCase().includes("code length")) {
-    // Split text so we can handle the "code length" part separately.
-    // We want to add a tooltip to this part of the text.
-    const codeLengthIndex = text.toLowerCase().indexOf("code length");
-    const codeLengthText = text.slice(codeLengthIndex, codeLengthIndex + 11);
+  const lowered = text.toLowerCase();
 
-    // Before and after text might contain markdown, so we process it
-    // accordingly.
+  // Tooltips for code length (English + Russian).
+  if (lowered.includes("code length") || lowered.includes("длина кода")) {
+    const phrase = lowered.includes("длина кода") ? "длина кода" : "code length";
+    const codeLengthIndex = lowered.indexOf(phrase);
+    const codeLengthText = text.slice(codeLengthIndex, codeLengthIndex + phrase.length);
+
     const beforeText = text.slice(0, codeLengthIndex);
-    const afterText = text.slice(codeLengthIndex + 11);
+    const afterText = text.slice(codeLengthIndex + phrase.length);
     return (
       <>
         <span key={beforeText}>{compiler(beforeText)}</span>
@@ -52,20 +52,22 @@ function injectTooltips(text: string) {
       </>
     );
   }
-  if (text.toLowerCase().includes("function list")) {
-    // Similarly, we want to add a tooltip to the "function list" part.
-    const functionListIndex = text.toLowerCase().indexOf("function list");
+
+  // Tooltips for function list (English + Russian).
+  if (lowered.includes("function list") || lowered.includes("список функций")) {
+    const phrase = lowered.includes("список функций") ? "список функций" : "function list";
+    const functionListIndex = lowered.indexOf(phrase);
     const functionListText = text.slice(
       functionListIndex,
-      functionListIndex + 13
+      functionListIndex + phrase.length
     );
     const beforeText = text.slice(0, functionListIndex);
-    const afterText = text.slice(functionListIndex + 13);
+    const afterText = text.slice(functionListIndex + phrase.length);
     return (
       <>
         <span key={beforeText}>{compiler(beforeText)}</span>
         <Tooltip
-          label="A list of all available functions for this level. Click the icon in the top right of the code editor to view the function list."
+          label="Список всех доступных функций для этого уровня. Нажмите значок в правом верхнем углу редактора кода, чтобы открыть список функций."
           placement="top"
           variant="challenge"
           bg="gray.600"

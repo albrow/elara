@@ -7,19 +7,19 @@ pub struct EnemiesPartOne {}
 
 impl Level for EnemiesPartOne {
     fn name(&self) -> &'static str {
-        "Malfunction Detected"
+        "Обнаружена неисправность"
     }
     fn short_name(&self) -> &'static str {
         "enemies_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r"// If you try going straight for the goal, you might run
-// into trouble. Can you find a different path?
+        r"// Если вы пойдёте прямо к цели, могут возникнуть проблемы.
+// Можете ли вы найти другой путь?
 
-// CHANGE THE CODE BELOW
+// ИЗМЕНИТЕ КОД НИЖЕ
 move_forward(3);
 "
     }
@@ -50,7 +50,7 @@ move_forward(3);
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal in 17 or fewer steps.")
+        Some("Достигните цели за 17 шагов или меньше.")
     }
     fn check_challenge(
         &self,

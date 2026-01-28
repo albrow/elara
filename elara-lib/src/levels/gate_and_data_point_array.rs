@@ -8,22 +8,22 @@ pub struct GateAndDataPointArray {}
 
 impl Level for GateAndDataPointArray {
     fn name(&self) -> &'static str {
-        "Needle in a Haystack"
+        "Иголка в стоге сена"
     }
     fn short_name(&self) -> &'static str {
         "gate_and_data_point_array"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This data point holds an array instead of just a string.
+        r#"// Эта точка данных содержит массив, а не просто строку.
 let array = read_data();
 
-// The password is at index 2 in the array. Once you get the
-// password, you know what to do!
+// Пароль находится в массиве под индексом 2. Как только вы
+// получите пароль, вы знаете, что делать!
 //
-// ADD YOUR CODE BELOW
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 
 "#
     }
@@ -49,19 +49,19 @@ let array = read_data();
             "vaughan".to_string(),
             false,
             GateVariant::NESW,
-            "The nearby data point holds an array. The password for this gate is stored at index `2` of the array.".into(),
+            "Ближайшая точка данных содержит массив. Пароль для этого шлюза хранится под индексом `2` массива.".into(),
         )];
         state.data_points = vec![DataPoint::new_with_info(
             11,
             6,
             vec![
                 "HTTP ERROR 418",
-                "Ingredients: 500g freeze-dried spinach, 5g ground coriander, 30g coconut milk powder...",
+                "Ингредиенты: 500г сублимированного шпината, 5г молотого кориандра, 30г кокосового молока...",
                 "vaughan",
                 "42",
             ]
             .into(),
-            "This data point holds an array. The password is stored at index `2` of the array.".into(),
+            "Эта точка данных содержит массив. Пароль хранится под индексом `2` массива.".into(),
         )];
         vec![state]
     }

@@ -84,7 +84,7 @@ export default function ControlBar(props: ControlBarProps) {
               <Tooltip
                 maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
                 // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-                label="Deploy the code to the rover"
+                label="Запустить код на ровере"
               >
                 <Button
                   size={BUTTON_RESPONSIVE_SCALE}
@@ -97,14 +97,14 @@ export default function ControlBar(props: ControlBarProps) {
                     size="1.2em"
                     style={{ marginRight: "0.2rem" }}
                   />{" "}
-                  Deploy
+                  Запуск
                 </Button>
               </Tooltip>
               {props.onReset && (
                 <Tooltip
                   maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
                   // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-                  label="Reset back to the original code"
+                  label="Сбросить к исходному коду"
                 >
                   <Button
                     ml={{ base: "6px", xl: "8px" }}
@@ -114,7 +114,7 @@ export default function ControlBar(props: ControlBarProps) {
                     onClick={props.onReset}
                   >
                     <MdReplay size="1.3em" style={{ marginRight: "0.1rem" }} />{" "}
-                    Reset
+                    Сброс
                   </Button>
                 </Tooltip>
               )}
@@ -127,7 +127,7 @@ export default function ControlBar(props: ControlBarProps) {
               <Tooltip
                 maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
                 // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-                label="Stop"
+                label="Стоп"
               >
                 <Button
                   colorScheme="red"
@@ -147,7 +147,7 @@ export default function ControlBar(props: ControlBarProps) {
               <Tooltip
                 maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
                 // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-                label="Skip backward"
+                label="Шаг назад"
               >
                 <Button
                   size={BUTTON_RESPONSIVE_SCALE}
@@ -164,7 +164,7 @@ export default function ControlBar(props: ControlBarProps) {
             <Tooltip
               maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
               // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-              label="Pause"
+              label="Пауза"
             >
               <Button
                 colorScheme="yellow"
@@ -183,7 +183,7 @@ export default function ControlBar(props: ControlBarProps) {
             <Tooltip
               maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
               // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-              label="Play"
+              label="Воспроизведение"
             >
               <Button
                 colorScheme="green"
@@ -203,7 +203,7 @@ export default function ControlBar(props: ControlBarProps) {
               <Tooltip
                 maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
                 // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-                label="Skip forward"
+                label="Шаг вперёд"
               >
                 <Button
                   size={BUTTON_RESPONSIVE_SCALE}
@@ -252,7 +252,7 @@ export default function ControlBar(props: ControlBarProps) {
                 <Tooltip
                   maxW={TOOLTIP_RESPONSIVE_MAX_WIDTH}
                   // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-                  label="Click and drag to move through the code"
+                  label="Нажмите и перетащите, чтобы перемещаться по коду"
                   hidden={!showSliderTip}
                 >
                   <SliderThumb />
@@ -270,7 +270,7 @@ export default function ControlBar(props: ControlBarProps) {
                 color="white"
                 verticalAlign="top"
               >
-                Step: {props.stepIndex}/{props.numSteps}
+                Шаг: {props.stepIndex}/{props.numSteps}
               </Text>
             </Box>
           </>

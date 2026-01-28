@@ -9,17 +9,17 @@ pub struct TelepadPartTwo {}
 
 impl Level for TelepadPartTwo {
     fn name(&self) -> &'static str {
-        "All Mixed Up"
+        "Всё перепутано"
     }
     fn short_name(&self) -> &'static str {
         "telepad_part_two"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// There are two sets of telepads this time. Can you make
-// it through on your own?
+        r#"// На этот раз здесь две пары телепортов. Сможете
+// пройти самостоятельно?
 "#
     }
 

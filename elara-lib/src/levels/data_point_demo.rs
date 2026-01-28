@@ -8,13 +8,13 @@ pub struct DataPointDemo {}
 
 impl Level for DataPointDemo {
     fn name(&self) -> &'static str {
-        "Data Point Demo"
+        "Демо точки данных"
     }
     fn short_name(&self) -> &'static str {
         "data_point_demo"
     }
     fn objective(&self) -> &'static str {
-        "(Demo only)"
+        "(Только демо)"
     }
     fn initial_code(&self) -> &'static str {
         r#"move_forward(1);

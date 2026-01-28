@@ -12,13 +12,13 @@ pub struct SandboxWithDataPoint {}
 
 impl Level for SandboxWithDataPoint {
     fn name(&self) -> &'static str {
-        "Sandbox"
+        "Песочница"
     }
     fn short_name(&self) -> &'static str {
         "sandbox_with_data_point"
     }
     fn objective(&self) -> &'static str {
-        "Write whatever code you want :)"
+        "Пишите любой код, какой хотите :)"
     }
     fn initial_code(&self) -> &'static str {
         // Note(albrow): Typically the initial code would be provided in the UI.

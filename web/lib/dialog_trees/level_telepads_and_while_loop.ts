@@ -17,29 +17,29 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   lot_of_telepads: {
-    text: `Wow that's a lot of telepads!`,
+    text: `Ого, сколько же тут телепадов!`,
     choiceIds: ["ack_lot_of_telepads"],
   },
   idea_for_telepads: {
-    text: "I've got an idea!",
+    text: "У меня есть идея!",
     choiceIds: [],
     nextId: "telepad_while_loop_idea",
   },
   telepad_while_loop_idea: {
-    text: `Instead of using a lot of if statements to handle each possible direction that G.R.O.V.E.R. might be facing, you could use a while loop.`,
+    text: `Вместо того чтобы использовать много операторов if для обработки каждого возможного направления, в которое может смотреть Г.Р.О.В.Е.Р., можно использовать цикл while.`,
     choiceIds: ["ack_while_loop_idea", "ask_about_while_loops"],
   },
   elaborate_while_loop_idea: {
-    text: `While loops can be used to run code repeatedly until a certain condition is met. In our case, we'll use this to make G.R.O.V.E.R. keep turning until he is facing up, no matter which direction he was facing at the start.`,
+    text: `Циклы while можно использовать для повторного выполнения кода, пока не будет выполнено определённое условие. В нашем случае мы используем это, чтобы Г.Р.О.В.Е.Р. поворачивался, пока не будет смотреть вверх, независимо от того, в каком направлении он смотрел в начале.`,
     choiceIds: ["ack_while_loop_idea"],
   },
   explain_face_up_func: {
-    text: "I'll get the code started for you by creating a new function called `face_up` which uses the while loop idea.",
+    text: "Я начну писать для тебя код, создав новую функцию `face_up`, которая использует идею с циклом while.",
     choiceIds: [],
     nextId: "explain_face_up_func_2",
   },
   explain_face_up_func_2: {
-    text: "Then you can use the `face_up` function in your code. It should make these telepads a lot easier to deal with!",
+    text: "Затем ты можешь использовать функцию `face_up` в своём коде. Это должно значительно упростить работу с телепадами!",
     choiceIds: ["ack_face_up_func"],
   },
 };
@@ -48,25 +48,25 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   ack_lot_of_telepads: {
-    text: `Tell me about it...`,
+    text: `Это точно...`,
     nextId: "idea_for_telepads",
   },
   ack_while_loop_idea: {
-    text: `I see! That's pretty clever.`,
+    text: `Понятно! Довольно умно.`,
     nextId: "explain_face_up_func",
   },
   ask_about_while_loops: {
-    text: `I don't get it. What do you mean?`,
+    text: `Не понимаю. Что ты имеешь в виду?`,
     nextId: "elaborate_while_loop_idea",
   },
   ack_face_up_func: {
-    text: `Awesome, thanks!`,
+    text: `Отлично, спасибо!`,
   },
 };
 
 export const TREES: DialogTrees = {
   level_telepads_and_while_loop: {
-    name: "Telepads and While Loops",
+    name: "Телепады и циклы While",
     startId: "lot_of_telepads",
   },
 };

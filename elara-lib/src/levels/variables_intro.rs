@@ -8,26 +8,26 @@ pub struct VariablesIntro {}
 
 const PASSWORD: &str = "supercalifragilisticexpialidocious";
 const GATE_INFO: &str =
-    r#"The starting code includes the password for this gate as a variable named `password`."#;
+    r#"Начальный код содержит пароль для этого шлюза в переменной `password`."#;
 
 impl Level for VariablesIntro {
     fn name(&self) -> &'static str {
-        "The Spice of Life"
+        "Разнообразие жизни"
     }
     fn short_name(&self) -> &'static str {
         "variables_intro"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// There are several gates ahead with the same password. Instead of
-// typing this super long password over and over again, you can
-// store it in a variable.
+        r#"// Впереди несколько шлюзов с одинаковым паролем. Вместо того
+// чтобы вводить этот очень длинный пароль снова и снова, вы можете
+// сохранить его в переменной.
 let password = "supercalifragilisticexpialidocious";
 
-// Now you can use the variable instead of typing the password.
-// ADD YOUR CODE BELOW
+// Теперь вы можете использовать переменную вместо ввода пароля.
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 
 "#
     }
@@ -108,7 +108,7 @@ let password = "supercalifragilisticexpialidocious";
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal using 12 energy or less.")
+        Some("Достигните цели, потратив 12 энергии или меньше.")
     }
     fn check_challenge(
         &self,

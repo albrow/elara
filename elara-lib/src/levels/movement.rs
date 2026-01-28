@@ -6,19 +6,19 @@ pub struct Movement {}
 
 impl Level for Movement {
     fn name(&self) -> &'static str {
-        "First Steps"
+        "Первые шаги"
     }
     fn short_name(&self) -> &'static str {
         "movement"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// The code below moves the rover, but it's not going to the
-// right place. Try changing the code to see what happens.
+        r#"// Код ниже перемещает ровер, но не в то место.
+// Попробуйте изменить код и посмотрите, что произойдёт.
 
-// CHANGE THE CODE BELOW
+// ИЗМЕНИТЕ КОД НИЖЕ
 move_forward(3);
 turn_right();
 move_forward(1);

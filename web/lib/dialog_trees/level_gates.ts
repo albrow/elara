@@ -8,13 +8,13 @@ export const NODES: {
 } = {
   explain_password_gates: {
     text:
-      `Looks like a password gate is blocking the way! Instead of a button, this ` +
-      `kind of gate can be opened or closed by saying the password. First move ` +
-      "G.R.O.V.E.R. next to the gate, then say the password using the `say` function.",
+      `Похоже, парольный шлюз преграждает путь! В отличие от кнопки, этот тип ` +
+      `шлюза можно открыть или закрыть, сказав пароль. Сначала переместите ` +
+      "Г.Р.О.В.Е.Р.а рядом со шлюзом, затем произнесите пароль с помощью функции `say`.",
     choiceIds: ["request_password"],
   },
   provide_password: {
-    text: `You're in luck! I remember the password for this gate. It's \`"lovelace"\`.`,
+    text: `Тебе повезло! Я помню пароль для этого шлюза. Это \`"lovelace"\`.`,
     choiceIds: ["ack_password"],
   },
 };
@@ -23,17 +23,17 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   request_password: {
-    text: "How do I figure out the password?",
+    text: "Как узнать пароль?",
     nextId: "provide_password",
   },
   ack_password: {
-    text: "Got it, thanks!",
+    text: "Понял, спасибо!",
   },
 };
 
 export const TREES: DialogTrees = {
   level_gates: {
-    name: "Password Gates",
+    name: "Парольные шлюзы",
     startId: "explain_password_gates",
   },
 };

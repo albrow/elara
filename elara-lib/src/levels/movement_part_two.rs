@@ -9,19 +9,19 @@ pub struct MovementPartTwo {}
 
 impl Level for MovementPartTwo {
     fn name(&self) -> &'static str {
-        "Overcoming Obstacles"
+        "Обходим препятствия"
     }
     fn short_name(&self) -> &'static str {
         "movement_part_two"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// G.R.O.V.E.R. can't move through obstacles (like rocks and walls).
-// Try moving around the obstacles instead!
+        r#"// Г.Р.О.В.Е.Р. не может двигаться сквозь препятствия (камни и стены).
+// Попробуйте обойти препятствия!
 
-// ADD YOUR CODE BELOW
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -53,7 +53,7 @@ impl Level for MovementPartTwo {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Code length must be 40 characters or less.")
+        Some("Длина кода не должна превышать 40 символов.")
     }
     fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
         stats.code_len <= 40

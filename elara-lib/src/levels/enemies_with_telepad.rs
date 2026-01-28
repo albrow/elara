@@ -11,16 +11,16 @@ pub struct EnemiesWithTelepad {}
 
 impl Level for EnemiesWithTelepad {
     fn name(&self) -> &'static str {
-        "Outmaneuvered"
+        "Обходной манёвр"
     }
     fn short_name(&self) -> &'static str {
         "enemies_with_telepad"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r"// Try using the telepad to get around the malfunctioning rover.
+        r"// Попробуйте использовать телепорт, чтобы обойти неисправный ровер.
 "
     }
     fn initial_states(&self) -> Vec<State> {
@@ -82,7 +82,7 @@ impl Level for EnemiesWithTelepad {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal without picking up any energy cells.")
+        Some("Достигните цели, не собирая энергоячейки.")
     }
     fn check_challenge(
         &self,

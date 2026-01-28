@@ -23,95 +23,95 @@ export type ChoiceIds =
 
 export const NODES: { [key in NodeIds]: DialogNode } = {
   intro: {
-    text: "Hey there! You must be the new intern.",
+    text: "Привет! Ты, должно быть, новый стажёр.",
     choiceIds: [],
     nextId: "intro_2",
   },
   intro_2: {
-    text: "Welcome to Elara! My name is Kalina.",
+    text: "Добро пожаловать на Элару! Меня зовут Калина.",
     choiceIds: ["greet_kalina"],
   },
   ask_about_journey: {
-    text: "How was your journey here?",
+    text: "Как прошло твоё путешествие сюда?",
     choiceIds: ["journey_negative", "journey_positive"],
   },
   journey_neg_response: {
-    text: "Yeah.. I know the feeling. Luckily it is something you get used to.",
+    text: "Да уж.. Понимаю это чувство. К счастью, к этому привыкаешь.",
     choiceIds: ["who_are_you", "where_am_i", "where_are_you"],
   },
   journey_pos_response: {
-    text: "Wow you must be lucky! I was space-lagged for days after my first trip.",
+    text: "Ого, тебе повезло! После первого полёта я страдала от космического джетлага несколько дней.",
     choiceIds: ["who_are_you", "where_am_i", "where_are_you"],
   },
   where_i_am: {
     text:
-      "I'm calling in from Moonbase Beta, on the southern hemisphere of Elara. " +
-      "It's a small base, but I'm happy to call it home. And you can't beat the view!",
+      "Я звоню с Лунной базы Бета в южном полушарии Элары. " +
+      "База небольшая, но я рада называть её домом. И вид здесь потрясающий!",
     choiceIds: [],
     nextId: "offer_intro_end",
   },
   who_i_am: {
     text:
-      "Well, you already know my name. I'm an engineer here at Ganymede Robotics. " +
-      "I'm also responsible for training new interns, which includes you!",
+      "Ну, моё имя ты уже знаешь. Я инженер в Ganymede Robotics. " +
+      "Ещё я отвечаю за обучение новых стажёров, включая тебя!",
     choiceIds: [],
     nextId: "offer_intro_end_b",
   },
   where_you_are: {
     text:
-      "The space-lag must have hit you hard, huh? No worries! It'll all come back to you soon. " +
-      "If you look out the window, you should see a weirdly shaped moon. That's Elara! " +
-      "You're currently orbiting around it in a small module.",
+      "Космический джетлаг сильно ударил, да? Не переживай! Скоро всё вспомнишь. " +
+      "Если посмотришь в окно, увидишь луну странной формы. Это Элара! " +
+      "Сейчас ты находишься на орбите вокруг неё в небольшом модуле.",
     choiceIds: [],
     nextId: "offer_intro_end_c",
   },
   offer_intro_end: {
-    text: "So.. ready to get started with training or do you have any other questions?",
+    text: "Так что.. готов начать обучение или есть ещё вопросы?",
     choiceIds: ["who_are_you", "where_am_i", "where_are_you", "intro_end"],
   },
   offer_intro_end_b: {
-    text: "Anything else you want to know before we get started?",
+    text: "Хочешь ещё что-нибудь узнать, прежде чем мы начнём?",
     choiceIds: ["who_are_you", "where_am_i", "where_are_you", "intro_end"],
   },
   offer_intro_end_c: {
-    text: "Anyways, I'm ready to get started when you are. How about it?",
+    text: "В любом случае, я готова начать, когда ты будешь готов. Ну что?",
     choiceIds: ["who_are_you", "where_am_i", "where_are_you", "intro_end"],
   },
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   greet_kalina: {
-    text: "Nice to meet you!",
+    text: "Приятно познакомиться!",
     nextId: "ask_about_journey",
   },
   journey_negative: {
-    text: "Still feeling a little space-lagged.",
+    text: "Ещё немного страдаю от космического джетлага.",
     nextId: "journey_neg_response",
   },
   journey_positive: {
-    text: "No complaints.",
+    text: "Всё хорошо.",
     nextId: "journey_pos_response",
   },
   where_are_you: {
-    text: "Where are you calling from?",
+    text: "Откуда ты звонишь?",
     nextId: "where_i_am",
   },
   who_are_you: {
-    text: "Who are you exactly?",
+    text: "Кто ты такая?",
     nextId: "who_i_am",
   },
   where_am_i: {
-    text: "Where am I?",
+    text: "Где я?",
     nextId: "where_you_are",
   },
   intro_end: {
-    text: "Let's go!",
+    text: "Поехали!",
   },
 };
 
 export const TREES: DialogTrees = {
   intro: {
-    name: "Intro",
+    name: "Вступление",
     startId: "intro",
   },
 };

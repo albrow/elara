@@ -8,13 +8,13 @@ pub struct ButtonAndGatePartTwo {}
 
 impl Level for ButtonAndGatePartTwo {
     fn name(&self) -> &'static str {
-        "Order of Operations"
+        "Порядок действий"
     }
     fn short_name(&self) -> &'static str {
         "button_and_gate_part_two"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"
@@ -28,13 +28,13 @@ impl Level for ButtonAndGatePartTwo {
                 7,
                 6,
                 ButtonConnection::Gate(0),
-                "Press this button to unlock the corresponding gate.".into(),
+                "Нажмите эту кнопку, чтобы открыть соответствующий шлюз.".into(),
             ),
             Button::new_with_info(
                 3,
                 4,
                 ButtonConnection::Gate(1),
-                "Press this button to unlock the corresponding gate.".into(),
+                "Нажмите эту кнопку, чтобы открыть соответствующий шлюз.".into(),
             ),
         ];
         state.gates = vec![
@@ -43,14 +43,14 @@ impl Level for ButtonAndGatePartTwo {
                 4,
                 false,
                 GateVariant::NESW,
-                "This gate can be unlocked by pressing the corresponding button.".into(),
+                "Этот шлюз можно открыть нажатием соответствующей кнопки.".into(),
             ),
             Gate::new_with_info(
                 7,
                 2,
                 false,
                 GateVariant::NESW,
-                "This gate can be unlocked by pressing the corresponding button.".into(),
+                "Этот шлюз можно открыть нажатием соответствующей кнопки.".into(),
             ),
         ];
         state.obstacles = vec![

@@ -9,18 +9,18 @@ pub struct EnergyPartOne {}
 
 impl Level for EnergyPartOne {
     fn name(&self) -> &'static str {
-        "Energized"
+        "Заряд энергии"
     }
     fn short_name(&self) -> &'static str {
         "energy_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Try collecting an energy cell before moving to the goal.
+        r#"// Попробуйте собрать энергоячейку прежде, чем двигаться к цели.
 
-// CHANGE THE CODE BELOW
+// ИЗМЕНИТЕ КОД НИЖЕ
 move_forward(4);
 turn_left();
 move_forward(4);
@@ -68,7 +68,7 @@ move_forward(4);
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Complete the objective in 11 or fewer steps.")
+        Some("Выполните задание за 11 шагов или меньше.")
     }
     fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
         stats.time_taken <= 11

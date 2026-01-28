@@ -10,22 +10,22 @@ lazy_static! {
 
 impl Level for PartlyDisabledMovement {
     fn name(&self) -> &'static str {
-        "Impaired Movement"
+        "Ограниченное движение"
     }
     fn short_name(&self) -> &'static str {
         "partly_disabled_movement"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn disabled_functions(&self) -> &'static Vec<&'static str> {
         &DISABLED_FUNCS
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Can you navigate to the goal using only the move_backward
-// and turn_left functions?
+        r#"// Сможете ли вы добраться до цели, используя только функции
+// move_backward и turn_left?
 //
-// ADD YOUR CODE BELOW
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 "#
     }
     fn initial_states(&self) -> Vec<State> {

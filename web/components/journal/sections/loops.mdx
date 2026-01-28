@@ -3,36 +3,36 @@ import Video from "../video";
 import Card from "../card";
 import { getLocalVideoUrl } from "../../../lib/utils";
 
-### Loops
+### Циклы
 
 <Video youTubeId="vmNkQwT1tBg" localVideoUrl={getLocalVideoUrl("loops")} />
 
-Loops are a way to repeat code over and over again. In a loop,
-the code inside the curly brackets will be repeated until either:
+Циклы позволяют повторять код снова и снова. В цикле код внутри
+фигурных скобок будет повторяться до тех пор, пока:
 
-- (a) you reach the end of the level or
-- (b) run out of energy.
+- (а) вы не достигнете конца уровня, или
+- (б) не закончится энергия.
 
-For example, this loop will cause the rover to move forward and backward,
-over and over again until it runs out of energy.
+Например, этот цикл заставит ровер двигаться вперёд и назад
+снова и снова, пока не закончится энергия.
 
 <RunnableExample
   code={`loop {
-  say("I'm in a loop!");
+  say("Я в цикле!");
   move_forward(1);
   move_backward(1);
 }`}
 />
 
-Elara has safeguards in place to prevent infinite loops. If a possible
-infinite loop is detected, you will see an error message. Below is an
-example of an infinite loop. In this case, the loop runs forever because
-the rover never uses any energy (e.g. by moving).
+В Elara есть защита от бесконечных циклов. Если обнаружен возможный
+бесконечный цикл, вы увидите сообщение об ошибке. Ниже приведён
+пример бесконечного цикла. В этом случае цикл работает вечно, потому что
+ровер никогда не использует энергию (например, не двигается).
 
-<Card type="try_it">Run the code below to see what happens. You should see an error.</Card>
+<Card type="try_it">Запустите код ниже, чтобы увидеть, что произойдёт. Вы должны увидеть ошибку.</Card>
 
 <RunnableExample
   code={`loop {
-  say("This loop will never end!");
+  say("Этот цикл никогда не закончится!");
 }`}
 />

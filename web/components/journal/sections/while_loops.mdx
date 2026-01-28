@@ -2,22 +2,22 @@ import RunnableExample from "../runnable_example";
 import Video from "../video";
 import { getLocalVideoUrl } from "../../../lib/utils";
 
-### While Loops
+### Циклы While
 
 <Video youTubeId="mCEAe5JF-vc" localVideoUrl={getLocalVideoUrl("while_loops")}/>
 
-A "while loop" is sort of like a combination between an if statement and a loop.
+«Цикл while» — это что-то вроде комбинации условного оператора и цикла.
 
-A while loop looks similar to an if statement, but has some important differences:
+Цикл while похож на условный оператор, но имеет важные отличия:
 
-1. A while loop uses the `while` keyword instead of `if`.
-2. In a while loop, the code inside the curly brackets will be **_repeated_** as long
-    as the condition is true. Whereas in an if statement, the code inside the curly brackets
-    will only be run **_once_** if the condition is true.
+1. Цикл while использует ключевое слово `while` вместо `if`.
+2. В цикле while код внутри фигурных скобок будет **_повторяться_**, пока
+    условие истинно. Тогда как в условном операторе код внутри фигурных
+    скобок выполнится только **_один раз_**, если условие истинно.
 
-The while loop below uses the comparison expression `x < 5`, so that means it will run as long
-as the variable `x` is less than 5. Since we increase the value of `x` on each
-iteration of the loop, the loop will run 5 times:
+Цикл while ниже использует условие `x < 5`, что означает, что он будет
+выполняться, пока переменная `x` меньше 5. Поскольку мы увеличиваем
+значение `x` на каждой итерации цикла, цикл выполнится 5 раз:
 
 <RunnableExample
   code={`let x = 0;
@@ -28,16 +28,16 @@ while x < 5 {
 }`}
 />
 
-This while loop will keep turning the rover until it is facing left. It works by using a
-comparison expression `get_orientation() != left` (remember, the `!=` symbol means "not equal").
-Once the rover is facing left, the condition will be false, and the loop will stop.
+Этот цикл while будет поворачивать ровер, пока он не будет смотреть влево.
+Он работает с помощью условия `get_orientation() != "left"` (помните, символ
+`!=` означает «не равно»). Как только ровер будет смотреть влево, условие
+станет ложным, и цикл остановится.
 
 <RunnableExample
   code={`while get_orientation() != "left" {
   turn_left();
 }
 
-say("Now I'm facing left!");
+say("Теперь я смотрю влево!");
 `}
 />
-

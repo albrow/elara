@@ -4,23 +4,23 @@ import Card from "../card";
 import { getLocalVideoUrl } from "../../../lib/utils";
 
 
-### Creating Your Own Functions
+### Создание собственных функций
 
 <Video youTubeId="KChh3VbnJFI" localVideoUrl={getLocalVideoUrl("creating_functions")} />
 
-At this point, you are probably pretty familiar with using functions, but you
-can also create your own! This is a powerful and important part of programming
-because it allows you to reuse and adapt code that you have already written.
+К этому моменту вы, вероятно, уже хорошо знакомы с использованием функций, но
+вы также можете создавать свои собственные! Это мощная и важная часть программирования,
+потому что она позволяет повторно использовать и адаптировать уже написанный код.
 
-<Card type="tip">Only built-in functions are highlighted in purple.</Card>
+<Card type="tip">Только встроенные функции подсвечиваются фиолетовым цветом.</Card>
 
-<Card type="tip">If a function doesn't have any inputs, you still need to include the empty parentheses.</Card>
+<Card type="tip">Если у функции нет входных параметров, всё равно нужно указывать пустые скобки.</Card>
 
-Here's an example of creating a new function that does not expect any inputs:
+Вот пример создания новой функции, которая не ожидает никаких входных параметров:
 
 <RunnableExample
-  code={`// This function causes the rover to do a full rotation
-// (360 degrees).
+  code={`// Эта функция заставляет ровер сделать полный оборот
+// (360 градусов).
 fn do_a_360() {
   turn_left();
   turn_left();
@@ -32,35 +32,35 @@ do_a_360();
 `}
 />
 
-Here's an example of a function called `greet` that has one input:
-`name`. The function will cause the rover to say a greeting using whatever
-name was passed in as an input.
+Вот пример функции под названием `greet`, у которой есть один входной параметр:
+`name`. Функция заставит ровер произнести приветствие, используя любое
+имя, переданное в качестве входного параметра.
 
-<Card type="try_it">Try calling the `greet` function with your own name as the input.</Card>
+<Card type="try_it">Попробуйте вызвать функцию `greet` со своим именем в качестве входного параметра.</Card>
 
 <RunnableExample
-  code={`// This function has one input: the name of the person to
-// greet.
+  code={`// У этой функции один входной параметр: имя человека для
+// приветствия.
 fn greet(name) {
   say("Nice to meet you, " + name);
 }
 
-// Call the greet function with a few different names.
-greet("Alice");
-greet("Bob");
-greet("Charlie");
+// Вызываем функцию greet с несколькими разными именами.
+greet("Алиса");
+greet("Борис");
+greet("Вика");
 `}
 />
 
-You won't necessarily need to do this yet, but you can also create
-functions that have an output. To do that, you use the `return` keyword. Here's
-an example of a function called `add` that has two inputs: `a` and `b`. The
-function will add the two numbers together and output the result.
+Вам пока не обязательно это делать, но вы также можете создавать
+функции, которые имеют выходное значение. Для этого используется ключевое слово `return`. Вот
+пример функции под названием `add`, у которой два входных параметра: `a` и `b`. Функция
+сложит два числа и вернёт результат.
 
 <RunnableExample
   code={`fn add(a, b) {
-  // The return keyword causes the function to output (a.k.a.
-  // return) something. In this case, we are outputting a + b.
+  // Ключевое слово return заставляет функцию вывести (вернуть)
+  // что-то. В данном случае мы возвращаем a + b.
   return a + b;
 }
 

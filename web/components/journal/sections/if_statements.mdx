@@ -3,45 +3,45 @@ import Video from "../video";
 import Card from "../card";
 import { getLocalVideoUrl } from "../../../lib/utils";
 
-### If Statements
+### Условные операторы
 
 <Video youTubeId="hb0o3I5md7o" localVideoUrl={getLocalVideoUrl("if_statements")} />
 
-An "if statement" allows you to run certain code if something is true.
-You can use an if statement to perform different actions based on different
-conditions. If the condition is true, the code inside the curly brackets will
-be run. On the other hand, if the condition is false, the code inside the curly
-brackets will not be run.
+«Условный оператор» (if) позволяет выполнять определённый код, если что-то
+истинно. Вы можете использовать условный оператор для выполнения разных
+действий в зависимости от разных условий. Если условие истинно, код
+внутри фигурных скобок будет выполнен. С другой стороны, если условие
+ложно, код внутри фигурных скобок выполняться не будет.
 
-<Card type="try_it">On line 1, try changing the value of `x` to something greater than 10.</Card>
+<Card type="try_it">В строке 1 попробуйте изменить значение `x` на что-то больше 10.</Card>
 
 <RunnableExample
   code={`let x = 5;
 if x < 10 {
-  // This code will only run if x is less than 10.
-  say("x is less than 10");
+  // Этот код выполнится только если x меньше 10.
+  say("x меньше 10");
 }`}
 />
 
 
-Below is an example that uses strings instead. Remember:
+Ниже приведён пример со строками. Запомните:
 
-- A single equals sign (`=`) is used to assign a value to a variable.
-- A double equals sign (`==`) is used to compare two values.
+- Одинарный знак равенства (`=`) используется для присваивания значения переменной.
+- Двойной знак равенства (`==`) используется для сравнения двух значений.
 
-<Card type="try_it">On line 1, change the `fruit` variable to be "oranges" instead of "apples".</Card>
+<Card type="try_it">В строке 1 измените переменную `fruit` на "апельсины" вместо "яблоки".</Card>
 
 <RunnableExample
-  code={`let fruit = "apples";
+  code={`let fruit = "яблоки";
 
-if fruit == "apples" {
-  // This code will only run if the fruit equals "apples".
-  say("fruit is equal to 'apples'");
+if fruit == "яблоки" {
+  // Этот код выполнится только если fruit равно "яблоки".
+  say("fruit равно 'яблоки'");
 }
 
-if fruit == "oranges" {
-  // This code will only run if the fruit equals "oranges".
-  say("fruit is equal to 'oranges'");
+if fruit == "апельсины" {
+  // Этот код выполнится только если fruit равно "апельсины".
+  say("fruit равно 'апельсины'");
 }
 `}
 />

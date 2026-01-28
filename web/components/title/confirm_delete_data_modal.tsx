@@ -29,14 +29,13 @@ export default function ConfirmDeleteExistingDataModal(
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Text fontWeight="bold">Warning</Text>
+          <Text fontWeight="bold">Предупреждение</Text>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Text>
-            Are you sure you want to start a new game? Any existing save data
-            will be deleted and you will start over from scratch. This cannot be
-            undone.
+            Точно начать новую игру? Все существующие данные сохранения будут
+            удалены, и вы начнёте с нуля. Это действие нельзя отменить.
           </Text>
           <Flex w="100%" mt="30px" gap="5px" justifyContent="right">
             <Button
@@ -44,11 +43,11 @@ export default function ConfirmDeleteExistingDataModal(
               onClick={() => props.setVisible(false)}
             >
               <MdOutlineCancel style={{ marginRight: "0.3em" }} />
-              Cancel
+              Отмена
             </Button>
             <Button colorScheme="red" onClick={props.onConfirm}>
               <MdOutlineDeleteForever style={{ marginRight: "0.3em" }} />
-              Start New Game
+              Начать новую игру
             </Button>
           </Flex>
         </ModalBody>

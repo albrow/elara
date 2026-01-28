@@ -13,19 +13,19 @@ pub struct LoopsPartTwo {}
 
 impl Level for LoopsPartTwo {
     fn name(&self) -> &'static str {
-        "All By Yourself"
+        "Самостоятельно"
     }
     fn short_name(&self) -> &'static str {
         "loops_part_two"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Try writing a loop on your own this time.
-// Don't forget to use the loop keyword.
+        r#"// Попробуйте написать цикл самостоятельно.
+// Не забудьте использовать ключевое слово loop.
 //
-// ADD YOUR CODE BELOW
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -86,7 +86,7 @@ impl Level for LoopsPartTwo {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Have a code length of 84 characters or less and don't use a loop.")
+        Some("Длина кода до 84 символов, без использования цикла.")
     }
     fn check_challenge(&self, _states: &[State], script: &str, stats: &ScriptStats) -> bool {
         if stats.code_len > 84 {

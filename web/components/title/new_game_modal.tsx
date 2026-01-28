@@ -25,31 +25,31 @@ interface NewGameTip {
 
 const WEB_TIPS: NewGameTip[] = [
   {
-    title: "Work in Progress",
-    text: 'Elara is still under development. If you have any feedback, we\'d love to hear it! Just press the "Feedback" button near the top of the screen.',
+    title: "В разработке",
+    text: 'Elara всё ещё находится в разработке. Если у вас есть идеи или замечания — будем рады! Нажмите кнопку "Отзыв" в верхней части экрана.',
     icon: MdConstruction,
   },
   {
-    title: "Local Autosave Only",
-    text: "Your progress will be automatically saved. However, if you change to a different computer, a different browser, or clear your browser's local storage, your progress will be lost.",
+    title: "Автосохранение только локально",
+    text: "Прогресс сохраняется автоматически. Но если вы перейдёте на другой компьютер, другой браузер или очистите локальное хранилище — прогресс будет потерян.",
     icon: MdSave,
   },
   {
-    title: "Computer Recommended",
-    text: "Elara works best on a computer or laptop with a keyboard. You may be able to play on smaller devices like a phone or tablet, but it is not guaranteed to work.",
+    title: "Рекомендуется компьютер",
+    text: "Elara лучше всего работает на компьютере или ноутбуке с клавиатурой. На телефоне или планшете тоже может заработать, но это не гарантируется.",
     icon: FaComputer,
   },
 ];
 
 const DESKTOP_TIPS: NewGameTip[] = [
   {
-    title: "Work in Progress",
-    text: 'Elara is still under development. If you have any feedback, we\'d love to hear it! Just press the "Feedback" button near the top of the screen.',
+    title: "В разработке",
+    text: 'Elara всё ещё находится в разработке. Если у вас есть идеи или замечания — будем рады! Нажмите кнопку "Отзыв" в верхней части экрана.',
     icon: MdConstruction,
   },
   {
-    title: "Autosave",
-    text: "Your progress will be automatically saved. This includes any code you write.",
+    title: "Автосохранение",
+    text: "Прогресс сохраняется автоматически — включая написанный вами код.",
     icon: MdSave,
   },
 ];
@@ -159,7 +159,7 @@ export function NewGameModal(props: NewGameModalProps) {
                 disabled={currIndex === 0}
               >
                 <GrFormPreviousLink />
-                Back
+                Назад
               </Button>
             )}
             {TIPS.length > 1 &&
@@ -180,7 +180,7 @@ export function NewGameModal(props: NewGameModalProps) {
               onClick={nextTip}
               w="128px"
             >
-              {currIndex === TIPS.length - 1 ? "Launch" : "Next"}
+              {currIndex === TIPS.length - 1 ? "Запуск" : "Далее"}
               {currIndex === TIPS.length - 1 ? (
                 <IoIosRocket size="1.1em" style={{ marginLeft: "0.2em" }} />
               ) : (

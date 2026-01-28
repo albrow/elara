@@ -107,7 +107,7 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
               mb="5px"
               align="center"
             >
-              Great Job!
+              Отличная работа!
             </Text>
             <AnimateGroup play>
               {props.result.stats && (
@@ -128,7 +128,7 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
               >
                 <Flex mt={10} mb={3} justifyContent="right" w="100%">
                   <Button colorScheme="blackAlpha" onClick={handleClose}>
-                    Play Level Again
+                    Повторить уровень
                     <MdReplay size="1.3em" style={{ marginLeft: "0.2rem" }} />
                   </Button>
                   {nextCutsceneId &&
@@ -141,7 +141,7 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                           navigateToScene(currScene!.nextScene!);
                         }}
                       >
-                        Play Cutscene
+                        Посмотреть сцену
                         <MdMovie
                           size="1.3em"
                           style={{ marginLeft: "0.2rem" }}
@@ -150,7 +150,7 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                     )}
                   {!nextCutsceneId && (
                     <Button colorScheme="blue" onClick={navigateToHub} ml="5px">
-                      Back to Hub
+                      В центр
                       <MdHome size="1.3em" style={{ marginLeft: "0.2rem" }} />
                     </Button>
                   )}
@@ -160,7 +160,7 @@ export default function LevelSuccessModal(props: LevelSuccessModalProps) {
                       onClick={() => onNextClick(nextLevel!)}
                       ml="5px"
                     >
-                      Next Level
+                      Следующий уровень
                       <MdArrowForward
                         size="1.3em"
                         style={{ marginLeft: "0.2rem" }}

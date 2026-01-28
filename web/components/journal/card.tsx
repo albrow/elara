@@ -20,7 +20,7 @@ export default function Card(props: React.PropsWithChildren<CardProps>) {
       case "warning":
         return "orange.200";
       default:
-        throw new Error(`Invalid card type: ${props.type}`);
+        throw new Error(`Неверный тип карточки: ${props.type}`);
     }
   }, [props.type]);
 
@@ -33,7 +33,7 @@ export default function Card(props: React.PropsWithChildren<CardProps>) {
       case "warning":
         return "orange.300";
       default:
-        throw new Error(`Invalid card type: ${props.type}`);
+        throw new Error(`Неверный тип карточки: ${props.type}`);
     }
   }, [props.type]);
 
@@ -73,20 +73,20 @@ export default function Card(props: React.PropsWithChildren<CardProps>) {
           />
         );
       default:
-        throw new Error(`Invalid card type: ${props.type}`);
+        throw new Error(`Неверный тип карточки: ${props.type}`);
     }
   }, [props.type]);
 
   const textPrefix = useMemo(() => {
     switch (props.type) {
       case "tip":
-        return "Tip: ";
+        return "Совет: ";
       case "try_it":
-        return "Try it: ";
+        return "Попробуйте: ";
       case "warning":
-        return "Warning: ";
+        return "Предупреждение: ";
       default:
-        throw new Error(`Invalid card type: ${props.type}`);
+        throw new Error(`Неверный тип карточки: ${props.type}`);
     }
   }, [props.type]);
 

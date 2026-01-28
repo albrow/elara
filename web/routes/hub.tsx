@@ -40,8 +40,6 @@ export default function Hub() {
       saveData.seenJournalPages.length < 2 &&
       !saveData.seenDialogTrees.includes("explain_journal")
     ) {
-      // After the first level, the player needs to click on the journal in order to
-      // proceed. This dialog tree explains that.
       return "explain_journal";
     }
     return null;
@@ -58,12 +56,9 @@ export default function Hub() {
   }, [getDialogTree, showDialogModal]);
 
   useEffect(() => {
-    document.title = "Elara | Hub";
+    document.title = "Elara | Центр управления";
   }, [route.name]);
 
-  // Automatically navigate to the next unlocked scene if it is a cutscene.
-  // This helps prevent players from getting stuck since the cutscene must
-  // be completed before they can continue.
   useEffect(() => {
     if (nextUnlockedScene.type === "cutscene" && !nextUnlockedScene.completed) {
       navigateToScene(nextUnlockedScene);
@@ -176,7 +171,7 @@ export default function Hub() {
               left="-30%"
               zIndex={BG_Z_INDEX + 5}
             >
-              <BlinkingText text="Incoming Call!" />
+              <BlinkingText text="Входящий вызов!" />
             </Box>
           )}
         </Box>
@@ -211,7 +206,7 @@ export default function Hub() {
                 zIndex={BG_Z_INDEX + 5}
                 justifyContent="center"
               >
-                <BlinkingText text="New Levels!" />
+                <BlinkingText text="Новые уровни!" />
               </Box>
             )}
         </Box>
@@ -247,7 +242,7 @@ export default function Hub() {
                 zIndex={BG_Z_INDEX + 5}
                 justifyContent="center"
               >
-                <BlinkingText text="New Journal Pages!" />
+                <BlinkingText text="Новые страницы журнала!" />
               </Box>
             )}
         </Box>
@@ -270,26 +265,12 @@ export default function Hub() {
             filter: videoTabletImageFilter,
           }}
         />
-        {/* Use this box to align the transform-origin for the
-        incoming call icon. To do this, you need to make sure your screen size
-        is equal to the size of the background (e.g. make it exactly 16x9 aspect
-        ratio) */}
-        {/* <Box
-          position="fixed"
-          w="2px"
-          h="2px"
-          bgColor="red"
-          zIndex={BG_Z_INDEX + 5}
-          left="31.2%"
-          top="73.8%"
-        /> */}
         {nextUnlockedScene.type === "dialog" && (
           <AnimateKeyframes
             play
             duration={1}
             iterationCount="infinite"
             keyframes={[
-              // A simple phone ringing animation.
               { 0: "transform: rotate(0deg)" },
               { 10: "transform: rotate(-5deg)" },
               { 20: "transform: rotate(0deg)" },
@@ -317,7 +298,6 @@ export default function Hub() {
                 right="0"
                 bottom="0"
                 opacity="0.6"
-                // Align the orgin of the rotation to the center of the icon.
                 transformOrigin="31.2% 73.8%"
                 style={style}
               />

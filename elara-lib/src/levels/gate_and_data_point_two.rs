@@ -13,20 +13,19 @@ pub struct GateAndDataPointPartTwo {}
 
 impl Level for GateAndDataPointPartTwo {
     fn name(&self) -> &'static str {
-        "Slipped My Mind"
+        "Вылетело из головы"
     }
     fn short_name(&self) -> &'static str {
         "gate_and_data_point_part_two"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Yet another locked gate! Just like before, the password is
-// stored in a data point. Can you get through on your own
-// this time?
+        r#"// Ещё один закрытый шлюз! Как и раньше, пароль хранится
+// в точке данных. Сможете пройти самостоятельно на этот раз?
 //
-// ADD YOUR CODE BELOW
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -55,13 +54,13 @@ impl Level for GateAndDataPointPartTwo {
             "hopper".into(),
             false,
             GateVariant::NWSE,
-            "The password for this gate is stored in the nearby data point.".into(),
+            "Пароль для этого шлюза хранится в ближайшей точке данных.".into(),
         )];
         state.data_points = vec![DataPoint::new_with_info(
             10,
             0,
             "hopper".into(),
-            "This data point contains the password you need.".into(),
+            "Эта точка данных содержит нужный вам пароль.".into(),
         )];
         state.enemies = vec![Enemy::new(5, 0, Orientation::Right)];
         vec![state]

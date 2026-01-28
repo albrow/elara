@@ -19,27 +19,27 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   evil_rover_no_walls: {
-    text: "Look out! There's another malfunctioning rover ahead. It looks like there are no rocks blocking it this time.",
+    text: "Осторожно! Впереди ещё один неисправный ровер. Похоже, на этот раз нет камней, преграждающих ему путь.",
     choiceIds: ["what_is_evil_rover_doing", "what_is_cause_of_malfunction"],
   },
   explain_evil_rover_will_chase: {
-    text: "I've spent some time analyzing the rover's behavior. Unfortunately, it looks like it thinks that G.R.O.V.E.R. is trash or debris, so it's going to try to err... dispose of him.",
+    text: "Я некоторое время анализировала поведение ровера. К сожалению, похоже, он думает, что Г.Р.О.В.Е.Р. — это мусор или обломки, поэтому он попытается... утилизировать его.",
     choiceIds: ["ack_evil_rover_will_chase"],
   },
   explain_cause_of_malfunction: {
-    text: "I'm still not sure. It could be a solar flare, or maybe a bug in the software. I'll keep investigating.",
+    text: "Я пока не уверена. Это может быть солнечная вспышка или, возможно, баг в программе. Я продолжу расследование.",
     choiceIds: ["ack_cause_of_malfunction"],
   },
   offer_explain_cause_of_malfunction: {
-    text: "Anything else you want to know about the malfunctioning rovers?",
+    text: "Хочешь ещё что-нибудь узнать о неисправных роверах?",
     choiceIds: ["what_is_cause_of_malfunction", "no_more_evil_rover_questions"],
   },
   offer_explain_evil_rover_will_chase: {
-    text: "Anything else you want to know about the malfunctioning rovers?",
+    text: "Хочешь ещё что-нибудь узнать о неисправных роверах?",
     choiceIds: ["what_is_evil_rover_doing", "no_more_evil_rover_questions"],
   },
   stay_away_from_evil_rover: {
-    text: "Just make sure to stay away from it and you should be fine.",
+    text: "Просто держись от него подальше, и всё будет в порядке.",
     choiceIds: ["ack_stay_away_from_evil_rover"],
   },
 };
@@ -48,33 +48,33 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   what_is_evil_rover_doing: {
-    text: "What is it doing?",
+    text: "Что он делает?",
     nextId: "explain_evil_rover_will_chase",
   },
   ack_evil_rover_will_chase: {
-    text: "Oh no! I'll try to make sure that doesn't happen.",
+    text: "О нет! Постараюсь не допустить этого.",
     nextId: "offer_explain_cause_of_malfunction",
   },
   what_is_cause_of_malfunction: {
-    text: "Why are these rovers malfunctioning?",
+    text: "Почему эти роверы неисправны?",
     nextId: "explain_cause_of_malfunction",
   },
   ack_cause_of_malfunction: {
-    text: "I see. Hopefully you can figure it out soon.",
+    text: "Понятно. Надеюсь, ты скоро разберёшься.",
     nextId: "offer_explain_evil_rover_will_chase",
   },
   no_more_evil_rover_questions: {
-    text: "No, that's all I need to know for now.",
+    text: "Нет, пока мне достаточно.",
     nextId: "stay_away_from_evil_rover",
   },
   ack_stay_away_from_evil_rover: {
-    text: "Okay, I'll do my best!",
+    text: "Хорошо, постараюсь!",
   },
 };
 
 export const TREES: DialogTrees = {
   level_enemies_part_one: {
-    name: "Malfunction Detected",
+    name: "Обнаружена неисправность",
     startId: "evil_rover_no_walls",
   },
 };

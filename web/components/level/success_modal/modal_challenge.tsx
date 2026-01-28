@@ -72,7 +72,7 @@ export default function ModalChallenge(props: ModalChallengeProps) {
       <Box mx="auto" mt="15px" textAlign="center">
         {getChallengeIcon()}
         <Text as="span" verticalAlign="middle" fontWeight="bold">
-          Challenge:
+          Доп. задание:
         </Text>{" "}
         <ChallengeText text={currLevel.challenge} />
         {!currScene?.challengeCompleted && !props.result.passes_challenge && (
@@ -83,7 +83,7 @@ export default function ModalChallenge(props: ModalChallengeProps) {
             end={{ opacity: 1 }}
           >
             <Text fontStyle="italic" fontSize="sm">
-              (You may need to learn more and then come back later.)
+              (Возможно, нужно немного потренироваться и вернуться позже.)
             </Text>
           </Animate>
         )}
@@ -96,8 +96,8 @@ export default function ModalChallenge(props: ModalChallengeProps) {
               end={{ opacity: 1 }}
             >
               <Text fontStyle="italic" fontSize="sm">
-                (Keep in mind, writing <b>readable</b> code is often better than
-                writing <b>short</b> code. This is just for fun!)
+                (Помните: <b>понятный</b> код часто важнее, чем <b>короткий</b>.
+                Это просто для интереса!)
               </Text>
             </Animate>
           )}

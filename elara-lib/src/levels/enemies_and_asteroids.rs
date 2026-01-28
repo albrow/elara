@@ -5,7 +5,7 @@ use crate::simulation::{Actor, AsteroidWarning, DataPoint, Enemy, EnergyCell, Or
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
-const DATA_POINT_INFO: &str = r#"This data point will output either `"left"` or `"right"` depending on which way is safe to go."#;
+const DATA_POINT_INFO: &str = r#"Эта точка данных выдаёт `"left"` (влево) или `"right"` (вправо) в зависимости от того, какой путь безопасен."#;
 
 #[derive(Copy, Clone)]
 pub struct EnemiesAndAsteroids {}
@@ -58,18 +58,18 @@ impl EnemiesAndAsteroids {
 
 impl Level for EnemiesAndAsteroids {
     fn name(&self) -> &'static str {
-        "Into Danger"
+        "Навстречу опасности"
     }
     fn short_name(&self) -> &'static str {
         "enemies_and_asteroids"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to one of the goals ({goal})."
+        "Переместите ровер ({robot}) к одной из целей ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// The data point will output "right" or "left" depending on which
-// direction is safe from falling asteroids. However, it can't detect
-// malfunctioning rovers. You'll need to avoid those on your own!
+        r#"// Точка данных выдаёт "right" (вправо) или "left" (влево) в зависимости
+// от того, какой путь безопасен от падающих астероидов. Однако она не
+// обнаруживает неисправные роверы. Их нужно избегать самостоятельно!
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -128,7 +128,7 @@ impl Level for EnemiesAndAsteroids {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Complete the objective in 21 or fewer steps.")
+        Some("Выполните задание за 21 шаг или меньше.")
     }
     fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
         stats.time_taken <= 21

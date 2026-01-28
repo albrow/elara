@@ -23,25 +23,25 @@ pub struct BigEnemyLevel {}
 
 impl Level for BigEnemyLevel {
     fn name(&self) -> &'static str {
-        "Big Trouble"
+        "Большая проблема"
     }
     fn short_name(&self) -> &'static str {
         "big_enemy"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// You can use this face_direction function to have G.R.O.V.E.R.
-// face any direction you want! For example, to face up, you would
-// call face_direction("up").
+        r#"// Вы можете использовать эту функцию face_direction, чтобы G.R.O.V.E.R.
+// повернулся в любом направлении! Например, чтобы повернуться вверх,
+// вызовите face_direction("up").
 fn face_direction(direction) {
   while get_orientation() != direction {
     turn_left();
   }
 }
 
-// ADD YOUR CODE BELOW:
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ:
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -86,20 +86,20 @@ fn face_direction(direction) {
                         11,
                         2,
                         ButtonConnection::Gate(0),
-                        "Press this button to lock/unlock one of the gates.".into(),
+                        "Нажмите эту кнопку, чтобы открыть/закрыть один из шлюзов.".into(),
                     )])
                     .with_gates(vec![Gate::new_with_info(
                         6,
                         3,
                         true,
                         GateVariant::NESW,
-                        "This gate can be locked/unlocked by pressing the nearby button.".into(),
+                        "Этот шлюз можно открыть/закрыть нажатием соседней кнопки.".into(),
                     )])
                     .with_data_points(vec![DataPoint::new_with_info(
                         1,
                         1,
                         password.into(),
-                        "This data point will output the password for the password gate.".into(),
+                        "Эта точка данных выдаёт пароль для парольного шлюза.".into(),
                     )])
                     .with_password_gates(vec![PasswordGate::new_with_info(
                         11,
@@ -107,7 +107,7 @@ fn face_direction(direction) {
                         password.into(),
                         false,
                         GateVariant::NWSE,
-                        "The password for this gate can be found in the nearby data point.".into(),
+                        "Пароль для этого шлюза можно найти в ближайшей точке данных.".into(),
                     )])
                     .build()
             })
@@ -123,7 +123,7 @@ fn face_direction(direction) {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal without using any telepads.")
+        Some("Достигните цели, не используя телепорты.")
     }
     fn check_challenge(&self, states: &[State], _script: &str, _stats: &ScriptStats) -> bool {
         for state in states {

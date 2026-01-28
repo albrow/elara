@@ -6,17 +6,17 @@ pub struct CratesPartOne {}
 
 impl Level for CratesPartOne {
     fn name(&self) -> &'static str {
-        "Blocking the Way"
+        "Преграда на пути"
     }
     fn short_name(&self) -> &'static str {
         "crates_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Looks like there's a crate blocking the way. Use the pick_up
-// and drop functions to move it.
+        r#"// Похоже, ящик преграждает путь. Используйте функции pick_up
+// и drop, чтобы переместить его.
 
 "#
     }

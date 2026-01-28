@@ -12,70 +12,70 @@ use crate::{
 lazy_static! {
     static ref MESSAGES: Vec<&'static str> = vec![
         r"{markdown}
-\== _Chat Logs 2063.09.29_ \==
+\== _Логи чата 2063.09.29_ \==
 
-**Ada**: Hey I heard you've been working on the infinite loop detector?
+**Ада**: Привет, я слышала, ты работаешь над детектором бесконечных циклов?
 
-**Alan**: That's right! We can now detect an infinite loop and report it as an error before the code even runs. Should help prevent our engineer's computers from crashing. So far I've tested it with loops and while loops.
+**Алан**: Да! Теперь мы можем обнаружить бесконечный цикл и сообщить об ошибке ещё до запуска кода. Это должно помочь предотвратить зависание компьютеров наших инженеров. Пока я протестировал это с циклами loop и while.
 
-**Ada**: Cool cool. Some engineers might also use recursion as a way to repeat their code. Did you test for that?
+**Ада**: Круто. Некоторые инженеры также могут использовать рекурсию для повторения кода. Ты это тестировал?
 
-**Alan**: Oh, I almost forgot. Let me search online to remind myself how recursion works...
+**Алан**: О, я почти забыл. Дай-ка погуглю, как работает рекурсия...
 ",
         r#"{markdown}
-\== _Chat Logs 2063.10.01_ \==
+\== _Логи чата 2063.10.01_ \==
 
-**George**: I was watching the rovers while they were in "automated cleaning mode" earlier and I noticed something. It seems like while in this mode they are not able to move backward. Is that intentional?
+**Георгий**: Я наблюдал за роверами в «режиме автоматической уборки» и заметил кое-что. Похоже, в этом режиме они не могут двигаться назад. Это сделано специально?
 
-**Mary**: Hang on...
+**Мария**: Подожди...
 
-**Mary**: I just looked over the code and I think you're right. Instead of moving backward they just turn twice, which takes longer. I'll make a note of this, but I'm not sure if we'll have the time to fix it.
+**Мария**: Я только что посмотрела код и, кажется, ты прав. Вместо движения назад они просто дважды поворачиваются, что занимает больше времени. Запишу это, но не уверена, что у нас будет время это исправить.
 
-**George**: Gotcha. As long as the rovers are able to do their job while cleaning, it's not the end of the world if they take a little longer to do it. I'm okay with de-prioritizing this for now.
+**Георгий**: Понял. Пока роверы справляются с уборкой, не страшно, если это занимает немного больше времени. Можно отложить это на потом.
 "#,
         r"{markdown}
-\== _Chat Logs 2063.10.02_ \==
+\== _Логи чата 2063.10.02_ \==
 
-**Mary**: Any resident CSS experts available to help me with something? I'm just trying to have a tooltip that floats above a button, but I don't want it to hang off the edge of the screen. I want it to be repositioned so that it's always visible.
+**Мария**: Есть тут эксперты по CSS, чтобы помочь? Я просто хочу сделать всплывающую подсказку над кнопкой, но чтобы она не выходила за край экрана. Хочу, чтобы она перемещалась и всегда была видна.
 
-**Alan**: I think @Ada has the most practice with the dark arts.
+**Алан**: Думаю, @Ада больше всех практикуется в этой тёмной магии.
 
-**Ada**: Lol honestly I usually just keep trying things until it works. But happy to take a look and see if I can help!
+**Ада**: Лол, честно говоря, я обычно просто пробую разное, пока не заработает. Но рада помочь!
 ",
         r#"{markdown}
-\== _Chat Logs 2063.10.05_ \==
+\== _Логи чата 2063.10.05_ \==
 
-**Alan**: I heard someone mention the idea of a `wait` function which would just cause the rovers to wait and do nothing. What do you think?
+**Алан**: Я слышал, кто-то предложил функцию `wait`, которая заставит роверы просто ждать. Что думаете?
 
-**Marie**: Hmm.. we should try to keep the number of built-in functions to a minimum. Couldn't you do basically the same thing with `say("waiting")`?
+**Мари**: Хм... надо стараться минимизировать количество встроенных функций. Разве нельзя сделать то же самое через `say("waiting")`?
 
-**Alan**: Yeah, I guess you're right! I'll advise them to do that instead.
+**Алан**: Да, наверное, ты права! Посоветую им так делать.
 "#,
         r"{markdown}
 
-\== _Chat Logs 2063.10.09_ \==
+\== _Логи чата 2063.10.09_ \==
 
-**Marie**: There are two hard problems in computer science...
+**Мари**: В информатике есть две сложные задачи...
 
-**Marie**: ...cache invalidation, naming things, and off-by-one errors.
+**Мари**: ...инвалидация кэша, именование переменных и ошибки на единицу.
 
-**Alan**: Uh oh, here we go again. Can't we just make a separate channel for jokes?
+**Алан**: О нет, опять начинается. Может, сделаем отдельный канал для шуток?
 
-**Mary**: rofl.gif [image not found]
+**Мария**: rofl.gif [изображение не найдено]
 
-**Alan**: I'm pretty sure there are more than two hard problems in computer science.
+**Алан**: Мне кажется, сложных задач в информатике больше двух.
 ",
         r"{markdown}
 
-\== _Chat Logs 2063.10.12_ \==
+\== _Логи чата 2063.10.12_ \==
 
-**George**: Why do we even need an emergency shutdown button? The rovers aren't dangerous, are they? I mean aside from G.R.E.T.A. they're not even that big.
+**Георгий**: Зачем нам вообще нужна кнопка аварийного отключения? Роверы ведь не опасны? Ну, кроме G.R.E.T.A., они даже не такие большие.
 
-**Mary**: It's just a precaution. We don't expect anything to go wrong, but it's better to be safe than sorry.
+**Мария**: Это просто мера предосторожности. Мы не ожидаем проблем, но лучше перестраховаться.
 
-**George**: I guess that makes sense. I'm just worried that someone might press it by accident. Can't we put it somewhere less conspicuous?
+**Георгий**: Логично. Просто боюсь, что кто-то случайно её нажмёт. Может, поставить её где-нибудь менее заметно?
 
-**Ada**: That would defeat the purpose. It needs to be somewhere that's easy to find in an emergency.
+**Ада**: Это противоречит её назначению. Она должна быть там, где её легко найти в экстренной ситуации.
 ",
     ];
 }
@@ -85,7 +85,7 @@ pub struct ServerRoom {}
 
 impl Level for ServerRoom {
     fn name(&self) -> &'static str {
-        "Shutting Down"
+        "Отключение"
     }
     fn short_name(&self) -> &'static str {
         "server_room"
@@ -94,13 +94,13 @@ impl Level for ServerRoom {
         LevelStyle::GlossyTiles
     }
     fn camera_text(&self) -> &'static str {
-        "Moonbase Alpha: Interior Camera A"
+        "Лунная база Альфа: Внутренняя камера A"
     }
     fn objective(&self) -> &'static str {
-        "Press the button ({button}) to shut down the servers."
+        "Нажмите кнопку ({button}), чтобы отключить серверы."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// Only one thing left to do...
+        r#"// Осталось сделать только одно...
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -110,7 +110,7 @@ impl Level for ServerRoom {
             6,
             0,
             ButtonConnection::None,
-            "Pressing this button will shutdown the servers and disable *ALL* rovers on Elara."
+            "Нажатие этой кнопки отключит серверы и деактивирует *ВСЕ* роверы на Эларе."
                 .into(),
         )];
         state.energy_cells = vec![EnergyCell::new(2, 7), EnergyCell::new(6, 4)];
@@ -119,42 +119,42 @@ impl Level for ServerRoom {
                 0,
                 7,
                 MESSAGES[0].into(),
-                "This data point holds a message from the original team that built Moonbase Alpha."
+                "Эта точка данных содержит сообщение от команды, построившей Лунную базу Альфа."
                     .into(),
             ),
             DataPoint::new_with_info(
                 1,
                 5,
                 MESSAGES[1].into(),
-                "This data point holds a message from the original team that built Moonbase Alpha."
+                "Эта точка данных содержит сообщение от команды, построившей Лунную базу Альфа."
                     .into(),
             ),
             DataPoint::new_with_info(
                 4,
                 5,
                 MESSAGES[2].into(),
-                "This data point holds a message from the original team that built Moonbase Alpha."
+                "Эта точка данных содержит сообщение от команды, построившей Лунную базу Альфа."
                     .into(),
             ),
             DataPoint::new_with_info(
                 8,
                 3,
                 MESSAGES[3].into(),
-                "This data point holds a message from the original team that built Moonbase Alpha."
+                "Эта точка данных содержит сообщение от команды, построившей Лунную базу Альфа."
                     .into(),
             ),
             DataPoint::new_with_info(
                 10,
                 3,
                 MESSAGES[4].into(),
-                "This data point holds a message from the original team that built Moonbase Alpha."
+                "Эта точка данных содержит сообщение от команды, построившей Лунную базу Альфа."
                     .into(),
             ),
             DataPoint::new_with_info(
                 3,
                 1,
                 MESSAGES[5].into(),
-                "This data point holds a message from the original team that built Moonbase Alpha."
+                "Эта точка данных содержит сообщение от команды, построившей Лунную базу Альфа."
                     .into(),
             ),
         ];
@@ -210,7 +210,7 @@ impl Level for ServerRoom {
         }
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Use the `say` function to read the messages on every data point.")
+        Some("Используйте функцию `say`, чтобы прочитать сообщения на всех точках данных.")
     }
     fn check_challenge(
         &self,

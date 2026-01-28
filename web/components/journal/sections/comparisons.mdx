@@ -1,55 +1,55 @@
 import RunnableExample from "../runnable_example";
 import Card from "../card";
 
-### Comparisons
+### Сравнения
 
-A "comparison expression" can be used to compare two different values.
-For example, the comparison expression `1 < 2` results in `true`, because
-1 is less than 2. The comparison expression `1 > 2` results in `false`.
+«Выражение сравнения» можно использовать для сравнения двух различных значений.
+Например, выражение сравнения `1 < 2` даёт результат `true` (истина), потому что
+1 меньше 2. Выражение сравнения `1 > 2` даёт результат `false` (ложь).
 
-<Card type="tip">In the examples below, it's a good idea to use the "Skip forward" and "Skip back" buttons so you can see each comparison one at a time!</Card>
+<Card type="tip">В примерах ниже удобно использовать кнопки «Шаг вперёд» и «Шаг назад», чтобы видеть каждое сравнение по очереди!</Card>
 
 <RunnableExample
-  code={`// The rover will say "true" because 1 is less than 2.
+  code={`// Ровер скажет "true", потому что 1 меньше 2.
 say(1 < 2);
 
-// The rover will say "false" because 1 is not greater than 2.
+// Ровер скажет "false", потому что 1 не больше 2.
 say(1 > 2);`}
 />
 
-#### Comparison Operators
+#### Операторы сравнения
 
-Here is the full list of comparison operators and what they mean:
+Вот полный список операторов сравнения и их значения:
 
-| Operator | Description           | Example   |
+| Оператор | Описание              | Пример    |
 | -------- | --------------------- | --------- |
-| `<`      | Less than             | `1 < 2`   |
-| `<=`     | Less than or equal    | `2 <= 3`  |
-| `>`      | Greater than          | `3 > 4`   |
-| `>=`     | Greater than or equal | `5 >= 6`  |
-| `==`     | Equal                 | `7 == 8`  |
-| `!=`     | Not equal             | `9 != 10` |
+| `<`      | Меньше                | `1 < 2`   |
+| `<=`     | Меньше или равно      | `2 <= 3`  |
+| `>`      | Больше                | `3 > 4`   |
+| `>=`     | Больше или равно      | `5 >= 6`  |
+| `==`     | Равно                 | `7 == 8`  |
+| `!=`     | Не равно              | `9 != 10` |
 
-<Card type="tip">A single equals sign (`=`) is used to assign a value to a variable. If you want to check if two values are equal, remember to use two equals signs (`==`).</Card>
+<Card type="tip">Одиночный знак равенства (`=`) используется для присваивания значения переменной. Если вы хотите проверить, равны ли два значения, не забудьте использовать два знака равенства (`==`).</Card>
 
-#### More Examples
+#### Больше примеров
 
-Here are some more examples of comparison expressions.
+Вот ещё несколько примеров выражений сравнения.
 
-<Card type="try_it">Check your understanding by changing the comparison expressions or adding your own.</Card>
+<Card type="try_it">Проверьте своё понимание, изменяя выражения сравнения или добавляя свои собственные.</Card>
 
 <RunnableExample
   code={`say(2 <= 5);
 say(3 >= 3);
 say(4 != 4);
 
-// Comparisons aren't just for numbers. You can compare
-// strings too.
+// Сравнивать можно не только числа. Строки тоже можно
+// сравнивать.
 say("love" == "love");
 say("apples" == "oranges");`}
 />
 
-You can also use variables inside of comparison expressions.
+Внутри выражений сравнения также можно использовать переменные.
 
 <RunnableExample
   code={`let x = 2;

@@ -12,18 +12,18 @@ pub struct TelepadAndButtonGate {}
 
 impl Level for TelepadAndButtonGate {
     fn name(&self) -> &'static str {
-        "Hidden Passage"
+        "Тайный проход"
     }
     fn short_name(&self) -> &'static str {
         "telepad_and_button_gate"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"turn_right();
 move_forward(3);
-// ADD CODE BELOW:
+// ДОБАВЬТЕ КОД НИЖЕ:
 "#
     }
 
@@ -78,14 +78,14 @@ move_forward(3);
                 10,
                 1,
                 ButtonConnection::Gate(0),
-                "Press this button to unlock the gate.".into(),
+                "Нажмите эту кнопку, чтобы открыть шлюз.".into(),
             )])
             .with_gates(vec![Gate::new_with_info(
                 5,
                 3,
                 false,
                 GateVariant::NESW,
-                "This gate can be unlocked by pressing the nearby button.".into(),
+                "Этот шлюз можно открыть нажатием соседней кнопки.".into(),
             )])
             .build();
         make_all_initial_states_for_telepads(vec![base_state])

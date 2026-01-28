@@ -29,29 +29,29 @@ impl TelepadPartOne {
 
 impl Level for TelepadPartOne {
     fn name(&self) -> &'static str {
-        "Unintended Effects"
+        "Непредвиденные эффекты"
     }
     fn short_name(&self) -> &'static str {
         "telepad_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This code uses the get_orientation function to figure out which
-// way the rover is facing. You DON'T need to change this part.
+        r#"// Этот код использует функцию get_orientation, чтобы узнать,
+// в каком направлении смотрит ровер. Эту часть менять НЕ нужно.
 move_forward(3);
-say("I am facing " + get_orientation());
+say("Я смотрю " + get_orientation());
 
-// If the rover is facing up, turn to the right and then move
-// forward. You DON'T need to change this part.
+// Если ровер смотрит вверх, поверните направо и двигайтесь
+// вперёд. Эту часть менять НЕ нужно.
 if get_orientation() == "up" {
   turn_right();
   move_forward(3);
 }
 
-// Add more if statements to handle the other possible orientations.
-// ADD YOUR CODE BELOW
+// Добавьте if для обработки остальных направлений.
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 "#
     }
 
@@ -90,7 +90,7 @@ if get_orientation() == "up" {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Have a code length of 165 or less and do not define any new functions.")
+        Some("Длина кода до 165 символов и без объявления новых функций.")
     }
     fn check_challenge(
         &self,

@@ -5,13 +5,13 @@ use crate::{
 };
 
 const HUMMUS_RECIPE: &str = r"{markdown}
-**Ingredients**:
-- 120g dried chickpeas
-- 200 mL water
-- 10 mL lemon oil
-- 2g citric acid
-- 2g ground paprika
-- 1g ground black pepper
+**Ингредиенты**:
+- 120г сушёного нута
+- 200 мл воды
+- 10 мл лимонного масла
+- 2г лимонной кислоты
+- 2г молотой паприки
+- 1г молотого чёрного перца
 
 ...";
 
@@ -20,22 +20,22 @@ pub struct DataPointsPartOne {}
 
 impl Level for DataPointsPartOne {
     fn name(&self) -> &'static str {
-        "Secret Recipe"
+        "Секретный рецепт"
     }
     fn short_name(&self) -> &'static str {
         "data_points_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Use the `say` function to find out what the data point ({dataPoint}) holds."
+        "Используйте функцию `say`, чтобы узнать, что содержит точка данных ({dataPoint})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// The read_data function outputs the data from a point, but only
-// if the rover is right next to it!
+        r#"// Функция read_data выводит данные из точки, но только если
+// ровер находится рядом с ней!
 //
-// You need to use the output from the read_data function as the
-// *input* to the say function.
+// Вам нужно использовать вывод функции read_data как
+// *ввод* для функции say.
 //
-// ADD YOUR CODE BELOW
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 
 "#
     }
@@ -62,7 +62,7 @@ impl Level for DataPointsPartOne {
             6,
             3,
             HUMMUS_RECIPE.into(),
-            "This data point contains the secret hummus recipe as a string.".into(),
+            "Эта точка данных содержит секретный рецепт хумуса в виде строки.".into(),
         )];
         vec![state]
     }

@@ -16,26 +16,26 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   forgot_password: {
-    text: `There's another locked gate ahead, but this time I don't remember the password.`,
+    text: `Впереди ещё одни заблокированные ворота, но на этот раз я не помню пароль.`,
     choiceIds: ["request_gate_solution"],
   },
   explain_data_points_1: {
-    text: `Hmm...`,
+    text: `Хмм...`,
     choiceIds: [],
     nextId: "explain_data_points_2",
   },
   explain_data_points_2: {
-    text: `Oh! I think you can retrieve the password from the nearby data point.`,
+    text: `О! Кажется, ты можешь получить пароль из ближайшей точки данных.`,
     choiceIds: ["ack_password_on_data_point"],
   },
   explain_data_points_existing_code_1: {
     text:
-      `To help you get started I already wrote some code for you that reads the data and stores ` +
-      "it in a variable called `password`.",
+      `Чтобы помочь тебе начать, я уже написала код, который считывает данные и сохраняет ` +
+      "их в переменную `password`.",
     choiceIds: ["ack_data_points_existing_code_1"],
   },
   explain_data_points_existing_code_2: {
-    text: "All you need to do is use that variable to unlock the gate and move to the goal.",
+    text: "Всё, что тебе нужно сделать — это использовать эту переменную, чтобы разблокировать ворота и дойти до цели.",
     choiceIds: ["ack_data_points_existing_code_2"],
   },
 };
@@ -44,25 +44,25 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   request_gate_solution: {
-    text: "Oh no! How can I get through?",
+    text: "О нет! Как мне пройти?",
     nextId: "explain_data_points_1",
   },
   ack_password_on_data_point: {
-    text: "I see...",
+    text: "Понятно...",
     nextId: "explain_data_points_existing_code_1",
   },
   ack_data_points_existing_code_1: {
-    text: "What's left for me to do?",
+    text: "Что мне осталось сделать?",
     nextId: "explain_data_points_existing_code_2",
   },
   ack_data_points_existing_code_2: {
-    text: "Got it. I can do that!",
+    text: "Понял. Я справлюсь!",
   },
 };
 
 export const TREES: DialogTrees = {
   level_gate_and_data_point: {
-    name: "I Forgot the Password",
+    name: "Я забыл пароль",
     startId: "forgot_password",
   },
 };

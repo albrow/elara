@@ -16,26 +16,26 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   grover_is_damaged: {
-    text: "Oh no! It looks like G.R.O.V.E.R has sustained some damage from an undetected asteroid!",
+    text: "О нет! Похоже, Г.Р.О.В.Е.Р. получил повреждения от незамеченного астероида!",
     choiceIds: ["ask_if_grover_okay", "ask_grover_damage_details"],
   },
   reassure_grover_is_okay: {
-    text: `Don't worry, G.R.O.V.E.R. is tougher than he looks! He'll be fine as soon as we can get him to the repair bay.`,
+    text: `Не волнуйся, Г.Р.О.В.Е.Р. крепче, чем кажется! Он будет в порядке, как только мы доставим его в ремонтный отсек.`,
     choiceIds: ["ask_grover_damage_details"],
   },
   clarify_grover_damage_1: {
-    text: "Hang on, I'm running a full diagnostic...",
+    text: "Подожди, я запускаю полную диагностику...",
     choiceIds: [],
     nextId: "clarify_grover_damage_2",
   },
   clarify_grover_damage_2: {
-    text: "The damage is mostly to the movement and navigation system.",
+    text: "Повреждения в основном затронули систему движения и навигации.",
     choiceIds: ["ack_grover_damage"],
   },
   movement_impaired_until_repairs: {
     text:
-      "For now, G.R.O.V.E.R. will be unable to move forward or turn right. It's going " +
-      "to be challenging to get there, but I'll help you navigate him to the repair bay so we can fix this.",
+      "Пока Г.Р.О.В.Е.Р. не сможет двигаться вперёд или поворачивать направо. Будет " +
+      "непросто добраться туда, но я помогу тебе довести его до ремонтного отсека, чтобы мы могли это исправить.",
     choiceIds: ["ack_movement_impaired"],
   },
 };
@@ -44,25 +44,25 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   ask_if_grover_okay: {
-    text: "Is he going to be okay?",
+    text: "С ним всё будет в порядке?",
     nextId: "reassure_grover_is_okay",
   },
   ask_grover_damage_details: {
-    text: "What kind of damage?",
+    text: "Какие повреждения?",
     nextId: "clarify_grover_damage_1",
   },
   ack_grover_damage: {
-    text: "What does that mean exactly?",
+    text: "Что именно это означает?",
     nextId: "movement_impaired_until_repairs",
   },
   ack_movement_impaired: {
-    text: "Okay, let's do this!",
+    text: "Хорошо, давай сделаем это!",
   },
 };
 
 export const TREES: DialogTrees = {
   level_partly_disabled_movement: {
-    name: "G.R.O.V.E.R. is damaged",
+    name: "Г.Р.О.В.Е.Р. повреждён",
     startId: "grover_is_damaged",
   },
 };

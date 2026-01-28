@@ -4,7 +4,7 @@ use crate::simulation::{Actor, AsteroidWarning, DataPoint, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
-const DATA_POINT_INFO: &str = r#"This data point will output either `"top"`, `"middle"`, or `"bottom"` depending on which way is safe to go."#;
+const DATA_POINT_INFO: &str = r#"Эта точка данных выдаёт `"top"` (верх), `"middle"` (середина) или `"bottom"` (низ) в зависимости от того, какой путь безопасен."#;
 
 #[derive(Copy, Clone)]
 pub struct AsteroidStrikePartTwo {}
@@ -48,20 +48,20 @@ impl AsteroidStrikePartTwo {
 
 impl Level for AsteroidStrikePartTwo {
     fn name(&self) -> &'static str {
-        "On Your Own"
+        "Самостоятельно"
     }
     fn short_name(&self) -> &'static str {
         "asteroid_strike_part_two"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to one of the goals ({goal})."
+        "Переместите ровер ({robot}) к одной из целей ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// You'll need to read the safe direction from the data point
-// (either "top", "middle", or "bottom") and then move the rover
-// to the corresponding goal.
+        r#"// Вам нужно прочитать безопасное направление из точки данных
+// ("top" - верх, "middle" - середина или "bottom" - низ) и затем
+// переместить ровер к соответствующей цели.
 //
-// ADD YOUR CODE BELOW
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 "#
     }
     fn initial_states(&self) -> Vec<State> {

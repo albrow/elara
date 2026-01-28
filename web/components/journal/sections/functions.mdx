@@ -3,39 +3,37 @@ import Video from "../video";
 import Card from "../card";
 import { getLocalVideoUrl } from "../../../lib/utils";
 
-### Functions
+### Функции
 
 <Video youTubeId="T8U2L4YVvUQ" localVideoUrl={getLocalVideoUrl("functions")}/>
 
-Functions are a fundamental building block of programming. They
-let you organize code into smaller chunks that can be re-used
-and combined in different ways. To use a function, you "call" it.
+Функции — это фундаментальный строительный блок программирования. Они
+позволяют организовать код в небольшие фрагменты, которые можно
+использовать повторно и комбинировать по-разному. Чтобы использовать
+функцию, нужно её «вызвать».
 
-Functions can have inputs (also called "arguments") that affect
-their behavior. Different functions may have different types of
-inputs.
+Функции могут иметь входные данные (также называемые «аргументами»),
+которые влияют на их поведение. Разные функции могут иметь разные типы
+входных данных.
 
-<Card type="tip">All of the code examples here are editable! You can change the code and run it again to see the results.</Card>
+<Card type="tip">Все примеры кода здесь редактируемые! Вы можете изменить код и запустить его снова, чтобы увидеть результат.</Card>
 
-Here's an example of calling the `move_forward` function with
-the input `4`:
+Вот пример вызова функции `move_forward` с входным значением `4`:
 
 <RunnableExample
   code={`move_forward(4);
 `}
 />
 
-Here's an example of calling the `say` function with the
-input `"Hello, world!"`.
+Вот пример вызова функции `say` с входным значением `"Привет, мир!"`.
 
 <RunnableExample
-  code={`say("Hello, world!");
+  code={`say("Привет, мир!");
 `}
 />
 
-Some functions don't need any inputs, but you still need to include the
-parentheses when calling them. Here's an example of calling the `turn_right`
-function:
+Некоторые функции не требуют входных данных, но при их вызове всё равно
+нужно включать круглые скобки. Вот пример вызова функции `turn_right`:
 
 <RunnableExample
   code={`turn_right();

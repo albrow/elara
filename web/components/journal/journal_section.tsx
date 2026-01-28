@@ -46,7 +46,7 @@ export default function JournalSection(props: JournalProps) {
           colorScheme="teal"
           onClick={navigateToHub}
         >
-          Back to Hub
+          В центр
           <MdHome size="1.3em" style={{ marginLeft: "0.2rem" }} />
         </Button>
         {shouldShowNextButton && (
@@ -57,7 +57,7 @@ export default function JournalSection(props: JournalProps) {
             onClick={() => navigateToScene(nextJournalPage!)}
             ml="5px"
           >
-            Next Page
+            Следующая страница
             <MdArrowForward size="1.3em" style={{ marginLeft: "0.2rem" }} />
           </Button>
         )}

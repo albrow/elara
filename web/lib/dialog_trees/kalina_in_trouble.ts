@@ -32,20 +32,20 @@ export type ChoiceIds =
 
 export const NODES: { [key in NodeIds]: DialogNode } = {
   kalina_in_trouble: {
-    text: "I... think I might be in serious trouble...",
+    text: "Кажется... у меня серьёзные проблемы...",
     choiceIds: ["ask_why_kalina_in_trouble"],
   },
   explain_moonbase_attack_1: {
-    text: "The malfunctioning rovers are getting really out of hand. Some of them attacked my base!",
+    text: "Неисправные роверы совсем вышли из-под контроля. Некоторые из них атаковали мою базу!",
     choiceIds: [],
     nextId: "explain_moonbase_attack_2",
   },
   explain_moonbase_attack_2: {
-    text: "I'm still not 100% sure why this is happening, but they damaged some critical infrastructure and equipment.",
+    text: "Я до сих пор на 100% не уверена, почему это происходит, но они повредили критическую инфраструктуру и оборудование.",
     choiceIds: ["ask_about_moonbase_damage", "ask_is_kalina_safe"],
   },
   moonbase_damage_details: {
-    text: "They damaged the power generator, life support systems, and artificial gravity. The base is on emergency backup power, but that won't last forever.",
+    text: "Они повредили генератор энергии, системы жизнеобеспечения и искусственную гравитацию. База работает на аварийном резервном питании, но это ненадолго.",
     choiceIds: [
       "ask_about_moonbase_damage",
       "ask_is_kalina_safe",
@@ -53,7 +53,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
     ],
   },
   confirm_kalina_safe: {
-    text: "I'm safe for now. The malfunctioning rovers won't be able to reach me, but I'm not sure how long I can last.",
+    text: "Пока я в безопасности. Неисправные роверы не смогут до меня добраться, но я не знаю, сколько смогу продержаться.",
     choiceIds: [
       "ask_about_moonbase_damage",
       "ask_is_kalina_safe",
@@ -61,25 +61,25 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
     ],
   },
   explain_repair_problem_1: {
-    text: "Well... I should be able to restore power to the base and get the critical systems up and running again, but I would need to access the control panel outside to do it.",
+    text: "Ну... я должна суметь восстановить питание базы и запустить критические системы, но для этого мне нужен доступ к панели управления снаружи.",
     choiceIds: [],
     nextId: "explain_repair_problem_2",
   },
   explain_repair_problem_2: {
-    text: "It's not safe to attempt repairs while the malfunctioning rovers are still out there!",
+    text: "Пытаться делать ремонт, пока неисправные роверы всё ещё там — небезопасно!",
     choiceIds: ["ask_what_to_do_about_moonbase"],
   },
   explain_shutdown_plan_1: {
-    text: "I have thought of one thing... but it's not going to be easy.",
+    text: "Я кое-что придумала... но это будет непросто.",
     choiceIds: [],
     nextId: "explain_shutdown_plan_2",
   },
   explain_shutdown_plan_2: {
-    text: "There's an emergency shutdown button in the server room on Moonbase Alpha. If you can guide G.R.O.V.E.R. there and have him press the button, it will shutdown all the rovers on Elara.",
+    text: "В серверной комнате на Лунной базе Альфа есть кнопка аварийного отключения. Если ты сможешь привести туда Г.Р.О.В.Е.Р.а и заставить его нажать кнопку, это отключит всех роверов на Эларе.",
     choiceIds: ["ask_clarify_all_rovers"],
   },
   clarify_all_rovers: {
-    text: "That's right, all of them. Unfortunately, that means G.R.O.V.E.R. too. I've been trying to think of an alternative, but there's just no other way. Not with the limited time we have, anyways.",
+    text: "Да, всех. К сожалению, это значит и Г.Р.О.В.Е.Р.а тоже. Я пыталась придумать альтернативу, но другого выхода нет. По крайней мере, за то время, что у нас есть.",
     choiceIds: [
       "ask_alternate_call_someone",
       "ask_alternate_remote_disable",
@@ -87,7 +87,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
     ],
   },
   cant_call_someone: {
-    text: "There's no one else here on Elara since they automated most operations a few years back. Space is really big, and Jupiter's moons are pretty far apart. It would take days or even weeks to send someone else here.",
+    text: "Здесь на Эларе больше никого нет с тех пор, как несколько лет назад автоматизировали большинство операций. Космос огромен, а луны Юпитера довольно далеко друг от друга. Отправка кого-то сюда займёт дни или даже недели.",
     choiceIds: [
       "ask_alternate_call_someone",
       "ask_alternate_remote_disable",
@@ -95,7 +95,7 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
     ],
   },
   cant_disable_remotely: {
-    text: "Believe me, I've tried. Ever since the rovers started malfunctioning, they haven't been responding to my commands.",
+    text: "Поверь, я пыталась. С тех пор как роверы начали неисправно работать, они не отвечают на мои команды.",
     choiceIds: [
       "ask_alternate_call_someone",
       "ask_alternate_remote_disable",
@@ -103,69 +103,69 @@ export const NODES: { [key in NodeIds]: DialogNode } = {
     ],
   },
   joke_difficult_first_day: {
-    text: "I know it's a lot to ask...",
+    text: "Я знаю, что прошу о многом...",
     choiceIds: [],
     nextId: "joke_difficult_first_day_2",
   },
   joke_difficult_first_day_2: {
-    text: "Not exactly what you expected when you signed up for the internship, huh?",
+    text: "Не совсем то, что ты ожидал, когда записывался на стажировку, да?",
     choiceIds: ["ack_first_day_joke"],
   },
   kalina_can_help_from_afar: {
-    text: "I'll be monitoring your progress and I'll help you out as much as I can from here. You can do it! I'm counting on you!",
+    text: "Я буду следить за твоим прогрессом и помогать чем смогу отсюда. У тебя получится! Я рассчитываю на тебя!",
     choiceIds: ["ack_kalina_can_help_from_afar"],
   },
 };
 
 export const CHOICES: { [key in ChoiceIds]: DialogChoice } = {
   ask_why_kalina_in_trouble: {
-    text: "What happened?",
+    text: "Что случилось?",
     nextId: "explain_moonbase_attack_1",
   },
   ask_about_moonbase_damage: {
-    text: "What's the damage?",
+    text: "Какие повреждения?",
     nextId: "moonbase_damage_details",
   },
   ask_is_kalina_safe: {
-    text: "Are you safe?",
+    text: "Ты в безопасности?",
     nextId: "confirm_kalina_safe",
   },
   ask_how_to_help_kalina: {
-    text: "Is there anything I can do to help?",
+    text: "Чем я могу помочь?",
     nextId: "explain_repair_problem_1",
   },
   ask_what_to_do_about_moonbase: {
-    text: "Right. So what can we do?",
+    text: "Понятно. Что мы можем сделать?",
     nextId: "explain_shutdown_plan_1",
   },
   ask_clarify_all_rovers: {
-    text: "Wait... do you mean ALL the rovers?",
+    text: "Подожди... ты имеешь в виду ВСЕХ роверов?",
     nextId: "clarify_all_rovers",
   },
   ask_alternate_call_someone: {
-    text: "Can't we call someone else from Ganymede Robotics?",
+    text: "Разве нельзя позвать кого-то ещё из Ganymede Robotics?",
     nextId: "cant_call_someone",
   },
   ask_alternate_remote_disable: {
-    text: "Isn't there some way to disable the rovers remotely?",
+    text: "Нет способа отключить роверов удалённо?",
     nextId: "cant_disable_remotely",
   },
   ack_shutdown_plan: {
-    text: "Okay, I'll do it.",
+    text: "Ладно, я сделаю это.",
     nextId: "joke_difficult_first_day",
   },
   ack_first_day_joke: {
-    text: "Tell me about it...",
+    text: "Да уж...",
     nextId: "kalina_can_help_from_afar",
   },
   ack_kalina_can_help_from_afar: {
-    text: "No time to waste!",
+    text: "Нельзя терять время!",
   },
 };
 
 export const TREES: DialogTrees = {
   kalina_in_trouble: {
-    name: "Kalina In Trouble",
+    name: "Калина в беде",
     startId: "kalina_in_trouble",
   },
 };

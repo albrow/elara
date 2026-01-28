@@ -20,42 +20,42 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   made_it_to_server_room_1: {
-    text: "Welp... this is it. You made it to the server room inside Moonbase Alpha.",
+    text: "Что ж... вот и всё. Ты добрался до серверной комнаты на Лунной базе Альфа.",
     choiceIds: [],
     nextId: "made_it_to_server_room_2",
   },
   made_it_to_server_room_2: {
-    text: "All you have to do now is press the emergency shutdown button, which will disable all the rovers on Elara. Are you ready?",
+    text: "Осталось только нажать кнопку аварийного отключения, которая выключит всех роверов на Эларе. Ты готов?",
     choiceIds: ["ask_no_other_way", "ready_to_shutdown"],
   },
   confirm_no_other_way: {
-    text: "Afraid not. The only way to stop the malfunctioning rovers is to shut them all down.",
+    text: "Боюсь, что нет. Единственный способ остановить неисправных роверов — это отключить их всех.",
     choiceIds: ["ready_to_shutdown"],
   },
   server_room_data_points_1: {
-    text: "By the way, if you come across some data points in the server room, you could try reading them.",
+    text: "Кстати, если ты встретишь в серверной комнате какие-нибудь точки данных, можешь попробовать их прочитать.",
     choiceIds: [],
     nextId: "server_room_data_points_2",
   },
   server_room_data_points_2: {
-    text: "Moonbase Alpha is the oldest building on Elara, and these data points can contain some interesting messages from the engineers who originally built it.",
+    text: "Лунная база Альфа — самое старое здание на Эларе, и эти точки данных могут содержать интересные сообщения от инженеров, которые изначально её построили.",
     choiceIds: [
       "ask_how_to_read_server_room_data_points",
       "ack_server_room_data_points",
     ],
   },
   remind_how_to_read_data_points_1: {
-    text: "All you have to do is move G.R.O.V.E.R. next to a data point and then call `say(read_data());`.",
+    text: "Всё, что тебе нужно сделать — это подвести Г.Р.О.В.Е.Р.а к точке данных и вызвать `say(read_data());`.",
     choiceIds: [],
     nextId: "remind_how_to_read_data_points_2",
   },
   remind_how_to_read_data_points_2: {
-    text: "Just like with the hummus recipe. Remember?",
+    text: "Как с рецептом хумуса. Помнишь?",
     choiceIds: [],
     nextId: "server_room_final_confirmation",
   },
   server_room_final_confirmation: {
-    text: "Nothing left to do but press the button.",
+    text: "Осталось только нажать кнопку.",
     choiceIds: [
       "ask_how_to_read_server_room_data_points",
       "ack_final_server_room_confirmation",
@@ -67,29 +67,29 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   ask_no_other_way: {
-    text: "Are you sure there's no other way?",
+    text: "Ты уверена, что другого способа нет?",
     nextId: "confirm_no_other_way",
   },
   ready_to_shutdown: {
-    text: "I'm ready.",
+    text: "Я готов.",
     nextId: "server_room_data_points_1",
   },
   ask_how_to_read_server_room_data_points: {
-    text: "How do I read from a data point again?",
+    text: "Как мне снова прочитать данные из точки данных?",
     nextId: "remind_how_to_read_data_points_1",
   },
   ack_server_room_data_points: {
-    text: "Good idea. I'll check it out!",
+    text: "Хорошая идея. Я посмотрю!",
     nextId: "server_room_final_confirmation",
   },
   ack_final_server_room_confirmation: {
-    text: "Okay... here goes nothing.",
+    text: "Ладно... будь что будет.",
   },
 };
 
 export const TREES: DialogTrees = {
   level_server_room: {
-    name: "Shutting Down",
+    name: "Отключение",
     startId: "made_it_to_server_room_1",
   },
 };

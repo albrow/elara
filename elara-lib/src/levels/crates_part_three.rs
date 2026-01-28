@@ -8,25 +8,24 @@ pub struct CratesPartThree {}
 
 impl Level for CratesPartThree {
     fn name(&self) -> &'static str {
-        "Name TBD"
+        "Ещё больше ящиков"
     }
     fn short_name(&self) -> &'static str {
         "crates_part_three"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This time there is more than one crate in the way. The code
-// below moves the first crate out of the way, but there are still
-// two more to go!
+        r#"// На этот раз на пути больше одного ящика. Код ниже убирает
+// первый ящик с дороги, но осталось ещё два!
 move_forward(3);
 turn_left();
 pick_up();
 turn_left();
 move_forward(2);
 drop();
-// ADD YOUR CODE BELOW:
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ:
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -77,7 +76,7 @@ drop();
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Use 12 energy or less _and_ have a code length of 190 chars or less.")
+        Some("Потратьте не более 12 энергии И длина кода до 190 символов.")
     }
     fn check_challenge(
         &self,

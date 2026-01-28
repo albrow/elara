@@ -7,7 +7,7 @@ use crate::simulation::{Actor, AsteroidWarning, DataPoint, Orientation};
 use crate::simulation::{Goal, Obstacle, Player, State};
 use crate::state_maker::StateMaker;
 
-const DATA_POINT_INFO: &str = r#"This data point will output either `"left"` or `"right"` depending on which way is safe to go."#;
+const DATA_POINT_INFO: &str = r#"Эта точка данных выводит `"left"` или `"right"` в зависимости от того, в какую сторону безопасно идти."#;
 
 #[derive(Copy, Clone)]
 pub struct AsteroidStrike {}
@@ -48,30 +48,30 @@ impl AsteroidStrike {
 
 impl Level for AsteroidStrike {
     fn name(&self) -> &'static str {
-        "Asteroid Strike"
+        "Удар астероида"
     }
     fn short_name(&self) -> &'static str {
         "asteroid_strike"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to either the left or the right goal ({goal})."
+        "Переместите ровер ({robot}) к левой или правой цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This code reads the safe direction from the data point
-// (either "left" or "right") and stores it in a variable
-// called safe_direction. You DON'T need to change this part.
+        r#"// Этот код читает безопасное направление из точки данных
+// ("left" или "right") и сохраняет его в переменной safe_direction.
+// Эту часть менять НЕ нужно.
 let safe_direction = read_data();
-say("The safe direction is: " + safe_direction);
+say("Безопасное направление: " + safe_direction);
 
 if safe_direction == "left" {
-  // If the safe direction is "left", we should go left.
+  // Если безопасно налево, идём налево.
   move_forward(3);
   turn_left();
   move_forward(3);
 }
 if safe_direction == "right" {
-  // What should we do if the safe direction is "right"?
-  // ADD YOUR CODE BELOW
+  // Что делать, если безопасно направо?
+  // ДОБАВЬТЕ ВАШ КОД НИЖЕ
 
 }"#
     }
@@ -116,7 +116,7 @@ if safe_direction == "right" {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal without using the `read_data` function.")
+        Some("Достигните цели без использования функции `read_data`.")
     }
     fn check_challenge(&self, _states: &[State], script: &str, _stats: &ScriptStats) -> bool {
         // Strip the comments first, then check if the script contains "read_data".

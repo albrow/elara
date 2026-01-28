@@ -117,7 +117,7 @@ export default function LevelSelectOption(props: LevelSelectOptionProps) {
     if (!props.scene.completed) {
       icons.push(
         <Badge colorScheme="green" ml="0.3rem">
-          New
+          Новое
         </Badge>
       );
     }
@@ -154,16 +154,16 @@ export default function LevelSelectOption(props: LevelSelectOptionProps) {
 
   const lockExplanationText = useMemo(() => {
     if (nextUnlockedScene.type === "cutscene") {
-      return `You must watch a cutscene first. (Beat the previous level, then press "Play Cutscene").`;
+      return `Сначала нужно посмотреть сцену. (Пройдите предыдущий уровень, затем нажмите «Посмотреть сцену».)`;
     }
     if (nextUnlockedScene.type === "dialog") {
-      return "Answer the video call to unlock this level.";
+      return "Ответьте на видеозвонок, чтобы открыть этот уровень.";
     }
     if (nextUnlockedScene.type === "journal") {
-      return "Read the latest journal page(s) to unlock this level.";
+      return "Прочитайте новую(ые) страницу(ы) журнала, чтобы открыть этот уровень.";
     }
     if (nextUnlockedScene.type === "level") {
-      return "Beat the previous level to unlock this one.";
+      return "Пройдите предыдущий уровень, чтобы открыть этот.";
     }
     throw new Error(`Unexpected scene type: ${nextUnlockedScene.type}`);
   }, [nextUnlockedScene.type]);

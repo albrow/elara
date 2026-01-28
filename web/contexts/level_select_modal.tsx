@@ -118,20 +118,23 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
     setVisible(false);
   }, []);
 
-  const getSelectedSceneFromCurrScene = useCallback((currScene: Scene | null, LEVELS: Scene[]) => {
-    // If we're currently in a level, select that level by default.
-    if (currScene && currScene.type === "level") {
-      return currScene;
-    }
-    // Otherwise, select the first unlocked level by default.
-    for (let level of LEVELS) {
-      if (!level.completed && level.unlocked) {
-        return level;
+  const getSelectedSceneFromCurrScene = useCallback(
+    (currScene: Scene | null, LEVELS: Scene[]) => {
+      // If we're currently in a level, select that level by default.
+      if (currScene && currScene.type === "level") {
+        return currScene;
       }
-    }
-    // If no levels are unlocked, select the first level by default.
-    return LEVELS[0];
-  }, []);
+      // Otherwise, select the first unlocked level by default.
+      for (let level of LEVELS) {
+        if (!level.completed && level.unlocked) {
+          return level;
+        }
+      }
+      // If no levels are unlocked, select the first level by default.
+      return LEVELS[0];
+    },
+    []
+  );
 
   const [selectedScene, setSelectedScene] = useState(() =>
     getSelectedSceneFromCurrScene(currScene, LEVELS)
@@ -184,7 +187,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                         mb="2px"
                         align="center"
                       >
-                        Choose Level
+                        Выберите уровень
                       </Text>
                     </Box>
                     <Box
@@ -261,7 +264,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                       />
                     </Box>
                     <Text fontSize="24px" fontWeight="bold" mt="2px" mb="2px">
-                      Level {selectedScene?.levelIndex || 0}:{" "}
+                      Уровень {selectedScene?.levelIndex || 0}:{" "}
                       {selectedScene.level?.name}
                     </Text>
                     <Box fontSize="14px">
@@ -272,7 +275,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                           verticalAlign="middle"
                           fontWeight="bold"
                         >
-                          Objective:
+                          Задание:
                         </Text>{" "}
                         <ObjectiveText
                           text={selectedScene?.level?.objective || ""}
@@ -289,7 +292,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                                 verticalAlign="middle"
                                 fontWeight="bold"
                               >
-                                Challenge:
+                                Доп. задание:
                               </Text>{" "}
                               <ChallengeText
                                 text={selectedScene?.level?.challenge || ""}
@@ -306,7 +309,7 @@ export function LevelSelectModalProvider(props: PropsWithChildren<{}>) {
                         handleClose();
                       }}
                     >
-                      Go!
+                      Поехали!
                     </Button>
                   </Stack>
                 </Flex>

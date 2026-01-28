@@ -44,7 +44,7 @@ export default function ModalObjective(props: ModalObjectiveProps) {
           )}
         />
         <Text as="span" verticalAlign="middle" fontWeight="bold">
-          Objective:
+          Задание:
         </Text>{" "}
         <ObjectiveText text={props.objective} />
       </Box>

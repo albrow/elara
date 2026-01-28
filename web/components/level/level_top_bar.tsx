@@ -111,7 +111,7 @@ export default function LevelTopBar(props: LevelTopBarProps) {
               as="span"
               verticalAlign="middle"
             >
-              Level {props.currScene?.levelIndex || 0}: {props.currLevel.name}
+              Уровень {props.currScene?.levelIndex || 0}: {props.currLevel.name}
             </Text>
             <Box ml="12px" my="auto" mt="auto">
               <LevelTopBarButton onClick={() => showLevelSelectModal()}>
@@ -119,7 +119,7 @@ export default function LevelTopBar(props: LevelTopBarProps) {
                   size="1em"
                   style={{ marginRight: "0.3rem" }}
                 />{" "}
-                Choose level
+                Выбор уровня
               </LevelTopBarButton>
             </Box>
             {props.currScene?.hints != null &&
@@ -127,7 +127,7 @@ export default function LevelTopBar(props: LevelTopBarProps) {
                 <Box ml="4px" my="auto" mt="auto">
                   <LevelTopBarButton onClick={showHintsModal}>
                     <MdLightbulb size="1em" style={{ marginRight: "0.3rem" }} />{" "}
-                    Show hints
+                    Показать подсказки
                   </LevelTopBarButton>
                 </Box>
               )}
@@ -137,7 +137,7 @@ export default function LevelTopBar(props: LevelTopBarProps) {
                   onClick={() => showDialogModal(props.dialogTreeName!)}
                 >
                   <MdMessage size="1em" style={{ marginRight: "0.3rem" }} />{" "}
-                  Show dialog
+                  Показать диалог
                 </LevelTopBarButton>
               </Box>
             )}
@@ -147,7 +147,7 @@ export default function LevelTopBar(props: LevelTopBarProps) {
           <Text as="span" verticalAlign="middle">
             {getObjectiveIcon()}
             <Text as="span" verticalAlign="middle" fontWeight="bold">
-              Objective:
+              Задание:
             </Text>{" "}
             <ObjectiveText text={props.currLevel.objective} />
           </Text>
@@ -155,7 +155,7 @@ export default function LevelTopBar(props: LevelTopBarProps) {
             <Text as="span" ml="0.5em" verticalAlign="middle">
               {getChallengeIcon()}
               <Text as="span" verticalAlign="middle" fontWeight="bold">
-                Challenge:
+                Доп. задание:
               </Text>{" "}
               <ChallengeText text={props.currLevel.challenge} />
             </Text>

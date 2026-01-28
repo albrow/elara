@@ -9,18 +9,18 @@ pub struct ButtonsPartOne {}
 
 impl Level for ButtonsPartOne {
     fn name(&self) -> &'static str {
-        "Pressing Buttons"
+        "Нажимаем кнопки"
     }
     fn short_name(&self) -> &'static str {
         "buttons_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) next to the button ({button}) and press it."
+        "Переместите ровер ({robot}) к кнопке ({button}) и нажмите её."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// The press_button function can be used to press buttons,
-// but only if the rover is right next to one. Move the rover
-// next to the button and call the press_button function.
+        r#"// Функция press_button может использоваться для нажатия кнопок,
+// но только если ровер находится рядом с ней. Переместите ровер
+// к кнопке и вызовите функцию press_button.
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -30,7 +30,7 @@ impl Level for ButtonsPartOne {
             6,
             4,
             ButtonConnection::None,
-            "If you press this button, you win the level!".into(),
+            "Если вы нажмёте эту кнопку, вы пройдёте уровень!".into(),
         )];
         vec![state]
     }

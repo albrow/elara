@@ -11,38 +11,38 @@ pub static MAX_ENERGY: u32 = 50;
 pub static ENERGY_CELL_AMOUNT: u32 = 10;
 
 // Various common error messages.
-pub static ERR_OUT_OF_ENERGY: &str = "G.R.O.V.E.R. ran out of energy!";
+pub static ERR_OUT_OF_ENERGY: &str = "У Г.Р.О.В.Е.Р.а закончилась энергия!";
 pub static ERR_DESTROYED_BY_ENEMY: &str =
-    "G.R.O.V.E.R. was attacked and disabled by a malfunctioning rover. Try again!";
+    "Г.Р.О.В.Е.Р. был атакован и выведен из строя неисправным ровером. Попробуйте снова!";
 /// A special error message that is returned when the simulation ends before
 /// the script finishes running. I.e., this is a way for us to abort running
 /// a script if the simulation outcome does not require us to continue running
 /// it.
 pub static ERR_SIMULATION_END: &str = "SIMULATION_END";
 /// Returned from read_data if you call it when not adjacent to a data point.
-pub static ERR_NO_DATA_POINT: &str = "read_data only works if you are next to a data point.";
+pub static ERR_NO_DATA_POINT: &str = "read_data работает только рядом с точкой данных.";
 /// Returned from press_button if you call it when not adjacent to a button.
-pub static ERR_NO_BUTTON: &str = "press_button only works if you are next to a button.";
+pub static ERR_NO_BUTTON: &str = "press_button работает только рядом с кнопкой.";
 /// Returned as the "input" to a BadInput error by our custom semicolon checker code
 /// if there is a line break in the middle of a function call.
 pub static BAD_INPUT_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL: &str = "line break in function call";
 /// Returned as the end-user error message if there is a line break in the middle of a function call.
 pub static ERR_UNEXPECTED_LINE_BREAK_IN_FUNCTION_CALL: &str =
-    "Error: Unexpected line break. (Hint: you may need to move the function arguments to the same line as the function call.)";
-pub static ERR_UNEXPECTED_SPACE_IN_VAR_NAME: &str = "Syntax Error: Variable names cannot contain spaces. (Hint: try using an underscore instead of a space.)";
-pub static ERR_UNEXPECTED_SPACE_IN_FUNC_NAME: &str = "Syntax Error: Function names cannot contain spaces. (Hint: try using an underscore instead of a space.)";
+    "Ошибка: Неожиданный перенос строки. (Подсказка: возможно, нужно переместить аргументы функции на ту же строку, что и вызов функции.)";
+pub static ERR_UNEXPECTED_SPACE_IN_VAR_NAME: &str = "Синтаксическая ошибка: Имена переменных не могут содержать пробелы. (Подсказка: попробуйте использовать подчёркивание вместо пробела.)";
+pub static ERR_UNEXPECTED_SPACE_IN_FUNC_NAME: &str = "Синтаксическая ошибка: Имена функций не могут содержать пробелы. (Подсказка: попробуйте использовать подчёркивание вместо пробела.)";
 
 // Special error messages displayed to the player in Player.err_message. These don't
 // cause the simulation to end, but they are displayed to the player in the UI.
 
 /// Shown when pick_up is called but there is nothing in front of the player to pick up.
-pub static PLAYER_ERR_NOTHING_TO_PICK_UP: &str = "Nothing in front of me to pick up!";
+pub static PLAYER_ERR_NOTHING_TO_PICK_UP: &str = "Передо мной нечего подобрать!";
 /// Shown when pick_up is called but the player is already holding something.
-pub static PLAYER_ERR_ALREADY_HOLDING: &str = "I'm already holding something!";
+pub static PLAYER_ERR_ALREADY_HOLDING: &str = "Я уже что-то несу!";
 /// Shown when drop is called but the player is not holding anything.
-pub static PLAYER_ERR_NOTHING_TO_DROP: &str = "I don't have anything to drop!";
+pub static PLAYER_ERR_NOTHING_TO_DROP: &str = "Мне нечего положить!";
 /// Shown when drop is called but there is no space in front of the player to drop the crate.
-pub static PLAYER_ERR_NO_SPACE_TO_DROP: &str = "No space in front of me to drop something!";
+pub static PLAYER_ERR_NO_SPACE_TO_DROP: &str = "Передо мной нет места, чтобы положить!";
 
 pub struct BuiltinFunction {
     pub name: &'static str,

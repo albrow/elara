@@ -30,7 +30,7 @@ export default function ModalStats(props: StatsProps) {
                 marginTop: "0.1rem",
               }}
             />
-            {`Time: ${props.stats.time_taken} steps`}
+            {`Время: ${props.stats.time_taken} шагов`}
           </Flex>
         </Badge>
       </Animate>
@@ -49,7 +49,7 @@ export default function ModalStats(props: StatsProps) {
                 marginTop: "0.1rem",
               }}
             />
-            {`Energy Used: ${props.stats.energy_used}`}
+            {`Потрачено энергии: ${props.stats.energy_used}`}
           </Flex>
         </Badge>
       </Animate>
@@ -68,7 +68,7 @@ export default function ModalStats(props: StatsProps) {
                 marginTop: "0.1rem",
               }}
             />
-            {`Code Length: ${props.stats.code_len}`}
+            {`Длина кода: ${props.stats.code_len}`}
           </Flex>
         </Badge>
       </Animate>

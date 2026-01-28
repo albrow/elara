@@ -8,20 +8,20 @@ pub struct GateAndDataPointPartThree {}
 
 impl Level for GateAndDataPointPartThree {
     fn name(&self) -> &'static str {
-        "Needle in a Haystack"
+        "Иголка в стоге сена"
     }
     fn short_name(&self) -> &'static str {
         "gate_and_data_point_part_three"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This code reads the data from the closest data point and
-// tries using it as the password. However, it looks like it
-// isn't the right password. Try the other data points?
+        r#"// Этот код читает данные из ближайшей точки данных и
+// пытается использовать их как пароль. Однако, похоже,
+// это неправильный пароль. Попробуйте другие точки данных?
 //
-// CHANGE THE CODE BELOW
+// ИЗМЕНИТЕ КОД НИЖЕ
 let password = read_data();
 move_forward(1);
 say(password);

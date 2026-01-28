@@ -9,21 +9,21 @@ pub struct Gates {}
 
 impl Level for Gates {
     fn name(&self) -> &'static str {
-        "Open Sesame"
+        "Сезам, откройся"
     }
     fn short_name(&self) -> &'static str {
         "gates"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// First, we move G.R.O.V.E.R. next to the password gate.
+        r#"// Сначала переместим Г.Р.О.В.Е.Р.а к парольному шлюзу.
 move_forward(2);
 
-// Then, you just need to say the password.
-// Reminder: the password for this gate is "lovelace".
-// ADD YOUR CODE BELOW
+// Затем нужно просто сказать пароль.
+// Напоминание: пароль для этого шлюза — "lovelace".
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ
 "#
     }
     fn initial_states(&self) -> Vec<State> {
@@ -45,7 +45,7 @@ move_forward(2);
             "lovelace".to_string(),
             false,
             GateVariant::NESW,
-            r#"The password for this gate is `"lovelace"`."#.to_string(),
+            r#"Пароль для этого шлюза — `"lovelace"`."#.to_string(),
         )];
         vec![state]
     }
@@ -56,7 +56,7 @@ move_forward(2);
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Code length must be 40 characters or less.")
+        Some("Длина кода не должна превышать 40 символов.")
     }
     fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
         stats.code_len <= 40

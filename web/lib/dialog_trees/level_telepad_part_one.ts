@@ -17,39 +17,39 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   explain_grover_is_repaired: {
-    text: "Nice work! G.R.O.V.E.R. is all patched up and ready to go. You can use the `turn_right` and `move_forward` functions again.",
+    text: "Отличная работа! Г.Р.О.В.Е.Р. полностью починен и готов к работе. Ты снова можешь использовать функции `turn_right` и `move_forward`.",
     choiceIds: ["ack_grover_is_repaired"],
   },
   explain_telepads: {
-    text: `Part of my job on Moonbase Beta is to help test new research projects. I'm really excited to show you what the Ganymede Robotics research team has been cooking up!`,
+    text: `Часть моей работы на Лунной базе Бета — помогать тестировать новые исследовательские проекты. Я очень рада показать тебе, над чем работает исследовательская команда Ганимед Роботикс!`,
     choiceIds: [],
     nextId: "explain_telepads_2",
   },
   explain_telepads_2: {
     text:
-      `They've created a device called a "telepad" that can teleport relatively small ` +
-      `objects across short distances. But... there's a catch!`,
+      `Они создали устройство под названием «телепад», которое может телепортировать относительно небольшие ` +
+      `объекты на короткие расстояния. Но... есть одна загвоздка!`,
     choiceIds: ["ask_telepad_catch"],
   },
   explain_telepads_catch: {
     text:
-      `Objects that are teleported often get flipped around unpredictably. So if you enter ` +
-      `the telepad facing one direction, you can end up facing a completely different ` +
-      `direction on the other side!`,
+      `Объекты, которые телепортируются, часто непредсказуемо переворачиваются. Так что если ты входишь ` +
+      `в телепад лицом в одном направлении, ты можешь оказаться на другой стороне ` +
+      `повёрнутым совсем в другую сторону!`,
     choiceIds: ["ack_telepads_catch"],
   },
   explain_telepads_code: {
     text:
-      "In order to deal with this side-effect, you'll need to use the `get_orientation` function " +
-      `to figure out which way G.R.O.V.E.R. is facing after teleporting. Then use an if statement ` +
-      `to handle each possible orientation.`,
+      "Чтобы справиться с этим побочным эффектом, тебе нужно использовать функцию `get_orientation`, " +
+      `чтобы определить, в какую сторону смотрит Г.Р.О.В.Е.Р. после телепортации. Затем используй оператор if, ` +
+      `чтобы обработать каждую возможную ориентацию.`,
     choiceIds: [],
     nextId: "explain_telepads_code_2",
   },
   explain_telepads_code_2: {
     text:
-      `I already got the code started for you. Do you think you can finish it by adding more ` +
-      `if statements?`,
+      `Я уже начала писать для тебя код. Как думаешь, сможешь закончить его, добавив ещё ` +
+      `операторы if?`,
     choiceIds: ["ack_telepads_code"],
   },
 };
@@ -58,25 +58,25 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   ack_grover_is_repaired: {
-    text: "Great! What's next?",
+    text: "Отлично! Что дальше?",
     nextId: "explain_telepads",
   },
   ask_telepad_catch: {
-    text: "What's the catch?",
+    text: "Какая загвоздка?",
     nextId: "explain_telepads_catch",
   },
   ack_telepads_catch: {
-    text: "Whoa... that's weird.",
+    text: "Ого... это странно.",
     nextId: "explain_telepads_code",
   },
   ack_telepads_code: {
-    text: "Only one way to find out!",
+    text: "Есть только один способ узнать!",
   },
 };
 
 export const TREES: DialogTrees = {
   level_telepad_part_one: {
-    name: "Unintended Effects",
+    name: "Непредвиденные эффекты",
     startId: "explain_grover_is_repaired",
   },
 };

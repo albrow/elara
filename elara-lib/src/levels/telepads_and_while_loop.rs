@@ -10,30 +10,30 @@ pub struct TelepadsAndWhileLoop {}
 
 impl Level for TelepadsAndWhileLoop {
     fn name(&self) -> &'static str {
-        "Up and Up and Up"
+        "Вверх и вверх и вверх"
     }
     fn short_name(&self) -> &'static str {
         "telepads_and_while_loop"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r#"// This function uses a while loop to make G.R.O.V.E.R. face
-// up no matter which orientation he starts in.
-// You DON'T need to change this part.
+        r#"// Эта функция использует цикл while, чтобы G.R.O.V.E.R. повернулся
+// вверх независимо от начальной ориентации.
+// Эту часть изменять НЕ нужно.
 fn face_up() {
   while get_orientation() != "up" {
     turn_left();
   }
 }
 
-// You can use the face_up function after G.R.O.V.E.R. goes
-// through a telepad. Here's an example to help you get started:
+// Вы можете использовать функцию face_up после того, как G.R.O.V.E.R.
+// пройдёт через телепорт. Вот пример для начала:
 move_forward(2);
 face_up();
 move_forward(3);
-// ADD YOUR CODE BELOW:
+// ДОБАВЬТЕ ВАШ КОД НИЖЕ:
 
 "#
     }
@@ -84,7 +84,7 @@ move_forward(3);
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Complete the objective in 17 or fewer steps.")
+        Some("Выполните задание за 17 шагов или меньше.")
     }
     fn check_challenge(&self, _states: &[State], _script: &str, stats: &ScriptStats) -> bool {
         stats.time_taken <= 17
@@ -160,17 +160,16 @@ fn challenge() {
 
     // This code should beat the level and pass the challenge.
     let script = r#"
-        // This function will cause G.R.O.V.E.R. to move up in as few
-        // steps as possible, regardless of which direction he is currently
-        // facing.
+        // Эта функция заставит G.R.O.V.E.R. двигаться вверх за минимальное
+        // количество шагов, независимо от текущего направления.
         fn move_up(spaces) {
             let facing = get_orientation();
-            // If facing down, move backward.
+            // Если смотрит вниз, идём назад.
             if facing == "down" {
                 move_backward(spaces);
                 return;
             }
-            // Otherwise turn to face up, then move forward.
+            // Иначе поворачиваемся вверх, затем идём вперёд.
             if facing == "left" {
                 turn_right();
             }

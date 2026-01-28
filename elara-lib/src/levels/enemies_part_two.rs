@@ -7,16 +7,16 @@ pub struct EnemiesPartTwo {}
 
 impl Level for EnemiesPartTwo {
     fn name(&self) -> &'static str {
-        "Double Trouble"
+        "Двойная проблема"
     }
     fn short_name(&self) -> &'static str {
         "enemies_part_two"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
-        r"// Try to reach the goal while avoiding the malfunctioning rovers.
+        r"// Попробуйте достичь цели, избегая неисправных роверов.
 "
     }
     fn initial_states(&self) -> Vec<State> {
@@ -78,7 +78,7 @@ impl Level for EnemiesPartTwo {
         std_check_win(state)
     }
     fn challenge(&self) -> Option<&'static str> {
-        Some("Reach the goal using 7 energy or less.")
+        Some("Достигните цели, используя 7 энергии или меньше.")
     }
     fn check_challenge(
         &self,

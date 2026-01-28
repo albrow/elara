@@ -34,7 +34,7 @@ export default function FunctionList(props: FunctionListProps) {
 
       <Tooltip
         // fontSize={BODY_RESPONSIVE_FONT_SCALE}
-        label="Function list"
+        label="Список функций"
       >
         <MenuButton
           rounded={{ base: "3px", xl: "md" }}

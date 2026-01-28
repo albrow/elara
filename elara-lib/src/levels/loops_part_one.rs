@@ -6,20 +6,20 @@ pub struct LoopsPartOne {}
 
 impl Level for LoopsPartOne {
     fn name(&self) -> &'static str {
-        "Loop the Loop"
+        "Круг за кругом"
     }
     fn short_name(&self) -> &'static str {
         "loops_part_one"
     }
     fn objective(&self) -> &'static str {
-        "Move the rover ({robot}) to the goal ({goal})."
+        "Переместите ровер ({robot}) к цели ({goal})."
     }
     fn initial_code(&self) -> &'static str {
         r#"loop {
   move_forward(1);
   turn_left();
   move_forward(1);
-  // CHANGE THE CODE BELOW
+  // ИЗМЕНИТЕ КОД НИЖЕ
   turn_left();
 }
 "#

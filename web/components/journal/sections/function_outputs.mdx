@@ -5,44 +5,44 @@ import { getLocalVideoUrl } from "../../../lib/utils";
 
 import { SANDBOX_WITH_DATA_POINT_LEVEL } from "../../../lib/scenes";
 
-### Function Outputs
+### Выходные значения функций
 
 <Video youTubeId="O1XoNe0MfVg" localVideoUrl={getLocalVideoUrl("function_outputs")}/>
 
-Some functions may have an output, also called a "return value". If a
-function has an output, it just means that it spits out a result whenever
-it is called, and you can do things with the result.
+Некоторые функции могут иметь выходное значение, также называемое «возвращаемым значением». Если у
+функции есть выходное значение, это означает, что она выдаёт результат при каждом
+вызове, и вы можете использовать этот результат.
 
-<Card type="tip">Not all functions have an output. For example, the `move_forward` and `turn_left` functions do not output anything.</Card>
+<Card type="tip">Не все функции имеют выходное значение. Например, функции `move_forward` и `turn_left` ничего не возвращают.</Card>
 
-Let's take a look at a function called `get_orientation`. It outputs a string
-based on which way the rover is facing. So for example, if the rover is facing to the
-right, the `get_orientation` function will output `"right"`.
+Давайте рассмотрим функцию `get_orientation`. Она возвращает строку
+в зависимости от того, куда направлен ровер. Например, если ровер направлен
+вправо, функция `get_orientation` вернёт `"right"`.
 
-<Card type="try_it">Try adding more turns to the code below and see how the output of the `get_orientation` function changes.</Card>
+<Card type="try_it">Попробуйте добавить больше поворотов в код ниже и посмотрите, как изменится выходное значение функции `get_orientation`.</Card>
 
 <RunnableExample
-  code={`// The get_orientation function outputs the direction the
-// rover is facing.
+  code={`// Функция get_orientation возвращает направление, куда
+// смотрит ровер.
 say("I am facing " + get_orientation());
 
-// If we turn to the right, the output of the function will
-// change.
+// Если мы повернём направо, выходное значение функции
+// изменится.
 turn_right();
 say("Now I am facing " + get_orientation());
 `}
 />
 
-The example below introduces a "data point". Data points are scattered throughout
-Elara and can hold all kinds of information. The `read_data` function outputs whatever
-data was stored in the data point.
+Следующий пример знакомит с «точками данных». Точки данных разбросаны по всей
+Эларе и могут содержать различную информацию. Функция `read_data` возвращает данные,
+хранящиеся в точке данных.
 
-<Card type="warning">The `read_data` function only works if the rover is next to a data point. Otherwise, it will cause an error.</Card>
+<Card type="warning">Функция `read_data` работает только если ровер находится рядом с точкой данных. Иначе произойдёт ошибка.</Card>
 
 <RunnableExample
-  code={`// This code uses the *output* from the read_data function as
-// the *input* to the say function. It will cause the rover
-// to say whatever data is stored in the data point.
+  code={`// Этот код использует *выходное значение* функции read_data как
+// *входной параметр* функции say. Это заставит ровер произнести
+// данные, хранящиеся в точке данных.
 say(read_data());`}
   level={SANDBOX_WITH_DATA_POINT_LEVEL}
 />

@@ -1,144 +1,135 @@
-<a href="https://github.com/albrow/elara/commits/main" target="_blank">More info on GitHub</a>
+<a href="https://github.com/albrow/elara/commits/main" target="_blank">Подробнее на GitHub</a>
 
-##### June 8, 2025 (version 0.9.0)
+##### 8 июня 2025 (версия 0.9.0)
 
-This version includes some big visual and gameplay improvements for certain levels.
+Эта версия включает крупные визуальные улучшения и изменения игрового процесса для некоторых уровней.
 
-- Improved visual style for the server room on Moonbase Alpha (i.e. the final level\
-    of the game). This level now has a unique tile background and reflections, making it
-    more distinct from the lunar surface background shown on the other levels (<a href="https://github.com/albrow/elara/pull/98" target="_blank">PR #98</a>).
-- Asteroids now hit after a brief delay instead of hitting immediately when you press "deploy".
-    This affects all levels with asteroids.
-- Updated the level called "Asteroid Strike" to work better with the new asteroid mechanics.
-    If you completed the old version of this level before, you may need to go back and complete
-    this new version.
-- Fixed consistency issues with the pixel art for G.R.O.V.E.R. and other rovers (<a href="https://github.com/albrow/elara/issues/96" target="_blank">issue #96</a>).
-- Fixed a minor visual issue when hovering over elements on the board.
+- Улучшен визуальный стиль серверной комнаты на базе Moonbase Alpha (то есть на финальном уровне игры). Теперь у этого уровня уникальный фон из тайлов и отражения, что делает его более отличимым от лунной поверхности на других уровнях (<a href="https://github.com/albrow/elara/pull/98" target="_blank">PR #98</a>).
+- Теперь астероиды сталкиваются с ровером с небольшой задержкой, а не сразу после нажатия кнопки «Запуск».
+    Это влияет на все уровни с астероидами.
+- Уровень «Удар астероида» обновлён: он лучше работает с новой механикой астероидов.
+    Если вы проходили старую версию этого уровня, возможно, придётся вернуться и пройти обновлённую.
+- Исправлены несоответствия в пиксель-арте Г.Р.О.В.Е.Р. и других роверов (<a href="https://github.com/albrow/elara/issues/96" target="_blank">issue #96</a>).
+- Исправлена небольшая визуальная проблема при наведении на элементы на поле.
 
-##### Jan 12, 2025 (version 0.8.0)
+##### 12 января 2025 (версия 0.8.0)
 
-This version includes a number of UI improvements and quality of life changes. These are designed
-to make the game look better and make it easier to navigate (especially between different levels).
+Эта версия включает ряд улучшений интерфейса и изменений «для удобства». Они призваны сделать игру более приятной визуально и упростить навигацию (особенно между уровнями).
 
-- Introduced a new level select modal which shows a preview of each level before you select it.
-- Improved the level layout, replacing plain white backgrounds and moving some buttons and UI elements to the top of the screen.
-- Removed numbered axis labels and replaced them with a cleaner level border.
-- Improved responsive design for smaller screen sizes.
-- Updated relevant tutorial GIFs to reflect the new UI changes.
-- Change step counter to start at 0 instead of 1 (<a href="https://github.com/albrow/elara/issues/89" target="_blank">issue #89</a>).
-- Minor tweak to make it more clear how code length is counted for certain bonus challenges.
+- Добавлено новое модальное окно выбора уровня с предпросмотром перед выбором.
+- Улучшена компоновка экрана уровня: заменены простые белые фоны, а часть кнопок и элементов интерфейса перенесена наверх.
+- Убраны пронумерованные подписи осей и заменены более аккуратной рамкой уровня.
+- Улучшена адаптивная верстка для маленьких экранов.
+- Обновлены соответствующие обучающие GIF-файлы, чтобы они отражали изменения в интерфейсе.
+- Счётчик шагов теперь начинается с 0 вместо 1 (<a href="https://github.com/albrow/elara/issues/89" target="_blank">issue #89</a>).
+- Небольшая правка, чтобы было понятнее, как считается длина кода для некоторых дополнительных заданий.
 
-##### April 14, 2024 (version 0.7.0)
+##### 14 апреля 2024 (версия 0.7.0)
 
-This update includes a brand new mechanic, crates! G.R.O.V.E.R. can pick them up and
-drop them with the new `pick_up` and `drop` functions. This also comes with two new
-levels that utilize the new mechanic. Stay tuned for more levels that use crates in the
-future!
+Это обновление добавляет совершенно новую механику — ящики! Г.Р.О.В.Е.Р. может поднимать их и бросать с помощью новых функций `pick_up` и `drop`. Также добавлены два уровня, которые используют эту механику. В будущем будут и другие уровни с ящиками — следите за обновлениями!
 
-- Added two new levels: "Blocking the Way" and "Clear a Path" (now levels 8 and 9).
-- Added two new functions: `pick_up` and `drop` that can be used to interact with crates.
-- Removed the "Pressing Buttons" level (previously level 5). It was removed to make space for the new levels and because it was too simple. The subsequent level "Let Me In" does a perfectly fine job of introducing the buttons mechanic.
+- Добавлены два новых уровня: «Преграда на пути» и «Проложить путь» (теперь уровни 8 и 9).
+- Добавлены две новые функции: `pick_up` и `drop`, которые позволяют взаимодействовать с ящиками.
+- Уровень «Нажимая кнопки» удалён (ранее уровень 5). Его убрали, чтобы освободить место для новых уровней, а также потому что он был слишком простым. Следующий уровень «Пусти меня» отлично вводит механику кнопок.
 
-##### March 3, 2024 (version 0.6.0)
+##### 3 марта 2024 (версия 0.6.0)
 
-- Added two new cutscenes:
-    - One after "On Your Own" which shows G.R.O.V.E.R. getting hit by a small asteroid.
-    - One after "Three Lefts Make a Right" which shows G.R.O.V.E.R. visiting the repair bay.
-- There's no easy way to see these cutscenes if you have already beaten these levels, but you can watch them directly on YouTube:
-    - <a href="https://youtu.be/ZUESwBuuePY" target="_blank">G.R.O.V.E.R. getting hit by a small asteroid</a>
-    - <a href="https://youtu.be/bwjOIaBQhEw" target="_blank">G.R.O.V.E.R. visiting the repair bay</a>
+- Добавлены две новые кат-сцены:
+    - После «Самостоятельно» — Г.Р.О.В.Е.Р. получает удар небольшим астероидом.
+    - После «Три раза налево — и направо» — Г.Р.О.В.Е.Р. посещает ремонтный отсек.
+- Эти кат-сцены непросто посмотреть, если вы уже прошли уровни, но их можно посмотреть напрямую на YouTube:
+    - <a href="https://youtu.be/ZUESwBuuePY" target="_blank">Г.Р.О.В.Е.Р. получает удар небольшим астероидом</a>
+    - <a href="https://youtu.be/bwjOIaBQhEw" target="_blank">Г.Р.О.В.Е.Р. посещает ремонтный отсек</a>
 
-##### February 14, 2024 (version 0.5.1)
+##### 14 февраля 2024 (версия 0.5.1)
 
-- Fixed a bug where the move sound effect wasn't played for runnable examples inside the journal.
+- Исправлена ошибка, из-за которой у запускаемых примеров в журнале не проигрывался звук движения.
 
-##### February 11, 2024 (version 0.5.0)
+##### 11 февраля 2024 (версия 0.5.0)
 
-- Final preparations for the Steam release!
-- Changed the text you see when starting a new game for the Steam version of the game.
-- Automatically skip cutscene end screen for the Steam version of the game.
-- Fixed a bug where the buttons on the bottom of journal pages could sometimes not be pressed.
-- Fixed a bug where dialog modals would stay open if you navigated back to the Hub.
-- Fixed a bug where sound effects would sometimes keep playing for a split second after you beat a level (most noticeable on "Pressing Buttons").
+- Финальная подготовка к релизу в Steam!
+- Изменён текст, который вы видите при начале новой игры в Steam-версии.
+- Для Steam-версии теперь автоматически пропускается экран завершения кат-сцены.
+- Исправлена ошибка, из-за которой кнопки внизу страниц журнала иногда нельзя было нажать.
+- Исправлена ошибка, из-за которой модальные окна диалогов могли оставаться открытыми при возврате в Центр.
+- Исправлена ошибка, из-за которой звуковые эффекты иногда продолжали играть долю секунды после прохождения уровня (особенно заметно на «Нажимая кнопки»).
 
-##### December 30, 2023 (version 0.4.0)
+##### 30 декабря 2023 (версия 0.4.0)
 
-- Added two new levels: "Order of Operations" (now level 7) and "Hidden Passage" (now level 20). Some level numbers have been shifted around to make room for these new levels.
-- Updated and optimized all music. Changes are most notable in "Measuring the Challenge" and "Not the End".
-- Added new ambient background music to the Hub.
-- Added a "Scroll for More" indicator to the journal whenever there is more content below the fold.
-- Wires now have colors, which makes it easier to see which wires are connected to which gates.
+- Добавлены два новых уровня: «Порядок операций» (теперь уровень 7) и «Скрытый проход» (теперь уровень 20). Номера некоторых уровней сдвинуты, чтобы освободить место.
+- Обновлена и оптимизирована вся музыка. Изменения особенно заметны в треках «Измеряя вызов» и «Это ещё не конец».
+- Добавлена новая фоновая музыка для Центра.
+- В журнал добавлен индикатор «Прокрутите ниже», если контент не помещается на экран.
+- Провода теперь имеют цвета, что упрощает понимание того, какие провода подключены к каким логическим элементам.
 
-##### December 13, 2023 (version 0.3.1)
+##### 13 декабря 2023 (версия 0.3.1)
 
-- Fixed a bug where the ringtone sound effect was not being played (<a href="https://github.com/albrow/elara/issues/83" target="_blank">issue #83</a>).
-- Optimized all images to improve load times (<a href="https://github.com/albrow/elara/pull/80" target="_blank">issue #80</a>).
-- You now have the option to replay a cutscene immediately after it ends.
-- Fixed a minor typo in the hints for the level "Three Lefts Make a Right".
-- Various internal code improvements and refactors.
+- Исправлена ошибка, из-за которой не воспроизводился звук рингтона (<a href="https://github.com/albrow/elara/issues/83" target="_blank">issue #83</a>).
+- Оптимизированы все изображения для ускорения загрузки (<a href="https://github.com/albrow/elara/pull/80" target="_blank">issue #80</a>).
+- Теперь можно сразу же пересмотреть кат-сцену после её завершения.
+- Исправлена небольшая опечатка в подсказках уровня «Три раза налево — и направо».
+- Различные внутренние улучшения и рефакторинги.
 
-##### December 5, 2023 (version 0.3.0)
+##### 5 декабря 2023 (версия 0.3.0)
 
-Most of the changes in the version are prep work for the upcoming Steam release! A lot
-of work went into making the game playable on Steam, but most of those changes will be
-invisible if you are playing on the web.
+Большая часть изменений в этой версии — подготовка к будущему релизу в Steam! Много работы было сделано для того, чтобы игра корректно работала в Steam, но большинство этих изменений вы не заметите, если играете в веб-версию.
 
-You can <a href="https://store.steampowered.com/app/2657610/Elara_A_Coding_Adventure_in_Space/" target="_blank">wishlist the game on Steam now</a>!
+Вы можете <a href="https://store.steampowered.com/app/2657610/Elara_A_Coding_Adventure_in_Space/" target="_blank">добавить игру в список желаемого в Steam</a> уже сейчас!
 
-- Improved error message when you have a space in a variable or function name (<a href="https://github.com/albrow/elara/issues/76" target="_blank">issue #76</a>).
-- Added new ringtone sound effect and animation when you have an incoming call from Kalina (<a href="https://github.com/albrow/elara/issues/32" target="_blank">issue #32</a>).
-- The "What's New" button is now highlighted on the title screen whenever there are new updates that you haven't seen yet.
-- Preparation for Steam release:
-    - Added Electron.js integration, configuration, and build commands in the `/electron` directory.
-    - Change both journal and cutscene players to use local video files for the Electron build. (So that the game can be played offline).
-    - Changed all links to open in new windows.
-    - Added support for different zoom levels for Electron builds. (A workaround until <a href="https://github.com/albrow/elara/issues/75" target="blank">issue #75</a> is fixed).
-    - Added basic support for Steamworks API for Electron builds.
-    - Many other minor changes not included here.
+- Улучшено сообщение об ошибке, когда в имени переменной или функции есть пробел (<a href="https://github.com/albrow/elara/issues/76" target="_blank">issue #76</a>).
+- Добавлены новый звук рингтона и анимация входящего звонка от Калины (<a href="https://github.com/albrow/elara/issues/32" target="_blank">issue #32</a>).
+- Кнопка «Что нового» на титульном экране теперь подсвечивается, если есть обновления, которые вы ещё не смотрели.
+- Подготовка к релизу в Steam:
+    - Добавлена интеграция Electron.js, конфигурация и команды сборки в каталоге `/electron`.
+    - Плееры журнала и кат-сцен для Electron-сборки переведены на локальные видеофайлы (чтобы в игру можно было играть офлайн).
+    - Все ссылки теперь открываются в новых окнах.
+    - Добавлена поддержка разных уровней масштабирования для Electron-сборок (временное решение до исправления <a href="https://github.com/albrow/elara/issues/75" target="blank">issue #75</a>).
+    - Добавлена базовая поддержка Steamworks API для Electron-сборок.
+    - Множество других мелких изменений, не перечисленных здесь.
 
-##### November 13, 2023 (version 0.2.1)
+##### 13 ноября 2023 (версия 0.2.1)
 
-- Hotfix for Itch.io build.
+- Хотфикс для сборки Itch.io.
 
-##### November 13, 2023 (version 0.2.0)
+##### 13 ноября 2023 (версия 0.2.0)
 
-- Added new backgrounds for the level screen and journal screen. Previously, these screens used plain white/black backgrounds.
-- Greatly improved responsiveness for level screen and journal screen on mobile devices. The game now supports a minimum resolution of 1080px x 700px. Layouts for larger screens (especially higher than 1440p) are totally functional but could still be improved to take advantage of the increased screen real estate.
-- Fixed an issue on Safari where tooltips were not being placed correctly on hover.
-- Fixed an issue that would occur if you <a href="https://github.com/albrow/elara/issues/74" target="_blank">split function arguments across multiple lines</a>.
-- Removed an unnecessary cookie that was being automatically set by Chakra UI.
+- Добавлены новые фоны для экрана уровня и экрана журнала. Раньше эти экраны использовали простые белые/чёрные фоны.
+- Сильно улучшена адаптивность экрана уровня и экрана журнала на мобильных устройствах. Теперь игра поддерживает минимальное разрешение 1080×700. Макеты для больших экранов (особенно выше 1440p) работают нормально, но их ещё можно улучшать, чтобы лучше использовать увеличенное экранное пространство.
+- Исправлена проблема в Safari, из-за которой подсказки (tooltips) неправильно позиционировались при наведении.
+- Исправлена проблема, которая возникала, если вы <a href="https://github.com/albrow/elara/issues/74" target="_blank">разбивали аргументы функции на несколько строк</a>.
+- Удалён лишний cookie, который Chakra UI автоматически устанавливал.
 
-##### October 25, 2023 (version 0.1.7)
+##### 25 октября 2023 (версия 0.1.7)
 
-- Slightly lowered volume on intro cutscene.
-- Added music and sound effects to midgame cutscene.
-- Added music and sound effects to final cutscene.
-- Removed "WIP" disclaimer from cutscenes.
-- Note: There is no easy way to view the updated cutscenes if you have already beaten the game. You could start a new game from the title screen, or you can use the links below to watch the cutscenes directly on YouTube (*__major spoilers__* if you have not reached this part of the game yet):
-    - <a href="https://youtu.be/TUl2pIq0vjA" target="_blank">Updated Midgame Cutscene</a>
-    - <a href="https://youtu.be/ELexFB0FQys" target="_blank">Updated Final Cutscene and Credits</a>
+- Немного снижена громкость в вступительной кат-сцене.
+- Добавлена музыка и звуковые эффекты в кат-сцену середины игры.
+- Добавлена музыка и звуковые эффекты в финальную кат-сцену.
+- Убрана пометка «WIP» из кат-сцен.
+- Примечание: нет простого способа посмотреть обновлённые кат-сцены, если вы уже прошли игру. Вы можете начать новую игру с титульного экрана или посмотреть кат-сцены напрямую на YouTube (*__крупные спойлеры__*, если вы ещё не дошли до этой части игры):
+    - <a href="https://youtu.be/TUl2pIq0vjA" target="_blank">Обновлённая кат-сцена середины игры</a>
+    - <a href="https://youtu.be/ELexFB0FQys" target="_blank">Обновлённая финальная кат-сцена и титры</a>
 
-##### October 20, 2023 (version 0.1.6)
+##### 20 октября 2023 (версия 0.1.6)
 
-- Added new dialog which explains the journal after beating the first level.
-- Improved sprites for G.R.E.T.A. (especially when facing a diagonal direction).
+- Добавлен новый диалог, который объясняет журнал после прохождения первого уровня.
+- Улучшены спрайты Г.Р.Е.Т.Ы. (особенно при движении по диагонали).
 
-##### October 12, 2023 (version 0.1.5)
+##### 12 октября 2023 (версия 0.1.5)
 
-- Fixed a bug where adding a bracket on a new line would <a href="https://github.com/albrow/elara/issues/67" target="_blank">incorrectly show a missing semicolon error</a>.
-- Improved the <a href="https://github.com/albrow/elara/issues/70" target="_blank">messages on each data point in "Shutting Down"</a>. The messages are now much more interesting and provide subtle hints for certain bonus challenges.
-- Added support for markdown formatting for G.R.O.V.E.R. messages. This is used in "Shutting Down" and "Secret Recipe" to make the messages easier to read.
+- Исправлена ошибка, из-за которой добавление скобки на новой строке <a href="https://github.com/albrow/elara/issues/67" target="_blank">ошибочно показывало сообщение о пропущенной точке с запятой</a>.
+- Улучшены <a href="https://github.com/albrow/elara/issues/70" target="_blank">сообщения на каждом datapoint в уровне «Отключение»</a>. Теперь они гораздо интереснее и содержат ненавязчивые подсказки для некоторых дополнительных заданий.
+- Добавлена поддержка markdown-форматирования для сообщений Г.Р.О.В.Е.Р. Это используется в «Отключение» и «Секретный рецепт», чтобы сообщения было проще читать.
 
-##### October 6, 2023 (version 0.1.4)
+##### 6 октября 2023 (версия 0.1.4)
 
-- Added a new button on the title screen that opens this changelog.
-- Added new level select button to jump quickly between levels.
-- Fixed new game modal to better fit mobile devices.
+- На титульном экране добавлена новая кнопка, которая открывает этот список изменений.
+- Добавлена новая кнопка выбора уровня, чтобы быстрее переходить между уровнями.
+- Модалка «Новая игра» улучшена, чтобы лучше помещаться на мобильных устройствах.
 
-##### October 1, 2023 (version 0.1.3)
+##### 1 октября 2023 (версия 0.1.3)
 
-- Official Public Beta Release 🎉
-- Added a disclaimer over some cutscenes explaining that they are a work in progress.
-- Updated the credits in the final cutscene.
-- Kalina now explains that G.R.O.V.E.R. has been repaired in the dialog for "Unintended Effects".
-- Clicking "About" from the title screen now takes you to the landing page at <a href="https://elaragame.com" target="_blank">elaragame.com</a>.
+- Официальный публичный бета-релиз 🎉
+- В некоторые кат-сцены добавлено предупреждение о том, что они находятся в разработке.
+- Обновлены титры в финальной кат-сцене.
+- Калина теперь объясняет, что Г.Р.О.В.Е.Р. был отремонтирован, в диалоге для «Непредвиденные эффекты».
+- Нажатие «О игре» на титульном экране теперь ведёт на лендинг <a href="https://elaragame.com" target="_blank">elaragame.com</a>.

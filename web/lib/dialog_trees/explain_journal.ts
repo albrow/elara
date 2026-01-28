@@ -14,20 +14,20 @@ export const NODES: {
   [key in NodeIds]: DialogNode;
 } = {
   good_job_on_first_level: {
-    text: "Nice work! Seems like you understand the basics of how to deploy and run your code.",
+    text: "Отличная работа! Похоже, ты понимаешь основы развёртывания и запуска кода.",
     choiceIds: ["ack_good_job_on_first_level"],
   },
   explain_journal_1: {
-    text: "Before we can continue, you should take a look at the Ganymede Robotics Training Journal. The journal will help teach you important concepts with videos and interactive examples.",
+    text: "Прежде чем продолжить, ты должен взглянуть на Учебный журнал Ganymede Robotics. Журнал поможет изучить важные концепции с помощью видео и интерактивных примеров.",
     nextId: "explain_journal_2",
     choiceIds: [],
   },
   explain_journal_2: {
-    text: "Things are going to start out easy, but it'll get harder as you go along, so make sure you read the journal and watch the videos carefully!",
+    text: "Сначала будет легко, но по мере продвижения станет сложнее, так что обязательно читай журнал и внимательно смотри видео!",
     choiceIds: ["ask_where_to_find_journal"],
   },
   explain_where_to_find_journal: {
-    text: "You should see it right next to your computer.",
+    text: "Ты должен увидеть его прямо рядом с компьютером.",
     choiceIds: ["ack_journal"],
   },
 };
@@ -36,21 +36,21 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   ack_good_job_on_first_level: {
-    text: "Thanks!",
+    text: "Спасибо!",
     nextId: "explain_journal_1",
   },
   ask_where_to_find_journal: {
-    text: "Where can I find the journal?",
+    text: "Где найти журнал?",
     nextId: "explain_where_to_find_journal",
   },
   ack_journal: {
-    text: "Got it!",
+    text: "Понял!",
   },
 };
 
 export const TREES: DialogTrees = {
   explain_journal: {
-    name: "How the Journal Works",
+    name: "Как работает журнал",
     startId: "good_job_on_first_level",
   },
 };

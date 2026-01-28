@@ -21,19 +21,19 @@ export const NODES: {
 } = {
   right_turns_ahead: {
     text:
-      "We may have a slight problem here... It looks like the path ahead has " +
-      "a lot of right turns, but at the moment G.R.O.V.E.R. can only turn left.",
+      "У нас тут небольшая проблема... Похоже, впереди много правых поворотов, " +
+      "но сейчас Г.Р.О.В.Е.Р. может поворачивать только налево.",
     choiceIds: [],
     nextId: "right_turns_ahead_2",
   },
   right_turns_ahead_2: {
-    text: "It would be *really* convenient if G.R.O.V.E.R. could turn right somehow.",
+    text: "Было бы *очень* удобно, если бы Г.Р.О.В.Е.Р. мог как-то поворачивать направо.",
     choiceIds: ["how_to_turn_right"],
   },
   idea_to_turn_right: {
     text:
-      `Oh I have an idea! You know the saying "two wrongs don't make a right"? Well... ` +
-      `what does make a right?`,
+      `О, у меня есть идея! Знаешь поговорку «два левых не делают правого»? Ну... ` +
+      `а что делает?`,
     choiceIds: [
       "guess_might_makes_a_right",
       "guess_three_lefts_make_a_right",
@@ -41,7 +41,7 @@ export const NODES: {
     ],
   },
   not_might_makes_a_right: {
-    text: `I have heard the saying "might makes right", but that's not what I had in mind. Guess again?`,
+    text: `Я слышала поговорку «сила есть — ума не надо», но я имела в виду другое. Попробуешь ещё раз?`,
     choiceIds: [
       "guess_might_makes_a_right",
       "guess_three_lefts_make_a_right",
@@ -50,8 +50,8 @@ export const NODES: {
   },
   not_two_negatives: {
     text:
-      `Sure, if you multiply two negative numbers together you get a positive number, ` +
-      `but I was thinking of something different. Guess again?`,
+      `Конечно, если умножить два отрицательных числа, получится положительное, ` +
+      `но я думала о другом. Попробуешь ещё раз?`,
     choiceIds: [
       "guess_might_makes_a_right",
       "guess_three_lefts_make_a_right",
@@ -60,14 +60,14 @@ export const NODES: {
   },
   how_to_use_three_lefts: {
     text:
-      "Exactly! Why don't you try making a new function that just turns G.R.O.V.E.R. " +
-      "three times to the left?",
+      "Именно! Почему бы тебе не попробовать создать новую функцию, которая просто поворачивает Г.Р.О.В.Е.Р.а " +
+      "три раза налево?",
     choiceIds: ["wont_three_lefts_take_longer", "ack_idea_to_turn_right"],
   },
   three_lefts_will_take_longer: {
     text:
-      "Yeah, it would take three times as long for G.R.O.V.E.R. to turn that way. But it " +
-      "means you can write fewer lines of code! Besides, it's only temporary until we can get him repaired.",
+      "Да, Г.Р.О.В.Е.Р.у понадобится в три раза больше времени, чтобы повернуть таким способом. Но " +
+      "зато ты можешь написать меньше строк кода! К тому же это временно, пока мы не отремонтируем его.",
     choiceIds: ["ack_idea_to_turn_right"],
   },
 };
@@ -76,33 +76,33 @@ export const CHOICES: {
   [key in ChoiceIds]: DialogChoice;
 } = {
   how_to_turn_right: {
-    text: "Any ideas?",
+    text: "Есть идеи?",
     nextId: "idea_to_turn_right",
   },
   guess_might_makes_a_right: {
-    text: "Might?",
+    text: "Сила?",
     nextId: "not_might_makes_a_right",
   },
   guess_three_lefts_make_a_right: {
-    text: "Three lefts?",
+    text: "Три левых?",
     nextId: "how_to_use_three_lefts",
   },
   guess_two_negatives: {
-    text: "Two negatives?",
+    text: "Два отрицательных?",
     nextId: "not_two_negatives",
   },
   ack_idea_to_turn_right: {
-    text: "I'll give it a try!",
+    text: "Я попробую!",
   },
   wont_three_lefts_take_longer: {
-    text: "Won't that take longer?",
+    text: "Разве это не займёт больше времени?",
     nextId: "three_lefts_will_take_longer",
   },
 };
 
 export const TREES: DialogTrees = {
   level_reimplement_turn_right: {
-    name: "Reimplement the turn_right function",
+    name: "Переделать функцию turn_right",
     startId: "right_turns_ahead",
   },
 };

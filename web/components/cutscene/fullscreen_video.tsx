@@ -172,7 +172,7 @@ export default function FullscreenYouTubeVideo(
               fontSize="sm"
               fontStyle="italic"
             >
-              Video is a work-in-progress. Sound will be added later.
+              Видео в разработке. Звук добавим позже.
             </Text>
           </Box>
         </Animate>
@@ -201,8 +201,7 @@ export default function FullscreenYouTubeVideo(
           {isWaitingForSkipConfirm && (
             <>
               <Text as="span" color="white" mr="12px" textShadow="outline">
-                You won&apos;t be able to view this cutscene later. Are you
-                sure?
+                Эту сцену нельзя будет посмотреть позже. Точно пропустить?
               </Text>
               <Button
                 onClick={() => onSkipCancel()}
@@ -219,7 +218,7 @@ export default function FullscreenYouTubeVideo(
                   bgColor: "white",
                 }}
               >
-                No
+                Нет
               </Button>
               <Button
                 onClick={() => onSkipConfirm()}
@@ -235,7 +234,7 @@ export default function FullscreenYouTubeVideo(
                   bgColor: "white",
                 }}
               >
-                Yes
+                Да
               </Button>
             </>
           )}
@@ -256,7 +255,7 @@ export default function FullscreenYouTubeVideo(
                 shadow: "0px 0px 6px black",
               }}
             >
-              Skip
+              Пропустить
               <MdSkipNext
                 size="1.3em"
                 style={{ marginLeft: "0.2em", verticalAlign: "middle" }}
@@ -313,7 +312,7 @@ export default function FullscreenYouTubeVideo(
                 }}
               >
                 <MdForward size="1.3em" style={{ marginRight: "0.3em" }} />
-                <Text fontSize="1.2em">Continue</Text>
+                <Text fontSize="1.2em">Продолжить</Text>
               </Button>
               <Button
                 mt="16px"
@@ -340,7 +339,7 @@ export default function FullscreenYouTubeVideo(
                 }}
               >
                 <MdReplay size="1.3em" style={{ marginRight: "0.3em" }} />
-                <Text fontSize="1.2em">Replay</Text>
+                <Text fontSize="1.2em">Повторить</Text>
               </Button>
             </Flex>
           </Box>
